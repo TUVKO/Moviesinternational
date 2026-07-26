@@ -514,9 +514,54 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- Returns Plan -->
+  <!-- DIVIDENDS / LEVELS -->
   <div class="dash-section" id="sec-plan">
-    <div class="inner-header"><span style="font-size:22px">🎯</span><div><div class="inner-title">DIVIDENDS</div><div class="inner-sub">Coming soon</div></div></div>
+    <div class="inner-header">
+      <span style="font-size:22px">🎯</span>
+      <div>
+        <div class="inner-title">DIVIDENDS</div>
+        <div class="inner-sub">Your earning levels</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <!-- User Level Display -->
+      <div id="user-level-display" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Your Level</div>
+            <div style="font-size:20px;font-weight:800;color:var(--accent);" id="user-current-level">Trainee</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Daily Earnings</div>
+            <div style="font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--success);" id="user-current-daily">UGX 1,500</div>
+          </div>
+        </div>
+        <div id="user-next-level" style="font-size:11px;color:var(--muted);margin-top:8px;"></div>
+      </div>
+
+      <!-- Levels Table -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div style="overflow-x:auto;padding:0 4px;">
+          <table style="width:100%;border-collapse:collapse;font-size:9px;min-width:480px;">
+            <thead>
+              <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">LvL</th>
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">Col</th>
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">Mov</th>
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">Each</th>
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">Daily</th>
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">Monthly</th>
+                <th style="padding:10px 6px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);">Annual</th>
+              </tr>
+            </thead>
+            <tbody id="levels-table-body">
+              <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">Loading levels...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Profile -->
@@ -712,6 +757,7 @@ const db = firebase.database();
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
 function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
+function fmtShort(n) { return Number(n || 0).toLocaleString(); }
 function dateStr() { 
   const d = new Date(); 
   return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }); 
@@ -753,8 +799,109 @@ let settingsData = {
   withdrawLocked: false, withdrawApproval: false,
   minDeposit: 10000, maxDeposit: 2350000, minWithdraw: 10000, marzApiKey: ''
 };
+let levelsData = {};
 let profitInterval = null;
 let userListener = null;
+
+// ============================================================
+// LEVELS FUNCTIONS
+// ============================================================
+function startLevelsListener() {
+  db.ref('levels').on('value', (snap) => {
+    levelsData = snap.val() || {};
+    renderLevelsTable();
+  });
+}
+
+function renderLevelsTable() {
+  const tbody = document.getElementById('levels-table-body');
+  if (!tbody) return;
+  
+  const levelKeys = Object.keys(levelsData);
+  if (!levelKeys.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">No levels configured. Admin please add levels.</td></tr>';
+    return;
+  }
+  
+  // Sort levels: trainee first, then wm1, wm2, etc.
+  const sortedKeys = levelKeys.sort((a, b) => {
+    if (a === 'trainee') return -1;
+    if (b === 'trainee') return 1;
+    const numA = parseInt(a.replace('wm', '')) || 0;
+    const numB = parseInt(b.replace('wm', '')) || 0;
+    return numA - numB;
+  });
+  
+  // Determine user's current level
+  const userStake = currentUser?.stake || 0;
+  let currentLevelKey = 'trainee';
+  let currentLevelData = levelsData['trainee'];
+  
+  // Find highest level user qualifies for
+  for (const key of sortedKeys) {
+    const level = levelsData[key];
+    if (level && userStake >= (level.collateral || 0)) {
+      currentLevelKey = key;
+      currentLevelData = level;
+    }
+  }
+  
+  // Update user level display
+  const levelNameEl = document.getElementById('user-current-level');
+  const dailyEl = document.getElementById('user-current-daily');
+  const nextEl = document.getElementById('user-next-level');
+  
+  if (currentLevelData) {
+    levelNameEl.textContent = currentLevelData.name || 'Trainee';
+    dailyEl.textContent = fmt(currentLevelData.daily || 0);
+    
+    // Find next level
+    let nextLevel = null;
+    let nextKey = null;
+    for (const key of sortedKeys) {
+      const level = levelsData[key];
+      if (level && (level.collateral || 0) > userStake) {
+        nextLevel = level;
+        nextKey = key;
+        break;
+      }
+    }
+    
+    if (nextLevel) {
+      const need = (nextLevel.collateral || 0) - userStake;
+      nextEl.textContent = `Next: ${nextLevel.name} needs ${fmt(nextLevel.collateral || 0)} (${fmt(need)} more)`;
+    } else {
+      nextEl.textContent = '🎉 You are at the highest level!';
+    }
+  } else {
+    levelNameEl.textContent = 'Trainee';
+    dailyEl.textContent = 'UGX 0';
+    nextEl.textContent = '';
+  }
+  
+  // Build table rows
+  let html = '';
+  for (const key of sortedKeys) {
+    const level = levelsData[key];
+    if (!level) continue;
+    
+    const isCurrent = (key === currentLevelKey);
+    const bgColor = isCurrent ? 'rgba(242,184,75,0.15)' : 'transparent';
+    const borderLeft = isCurrent ? '3px solid var(--accent)' : 'none';
+    
+    html += `<tr style="background:${bgColor};border-left:${borderLeft};">
+      <td style="padding:8px 6px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};">${level.name || key}</td>
+      <td style="padding:8px 6px;font-family:'JetBrains Mono',monospace;font-size:8px;">${fmtShort(level.collateral || 0)}</td>
+      <td style="padding:8px 6px;text-align:center;">${level.movies || 0}</td>
+      <td style="padding:8px 6px;font-family:'JetBrains Mono',monospace;font-size:8px;">${fmtShort(level.each || 0)}</td>
+      <td style="padding:8px 6px;font-family:'JetBrains Mono',monospace;font-size:8px;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};">${fmtShort(level.daily || 0)}</td>
+      <td style="padding:8px 6px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);">${fmtShort(level.monthly || 0)}</td>
+      <td style="padding:8px 6px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);">${fmtShort(level.annual || 0)}</td>
+    </tr>`;
+  }
+  
+  tbody.innerHTML = html;
+}
 
 // ============================================================
 // FIXED: Daily profit calculation (ONCE per calendar day) - ATOMIC UPDATE
@@ -835,6 +982,7 @@ async function calculateAndPayDailyProfits() {
 async function initApp() {
   initTheme();
   startSettingsListener();
+  startLevelsListener();
   
   const savedUser = sessionStorage.getItem('pp_current_user');
   if (savedUser) {
@@ -862,6 +1010,7 @@ async function initApp() {
         updateBalanceUI();
         renderHistory();
         updateProfileUI();
+        renderLevelsTable();
         showDashboard();
         switchTab('home');
         startDailyProfitLoop();
@@ -1206,6 +1355,7 @@ function updateBalanceUI() {
   document.getElementById('stat-stake').textContent = fmt(stake);
   document.getElementById('stat-balance').textContent = fmt(balance);
   updateActiveInvestmentDisplay();
+  renderLevelsTable();
 }
 
 function updateActiveInvestmentDisplay() {
@@ -1239,6 +1389,7 @@ function startUserListener(username) {
       updateBalanceUI();
       renderHistory();
       updateProfileUI();
+      renderLevelsTable();
     }
   });
 }
@@ -1713,6 +1864,7 @@ async function doLogin() {
     updateBalanceUI();
     renderHistory();
     updateProfileUI();
+    renderLevelsTable();
     showDashboard();
     switchTab('home');
     startDailyProfitLoop();
@@ -1759,6 +1911,7 @@ async function doRegister() {
   updateBalanceUI();
   renderHistory();
   updateProfileUI();
+  renderLevelsTable();
   showDashboard();
   switchTab('home');
   startDailyProfitLoop();

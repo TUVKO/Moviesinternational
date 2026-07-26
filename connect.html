@@ -172,6 +172,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .admin-footer-links{display:flex;align-items:center;gap:8px;}
 .admin-footer-link{background:none;border:none;color:var(--accent);font-size:10px;font-weight:700;cursor:pointer;}
 .admin-footer-divider{color:var(--border);font-size:8px;}
+.level-input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-size:11px;font-family:'Inter',sans-serif;width:100%;min-width:50px;}
+.level-input:focus{border-color:var(--accent);outline:none;}
+.level-input.mono{font-family:'JetBrains Mono',monospace;}
 @media(max-width:900px){.sidebar{width:60px;}.sidebar-brand,.sidebar-sub,.nav-item span:not(.nav-icon){display:none;}.main-content{margin-left:60px;}.stats-row{grid-template-columns:repeat(2,1fr);}.admin-footer{left:60px;}}
 </style>
 </head>
@@ -292,6 +295,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       <div class="nav-item" onclick="showPage('pg-debit')"><span class="nav-icon">💳</span><span>Debit User</span></div>
       <div class="nav-item" onclick="showPage('pg-sog')"><span class="nav-icon">🗑️</span><span>SOG</span></div>
       <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
+      <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
       <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
       <div class="nav-item" onclick="showPage('pg-admin-withdraw')"><span class="nav-icon">💵</span><span>Admin Withdraw</span></div>
     </div>
@@ -481,6 +485,44 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
 
+    <!-- LEVELS MANAGEMENT -->
+    <div class="page" id="pg-levels">
+      <div class="page-title">📊 Levels</div>
+      <div class="page-sub">Configure all earning levels (Trainee + WM1 to WM11)</div>
+      
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-save" onclick="addLevelRow()">➕ Add Level</button>
+        <button class="btn btn-danger" onclick="resetDefaultLevels()">🔄 Reset Defaults</button>
+      </div>
+      
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">Levels Configuration</div>
+          <span id="level-count" style="font-size:12px;color:var(--muted);">0 levels</span>
+        </div>
+        <div style="overflow-x:auto;padding:0 4px;">
+          <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:650px;">
+            <thead>
+              <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Key</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Name</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Collateral</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Movies</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Each</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Daily</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Monthly</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Annual</th>
+                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="levels-admin-body">
+              <tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="page" id="pg-settings">
       <div class="page-title">Settings</div>
@@ -625,7 +667,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 // ============================================================
 // DIAMOND EARN ADMIN - FIREBASE REALTIME DATABASE
 // Username + Password Login | MarzPay Integration
-// ADDED: Delete transaction button (one by one)
+// ADDED: Levels Management (Admin configures all levels)
 // ============================================================
 
 const firebaseConfig = {
@@ -647,11 +689,9 @@ const SESSION_KEY = 'pp_admin_session';
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
 function getMarzAuth() {
-  // Use original API key from session if available (set during saveMarzApiKey)
   let key = (window.MARZ_API_KEY || allSettings.marzApiKey || '').trim();
   if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
   if (key.startsWith('vvvv')) {
-    // If key is masked (starts with vvvv), it won't work - need admin to re-enter
     throw new Error('MarzPay API key needs to be re-entered');
   }
   return 'Basic ' + key;
@@ -685,6 +725,7 @@ let allSettings = {
   minWithdraw: 10000,
   marzApiKey: ''
 };
+let allLevels = {};
 let currentAdmin = null;
 let searchFilter = '';
 let txFilter = 'all';
@@ -700,8 +741,10 @@ let usersUnsubscribe = null;
 let settingsUnsubscribe = null;
 let withdrawalsUnsubscribe = null;
 let adminTxUnsubscribe = null;
+let levelsUnsubscribe = null;
 
 function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
+function fmtShort(n) { return Number(n || 0).toLocaleString(); }
 function dateStr() { const d = new Date(); return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }); }
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
 function genUUID() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)); }
@@ -713,6 +756,167 @@ function clearErrors(...ids) { ids.forEach(id => setErr(id, false)); }
 function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 // ============================================================
+// LEVELS MANAGEMENT (ADMIN)
+// ============================================================
+
+const DEFAULT_LEVELS = {
+  trainee: { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500 },
+  wm1: { name: "WM1", collateral: 5000, movies: 5, each: 400, daily: 2000, monthly: 60000, annual: 730000 },
+  wm2: { name: "WM2", collateral: 15000, movies: 8, each: 700, daily: 5600, monthly: 168000, annual: 2044000 },
+  wm3: { name: "WM3", collateral: 30000, movies: 12, each: 1000, daily: 12000, monthly: 360000, annual: 4380000 },
+  wm4: { name: "WM4", collateral: 60000, movies: 18, each: 1500, daily: 27000, monthly: 810000, annual: 9855000 },
+  wm5: { name: "WM5", collateral: 100000, movies: 25, each: 2200, daily: 55000, monthly: 1650000, annual: 20075000 },
+  wm6: { name: "WM6", collateral: 150000, movies: 35, each: 3000, daily: 105000, monthly: 3150000, annual: 38325000 },
+  wm7: { name: "WM7", collateral: 250000, movies: 50, each: 4500, daily: 225000, monthly: 6750000, annual: 82125000 },
+  wm8: { name: "WM8", collateral: 400000, movies: 70, each: 6500, daily: 455000, monthly: 13650000, annual: 166075000 },
+  wm9: { name: "WM9", collateral: 600000, movies: 90, each: 8500, daily: 765000, monthly: 22950000, annual: 279225000 },
+  wm10: { name: "WM10", collateral: 850000, movies: 110, each: 11000, daily: 1210000, monthly: 36300000, annual: 441650000 },
+  wm11: { name: "WM11", collateral: 1200000, movies: 130, each: 14000, daily: 1820000, monthly: 54600000, annual: 664300000 }
+};
+
+function startLevelsListener() {
+  if (levelsUnsubscribe) levelsUnsubscribe();
+  levelsUnsubscribe = db.ref('levels').on('value', (snap) => {
+    allLevels = snap.val() || {};
+    renderLevelsAdminTable();
+  });
+}
+
+function renderLevelsAdminTable() {
+  const tbody = document.getElementById('levels-admin-body');
+  const countEl = document.getElementById('level-count');
+  if (!tbody) return;
+  
+  const keys = Object.keys(allLevels).sort((a, b) => {
+    if (a === 'trainee') return -1;
+    if (b === 'trainee') return 1;
+    const numA = parseInt(a.replace('wm', '')) || 0;
+    const numB = parseInt(b.replace('wm', '')) || 0;
+    return numA - numB;
+  });
+  
+  if (countEl) countEl.textContent = keys.length + ' levels';
+  
+  if (!keys.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted);">No levels configured. Click "Reset Defaults" to load default levels.</td></tr>';
+    return;
+  }
+  
+  tbody.innerHTML = keys.map(key => {
+    const l = allLevels[key];
+    if (!l) return '';
+    return `<tr>
+      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${key}</td>
+      <td style="padding:8px 10px;"><input type="text" class="level-input" data-key="${key}" data-field="name" value="${escapeHtml(l.name || '')}" style="width:65px;"></td>
+      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="collateral" value="${l.collateral || 0}" style="width:80px;"></td>
+      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="movies" value="${l.movies || 0}" style="width:55px;"></td>
+      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="each" value="${l.each || 0}" style="width:80px;"></td>
+      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);">${fmtShort(l.daily || 0)}</td>
+      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.monthly || 0)}</td>
+      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.annual || 0)}</td>
+      <td style="padding:8px 10px;">
+        <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;">💾</button>
+        ${key !== 'trainee' ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;">🗑️</button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+  
+  // Auto-save on input change
+  document.querySelectorAll('.level-input').forEach(input => {
+    input.onchange = function() {
+      saveLevel(this.dataset.key);
+    };
+    input.oninput = function() {
+      // Update daily/monthly/annual preview in real-time
+      const row = this.closest('tr');
+      const key = this.dataset.key;
+      const l = allLevels[key] || {};
+      const inputs = row.querySelectorAll('.level-input');
+      let movies = l.movies || 0;
+      let each = l.each || 0;
+      inputs.forEach(inp => {
+        if (inp.dataset.field === 'movies') movies = parseInt(inp.value) || 0;
+        if (inp.dataset.field === 'each') each = parseInt(inp.value) || 0;
+      });
+      const daily = movies * each;
+      const monthly = daily * 30;
+      const annual = monthly * 12;
+      const cells = row.querySelectorAll('td');
+      if (cells.length >= 9) {
+        cells[5].textContent = fmtShort(daily);
+        cells[6].textContent = fmtShort(monthly);
+        cells[7].textContent = fmtShort(annual);
+      }
+    };
+  });
+}
+
+async function saveLevel(key) {
+  const inputs = document.querySelectorAll(`.level-input[data-key="${key}"]`);
+  const levelData = { name: '', collateral: 0, movies: 0, each: 0, daily: 0, monthly: 0, annual: 0 };
+  
+  inputs.forEach(input => {
+    const field = input.dataset.field;
+    const val = input.value.trim();
+    if (field === 'name') {
+      levelData.name = val;
+    } else {
+      levelData[field] = parseInt(val) || 0;
+    }
+  });
+  
+  // Auto-calculate daily, monthly, annual
+  levelData.daily = (levelData.movies || 0) * (levelData.each || 0);
+  levelData.monthly = levelData.daily * 30;
+  levelData.annual = levelData.monthly * 12;
+  
+  try {
+    await db.ref('levels/' + key).update(levelData);
+    toast('✅ Level ' + key + ' saved');
+  } catch (e) {
+    toast('❌ Error saving level', '#f87171');
+  }
+}
+
+async function addLevelRow() {
+  const keys = Object.keys(allLevels);
+  const existingWMs = keys.filter(k => k.startsWith('wm')).map(k => parseInt(k.replace('wm', '')) || 0);
+  let nextNum = 1;
+  while (existingWMs.includes(nextNum)) nextNum++;
+  const newKey = 'wm' + nextNum;
+  
+  const defaultData = {
+    name: 'WM' + nextNum,
+    collateral: nextNum * 100000,
+    movies: nextNum * 10 + 5,
+    each: nextNum * 1000 + 500,
+    daily: (nextNum * 10 + 5) * (nextNum * 1000 + 500),
+    monthly: ((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30,
+    annual: (((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30) * 12
+  };
+  
+  await db.ref('levels/' + newKey).set(defaultData);
+  toast('✅ Added ' + newKey);
+}
+
+async function deleteLevel(key) {
+  if (key === 'trainee') { toast('Cannot delete Trainee', '#f87171'); return; }
+  const confirmed = await confirmAction('Delete Level?', 'Delete ' + key + '? This cannot be undone.');
+  if (confirmed) {
+    await db.ref('levels/' + key).remove();
+    toast('🗑️ Deleted ' + key);
+  }
+}
+
+async function resetDefaultLevels() {
+  const confirmed = await confirmAction('Reset Default Levels?', 'This will replace all current levels with default values. This cannot be undone.');
+  if (confirmed) {
+    await db.ref('levels').set(DEFAULT_LEVELS);
+    toast('🔄 Default levels restored');
+  }
+}
+
+// ============================================================
 // VIDEOS (TIERS page management)
 // ============================================================
 let allVideos = {};
@@ -721,7 +925,6 @@ let videosUnsubscribe = null;
 function extractYouTubeId(input) {
   const s = (input || '').trim();
   if (!s) return null;
-  // Already a bare 11-char ID
   if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
   const patterns = [
     /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/
@@ -798,6 +1001,7 @@ function renderAdminVideosTable() {
 
 function startRealtimeListeners() {
   startVideosListener();
+  startLevelsListener();
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
     allUsers = snap.val() || {};
@@ -822,7 +1026,6 @@ function startRealtimeListeners() {
     updateWithdrawalsBadge();
   });
   
-  // Real-time admin transactions listener
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
     allAdminTransactions = snap.val() || {};
@@ -1000,16 +1203,14 @@ function renderTube() {
 
 function filterTx(type) { txFilter = type; renderTransactions(); }
 
-// NEW: Delete a single transaction
 async function deleteTransaction(username, txKey, txType) {
   const confirmed = await confirmAction('Delete Transaction?', `Delete this ${txType} transaction for ${username}? This cannot be undone.`);
   if (!confirmed) return;
   
   try {
-    // Remove the transaction from the user's transactions node
     await db.ref('users/' + safeKey(username) + '/transactions/' + txKey).remove();
     toast(`✅ ${txType} transaction deleted for ${username}`);
-    renderTransactions(); // Refresh the table
+    renderTransactions();
   } catch (error) {
     toast('Error deleting transaction', '#f87171');
   }
@@ -1053,7 +1254,6 @@ function renderTransactions() {
   }).join('');
 }
 
-// NEW: Admin Transactions (Deposits & Withdrawals)
 function filterAdmTx(type) { admTxFilter = type; renderAdminTransactions(); }
 
 function renderAdminTransactions() {
@@ -1063,7 +1263,6 @@ function renderAdminTransactions() {
   let txs = Object.entries(allAdminTransactions).map(([key, tx]) => ({ ...tx, key }));
   txs.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   
-  // Filter by type
   if (admTxFilter !== 'all') {
     txs = txs.filter(t => t.type === admTxFilter);
   }
@@ -1165,29 +1364,23 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
     const fee = withdrawal?.fee;
     const reference = genUUID();
     
-    // First mark as processing in pendingWithdrawals
     await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'processing' });
     
-    // Now attempt to send via Marz (same as automatic mode)
     try {
       const sendResult = await marzSend(userPhone, sendAmount, reference, 'DiamondEarn Withdrawal');
       
       if (sendResult && sendResult.status === 'success') {
-        // Success - update transaction and admin record
         await db.ref('users/' + userId + '/transactions/' + txKey).update({
           status: 'completed',
           note: `Withdrawal approved and sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
         });
         await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
         await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
-        
         toast('✅ Withdrawal approved and sent for ' + username);
       } else {
-        // Marz send failed - REFUND user instantly
         const userSnap = await db.ref('users/' + userId).get();
         const user = userSnap.val();
         const refundedBalance = (user.balance || 0) + amount;
-        
         await db.ref('users/' + userId).update({
           balance: refundedBalance,
           ['transactions/' + txKey + '/status']: 'failed',
@@ -1195,24 +1388,20 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
         });
         await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
         await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-        
         await db.ref('adminNotifications/notif_' + Date.now()).set({
           type: 'withdrawal_marz_failed',
           username: username,
           amount: amount,
           message: `Withdrawal Marz Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Error: ${sendResult?.message || 'Unknown error'} | Full refund issued`,
-          date: new Date().toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }),
+          date: dateStr(),
           read: false
         });
-        
         toast('❌ Marz processing failed - refund issued to ' + username, '#f87171');
       }
     } catch (marzError) {
-      // Exception during Marz send - REFUND user instantly
       const userSnap = await db.ref('users/' + userId).get();
       const user = userSnap.val();
       const refundedBalance = (user.balance || 0) + amount;
-      
       await db.ref('users/' + userId).update({
         balance: refundedBalance,
         ['transactions/' + txKey + '/status']: 'failed',
@@ -1220,16 +1409,14 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
       });
       await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
       await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      
       await db.ref('adminNotifications/notif_' + Date.now()).set({
         type: 'withdrawal_marz_failed',
         username: username,
         amount: amount,
         message: `Withdrawal Marz Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Error: ${marzError.message} | Full refund issued`,
-        date: new Date().toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }),
+        date: dateStr(),
         read: false
       });
-      
       toast('❌ Marz error - refund issued to ' + username, '#f87171');
     }
   } catch (error) { 
@@ -1249,31 +1436,23 @@ async function rejectWithdrawal(reqKey, userId, username, amount) {
     const txKey = allWithdrawals[reqKey]?.txKey;
     const adminTxKey = allWithdrawals[reqKey]?.adminTxKey;
     
-    // Refund to user
     await db.ref('users/' + userId).update({
       balance: newBalance,
       ['transactions/' + txKey + '/status']: 'failed',
       ['transactions/' + txKey + '/note']: 'Withdrawal Rejected ❌ - Amount refunded'
     });
-    
-    // Update withdrawal request status
     await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'rejected' });
-    
-    // Update admin transaction status to failed
     if (adminTxKey) {
       await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
     }
-    
-    // Send admin notification about the rejection
     await db.ref('adminNotifications/notif_' + Date.now()).set({ 
       type: 'withdrawal_rejected',
       username: username,
       amount: amount,
       message: `Withdrawal Rejected: ${username} | Phone: ${user.phone} | Amount: ${fmt(amount)} | Status: REJECTED BY ADMIN | Full amount refunded`,
-      date: new Date().toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }),
+      date: dateStr(),
       read: false 
     });
-    
     toast('✅ Rejected — amount refunded to ' + username);
   } catch (error) { 
     console.error('Error rejecting withdrawal:', error);
@@ -1439,42 +1618,15 @@ function loadSettingsUI() {
   }
 }
 
-function toggleApiKeyVis() {
-  const inp = document.getElementById('marz-api-key-input');
-  const btn = document.querySelector('#pg-settings .btn-edit');
-  if (inp.type === 'password') { inp.type = 'text'; if (btn) btn.textContent = '🙈'; }
-  else { inp.type = 'password'; if (btn) btn.textContent = '👁️'; }
-}
-
 async function saveMarzApiKey() {
   const val = document.getElementById('marz-api-key-input').value.trim();
   if (!val) { toast('Please enter a valid API key', '#f87171'); return; }
   
-  // Save the REAL API key to Firebase
   await db.ref('settings/marzApiKey').set(val);
-  
-  // Keep original in session for immediate use
   window.MARZ_API_KEY = val;
-  
-  // Show full API key in input (no masking)
   document.getElementById('marz-api-key-input').type = 'text';
   document.getElementById('marz-api-key-input').value = val;
-  
   toast('✅ MarzPay API key saved securely — Payments enabled!');
-}
-
-function loadMarzApiKey() {
-  db.ref('settings/marzApiKey').on('value', snap => {
-    const maskedKey = snap.val();
-    if (maskedKey) {
-      document.getElementById('marz-api-key-input').value = maskedKey;
-      document.getElementById('api-status-badge').innerHTML = '✅ API Key Set';
-      document.getElementById('api-status-badge').style.color = 'var(--success)';
-    } else {
-      document.getElementById('api-status-badge').innerHTML = '⚠️ Not Set';
-      document.getElementById('api-status-badge').style.color = 'var(--muted)';
-    }
-  });
 }
 
 async function saveUraTax() {
@@ -1707,7 +1859,6 @@ function showPanel() {
   startRealtimeListeners();
 }
 
-
 function maskPassword(password) {
   if (!password || password.length < 5) return 'xxx' + password.slice(-2);
   const masked = 'x'.repeat(password.length - 2) + password.slice(-2);
@@ -1763,7 +1914,6 @@ async function adminLogin() {
       return;
     }
     
-    // Unmask password from Firebase storage
     const storedPassword = admin.password;
     const unmaskedPassword = unmaskPassword(storedPassword, password);
     
@@ -1773,7 +1923,6 @@ async function adminLogin() {
       return;
     }
     
-    // Login successful
     localStorage.setItem(SESSION_KEY, 'true');
     localStorage.setItem('ADMIN_USERNAME', username);
     localStorage.setItem('ADMIN_POSITION', admin.position || 'Moderator');
@@ -1797,7 +1946,6 @@ async function adminRegister() {
   
   if (err) err.classList.remove('show');
   
-  // Validation
   if (!username || !phone || !pin || !password || !confirmPassword || !position) {
     if (err) { err.textContent = '❌ All fields are required'; err.classList.add('show'); }
     return;
@@ -1829,7 +1977,6 @@ async function adminRegister() {
   }
   
   try {
-    // Check max 4 admin accounts
     const snap = await db.ref('adminAccounts').get();
     const admins = snap.val() || {};
     const adminCount = Object.keys(admins).length;
@@ -1839,16 +1986,13 @@ async function adminRegister() {
       return;
     }
     
-    // Check if username already exists
     if (admins[safeKey(username)]) {
       if (err) { err.textContent = '❌ Username already exists'; err.classList.add('show'); }
       return;
     }
     
-    // Mask password for storage
     const maskedPassword = maskPassword(password);
     
-    // Save to Firebase
     await db.ref('adminAccounts/' + safeKey(username)).set({
       username: username,
       phone: phone,
@@ -1867,7 +2011,6 @@ async function adminRegister() {
     document.getElementById('reg-confirm-password').value = '';
     document.getElementById('reg-position').value = 'Moderator';
     
-    // Switch to login tab
     switchAuthTab('login');
   } catch (error) {
     console.error('Registration error:', error);
@@ -1888,6 +2031,8 @@ function adminLogout() {
   if (settingsUnsubscribe) settingsUnsubscribe();
   if (withdrawalsUnsubscribe) withdrawalsUnsubscribe();
   if (adminTxUnsubscribe) adminTxUnsubscribe();
+  if (levelsUnsubscribe) levelsUnsubscribe();
+  if (videosUnsubscribe) videosUnsubscribe();
   document.getElementById('admin-wrap').classList.remove('active');
   document.getElementById('auth-wrap').style.display = 'flex';
   document.getElementById('login-username').value = '';
@@ -1927,31 +2072,17 @@ function toggleRegConfirm() {
   else { inp.type = 'password'; btn.textContent = '👁️'; }
 }
 
-function toggleRegSecond() {
-  const inp = document.getElementById('reg-second-pw');
-  const btn = document.getElementById('reg-second-eye');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
-}
-
-function toggleRegSecondConfirm() {
-  const inp = document.getElementById('reg-second-confirm');
-  const btn = document.getElementById('reg-second-confirm-eye');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
-}
-
-
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-tube': 2, 'pg-transactions': 3, 'pg-withdrawals': 4, 'pg-debit': 5, 'pg-sog': 6, 'pg-videos': 7, 'pg-settings': 8, 'pg-admin-withdraw': 9 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-tube': 2, 'pg-transactions': 3, 'pg-withdrawals': 4, 'pg-debit': 5, 'pg-sog': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-settings': 9, 'pg-admin-withdraw': 10 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
   if (id === 'pg-debit') renderDebitHistory();
   if (id === 'pg-videos') renderAdminVideosTable();
+  if (id === 'pg-levels') renderLevelsAdminTable();
 }
 
 function showTerms() { 
@@ -1959,17 +2090,11 @@ function showTerms() {
     title: 'Terms of Service',
     html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
       <p><strong>1. Introduction</strong><br>Welcome to DiamondEarn. These Terms of Service govern your use of our investment platform.</p>
-      
       <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.</p>
-      
       <p><strong>3. Investment Risks</strong><br>All investments carry risk. DiamondEarn does not guarantee returns. Past performance is not indicative of future results.</p>
-      
       <p><strong>4. Prohibited Activities</strong><br>You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.</p>
-      
       <p><strong>5. Limitation of Liability</strong><br>DiamondEarn is provided "as is" without warranties. We are not liable for any indirect or consequential damages.</p>
-      
       <p><strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time. Your continued use constitutes acceptance of changes.</p>
-      
       <p><strong>7. Governing Law</strong><br>These terms are governed by the laws of Uganda and Kenya as applicable.</p>
     </div>`,
     icon: 'info',
@@ -1984,17 +2109,11 @@ function showPrivacy() {
     title: 'Privacy Policy',
     html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
       <p><strong>1. Information We Collect</strong><br>We collect personal information including name, phone number, email, and transaction history to provide our services.</p>
-      
       <p><strong>2. How We Use Information</strong><br>Your information is used to process transactions, prevent fraud, improve our services, and comply with legal obligations.</p>
-      
       <p><strong>3. Data Protection</strong><br>We implement industry-standard security measures to protect your data from unauthorized access.</p>
-      
       <p><strong>4. Third-Party Sharing</strong><br>We do not sell your personal information. We may share data with payment processors and legal authorities when required.</p>
-      
       <p><strong>5. Cookies & Tracking</strong><br>We use cookies and similar technologies to enhance user experience and analyze platform usage.</p>
-      
       <p><strong>6. Your Rights</strong><br>You have the right to access, modify, or delete your personal information at any time.</p>
-      
       <p><strong>7. Contact Us</strong><br>For privacy concerns, contact our support team via the support channels.</p>
     </div>`,
     icon: 'info',
