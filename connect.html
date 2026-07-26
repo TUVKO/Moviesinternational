@@ -291,6 +291,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       <div class="nav-item" onclick="showPage('pg-withdrawals')"><span class="nav-icon">💸</span><span>Withdrawals</span><span class="nav-badge" id="withdrawals-nav-badge">0</span></div>
       <div class="nav-item" onclick="showPage('pg-debit')"><span class="nav-icon">💳</span><span>Debit User</span></div>
       <div class="nav-item" onclick="showPage('pg-sog')"><span class="nav-icon">🗑️</span><span>SOG</span></div>
+      <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
       <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
       <div class="nav-item" onclick="showPage('pg-admin-withdraw')"><span class="nav-icon">💵</span><span>Admin Withdraw</span></div>
     </div>
@@ -441,6 +442,43 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         <button class="btn btn-reject" style="background:var(--warn);" onclick="obliterateUserData()">🗑️ OBLITERATE ALL FINANCIAL DATA (Make Account New)</button>
       </div>
       <div id="sog-not-found" style="display:none;color:var(--muted);text-align:center;padding:40px 20px;">No user found. Try again.</div>
+    </div>
+
+    <!-- VIDEOS (TIERS) -->
+    <div class="page" id="pg-videos">
+      <div class="page-title">🎬 Videos</div>
+      <div class="page-sub">Add YouTube videos that appear on the user TIERS page</div>
+      <div class="table-wrap" style="padding:20px;margin-bottom:24px;">
+        <div class="table-title" style="margin-bottom:14px;">Add New Video</div>
+        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
+          <div>
+            <label class="f-label">Movie / Video Title</label>
+            <input type="text" class="f-input" id="video-title-input" placeholder="e.g. Avatar 3 — Official Trailer" style="width:100%;padding:11px 14px;">
+          </div>
+          <div>
+            <label class="f-label">YouTube Link or Video ID</label>
+            <input type="text" class="f-input" id="video-url-input" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;padding:11px 14px;">
+          </div>
+          <div>
+            <label class="f-label">Reward Salary (UGX)</label>
+            <input type="number" class="f-input" id="video-reward-input" placeholder="e.g. 15" min="1" style="width:100%;padding:11px 14px;">
+          </div>
+          <div id="video-add-err" style="display:none;color:var(--warn);font-size:12.5px;"></div>
+          <button class="btn btn-save" onclick="adminSaveVideo()" style="align-self:flex-start;">💾 Save Video</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">Video Library</div>
+          <span id="video-count" style="font-size:12px;color:var(--muted);">0 videos</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Thumbnail</th><th>Title</th><th>YouTube ID</th><th>Reward</th><th>Added</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="video-table-body"><tr class="empty-row"><td colspan="6">No videos yet</td></tr></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- SETTINGS -->
@@ -672,8 +710,94 @@ function toast(msg, color) { const t = document.getElementById('toast'); t.textC
 function confirmAction(title, text) { return Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#22c55e', confirmButtonText: 'Yes, proceed!' }).then(result => result.isConfirmed); }
 function setErr(id, show, msg) { const el = document.getElementById(id); if (!el) return; if (show) { el.classList.add('show'); if (msg) el.textContent = msg; } else { el.classList.remove('show'); } }
 function clearErrors(...ids) { ids.forEach(id => setErr(id, false)); }
+function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ============================================================
+// VIDEOS (TIERS page management)
+// ============================================================
+let allVideos = {};
+let videosUnsubscribe = null;
+
+function extractYouTubeId(input) {
+  const s = (input || '').trim();
+  if (!s) return null;
+  // Already a bare 11-char ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  ];
+  for (const p of patterns) {
+    const m = s.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function startVideosListener() {
+  if (videosUnsubscribe) videosUnsubscribe();
+  videosUnsubscribe = db.ref('videos').on('value', (snap) => {
+    allVideos = snap.val() || {};
+    renderAdminVideosTable();
+  });
+}
+
+async function adminSaveVideo() {
+  clearErrors('video-add-err');
+  const title = document.getElementById('video-title-input').value.trim();
+  const urlInput = document.getElementById('video-url-input').value.trim();
+  const reward = Number(document.getElementById('video-reward-input').value);
+  const youtubeId = extractYouTubeId(urlInput);
+
+  if (!title) { setErr('video-add-err', true, 'Please enter a video title.'); return; }
+  if (!youtubeId) { setErr('video-add-err', true, 'Could not read a YouTube video ID from that link.'); return; }
+  if (!reward || reward <= 0) { setErr('video-add-err', true, 'Please enter a valid reward amount.'); return; }
+
+  const videoKey = 'vid_' + Date.now();
+  try {
+    await db.ref('videos/' + videoKey).set({
+      title, youtubeId, reward, addedDate: dateStr()
+    });
+    document.getElementById('video-title-input').value = '';
+    document.getElementById('video-url-input').value = '';
+    document.getElementById('video-reward-input').value = '';
+    toast('✅ Video saved — now live on TIERS page', 'var(--success, #22c55e)');
+  } catch (e) {
+    setErr('video-add-err', true, 'Failed to save video. Try again.');
+  }
+}
+
+async function adminDeleteVideo(key) {
+  const ok = await confirmAction('Delete this video?', 'It will be removed from the user TIERS page immediately.');
+  if (!ok) return;
+  await db.ref('videos/' + key).remove();
+  toast('🗑️ Video deleted');
+}
+
+function renderAdminVideosTable() {
+  const body = document.getElementById('video-table-body');
+  const countEl = document.getElementById('video-count');
+  if (!body) return;
+  const ids = Object.keys(allVideos).sort((a, b) => b.localeCompare(a));
+  if (countEl) countEl.textContent = ids.length + (ids.length === 1 ? ' video' : ' videos');
+  if (!ids.length) {
+    body.innerHTML = '<tr class="empty-row"><td colspan="6">No videos yet</td></tr>';
+    return;
+  }
+  body.innerHTML = ids.map(key => {
+    const v = allVideos[key];
+    return `<tr>
+      <td><img src="https://img.youtube.com/vi/${v.youtubeId}/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;" alt=""></td>
+      <td>${escapeHtml(v.title)}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">${escapeHtml(v.youtubeId)}</td>
+      <td>${fmt(v.reward)}</td>
+      <td style="font-size:12px;color:var(--muted);">${escapeHtml(v.addedDate || '—')}</td>
+      <td><button class="btn btn-reject" onclick="adminDeleteVideo('${key}')">🗑️ Delete</button></td>
+    </tr>`;
+  }).join('');
+}
 
 function startRealtimeListeners() {
+  startVideosListener();
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
     allUsers = snap.val() || {};
@@ -1822,11 +1946,12 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-tube': 2, 'pg-transactions': 3, 'pg-withdrawals': 4, 'pg-debit': 5, 'pg-sog': 6, 'pg-settings': 7, 'pg-admin-withdraw': 8 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-tube': 2, 'pg-transactions': 3, 'pg-withdrawals': 4, 'pg-debit': 5, 'pg-sog': 6, 'pg-videos': 7, 'pg-settings': 8, 'pg-admin-withdraw': 9 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
   if (id === 'pg-debit') renderDebitHistory();
+  if (id === 'pg-videos') renderAdminVideosTable();
 }
 
 function showTerms() { 

@@ -108,6 +108,35 @@ input[type="password"]{padding-right:46px;}
 .balance-big{text-align:center;padding:8px 0 16px;}
 .balance-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;}
 .balance-amount{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--accent);}
+
+/* Video grid (TIERS page) */
+.video-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.video-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;}
+.video-card:active{transform:scale(.97);}
+.video-thumb-wrap{position:relative;aspect-ratio:16/9;background:#000;}
+.video-thumb-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.video-play-badge{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.2);}
+.video-reward-badge{position:absolute;bottom:6px;right:6px;background:var(--accent);color:#14110F;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;padding:3px 8px;border-radius:20px;}
+.video-title{padding:8px 10px 10px;font-size:12.5px;font-weight:600;color:var(--text);line-height:1.3;}
+.video-empty{grid-column:1/-1;text-align:center;padding:40px 10px;color:var(--muted);font-size:13px;}
+
+/* Video player overlay */
+.video-overlay{position:fixed;inset:0;background:#000;z-index:999;display:none;flex-direction:column;}
+.video-overlay.active{display:flex;}
+.video-overlay-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;color:#F6F1E7;font-family:'Fraunces',serif;font-weight:700;font-size:15px;background:#14110F;}
+.video-overlay-close{cursor:pointer;font-size:18px;padding:4px 8px;}
+.video-player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;}
+#video-player-embed, #video-player-embed iframe{width:100%;height:100%;border:0;display:block;}
+.video-countdown-mask{position:absolute;inset:0;background:rgba(20,17,15,.6);display:flex;align-items:center;justify-content:center;}
+.reel-ring{position:relative;width:88px;height:88px;}
+.reel-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.reel-track{fill:none;stroke:rgba(184,175,158,.3);stroke-width:6;}
+.reel-progress{fill:none;stroke:#B8AF9E;stroke-width:6;stroke-linecap:round;stroke-dasharray:282.6;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;}
+.reel-number{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#B8AF9E;}
+.video-claim-wrap{padding:24px;display:flex;justify-content:center;background:#14110F;flex:1;align-items:flex-start;}
+.claim-salary-btn{background:#5CA378;color:#fff;border:none;padding:16px 28px;border-radius:14px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 6px 20px rgba(92,163,120,.4);animation:claimPopIn .3s ease;}
+.claim-salary-btn:disabled{opacity:.6;}
+@keyframes claimPopIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;}
 .stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
@@ -454,7 +483,35 @@ input[type="password"]{padding-right:46px;}
 
   <!-- Tiers (blank) -->
   <div class="dash-section" id="sec-team">
-    <div class="inner-header"><span style="font-size:22px">👥</span><div><div class="inner-title">TIERS</div><div class="inner-sub">Coming soon</div></div></div>
+    <div class="inner-header"><span style="font-size:22px">🎬</span><div><div class="inner-title">TIERS</div><div class="inner-sub">Watch a video, earn your salary</div></div></div>
+    <div class="section">
+      <div id="video-grid" class="video-grid">
+        <div class="video-empty">No videos yet. Check back soon.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Player Overlay -->
+  <div class="video-overlay" id="video-overlay">
+    <div class="video-overlay-header">
+      <span id="video-overlay-title">Movie Title</span>
+      <span class="video-overlay-close" onclick="closeVideoPlayer()">✕</span>
+    </div>
+    <div class="video-player-wrap">
+      <div id="video-player-embed"></div>
+      <div class="video-countdown-mask" id="video-countdown-mask">
+        <div class="reel-ring">
+          <svg viewBox="0 0 100 100">
+            <circle class="reel-track" cx="50" cy="50" r="45"/>
+            <circle class="reel-progress" id="reel-progress" cx="50" cy="50" r="45"/>
+          </svg>
+          <div class="reel-number" id="reel-number">5</div>
+        </div>
+      </div>
+    </div>
+    <div class="video-claim-wrap" id="video-claim-wrap" style="display:none;">
+      <button class="claim-salary-btn" id="claim-salary-btn" onclick="claimSalary()">💰 Get salary <span id="claim-amount-label">UGX 0</span></button>
+    </div>
   </div>
 
   <!-- Returns Plan -->
@@ -801,7 +858,7 @@ async function initApp() {
         }
         
         // Now show UI with updated balance
-        startUserListener(savedUser);
+        startUserListener(savedUser); startVideoListener();
         updateBalanceUI();
         renderHistory();
         updateProfileUI();
@@ -935,6 +992,120 @@ function applyTheme(theme) {
 function initTheme() {
   const savedTheme = localStorage.getItem('pp_theme') || 'dark';
   applyTheme(savedTheme);
+}
+
+// ============================================================
+// TIERS — Watch & Earn videos
+// ============================================================
+let videosData = {};
+let currentPlayingVideo = null;
+let countdownTimer = null;
+let countdownValue = 5;
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function startVideoListener() {
+  db.ref('videos').on('value', (snap) => {
+    videosData = snap.val() || {};
+    renderVideoGrid();
+  });
+}
+
+function renderVideoGrid() {
+  const grid = document.getElementById('video-grid');
+  if (!grid) return;
+  const ids = Object.keys(videosData);
+  if (!ids.length) {
+    grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
+    return;
+  }
+  grid.innerHTML = ids.map(id => {
+    const v = videosData[id];
+    return `<div class="video-card" onclick="openVideoPlayer('${id}')">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
+        <div class="video-play-badge">
+          <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
+        </div>
+        <div class="video-reward-badge">${fmt(v.reward)}</div>
+      </div>
+      <div class="video-title">${escapeHtml(v.title)}</div>
+    </div>`;
+  }).join('');
+}
+
+function openVideoPlayer(id) {
+  const v = videosData[id];
+  if (!v) return;
+  currentPlayingVideo = { id, title: v.title, youtubeId: v.youtubeId, reward: Number(v.reward || 0) };
+  document.getElementById('video-overlay-title').textContent = v.title;
+  document.getElementById('video-player-embed').innerHTML =
+    `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  document.getElementById('video-countdown-mask').style.display = 'flex';
+  document.getElementById('video-claim-wrap').style.display = 'none';
+  const claimBtn = document.getElementById('claim-salary-btn');
+  claimBtn.disabled = false;
+  document.getElementById('claim-amount-label').textContent = fmt(currentPlayingVideo.reward);
+  document.getElementById('video-overlay').classList.add('active');
+  startCountdown();
+}
+
+function startCountdown() {
+  countdownValue = 5;
+  const circumference = 282.6;
+  const numberEl = document.getElementById('reel-number');
+  const progressEl = document.getElementById('reel-progress');
+  numberEl.textContent = countdownValue;
+  progressEl.style.strokeDashoffset = 0;
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    countdownValue--;
+    if (countdownValue <= 0) {
+      clearInterval(countdownTimer);
+      document.getElementById('video-countdown-mask').style.display = 'none';
+      document.getElementById('video-claim-wrap').style.display = 'flex';
+      return;
+    }
+    numberEl.textContent = countdownValue;
+    progressEl.style.strokeDashoffset = circumference * (countdownValue / 5);
+  }, 1000);
+}
+
+function closeVideoPlayer() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  document.getElementById('video-overlay').classList.remove('active');
+  document.getElementById('video-player-embed').innerHTML = '';
+  currentPlayingVideo = null;
+}
+
+async function claimSalary() {
+  if (!currentPlayingVideo) return;
+  const btn = document.getElementById('claim-salary-btn');
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
+  try {
+    const userRef = db.ref('users/' + safeKey(currentUsername));
+    const snap = await userRef.get();
+    const user = snap.val() || {};
+    const newBalance = (user.balance || 0) + currentPlayingVideo.reward;
+    const txKey = 'tx_salary_' + Date.now();
+    await userRef.update({
+      balance: newBalance,
+      [`transactions/${txKey}`]: {
+        type: 'Salary',
+        amount: currentPlayingVideo.reward,
+        note: 'Watched: ' + currentPlayingVideo.title,
+        date: dateStr(),
+        status: 'completed'
+      }
+    });
+    closeVideoPlayer();
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = '💰 Get salary ' + fmt(currentPlayingVideo.reward);
+  }
 }
 
 function showTerms() { 
@@ -1538,7 +1709,7 @@ async function doLogin() {
     }
     
     // Now show UI with updated balance
-    startUserListener(username);
+    startUserListener(username); startVideoListener();
     updateBalanceUI();
     renderHistory();
     updateProfileUI();
@@ -1584,7 +1755,7 @@ async function doRegister() {
   currentUser = newUser;
   currentUsername = username;
   sessionStorage.setItem('pp_current_user', username);
-  startUserListener(username);
+  startUserListener(username); startVideoListener();
   updateBalanceUI();
   renderHistory();
   updateProfileUI();
