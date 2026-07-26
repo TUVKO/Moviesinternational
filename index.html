@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta property="og:title" content="DiamondEarn — Mine Your Wealth, One Day at a Time">
+<meta property="og:description" content="Just like mining diamonds — rare, valuable, and worth the investment. With DiamondEarn, you mine daily profits effortlessly using AI-powered trading.">
+<meta property="og:image" content="https://profit-pulse.site/logo.png">
+<meta property="og:url" content="https://profit-pulse.site">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://profit-pulse.site/logo.png">
+<title>DiamondEarn — Mine Your Wealth, One Day at a Time</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14110F;
+  --surface:#211D18;
+  --surface2:#2A2520;
+  --surface3:#332C24;
+  --border:#3D362C;
+  --accent:#F2B84B;
+  --accent2:#D99A3D;
+  --accent3:#F2B84B;
+  --warn:#E1584B;
+  --gold:#F2B84B;
+  --text:#F6F1E7;
+  --muted:#B8AF9E;
+  --success:#5CA378;
+  --danger:#E1584B;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:500px;margin:0 auto;position:relative;overflow-x:hidden;}
+
+/* Avatar Styles */
+.avatar{
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color:#fff;
+  text-transform:uppercase;
+  flex-shrink:0;
+  border:2px solid var(--accent);
+}
+.avatar-sm{width:38px;height:38px;font-size:14px;}
+.avatar-lg{width:72px;height:72px;font-size:28px;margin:0 auto 14px;}
+.avatar-md{width:40px;height:40px;font-size:16px;}
+
+/* Auth Pages */
+.auth-page{display:none;flex-direction:column;min-height:100vh;padding:40px 24px;}
+.auth-page.active{display:flex;}
+.auth-hero{text-align:center;margin-bottom:28px;}
+.auth-logo{width:72px;height:72px;background:var(--accent);border-radius:22px;display:grid;place-items:center;font-size:34px;margin:0 auto 14px;color:#fff;}
+.auth-brand{font-family:'Fraunces',serif;font-size:30px;font-weight:900;color:var(--accent);margin-bottom:4px;}
+.auth-tagline{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:28px 22px;}
+.auth-title{font-family:'Fraunces',serif;font-size:21px;font-weight:800;margin-bottom:4px;color:var(--accent);}
+.auth-subtitle{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.field-group{margin-bottom:14px;}
+.field-label{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.field-wrap{position:relative;display:flex;align-items:center;}
+.field-icon{position:absolute;left:14px;font-size:16px;pointer-events:none;z-index:2;}
+input,select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 42px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);outline:none;}
+input:focus,select:focus{border-color:var(--accent);}
+select{cursor:pointer;}select option{background:var(--surface2);}
+.eye-btn{position:absolute;right:14px;background:none;border:none;font-size:18px;cursor:pointer;padding:4px;color:var(--muted);}
+.eye-btn:hover{color:var(--accent);}
+input[type="password"]{padding-right:46px;}
+.field-hint{font-size:10px;color:var(--muted);margin-top:5px;padding-left:4px;}
+.field-error{font-size:10px;color:var(--warn);margin-top:5px;padding-left:4px;display:none;}
+.field-error.show{display:block;}
+.pw-strength{display:flex;gap:4px;margin-top:8px;}
+.pw-bar{flex:1;height:3px;border-radius:3px;background:var(--surface2);}
+.pw-bar.weak{background:var(--warn)}.pw-bar.medium{background:var(--gold)}.pw-bar.strong{background:var(--accent3)}
+.submit-btn{width:100%;background:var(--accent);border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:6px;}
+.submit-btn:active{transform:scale(.98);}
+.auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted);}
+.auth-switch a{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;}
+
+/* Phone Prefix */
+.phone-prefix-wrap{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.phone-prefix-wrap:focus-within{border-color:var(--accent);}
+.phone-prefix-badge{background:var(--surface3);border-right:1px solid var(--border);padding:13px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:700;white-space:nowrap;flex-shrink:0;}
+.phone-prefix-wrap input{background:transparent;border:none;border-radius:0;padding:13px 14px;flex:1;}
+.phone-prefix-wrap input:focus{border:none;}
+
+/* Dashboard */
+.dashboard-page{display:none;min-height:100vh;padding-bottom:90px;position:relative;z-index:1;}
+.dashboard-page.active{display:block;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 12px;background:var(--bg);position:sticky;top:0;z-index:100;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.brand{display:flex;align-items:center;gap:8px;}
+.brand-icon{width:34px;height:34px;background:var(--accent);border-radius:10px;display:grid;place-items:center;font-size:16px;color:#fff;}
+.brand-name{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:var(--accent);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.theme-toggle{background:none;border:none;font-size:18px;cursor:pointer;padding:6px;color:var(--accent);transition:.3s;}
+.theme-toggle:active{transform:scale(.95);}
+.username-top{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--accent3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Sections */
+.section{padding:0 16px;margin-bottom:14px;}
+.dash-section{display:none;}
+.dash-section.active{display:block;}
+.stats-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 20px;}
+.balance-big{text-align:center;padding:8px 0 16px;}
+.balance-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;}
+.balance-amount{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--accent);}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;}
+.stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.stat-value.dep{color:var(--gold)}.stat-value.earn{color:var(--accent3)}.stat-value.with{color:var(--warn)}.stat-value.total{color:var(--accent)}
+.action-grid{display:flex;flex-direction:column;gap:12px;padding-left:16px;}
+.action-btn{border:none;border-radius:14px;padding:14px 18px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;width:fit-content;}
+.action-btn:active{transform:scale(.96);}
+.btn-icon{font-size:20px;}
+.btn-deposit{background:var(--accent3);color:#fff;}
+.btn-withdraw{background:var(--gold);color:#fff;}
+.btn-transactions{background:var(--accent2);color:#fff;}
+
+/* Investment Active Card */
+.investment-card{background:linear-gradient(135deg, #1e3a5f 0%, #0f2b45 100%);border:1px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:16px;}
+.investment-title{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.investment-amount{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#fff;margin-bottom:8px;}
+.investment-progress{background:var(--surface2);border-radius:10px;height:8px;margin:12px 0;overflow:hidden;}
+.investment-progress-fill{background:var(--accent);height:100%;border-radius:10px;transition:width 0.3s;}
+.investment-days{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;}
+.investment-status{font-size:10px;color:var(--accent3);margin-top:8px;}
+
+/* Table (Scrollable) */
+.plan-footer{padding:12px;background:var(--surface2);}
+.start-invest-btn{width:100%;background:var(--accent);border:none;border-radius:12px;padding:13px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;}
+.start-invest-btn:active{transform:scale(.98);}
+
+/* Inner Pages */
+.inner-header{display:flex;align-items:center;gap:12px;padding:16px 16px 8px;}
+.inner-title{font-family:'Fraunces',serif;font-size:18px;font-weight:800;color:var(--accent);}
+.inner-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty-icon{font-size:48px;margin-bottom:14px;}
+.empty-title{font-size:16px;font-weight:700;margin-bottom:6px;color:var(--text);}
+.empty-text{font-size:13px;}
+.profile-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px 20px;text-align:center;}
+.profile-name{font-family:'Fraunces',serif;font-size:20px;font-weight:800;margin-bottom:4px;}
+.profile-country{font-size:13px;color:var(--muted);margin-bottom:16px;}
+.profile-detail{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:12px;padding:12px 16px;margin-bottom:10px;font-size:13px;}
+.profile-detail-label{color:var(--muted);}
+.profile-detail-val{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:12px;}
+.profile-avatar-container{display:flex;justify-content:center;margin-bottom:14px;}
+
+/* Profile Styles */
+.profile-header-section{background:linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);border-radius:20px;padding:28px 20px;text-align:center;margin-bottom:16px;color:#fff;}
+.profile-avatar-lg{width:90px;height:90px;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 16px;font-weight:700;}
+.profile-name-header{font-family:'Fraunces',serif;font-size:26px;font-weight:900;margin-bottom:4px;}
+.profile-country-header{font-size:12px;opacity:.9;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:12px;}
+.profile-status-badge{display:inline-block;background:rgba(74,222,128,.3);border:1px solid rgba(74,222,128,.6);color:#fff;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.profile-info-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;}
+.profile-section-title{font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding:14px 16px;background:var(--surface2);border-bottom:1px solid var(--border);margin:0;}
+.profile-info-item{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
+.profile-info-item:last-child{border-bottom:none;}
+.profile-info-label{font-size:12px;color:var(--muted);font-weight:600;}
+.profile-info-value{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.profile-stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px;}
+.profile-stat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;}
+.profile-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:700;}
+.profile-stat-value{font-size:18px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--accent);}
+.logout-dash-new{width:100%;background:var(--warn);border:none;border-radius:14px;color:#fff;padding:15px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;}
+.logout-dash-new:active{transform:scale(.98);}
+.profile-simple-info{display:flex;flex-direction:column;gap:16px;margin-bottom:24px;}
+.profile-simple-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;align-items:center;justify-content:space-between;}
+.profile-simple-label{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:0.5px;}
+.profile-simple-value{font-size:14px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--accent);}
+.logout-btn-new{width:100%;background:#26a65b;border:none;border-radius:14px;color:#fff;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;}
+.logout-btn-new:active{transform:scale(.98);}
+
+/* Bottom Nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 0 10px;z-index:200;}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 0;}
+.nav-icon{font-size:18px;display:flex;color:var(--muted);}
+.nav-item.active .nav-icon{color:var(--accent);}
+.nav-label{font-size:7px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);}
+.nav-item.active .nav-label{color:var(--accent);}
+
+/* Footer */
+.app-footer{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--surface2);border-top:1px solid var(--border);padding:12px 16px;z-index:199;}
+.footer-content{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+.footer-copyright{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.5px;}
+.footer-links{display:flex;align-items:center;gap:8px;justify-content:center;}
+.footer-link{background:none;border:none;color:var(--accent);font-size:10px;font-weight:700;cursor:pointer;padding:0;text-decoration:none;}
+.footer-link:active{transform:scale(.95);}
+.footer-divider{color:var(--border);font-size:8px;}
+
+/* Toast - kept but never shown to users */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--accent3);color:#fff;font-size:13px;font-weight:700;padding:10px 22px;border-radius:100px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* Forms */
+.action-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 18px;}
+.green-btn{width:100%;background:#2d5016;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
+.green-btn:active{transform:scale(.98);}
+.green-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.red-btn{width:100%;background:#b85c20;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
+.red-btn:active{transform:scale(.98);}
+.red-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.amber-btn{width:100%;background:#06b6d4;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;}
+.amber-btn:active{transform:scale(.98);}
+.amber-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* Section-specific backgrounds */
+#sec-deposit .action-card{background:linear-gradient(135deg, rgba(16,185,129,.1) 0%, rgba(16,185,129,.05) 100%);border:1px solid rgba(16,185,129,.3);}
+#sec-withdraw .action-card{background:linear-gradient(135deg, rgba(255,107,91,.1) 0%, rgba(255,107,91,.05) 100%);border:1px solid rgba(255,107,91,.3);}
+
+.popup-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:#1e293b;color:#fff;font-size:13px;font-weight:600;padding:14px 22px;border-radius:16px;opacity:0;transition:.35s;z-index:9998;pointer-events:none;text-align:center;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.25);line-height:1.5;}
+.popup-banner.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.readonly-field{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 42px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);}
+.charge-note{background:var(--surface2);border:1px solid var(--warn);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--warn);margin-bottom:12px;line-height:1.6;}
+.deposit-note{background:var(--surface2);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--accent);margin-bottom:12px;line-height:1.6;}
+.locked-banner{background:var(--surface2);border:1px solid var(--warn);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--warn);text-align:center;margin-bottom:12px;font-weight:700;}
+
+/* Modal - kept but never shown to users */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:800;display:none;align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:30px 24px;text-align:center;max-width:340px;width:100%;max-height:80vh;display:flex;flex-direction:column;}
+.modal-icon{font-size:48px;margin-bottom:14px;flex-shrink:0;}
+.modal-title{font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:10px;color:var(--accent);flex-shrink:0;}
+.modal-msg{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:22px;overflow-y:auto;max-height:50vh;text-align:left;flex:1;}
+.modal-close{background:var(--accent);border:none;border-radius:12px;padding:13px 32px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;}
+.modal-close:active{transform:scale(.97);}
+
+/* Transaction List */
+.tx-table-wrapper{width:100%;overflow-x:auto;border-radius:14px;border:1px solid var(--border);background:var(--surface);}
+.tx-table{width:100%;border-collapse:collapse;font-size:12px;}
+.tx-table thead{background:var(--surface3);border-bottom:1px solid var(--border);}
+.tx-table th{padding:12px 10px;text-align:left;font-weight:700;font-size:11px;letter-spacing:0.5px;color:var(--accent);text-transform:uppercase;}
+.tx-table tbody tr{border-bottom:1px solid var(--border);}
+.tx-table tbody tr:last-child{border-bottom:none;}
+.tx-table tbody tr:hover{background:var(--surface2);}
+.tx-table td{padding:11px 10px;vertical-align:middle;}
+.tx-table .mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+.tx-table .amount.positive{color:var(--accent3);font-weight:700;}
+.tx-table .amount.negative{color:var(--warn);font-weight:700;}
+.tx-table .amount.gold{color:var(--gold);font-weight:700;}
+.tx-table .status{font-size:11px;font-weight:600;white-space:nowrap;}
+/* New Transaction Cards Grid */
+.tx-filter-pills{display:flex;gap:8px;overflow-x:auto;padding:0 0 16px;scrollbar-width:none;margin-bottom:12px;}
+.tx-filter-pills::-webkit-scrollbar{display:none;}
+.tx-pill{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all 0.3s;}
+.tx-pill:active{transform:scale(0.98);}
+.tx-pill.active{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+.tx-search-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);outline:none;margin-bottom:12px;}
+.tx-search-input:focus{border-color:var(--accent);}
+
+.tx-cards-grid{display:grid;grid-template-columns:1fr;gap:12px;}
+@media (min-width:480px){.tx-cards-grid{grid-template-columns:repeat(2,1fr);}}
+
+.tx-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.tx-card:active{transform:scale(0.98);}
+.tx-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent);}
+
+.tx-card.tx-deposit::before{background:linear-gradient(90deg, #10b981, #059669);}
+.tx-card.tx-withdrawal::before{background:linear-gradient(90deg, #ef4444, #dc2626);}
+.tx-card.tx-profit::before{background:linear-gradient(90deg, #22c55e, #16a34a);}
+.tx-card.tx-bonus::before{background:linear-gradient(90deg, #f59e0b, #d97706);}
+
+.tx-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.tx-card-icon{font-size:28px;width:50px;height:50px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border-radius:12px;}
+.tx-card-type{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.tx-card-date{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+
+.tx-card-amount{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--text);margin-bottom:10px;}
+.tx-card-amount.positive{color:#10b981;}
+.tx-card-amount.negative{color:#ef4444;}
+
+.tx-card-status{display:inline-block;font-size:10px;font-weight:800;padding:4px 10px;border-radius:8px;text-transform:uppercase;letter-spacing:0.5px;}
+.tx-status-completed{background:rgba(16, 185, 129, 0.2);color:#10b981;border:1px solid #10b981;}
+.tx-status-pending{background:rgba(245, 158, 11, 0.2);color:#f59e0b;border:1px solid #f59e0b;}
+.tx-status-failed{background:rgba(239, 68, 68, 0.2);color:#ef4444;border:1px solid #ef4444;}
+
+.tx-empty-state{text-align:center;padding:60px 20px;}
+.tx-empty-icon{font-size:48px;margin-bottom:12px;}
+.tx-empty-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.tx-empty-text{font-size:12px;color:var(--muted);}
+
+.tx-filter-tabs{display:none;}
+.tx-tab{display:none;}
+
+/* WA Button */
+
+.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;}
+.loading-spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:14px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:10px;">DiamondEarn</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading...</div>
+</div>
+
+<!-- LOGIN -->
+<div class="auth-page" id="login-page">
+  <div class="auth-hero">
+    <div class="auth-logo">📈</div>
+    <div class="auth-brand">DiamondEarn</div>
+    <div class="auth-tagline">Mine Your Wealth, One Day at a Time</div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-title">Welcome Back</div>
+    <div class="auth-subtitle">Sign in to your investment account</div>
+    <div class="field-group">
+      <label class="field-label">Username</label>
+      <div class="field-wrap"><span class="field-icon">👤</span><input type="text" id="login-username" placeholder="Enter your username"></div>
+      <div class="field-error" id="login-user-err">Please enter your username</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Password</label>
+      <div class="field-wrap"><span class="field-icon">🔒</span><input type="password" id="login-password" placeholder="Enter password"><button class="eye-btn" onclick="toggleEye('login-password',this)">👁️</button></div>
+      <div class="field-error" id="login-pw-err">Please enter your password</div>
+    </div>
+    <div class="field-error" id="login-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
+    <button class="submit-btn" onclick="doLogin()">Sign In →</button>
+    <div class="auth-switch">Don't have an account? <a onclick="showAuth('register-page')">Register Now</a></div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="auth-page" id="register-page">
+  <div class="auth-hero">
+    <div class="auth-logo">📈</div>
+    <div class="auth-brand">DiamondEarn</div>
+    <div class="auth-tagline">Mine Your Wealth, One Day at a Time</div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-title">Create Account</div>
+    <div class="auth-subtitle">Get UGX 4,000 registration bonus 🎁</div>
+    <div class="field-group">
+      <label class="field-label">Username</label>
+      <div class="field-wrap"><span class="field-icon">👤</span><input type="text" id="reg-username" placeholder="Choose a username"></div>
+      <div class="field-error" id="reg-user-err">Username is required</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Country</label>
+      <div class="field-wrap"><span class="field-icon">🌍</span>
+        <select id="reg-country" onchange="updateRegPrefix()">
+          <option value="">Select your country</option>
+          <option value="UG">🇺🇬 Uganda</option>
+          <option value="KE">🇰🇪 Kenya</option>
+        </select>
+      </div>
+      <div class="field-error" id="reg-country-err">Please select your country</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Phone Number</label>
+      <div class="phone-prefix-wrap" id="reg-phone-wrap">
+        <div class="phone-prefix-badge" id="reg-prefix">+256</div>
+        <input type="tel" id="reg-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="regPhoneInput(this)">
+      </div>
+      <div class="field-hint">9 digits starting with 7</div>
+      <div class="field-error" id="reg-phone-err">Enter 9 digits starting with 7</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Password</label>
+      <div class="field-wrap"><span class="field-icon">🔒</span><input type="password" id="reg-password" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"><button class="eye-btn" onclick="toggleEye('reg-password',this)">👁️</button></div>
+      <div class="pw-strength"><div class="pw-bar" id="pw-b1"></div><div class="pw-bar" id="pw-b2"></div><div class="pw-bar" id="pw-b3"></div></div>
+      <div class="field-error" id="reg-pw-err">Password must be at least 6 characters</div>
+    </div>
+    <div class="field-group">
+      <label class="field-label">Confirm Password</label>
+      <div class="field-wrap"><span class="field-icon">🔐</span><input type="password" id="reg-confirm" placeholder="Repeat password"><button class="eye-btn" onclick="toggleEye('reg-confirm',this)">👁️</button></div>
+      <div class="field-error" id="reg-confirm-err">Passwords do not match</div>
+    </div>
+    <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
+    <button class="submit-btn" onclick="doRegister()">Create Account & Earn 🎁</button>
+    <div class="auth-switch">Already have an account? <a onclick="showAuth('login-page')">Sign In</a></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard-page" id="dashboard-page">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="brand"><div class="brand-icon">📈</div><div class="brand-name">DiamondEarn</div></div>
+    </div>
+    <div class="topbar-right">
+    </div>
+  </div>
+
+  <!-- HOME / DASHBOARD -->
+  <div class="dash-section active" id="sec-home">
+    <div class="section">
+      <div class="stats-card">
+        <div class="stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="stat-box" style="padding:14px 8px;text-align:center;">
+            <div class="stat-label" style="font-size:8px;margin-bottom:6px;">STAKE</div>
+            <div class="stat-value" style="font-size:14px;font-weight:800;color:var(--accent);" id="stat-stake">UGX 0</div>
+          </div>
+          <div class="stat-box" style="padding:14px 8px;text-align:center;">
+            <div class="stat-label" style="font-size:8px;margin-bottom:6px;">BALANCE</div>
+            <div class="stat-value" style="font-size:14px;font-weight:800;color:var(--success);" id="stat-balance">UGX 0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Investment Display -->
+    <div class="section" id="active-investment-section" style="display:none;">
+      <div class="investment-card">
+        <div class="investment-title">📈 ACTIVE INVESTMENT</div>
+        <div class="investment-amount" id="active-stake-amount">UGX 0</div>
+        <div class="investment-progress"><div class="investment-progress-fill" id="investment-progress-fill" style="width:0%"></div></div>
+        <div class="investment-days"><span id="days-completed">0</span><span>Day 56</span></div>
+        <div class="investment-status" id="investment-status">Generating 10% daily profit</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="action-grid" style="display:flex;flex-direction:column;gap:12px;margin:16px 0;align-items:flex-start;">
+        <button class="action-btn" style="background:#22c55e;border:none;color:white;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;" onclick="switchTab('deposit')"><span class="btn-icon">💳</span> Invest</button>
+        <button class="action-btn" style="background:#ef4444;border:none;color:white;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;" onclick="switchTab('withdraw')"><span class="btn-icon">💸</span> Withdraw</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- History - New Card Design -->
+  <div class="dash-section" id="sec-history">
+    <div class="inner-header"><span style="font-size:22px">📋</span><div><div class="inner-title">Records</div><div class="inner-sub">All your transactions</div></div></div>
+    
+    <!-- Search and Filter -->
+    <div style="margin-bottom:16px;">
+      <input type="text" id="tx-search-box" placeholder="🔍 Search transactions..." class="tx-search-input" oninput="renderHistory()">
+    </div>
+    
+    <!-- Filter Pills -->
+    <div class="tx-filter-pills">
+      <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
+      <button class="tx-pill" onclick="setTxFilter('Deposit',this)">💳 Deposits</button>
+      <button class="tx-pill" onclick="setTxFilter('Withdrawal',this)">💸 Withdrawals</button>
+      <button class="tx-pill" onclick="setTxFilter('Profit',this)">📈 Profits</button>
+      <button class="tx-pill" onclick="setTxFilter('Bonus',this)">🎁 Bonuses</button>
+    </div>
+    
+    <!-- Transaction Cards -->
+    <div class="section">
+      <div id="history-list" class="tx-cards-grid"><div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Yet</div><div class="tx-empty-text">Your transaction history will appear here.</div></div></div>
+    </div>
+  </div>
+
+  <!-- Tiers (blank) -->
+  <div class="dash-section" id="sec-team">
+    <div class="inner-header"><span style="font-size:22px">👥</span><div><div class="inner-title">TIERS</div><div class="inner-sub">Coming soon</div></div></div>
+  </div>
+
+  <!-- Returns Plan -->
+  <div class="dash-section" id="sec-plan">
+    <div class="inner-header"><span style="font-size:22px">🎯</span><div><div class="inner-title">DIVIDENDS</div><div class="inner-sub">Coming soon</div></div></div>
+  </div>
+
+  <!-- Profile -->
+  <div class="dash-section" id="sec-profile">
+    <div class="inner-header"><span style="font-size:22px">👤</span><div><div class="inner-title">INFOR</div><div class="inner-sub">Your account details</div></div></div>
+    <div class="section">
+      <div class="profile-simple-info">
+        <div class="profile-simple-item"><span class="profile-simple-label">Username</span><span class="profile-simple-value" id="profile-user-simple">—</span></div>
+        <div class="profile-simple-item"><span class="profile-simple-label">Phone Number</span><span class="profile-simple-value" id="profile-phone-simple">—</span></div>
+        <div class="profile-simple-item"><span class="profile-simple-label">Registered Date</span><span class="profile-simple-value" id="profile-date-simple">—</span></div>
+        <div class="profile-simple-item"><span class="profile-simple-label">Status</span><span class="profile-simple-value" id="profile-status-simple">—</span></div>
+      </div>
+      <button class="logout-btn-new" onclick="doLogout()">🚪 Sign Out</button>
+    </div>
+  </div>
+
+  <!-- Deposit -->
+  <div class="dash-section" id="sec-deposit">
+    <div class="inner-header"><span style="font-size:22px">💳</span><div><div class="inner-title">Invest</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
+    <div class="section">
+      <div class="action-card">
+        <div class="deposit-note" id="dep-min-note">✅ Minimum deposit: <strong>UGX 10,000</strong>. Includes 4% URA tax added to amount you pay.</div>
+        <div class="field-group">
+          <label class="field-label">Mobile Money Phone Number</label>
+          <div class="phone-prefix-wrap" id="dep-phone-wrap">
+            <div class="phone-prefix-badge" id="dep-prefix">+256</div>
+            <input type="tel" id="dep-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
+          </div>
+          <div class="field-hint">9 digits starting with 7 (any MTN or Airtel number)</div>
+          <div class="field-error" id="dep-phone-err">Enter 9 digits starting with 7</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Amount to Invest (UGX)</label>
+          <div class="field-wrap"><span class="field-icon">💰</span><input type="number" id="dep-amount" placeholder="Min 10,000 — Max 2,350,000" min="10000" max="2350000"></div>
+          <div class="field-error" id="dep-amount-err">Please check the amount limits</div>
+        </div>
+        <div class="deposit-note" id="tax-note" style="font-size:11px;background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--gold);">📊 You will pay: <strong id="tax-amount">UGX 0</strong> (includes 4% URA tax)</div>
+        <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">💳 INVEST NOW</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdraw -->
+  <div class="dash-section" id="sec-withdraw">
+    <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your BALANCE</div></div></div>
+    <div class="section">
+      <div id="withdraw-locked-msg" class="locked-banner" style="display:none">🔒 Withdrawals are currently disabled. Please contact support.</div>
+      <div class="action-card">
+        <div class="charge-note">⚠️ Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
+        <div class="deposit-note">📱 Funds will be sent to your registered mobile money number.</div>
+        <div class="field-group">
+          <label class="field-label">Sending To</label>
+          <div class="field-wrap"><span class="field-icon">📱</span><div class="readonly-field" id="with-phone-display">—</div></div>
+          <div class="field-hint">🔒 Locked to your registered number</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Amount (UGX)</label>
+          <div class="field-wrap"><span class="field-icon">💸</span><input type="number" id="with-amount" placeholder="Enter amount" min="5000" oninput="updateWithdrawPreview()"></div>
+          <div class="field-error" id="with-amount-err">Minimum withdrawal is <span id="with-min-display">UGX 10,000</span></div>
+        </div>
+        <div id="withdraw-preview" style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px;display:none;">
+          <span>💸 You receive: </span><strong id="withdraw-net-amount">UGX 0</strong><br>
+          <span>🔧 Fee: </span><strong id="withdraw-fee-amount">UGX 0</strong>
+        </div>
+        <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">💸 WITHDRAW</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Errands -->
+  <div class="dash-section" id="sec-errands">
+    <div class="inner-header"><span style="font-size:22px">📝</span><div><div class="inner-title">Errands</div><div class="inner-sub">Coming soon</div></div></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
+    <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="nav-label">ERRANDS</span></div>
+    <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span><span class="nav-label">TIERS</span></div>
+    <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span class="nav-label">DIVIDENDS</span></div>
+    <div class="nav-item" onclick="switchTab('profile')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span><span class="nav-label">ME</span></div>
+  </nav>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-copyright">Copyright © 2026-2031 DiamondEarn</div>
+      <div class="footer-links">
+        <button class="footer-link" onclick="showTerms()">Terms</button>
+        <span class="footer-divider">•</span>
+        <button class="footer-link" onclick="showPrivacy()">Privacy</button>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon" id="modal-icon">📱</div>
+    <div class="modal-title" id="modal-title">Notice</div>
+    <div class="modal-msg" id="modal-msg">Please wait...</div>
+    <button class="modal-close" onclick="closeModal()">OK, Got It</button>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal-overlay" id="terms-modal-overlay" onclick="closeTermsModal(event)">
+  <div class="modal-box" style="position:relative;">
+    <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--accent);padding:4px 8px;" onclick="closeTermsModal()">✕</button>
+    <div class="modal-icon">📋</div>
+    <div class="modal-title">Terms of Service</div>
+    <div class="modal-msg" style="text-align:left;">
+      <strong>1. Introduction</strong><br>
+      Welcome to DiamondEarn. These Terms of Service govern your use of our investment platform.<br><br>
+      
+      <strong>2. User Responsibilities</strong><br>
+      You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.<br><br>
+      
+      <strong>3. Investment Risks</strong><br>
+      All investments carry risk. DiamondEarn does not guarantee returns. Past performance is not indicative of future results.<br><br>
+      
+      <strong>4. Prohibited Activities</strong><br>
+      You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.<br><br>
+      
+      <strong>5. Limitation of Liability</strong><br>
+      DiamondEarn is provided "as is" without warranties. We are not liable for any indirect or consequential damages.<br><br>
+      
+      <strong>6. Modifications</strong><br>
+      We reserve the right to modify these terms at any time. Your continued use constitutes acceptance of changes.<br><br>
+      
+      <strong>7. Governing Law</strong><br>
+      These terms are governed by the laws of Uganda and Kenya as applicable.
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal-overlay" id="privacy-modal-overlay" onclick="closePrivacyModal(event)">
+  <div class="modal-box" style="position:relative;">
+    <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--accent);padding:4px 8px;" onclick="closePrivacyModal()">✕</button>
+    <div class="modal-icon">🔒</div>
+    <div class="modal-title">Privacy Policy</div>
+    <div class="modal-msg" style="text-align:left;">
+      <strong>1. Information We Collect</strong><br>
+      We collect personal information including name, phone number, email, and transaction history to provide our services.<br><br>
+      
+      <strong>2. How We Use Information</strong><br>
+      Your information is used to process transactions, prevent fraud, improve our services, and comply with legal obligations.<br><br>
+      
+      <strong>3. Data Protection</strong><br>
+      We implement industry-standard security measures to protect your data from unauthorized access.<br><br>
+      
+      <strong>4. Third-Party Sharing</strong><br>
+      We do not sell your personal information. We may share data with payment processors and legal authorities when required.<br><br>
+      
+      <strong>5. Cookies & Tracking</strong><br>
+      We use cookies and similar technologies to enhance user experience and analyze platform usage.<br><br>
+      
+      <strong>6. Your Rights</strong><br>
+      You have the right to access, modify, or delete your personal information at any time.<br><br>
+      
+      <strong>7. Contact Us</strong><br>
+      For privacy concerns, contact our support team.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Done!</div>
+<div class="popup-banner" id="popup-banner"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+// ============================================================
+// DIAMOND EARN - FIREBASE REALTIME DATABASE WITH MARZPAY
+// FIXED: Daily profit pays on new day login + Silent mode + No user popups
+// ============================================================
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAo3bA7iQ5S_6css-tWCaVbWnzzJ6zZwNQ",
+  authDomain: "money-c6b24.firebaseapp.com",
+  projectId: "money-c6b24",
+  storageBucket: "money-c6b24.firebasestorage.app",
+  messagingSenderId: "940795117401",
+  appId: "1:940795117401:web:53945795f9c2c07fef1648",
+  databaseURL: "https://money-c6b24-default-rtdb.europe-west1.firebasedatabase.app/"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
+
+function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
+function dateStr() { 
+  const d = new Date(); 
+  return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }); 
+}
+// ============================================================
+// FIXED: Use LOCAL timezone for date key (not UTC)
+// Format: YYYY-MM-DD based on user's local time
+// ============================================================
+function getDateKey(d) {
+  if (!d) d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Helper: Parse date string (YYYY-MM-DD) to local Date object at 00:00:00
+function parseDateKey(dateStr) {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  return new Date(year, month - 1, day, 0, 0, 0, 0);
+}
+
+// Helper: Calculate days between two date strings
+function daysBetweenDateKeys(startDateStr, endDateStr) {
+  const startDate = parseDateKey(startDateStr);
+  const endDate = parseDateKey(endDateStr);
+  const diffTime = endDate - startDate;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
+function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
+function genUUID() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)); }
+
+let currentUser = null;
+let currentUsername = null;
+let settingsData = {
+  uraTax: 4, withdrawCharge: 10,
+  withdrawLocked: false, withdrawApproval: false,
+  minDeposit: 10000, maxDeposit: 2350000, minWithdraw: 10000, marzApiKey: ''
+};
+let profitInterval = null;
+let userListener = null;
+
+// ============================================================
+// FIXED: Daily profit calculation (ONCE per calendar day) - ATOMIC UPDATE
+// Reads fresh data from Firebase, calculates profit, updates atomically
+// ============================================================
+async function calculateAndPayDailyProfits() {
+  if (!currentUsername) return;
+  
+  try {
+    // STEP 1: Read FRESH data from Firebase (not from currentUser cache)
+    const userRef = db.ref('users/' + safeKey(currentUsername));
+    const freshSnap = await userRef.get();
+    if (!freshSnap.exists()) return;
+    
+    const userData = freshSnap.val();
+    const stake = userData.stake || 0;
+    
+    // No stake = no profit
+    if (stake <= 0) return;
+    
+    // STEP 2: Get today's date key
+    const todayKey = getDateKey(new Date());
+    const lastProfitDate = userData.lastProfitDate || null;
+    
+    // STEP 3: Check if already paid today
+    // This is the KEY to paying only ONCE per day
+    if (lastProfitDate === todayKey) {
+      // Already paid today - exit silently
+      return;
+    }
+    
+    // STEP 4: Calculate days difference
+    let daysDiff = 1; // At least 1 day has passed
+    if (lastProfitDate) {
+      daysDiff = daysBetweenDateKeys(lastProfitDate, todayKey);
+      // If no days difference, don't pay
+      if (daysDiff <= 0) return;
+    }
+    
+    // STEP 5: Calculate profit
+    const dailyProfit = Math.floor(stake * 0.10);
+    const totalProfit = dailyProfit * daysDiff;
+    
+    // STEP 6: Update balance
+    const currentBalance = userData.balance || 0;
+    const newBalance = currentBalance + totalProfit;
+    
+    // STEP 7: Update daysRun in activeInvestment
+    let newDaysRun = (userData.activeInvestment?.daysRun || 0) + daysDiff;
+    if (newDaysRun > 56) newDaysRun = 56;
+    
+    // STEP 8: Prepare activeInvestment object (handle if null/missing)
+    let updatedActiveInvestment = userData.activeInvestment || { daysRun: 0 };
+    updatedActiveInvestment.daysRun = newDaysRun;
+    
+    // STEP 9: ATOMIC UPDATE - write everything together
+    const updates = {
+      balance: newBalance,
+      lastProfitDate: todayKey,
+      activeInvestment: updatedActiveInvestment
+    };
+    
+    await userRef.update(updates);
+    
+    // STEP 10: Update currentUser so UI reflects changes immediately
+    currentUser = await userRef.get().then(snap => snap.val());
+    updateBalanceUI();
+    
+    // Silent success - no toast notification
+  } catch (error) {
+    console.error('Profit calculation error:', error);
+  }
+}
+
+// ============================================================
+// Loading screen hides immediately after login check
+// ============================================================
+async function initApp() {
+  initTheme();
+  startSettingsListener();
+  
+  const savedUser = sessionStorage.getItem('pp_current_user');
+  if (savedUser) {
+    try {
+      const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
+      if (userSnap.exists() && !userSnap.val().locked) {
+        currentUser = userSnap.val();
+        currentUsername = savedUser;
+        
+        // PROFIT CALCULATION FIRST - before UI updates
+        // This ensures balance is updated with today's profit before UI renders
+        await calculateAndPayDailyProfits().catch(err => console.warn('Profit calc error:', err));
+        
+        // CHECK PENDING DEPOSITS SILENTLY - in background
+        checkPendingDeposits(savedUser).catch(err => console.warn('Pending deposits check error:', err));
+        
+        // Re-fetch user data after profit calculation to get updated balance
+        const updatedSnap = await db.ref('users/' + safeKey(savedUser)).get();
+        if (updatedSnap.exists()) {
+          currentUser = updatedSnap.val();
+        }
+        
+        // Now show UI with updated balance
+        startUserListener(savedUser);
+        updateBalanceUI();
+        renderHistory();
+        updateProfileUI();
+        showDashboard();
+        switchTab('home');
+        startDailyProfitLoop();
+        startInactivityWatcher();
+      } else {
+        sessionStorage.removeItem('pp_current_user');
+        showAuth('login-page');
+      }
+    } catch (err) {
+      console.warn('Login check error:', err);
+      sessionStorage.removeItem('pp_current_user');
+      showAuth('login-page');
+    }
+  } else {
+    showAuth('login-page');
+  }
+  
+  // HIDE LOADING SCREEN IMMEDIATELY
+  document.getElementById('loading-screen').style.display = 'none';
+}
+
+// Background profit loop (every 30 min) - SILENT
+function startDailyProfitLoop() {
+  if (profitInterval) clearInterval(profitInterval);
+  profitInterval = setInterval(() => {
+    if (currentUser && currentUsername) {
+      calculateAndPayDailyProfits().catch(err => console.warn('Profit interval error:', err));
+    }
+  }, 1800000);
+}
+
+// ============================================================
+// SILENT FUNCTIONS - No user-facing toasts or modals
+// ============================================================
+function showToast(msg, color) {
+  // COMPLETELY DISABLED - users see no toasts
+  // Function kept empty to prevent errors
+}
+
+function showModal(icon, title, msg) {
+  // COMPLETELY DISABLED - users see no modals
+  // Function kept empty to prevent errors
+}
+
+function closeModal() { 
+  // Disabled
+}
+
+function setErr(id, show, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (show) { el.classList.add('show'); if (msg) el.textContent = msg; }
+  else { el.classList.remove('show'); }
+}
+
+function clearErrors(...ids) { ids.forEach(id => setErr(id, false)); }
+
+function toggleEye(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+function checkStrength(pw) {
+  const b = [document.getElementById('pw-b1'), document.getElementById('pw-b2'), document.getElementById('pw-b3')];
+  b.forEach(x => { if (x) x.className = 'pw-bar'; });
+  if (!pw) return;
+  if (pw.length >= 6) { if (b[0]) b[0].classList.add('weak'); }
+  if (pw.length >= 8 && /[0-9]/.test(pw)) { if (b[0]) b[0].classList.add('strong'); if (b[1]) b[1].classList.add('medium'); }
+  if (pw.length >= 10 && /[^A-Za-z0-9]/.test(pw)) { if (b[0]) b[0].classList.add('strong'); if (b[1]) b[1].classList.add('strong'); if (b[2]) b[2].classList.add('strong'); }
+}
+
+function updateRegPrefix() {
+  const c = document.getElementById('reg-country').value;
+  const pr = document.getElementById('reg-prefix');
+  if (pr) pr.textContent = c === 'KE' ? '+254' : '+256';
+}
+
+function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
+function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
+
+function showAuth(id) {
+  document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  const t = document.getElementById(id);
+  if (t) { t.style.display = 'flex'; t.classList.add('active'); }
+}
+
+function showDashboard() {
+  document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  document.getElementById('dashboard-page').style.display = 'block';
+  document.getElementById('dashboard-page').classList.add('active');
+}
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const isDark = localStorage.getItem('pp_theme') === 'dark';
+  const newTheme = isDark ? 'light' : 'dark';
+  localStorage.setItem('pp_theme', newTheme);
+  applyTheme(newTheme);
+}
+
+function applyTheme(theme) {
+  const root = document.documentElement;
+  const toggle = document.getElementById('theme-toggle');
+  if (theme === 'light') {
+    root.style.setProperty('--bg', '#14110F');
+    root.style.setProperty('--surface', '#211D18');
+    root.style.setProperty('--surface2', '#2A2520');
+    root.style.setProperty('--surface3', '#332C24');
+    root.style.setProperty('--border', '#3D362C');
+    root.style.setProperty('--text', '#F6F1E7');
+    root.style.setProperty('--muted', '#B8AF9E');
+    root.style.setProperty('--accent3', '#F2B84B');
+    if (toggle) toggle.textContent = '☀️';
+  } else {
+    root.style.setProperty('--bg', '#14110F');
+    root.style.setProperty('--surface', '#211D18');
+    root.style.setProperty('--surface2', '#2A2520');
+    root.style.setProperty('--surface3', '#332C24');
+    root.style.setProperty('--border', '#3D362C');
+    root.style.setProperty('--text', '#F6F1E7');
+    root.style.setProperty('--muted', '#B8AF9E');
+    root.style.setProperty('--accent3', '#F2B84B');
+    if (toggle) toggle.textContent = '🌙';
+  }
+}
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('pp_theme') || 'dark';
+  applyTheme(savedTheme);
+}
+
+function showTerms() { 
+  document.getElementById('terms-modal-overlay').classList.add('open');
+}
+function closeTermsModal(event) {
+  if (event && event.target.id !== 'terms-modal-overlay') return;
+  document.getElementById('terms-modal-overlay').classList.remove('open');
+}
+function showPrivacy() { 
+  document.getElementById('privacy-modal-overlay').classList.add('open');
+}
+function closePrivacyModal(event) {
+  if (event && event.target.id !== 'privacy-modal-overlay') return;
+  document.getElementById('privacy-modal-overlay').classList.remove('open');
+}
+
+const tabMap = { home: 'sec-home', history: 'sec-history', team: 'sec-team', plan: 'sec-plan', profile: 'sec-profile', deposit: 'sec-deposit', withdraw: 'sec-withdraw', errands: 'sec-errands' };
+const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
+
+function switchTab(tab) {
+  if (tab === 'withdraw' && settingsData.withdrawLocked) {
+    // Silent - no modal
+    return;
+  }
+  Object.values(tabMap).forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
+  const t = document.getElementById(tabMap[tab]);
+  if (t) t.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const idx = navOrder.indexOf(tab);
+  if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
+}
+
+
+function startSettingsListener() {
+  db.ref('settings').on('value', (snap) => {
+    if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
+    updateUIWithSettings();
+    if (currentUser) { applyWithdrawLock(); }
+  });
+}
+
+function updateUIWithSettings() {
+  const minDep = settingsData.minDeposit || 10000;
+  const minWith = settingsData.minWithdraw || 10000;
+  const maxDep = settingsData.maxDeposit || 2350000;
+  const depNote = document.getElementById('dep-min-note');
+  if (depNote) depNote.innerHTML = `✅ Minimum deposit <strong>${fmt(minDep)}</strong> — Maximum <strong>${fmt(maxDep)}</strong>. Includes 4% URA tax added to amount you pay.`;
+  const withMinDisplay = document.getElementById('with-min-display');
+  if (withMinDisplay) withMinDisplay.textContent = fmt(minWith);
+  const withdrawLockedMsg = document.getElementById('withdraw-locked-msg');
+  if (withdrawLockedMsg) withdrawLockedMsg.style.display = settingsData.withdrawLocked ? 'block' : 'none';
+  const feePercent = document.getElementById('with-fee-percent');
+  if (feePercent) feePercent.textContent = settingsData.withdrawCharge || 10;
+  const receivePercent = document.getElementById('with-receive-percent');
+  if (receivePercent) receivePercent.textContent = 100 - (settingsData.withdrawCharge || 10);
+  const withInp = document.getElementById('with-amount');
+  if (withInp) withInp.min = minWith;
+  const depAmount = document.getElementById('dep-amount');
+  if (depAmount) updateTaxPreview();
+}
+
+function applyWithdrawLock() {
+  const locked = settingsData.withdrawLocked;
+  const wBtn = document.querySelector('.btn-withdraw');
+  if (wBtn) { wBtn.style.opacity = locked ? '0.35' : '1'; wBtn.style.pointerEvents = locked ? 'none' : 'auto'; }
+}
+
+function updateTaxPreview() {
+  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
+  const uraTax = (settingsData.uraTax || 4) / 100;
+  const totalAmount = Math.ceil(amount * (1 + uraTax));
+  const taxAmountSpan = document.getElementById('tax-amount');
+  if (taxAmountSpan) taxAmountSpan.textContent = fmt(totalAmount);
+}
+
+function updateWithdrawPreview() {
+  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  const feePercent = (settingsData.withdrawCharge || 10) / 100;
+  const fee = Math.floor(amount * feePercent);
+  const net = amount - fee;
+  const preview = document.getElementById('withdraw-preview');
+  const netEl = document.getElementById('withdraw-net-amount');
+  const feeEl = document.getElementById('withdraw-fee-amount');
+  if (amount > 0) {
+    if (preview) preview.style.display = 'block';
+    if (netEl) netEl.textContent = fmt(net);
+    if (feeEl) feeEl.textContent = fmt(fee);
+  } else {
+    if (preview) preview.style.display = 'none';
+  }
+}
+
+function updateBalanceUI() {
+  if (!currentUser) return;
+  const stake = currentUser.stake || 0;
+  const balance = currentUser.balance || 0;
+  document.getElementById('stat-stake').textContent = fmt(stake);
+  document.getElementById('stat-balance').textContent = fmt(balance);
+  updateActiveInvestmentDisplay();
+}
+
+function updateActiveInvestmentDisplay() {
+  const section = document.getElementById('active-investment-section');
+  if (!currentUser || !currentUser.activeInvestment || (currentUser.stake || 0) === 0) {
+    if (section) section.style.display = 'none';
+    return;
+  }
+  const inv = currentUser.activeInvestment;
+  const stakeAmount = currentUser.stake || 0;
+  const daysRun = inv.daysRun || 0;
+  const totalDays = 56;
+  const progress = (daysRun / totalDays) * 100;
+  document.getElementById('active-stake-amount').textContent = fmt(stakeAmount);
+  document.getElementById('investment-progress-fill').style.width = progress + '%';
+  document.getElementById('days-completed').textContent = daysRun;
+  if (daysRun >= totalDays) {
+    document.getElementById('investment-status').textContent = '✅ Investment completed!';
+  } else {
+    const remaining = totalDays - daysRun;
+    document.getElementById('investment-status').textContent = `📈 Generating 10% daily profit — ${remaining} days remaining`;
+  }
+  if (section) section.style.display = 'block';
+}
+
+function startUserListener(username) {
+  if (userListener) db.ref('users/' + safeKey(username)).off('value', userListener);
+  userListener = db.ref('users/' + safeKey(username)).on('value', (snap) => {
+    if (snap.exists()) {
+      currentUser = snap.val();
+      updateBalanceUI();
+      renderHistory();
+      updateProfileUI();
+    }
+  });
+}
+
+function updateProfileUI() {
+  if (!currentUser) return;
+  document.getElementById('profile-user-simple').textContent = currentUser.username || '—';
+  document.getElementById('profile-phone-simple').textContent = currentUser.phone || '—';
+  document.getElementById('profile-date-simple').textContent = currentUser.joinedDate || '2025';
+  document.getElementById('profile-status-simple').textContent = currentUser.activated ? '🟢 Active' : '⏳ Inactive';
+  document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
+}
+
+let currentHistoryFilter = 'all';
+function setTxFilter(type, btnEl) {
+  currentHistoryFilter = type;
+  document.querySelectorAll('.tx-pill').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderHistory();
+}
+
+function renderHistory() {
+  const wrap = document.getElementById('history-list');
+  if (!currentUser) { if (wrap) wrap.innerHTML = ''; return; }
+  const allTxs = currentUser.transactions ? Object.values(currentUser.transactions).reverse() : [];
+  
+  // Get search query
+  const searchBox = document.getElementById('tx-search-box');
+  const searchQuery = (searchBox?.value || '').toLowerCase().trim();
+  
+  // Filter by type
+  let txs = allTxs;
+  if (currentHistoryFilter !== 'all') {
+    txs = allTxs.filter(tx => tx.type === currentHistoryFilter);
+  }
+  
+  // Filter by search
+  if (searchQuery) {
+    txs = txs.filter(tx => 
+      (tx.type || '').toLowerCase().includes(searchQuery) ||
+      (tx.note || '').toLowerCase().includes(searchQuery) ||
+      fmt(tx.amount).toLowerCase().includes(searchQuery)
+    );
+  }
+  
+  if (!txs.length) {
+    if (wrap) wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Found</div><div class="tx-empty-text">Try adjusting your filters or search.</div></div>';
+    return;
+  }
+  
+  const typeIcons = { Deposit: '💳', Withdrawal: '💸', Profit: '📈', Bonus: '🎁' };
+  const typeClasses = { Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Profit: 'tx-profit', Bonus: 'tx-bonus' };
+  
+  if (wrap) {
+    wrap.innerHTML = '<div class="tx-cards-grid">' + 
+      txs.map(tx => {
+        const isPending = tx.status === 'pending';
+        const isFailed = tx.status === 'failed';
+        const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
+        const statusText = isPending ? '⏳ Pending' : isFailed ? '❌ Failed' : '✅ Completed';
+        const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
+        const typeClass = typeClasses[tx.type] || 'tx-profit';
+        const icon = typeIcons[tx.type] || '💰';
+        const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
+        
+        return `<div class="tx-card ${typeClass}">
+          <div class="tx-card-header">
+            <div class="tx-card-icon">${icon}</div>
+            <div>
+              <div class="tx-card-type">${tx.type || 'Transaction'}</div>
+              <div class="tx-card-date">${tx.date || '—'}</div>
+            </div>
+          </div>
+          <div class="tx-card-amount ${amountClass}">${amountStr}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="tx-card-status ${statusClass}">${statusText}</span>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
+}
+
+function getMarzAuth() {
+  let key = (settingsData.marzApiKey || '').trim();
+  if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
+  return 'Basic ' + key;
+}
+
+async function marzCollect(phone, amount, reference, description) {
+  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
+  const formData = new FormData();
+  formData.append('phone_number', phone);
+  formData.append('amount', String(amount));
+  formData.append('country', 'UG');
+  formData.append('reference', reference);
+  formData.append('description', description);
+  const response = await fetch(MARZ_API + '/collect-money', { method: 'POST', headers: { 'Authorization': getMarzAuth() }, body: formData });
+  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
+  return await response.json();
+}
+
+async function marzSend(phone, amount, reference, description) {
+  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
+  const formData = new FormData();
+  formData.append('phone_number', phone);
+  formData.append('amount', String(amount));
+  formData.append('country', 'UG');
+  formData.append('reference', reference);
+  formData.append('description', description);
+  const response = await fetch(MARZ_API + '/send-money', { method: 'POST', headers: { 'Authorization': getMarzAuth() }, body: formData });
+  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
+  return await response.json();
+}
+
+async function marzCheckStatus(uuid) {
+  const response = await fetch(MARZ_API + '/transactions/' + uuid, { headers: { 'Authorization': getMarzAuth() } });
+  if (!response.ok) return null;
+  return await response.json();
+}
+
+async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, intervalMs));
+    try {
+      const result = await marzCheckStatus(uuid);
+      if (!result) continue;
+      const status = (result?.transaction?.status || result?.data?.transaction?.status || result?.status || '').toLowerCase();
+      if (status === 'completed' || status === 'successful' || status === 'success') return 'success';
+      if (status === 'failed' || status === 'cancelled') return 'failed';
+    } catch (e) { continue; }
+  }
+  return 'timeout';
+}
+
+// ============================================================
+// SILENT PENDING DEPOSITS CHECKER - auto-syncs deposits when user returns
+// ============================================================
+async function checkPendingDeposits(username) {
+  try {
+    const userRef = db.ref('users/' + safeKey(username));
+    const snap = await userRef.child('transactions').get();
+    if (!snap.exists()) return;
+    
+    const transactions = snap.val();
+    for (const [key, txn] of Object.entries(transactions)) {
+      // Only check pending deposits
+      if (txn.type !== 'Deposit' || txn.status !== 'pending') continue;
+      if (!txn.marzUUID) continue;
+      
+      try {
+        // Silently check Marz status (max 20 attempts = ~100 seconds)
+        const pollResult = await pollPaymentStatus(txn.marzUUID, 20, 5000);
+        
+        if (pollResult === 'success') {
+          // CREDIT THE DEPOSIT SILENTLY - no notification
+          const amount = txn.amount || 0;
+          
+          // Update transaction status
+          await userRef.child('transactions/' + key).update({ status: 'completed', completedDate: dateStr() });
+          
+          // Update user stake and balance
+          const userSnap = await userRef.get();
+          const user = userSnap.val();
+          const newStake = (user.stake || 0) + amount;
+          const newBalance = (user.balance || 0) + amount;
+          
+          await userRef.update({ 
+            stake: newStake, 
+            balance: newBalance,
+            activeInvestment: { amount: newStake, startDate: dateStr(), daysLeft: 56, dailyProfit: 0 }
+          });
+          
+          // Update UI silently if user is currently viewing
+          if (currentUsername === username) {
+            await new Promise(r => setTimeout(r, 500));
+            updateBalanceUI();
+            renderHistory();
+          }
+        } else if (pollResult === 'failed') {
+          // Mark as failed silently
+          await userRef.child('transactions/' + key).update({ status: 'failed', failedDate: dateStr() });
+        }
+      } catch (e) {
+        console.warn('Error checking pending deposit:', e);
+      }
+    }
+  } catch (e) {
+    console.warn('Error in checkPendingDeposits:', e);
+  }
+}
+
+async function sendAdminNotification(type, username, amount, message) {
+  try {
+    await db.ref('adminNotifications/notif_' + Date.now()).set({ type, username, amount, message, date: dateStr(), read: false });
+  } catch (e) { console.warn(e); }
+}
+
+// ============================================================
+// DEPOSIT - PIN popup only, auto-closes 1 sec, redirect to home
+// ============================================================
+async function doDeposit() {
+  clearErrors('dep-phone-err', 'dep-amount-err');
+  const phoneDigits = document.getElementById('dep-phone').value.trim();
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('dep-phone-err', true, 'Enter 9 digits starting with 7'); return; }
+  const minDep = settingsData.minDeposit || 10000;
+  const maxDep = settingsData.maxDeposit || 2350000;
+  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
+  if (amount < minDep) { setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep)); return; }
+  if (amount > maxDep) { setErr('dep-amount-err', true, 'Maximum deposit is ' + fmt(maxDep)); return; }
+  if (!settingsData.marzApiKey) { 
+    sendAdminNotification('deposit_error', currentUsername, amount, 'Payment API not configured');
+    return; 
+  }
+  const btn = document.getElementById('dep-submit-btn');
+  btn.disabled = true; btn.textContent = '⏳ Processing...';
+  const fullPhone = '+256' + phoneDigits;
+  const reference = genUUID();
+  const uraTax = (settingsData.uraTax || 4) / 100;
+  const totalAmount = Math.ceil(amount * (1 + uraTax));
+  const profit = Math.floor(amount * 0.10);
+  const oldStake = currentUser.stake || 0;
+  document.getElementById('dep-phone').value = '';
+  document.getElementById('dep-amount').value = '';
+  document.getElementById('tax-note').style.display = 'none';
+  
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = '🔐 Confirm with mobile money PIN';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1000);
+  
+  // Create admin transaction record with PENDING status
+  const adminTxKey = 'adm_dep_' + Date.now();
+  const adminTxRecord = {
+    type: 'Deposit',
+    username: currentUsername,
+    phone: fullPhone,
+    amount: amount,
+    reference: reference,
+    date: dateStr(),
+    status: 'pending'
+  };
+  
+  try {
+    // First, create the admin transaction with pending status
+    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+    
+    const result = await marzCollect(fullPhone, totalAmount, reference, 'DiamondEarn Deposit');
+    if (result.status !== 'success') {
+      // Update admin transaction to FAILED
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      await sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
+      btn.disabled = false; btn.textContent = '💳 INVEST NOW';
+      return;
+    }
+    const txUuid = result?.data?.transaction?.uuid;
+    const pollResult = await pollPaymentStatus(txUuid);
+    if (pollResult === 'success') {
+      const newStake = oldStake + amount;
+      const newBalance = (currentUser.balance || 0) + profit;
+      const todayKey = getDateKey(new Date());
+      let newActiveInvestment = currentUser.activeInvestment || null;
+      if (!newActiveInvestment || newActiveInvestment.daysRun >= 56) {
+        newActiveInvestment = { amount: newStake, startDate: new Date().toISOString(), daysRun: 0, lastPaidDate: todayKey };
+      } else {
+        newActiveInvestment.amount = newStake;
+      }
+      const updates = {
+        stake: newStake, balance: newBalance, activated: true, activeInvestment: newActiveInvestment, lastProfitDate: todayKey,
+        [`deposits/dep_${Date.now()}`]: { amount: amount, taxPaid: totalAmount - amount, startDate: Date.now(), daysRun: 0, lastPaidDate: todayKey },
+        [`transactions/tx_dep_${Date.now()}`]: { type: 'Deposit', amount: amount, note: 'Deposit confirmed ✅ (URA Tax: ' + fmt(totalAmount - amount) + ')', date: dateStr(), status: 'completed' },
+        [`transactions/tx_profit_${Date.now()}`]: { type: 'Profit', amount: profit, note: '10% instant profit on deposit', date: dateStr(), status: 'completed' }
+      };
+      await db.ref('users/' + safeKey(currentUsername)).update(updates);
+      
+      // Update admin transaction to SUCCESSFUL
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+      
+    } else if (pollResult === 'failed') {
+      // Update admin transaction to FAILED
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      await sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
+    } else {
+      // Update admin transaction to FAILED
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      await sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
+    }
+  } catch (error) {
+    console.error('Deposit error:', error);
+    // Update admin transaction to FAILED
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    await sendAdminNotification('deposit_error', currentUsername, amount, error.message);
+  }
+  btn.disabled = false; btn.textContent = '💳 INVEST NOW';
+  switchTab('home');
+}
+
+// ============================================================
+// WITHDRAWAL - confirmation popup only, auto-closes 1 sec, redirect to home
+// ============================================================
+async function doWithdraw() {
+  clearErrors('with-amount-err');
+  if (settingsData.withdrawLocked) { 
+    sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
+    return; 
+  }
+  if (!currentUser.activated) { 
+    sendAdminNotification('withdrawal_not_activated', currentUsername, 0, 'Inactive account tried to withdraw');
+    return; 
+  }
+  const minWith = settingsData.minWithdraw || 10000;
+  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  if (amount < minWith) { setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith)); return; }
+  const balance = currentUser.balance || 0;
+  if (balance < amount) { setErr('with-amount-err', true, 'Insufficient BALANCE.'); return; }
+  const feePercent = (settingsData.withdrawCharge || 10) / 100;
+  const fee = Math.floor(amount * feePercent);
+  const sendAmount = amount - fee;
+  const userPhone = currentUser.phone;
+  const btn = document.getElementById('with-submit-btn');
+  btn.disabled = true; btn.textContent = '⏳ Processing...';
+  const newBalance = balance - amount;
+  const newWithdrawn = (currentUser.withdrawn || 0) + amount;
+  const txKey = 'tx_wd_' + Date.now();
+  const reqKey = 'wreq_' + Date.now();
+  const reference = genUUID();
+  
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = '💸 You will receive your funds shortly';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1000);
+  
+  // Create admin transaction record with PENDING status
+  const adminTxKey = 'adm_wd_' + Date.now();
+  const adminTxRecord = {
+    type: 'Withdrawal',
+    username: currentUsername,
+    phone: userPhone,
+    amount: amount,
+    reference: reference,
+    date: dateStr(),
+    status: 'pending'
+  };
+  
+  try {
+    // Create admin transaction
+    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+    
+    // Deduct from balance immediately (in both modes)
+    await db.ref('users/' + safeKey(currentUsername)).update({ 
+      balance: newBalance, 
+      withdrawn: newWithdrawn, 
+      [`transactions/${txKey}`]: { type: 'Withdrawal', amount: -amount, note: 'Withdrawal Pending', date: dateStr(), status: 'pending' } 
+    });
+    
+    // Create withdrawal request record
+    await db.ref('pendingWithdrawals/' + reqKey).set({ 
+      username: currentUsername, 
+      userId: safeKey(currentUsername), 
+      phone: userPhone, 
+      amount, 
+      fee, 
+      sendAmount, 
+      txKey, 
+      adminTxKey,
+      date: dateStr(), 
+      status: 'pending',
+      processed: false // Track if Marz was already attempted
+    });
+    
+    // Check if manual approval is enabled
+    if (settingsData.withdrawApproval === true) {
+      // MANUAL APPROVAL MODE - Wait for admin to approve/reject
+      // Admin will either approve (then doWithdrawalApprove is called) or reject (then rejectWithdrawal is called)
+      await sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
+    } else {
+      // AUTOMATIC MODE - Process withdrawal immediately
+      await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
+    }
+    
+    document.getElementById('with-amount').value = '';
+    document.getElementById('withdraw-preview').style.display = 'none';
+  } catch (error) {
+    console.error('Withdrawal error:', error);
+    // Critical error - REFUND user and revert
+    const refundedBalance = balance;
+    await db.ref('users/' + safeKey(currentUsername)).update({ 
+      balance: refundedBalance, 
+      withdrawn: currentUser.withdrawn || 0 
+    });
+    await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    await sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
+  }
+  btn.disabled = false; btn.textContent = '💸 WITHDRAW';
+  switchTab('home');
+}
+
+// Helper function to process withdrawal to Marz
+async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee) {
+  const username = currentUsername;
+  const userId = safeKey(username);
+  
+  try {
+    const sendResult = await marzSend(userPhone, sendAmount, reference, 'DiamondEarn Withdrawal');
+    if (sendResult && sendResult.status === 'success') {
+      // Success - update transaction and admin record
+      await db.ref('users/' + userId + '/transactions/' + txKey).update({ 
+        status: 'completed', 
+        note: `Withdrawal sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})` 
+      });
+      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+    } else {
+      // Marz send failed - REFUND user instantly
+      const userSnap = await db.ref('users/' + userId).get();
+      const user = userSnap.val();
+      const refundedBalance = (user.balance || 0) + amount;
+      
+      await db.ref('users/' + userId).update({ 
+        balance: refundedBalance,
+        [`transactions/${txKey}`]: { type: 'Withdrawal', amount: -amount, note: 'Withdrawal Failed - Refunded', date: dateStr(), status: 'failed' }
+      });
+      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      await sendAdminNotification('withdrawal_auto_failed', username, amount, 'Marz send failed: ' + (sendResult?.message || 'Unknown error'));
+    }
+  } catch (sendError) {
+    // Exception during send - REFUND user instantly
+    const userSnap = await db.ref('users/' + userId).get();
+    const user = userSnap.val();
+    const refundedBalance = (user.balance || 0) + amount;
+    
+    await db.ref('users/' + userId).update({ 
+      balance: refundedBalance,
+      [`transactions/${txKey}`]: { type: 'Withdrawal', amount: -amount, note: 'Withdrawal Failed - Refunded', date: dateStr(), status: 'failed' }
+    });
+    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    await sendAdminNotification('withdrawal_auto_failed', username, amount, 'Withdrawal error: ' + sendError.message);
+  }
+}
+
+async function doLogin() {
+  clearErrors('login-user-err', 'login-pw-err');
+  setErr('login-general-err', false);
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username) { setErr('login-user-err', true); return; }
+  if (!password) { setErr('login-pw-err', true); return; }
+  try {
+    const userSnap = await db.ref('users/' + safeKey(username)).get();
+    if (!userSnap.exists()) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
+    const userData = userSnap.val();
+    if (userData.password !== password) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
+    if (userData.locked) { setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.'); return; }
+    currentUser = userData;
+    currentUsername = username;
+    sessionStorage.setItem('pp_current_user', username);
+    
+    // PROFIT CALCULATION FIRST - before UI updates
+    // This ensures balance is updated with today's profit before UI renders
+    await calculateAndPayDailyProfits().catch(err => console.warn('Login profit error:', err));
+    
+    // Re-fetch user data after profit calculation to get updated balance
+    const updatedSnap = await db.ref('users/' + safeKey(username)).get();
+    if (updatedSnap.exists()) {
+      currentUser = updatedSnap.val();
+    }
+    
+    // Now show UI with updated balance
+    startUserListener(username);
+    updateBalanceUI();
+    renderHistory();
+    updateProfileUI();
+    showDashboard();
+    switchTab('home');
+    startDailyProfitLoop();
+    startInactivityWatcher();
+    // Silent login - no toast
+  } catch (error) {
+    console.error('Login error:', error);
+    setErr('login-general-err', true, '❌ Login failed. Please try again.');
+  }
+}
+
+async function doRegister() {
+  clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
+  const username = document.getElementById('reg-username').value.trim();
+  const country = document.getElementById('reg-country').value;
+  const phoneDigits = document.getElementById('reg-phone').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  let ok = true;
+  if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
+  if (!country) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('reg-phone-err', true, 'Enter 9 digits starting with 7'); ok = false; }
+  if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
+  if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
+  if (!ok) return;
+  const existing = await db.ref('users/' + safeKey(username)).get();
+  if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+  const prefix = country === 'KE' ? '+254' : '+256';
+  const fullPhone = prefix + phoneDigits;
+  const now = dateStr();
+  const todayKey = getDateKey(new Date());
+  const newUser = {
+    username, password, country, phone: fullPhone, stake: 0, balance: 4000, withdrawn: 0,
+    activated: false, locked: false, joinedDate: new Date().getFullYear().toString(),
+    lastProfitDate: todayKey,
+    transactions: { t0: { type: 'Bonus', amount: 4000, note: 'Registration Bonus 🎁', date: now, status: 'completed' } },
+    deposits: {}, activeInvestment: null
+  };
+  await db.ref('users/' + safeKey(username)).set(newUser);
+  currentUser = newUser;
+  currentUsername = username;
+  sessionStorage.setItem('pp_current_user', username);
+  startUserListener(username);
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  showDashboard();
+  switchTab('home');
+  startDailyProfitLoop();
+  // Silent registration - no toast
+  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-phone').value = '';
+  document.getElementById('reg-password').value = '';
+  document.getElementById('reg-confirm').value = '';
+  document.getElementById('reg-country').value = '';
+}
+
+async function doLogout() {
+  if (profitInterval) clearInterval(profitInterval);
+  if (userListener && currentUsername) db.ref('users/' + safeKey(currentUsername)).off('value', userListener);
+  sessionStorage.removeItem('pp_current_user');
+  currentUser = null;
+  currentUsername = null;
+  setTimeout(() => {
+    document.getElementById('dashboard-page').style.display = 'none';
+    document.getElementById('dashboard-page').classList.remove('active');
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    showAuth('login-page');
+  }, 800);
+}
+
+let inactivityTimer = null;
+const INACTIVITY_LIMIT = 2 * 60 * 60 * 1000;
+function resetInactivityTimer() {
+  if (!currentUser) return;
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => { if (currentUser) doLogout(); }, INACTIVITY_LIMIT);
+}
+function startInactivityWatcher() {
+  ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
+  resetInactivityTimer();
+}
+
+initApp();
+</script>
+</body>
+</html>
