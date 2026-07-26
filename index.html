@@ -804,11 +804,37 @@ let profitInterval = null;
 let userListener = null;
 
 // ============================================================
+// DEFAULT TRAINEE LEVEL (Hardcoded - always shows)
+// ============================================================
+const DEFAULT_TRAINEE = {
+  name: "Trainee",
+  collateral: 0,
+  movies: 3,
+  each: 500,
+  daily: 1500,
+  monthly: 4500,
+  annual: 4500
+};
+
+// ============================================================
 // LEVELS FUNCTIONS
 // ============================================================
 function startLevelsListener() {
   db.ref('levels').on('value', (snap) => {
-    levelsData = snap.val() || {};
+    const firebaseLevels = snap.val() || {};
+    
+    // Always ensure Trainee exists (hardcoded)
+    levelsData = {
+      trainee: { ...DEFAULT_TRAINEE },
+      ...firebaseLevels
+    };
+    
+    // Remove any duplicate trainee from firebase (use hardcoded one)
+    if (firebaseLevels.trainee) {
+      // Keep firebase trainee if it exists, but merge with default
+      levelsData.trainee = { ...DEFAULT_TRAINEE, ...firebaseLevels.trainee };
+    }
+    
     renderLevelsTable();
   });
 }
@@ -817,11 +843,8 @@ function renderLevelsTable() {
   const tbody = document.getElementById('levels-table-body');
   if (!tbody) return;
   
+  // Always ensure Trainee is in the data
   const levelKeys = Object.keys(levelsData);
-  if (!levelKeys.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="padding:16px;text-align:center;color:var(--muted);font-size:9px;">No levels configured.</td></tr>';
-    return;
-  }
   
   // Sort levels: trainee first, then wm1, wm2, etc.
   const sortedKeys = levelKeys.sort((a, b) => {
@@ -835,7 +858,7 @@ function renderLevelsTable() {
   // Determine user's current level
   const userStake = currentUser?.stake || 0;
   let currentLevelKey = 'trainee';
-  let currentLevelData = levelsData['trainee'];
+  let currentLevelData = levelsData['trainee'] || DEFAULT_TRAINEE;
   
   // Find highest level user qualifies for
   for (const key of sortedKeys) {
@@ -871,7 +894,12 @@ function renderLevelsTable() {
       const need = (nextLevel.collateral || 0) - userStake;
       nextEl.textContent = `Next: ${nextLevel.name} needs ${fmt(nextLevel.collateral || 0)} (${fmt(need)} more)`;
     } else {
-      nextEl.textContent = '🎉 You are at the highest level!';
+      const highestLevel = sortedKeys[sortedKeys.length - 1];
+      if (highestLevel && levelsData[highestLevel]) {
+        nextEl.textContent = '🎉 You are at the highest level!';
+      } else {
+        nextEl.textContent = '';
+      }
     }
   } else {
     levelNameEl.textContent = 'Trainee';
@@ -881,9 +909,18 @@ function renderLevelsTable() {
   
   // Build table rows - ULTRA COMPACT
   let html = '';
+  let hasNonTraineeLevels = false;
+  
   for (const key of sortedKeys) {
     const level = levelsData[key];
     if (!level) continue;
+    
+    // Skip if it's trainee and there are other levels (trainee already handled)
+    if (key === 'trainee') {
+      // Always show trainee
+    } else {
+      hasNonTraineeLevels = true;
+    }
     
     const isCurrent = (key === currentLevelKey);
     const bgColor = isCurrent ? 'rgba(242,184,75,0.12)' : 'transparent';
@@ -907,7 +944,12 @@ function renderLevelsTable() {
     </tr>`;
   }
   
-  tbody.innerHTML = html;
+  // If only Trainee exists, show a message
+  if (!hasNonTraineeLevels && sortedKeys.length <= 1) {
+    tbody.innerHTML = html + `<tr><td colspan="7" style="padding:8px;text-align:center;color:var(--muted);font-size:8px;">No additional levels configured.</td></tr>`;
+  } else {
+    tbody.innerHTML = html;
+  }
 }
 
 // ============================================================

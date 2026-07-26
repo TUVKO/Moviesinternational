@@ -668,6 +668,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 // DIAMOND EARN ADMIN - FIREBASE REALTIME DATABASE
 // Username + Password Login | MarzPay Integration
 // ADDED: Levels Management (Admin configures all levels)
+// DEFAULT: Trainee level is always present and cannot be deleted
 // ============================================================
 
 const firebaseConfig = {
@@ -759,6 +760,7 @@ function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'
 // LEVELS MANAGEMENT (ADMIN)
 // ============================================================
 
+// DEFAULT LEVELS - TRAINEE ALWAYS INCLUDED
 const DEFAULT_LEVELS = {
   trainee: { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500 },
   wm1: { name: "WM1", collateral: 5000, movies: 5, each: 400, daily: 2000, monthly: 60000, annual: 730000 },
@@ -774,10 +776,30 @@ const DEFAULT_LEVELS = {
   wm11: { name: "WM11", collateral: 1200000, movies: 130, each: 14000, daily: 1820000, monthly: 54600000, annual: 664300000 }
 };
 
+// Ensure Trainee is always in the levels object
+function ensureTraineeExists(levels) {
+  if (!levels || !levels.trainee) {
+    levels = levels || {};
+    levels.trainee = { 
+      name: "Trainee", 
+      collateral: 0, 
+      movies: 3, 
+      each: 500, 
+      daily: 1500, 
+      monthly: 4500, 
+      annual: 4500 
+    };
+  }
+  return levels;
+}
+
 function startLevelsListener() {
   if (levelsUnsubscribe) levelsUnsubscribe();
   levelsUnsubscribe = db.ref('levels').on('value', (snap) => {
-    allLevels = snap.val() || {};
+    let levels = snap.val() || {};
+    // Ensure Trainee always exists
+    levels = ensureTraineeExists(levels);
+    allLevels = levels;
     renderLevelsAdminTable();
   });
 }
@@ -787,7 +809,10 @@ function renderLevelsAdminTable() {
   const countEl = document.getElementById('level-count');
   if (!tbody) return;
   
-  const keys = Object.keys(allLevels).sort((a, b) => {
+  // Ensure Trainee exists
+  const levels = ensureTraineeExists(allLevels);
+  
+  const keys = Object.keys(levels).sort((a, b) => {
     if (a === 'trainee') return -1;
     if (b === 'trainee') return 1;
     const numA = parseInt(a.replace('wm', '')) || 0;
@@ -803,8 +828,9 @@ function renderLevelsAdminTable() {
   }
   
   tbody.innerHTML = keys.map(key => {
-    const l = allLevels[key];
+    const l = levels[key];
     if (!l) return '';
+    const isTrainee = (key === 'trainee');
     return `<tr>
       <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${key}</td>
       <td style="padding:8px 10px;"><input type="text" class="level-input" data-key="${key}" data-field="name" value="${escapeHtml(l.name || '')}" style="width:65px;"></td>
@@ -816,7 +842,7 @@ function renderLevelsAdminTable() {
       <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.annual || 0)}</td>
       <td style="padding:8px 10px;">
         <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;">💾</button>
-        ${key !== 'trainee' ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;">🗑️</button>` : ''}
+        ${!isTrainee ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;">🗑️</button>` : '<span style="font-size:9px;color:var(--muted);">🔒</span>'}
       </td>
     </tr>`;
   }).join('');
@@ -900,7 +926,7 @@ async function addLevelRow() {
 }
 
 async function deleteLevel(key) {
-  if (key === 'trainee') { toast('Cannot delete Trainee', '#f87171'); return; }
+  if (key === 'trainee') { toast('❌ Cannot delete Trainee - it is the default level', '#f87171'); return; }
   const confirmed = await confirmAction('Delete Level?', 'Delete ' + key + '? This cannot be undone.');
   if (confirmed) {
     await db.ref('levels/' + key).remove();
@@ -909,10 +935,10 @@ async function deleteLevel(key) {
 }
 
 async function resetDefaultLevels() {
-  const confirmed = await confirmAction('Reset Default Levels?', 'This will replace all current levels with default values. This cannot be undone.');
+  const confirmed = await confirmAction('Reset Default Levels?', 'This will replace all current levels with default values. Trainee will always be included. This cannot be undone.');
   if (confirmed) {
     await db.ref('levels').set(DEFAULT_LEVELS);
-    toast('🔄 Default levels restored');
+    toast('🔄 Default levels restored (Trainee included)');
   }
 }
 
