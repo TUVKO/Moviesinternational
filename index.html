@@ -540,19 +540,19 @@ input[type="password"]{padding-right:46px;}
         <div id="user-next-level" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
       </div>
 
-      <!-- Levels Table - ULTRA COMPACT -->
+      <!-- Levels Table - WITH LINES/BORDERS -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
-          <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;">
+          <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid var(--border);">
             <thead>
-              <tr style="background:var(--surface2);border-bottom:1.5px solid var(--border);">
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;">LvL</th>
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;">Col</th>
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;">Mov</th>
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;">Each</th>
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;">Daily</th>
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;">Monthly</th>
-                <th style="padding:5px 2px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:24%;">Annual</th>
+              <tr style="background:var(--surface2);border-bottom:2px solid var(--accent);">
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">LvL</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Col</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Mov</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Each</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Daily</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Monthly</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:24%;border-bottom:2px solid var(--accent);">Annual</th>
               </tr>
             </thead>
             <tbody id="levels-table-body">
@@ -907,7 +907,7 @@ function renderLevelsTable() {
     nextEl.textContent = '';
   }
   
-  // Build table rows - ULTRA COMPACT
+  // Build table rows - WITH BORDERS/LINES
   let html = '';
   let hasNonTraineeLevels = false;
   
@@ -933,20 +933,20 @@ function renderLevelsTable() {
     const monthly = Number(level.monthly || 0).toLocaleString();
     const annual = Number(level.annual || 0).toLocaleString();
     
-    html += `<tr style="background:${bgColor};border-left:${borderLeft};">
-      <td style="padding:4px 2px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;">${level.name || key}</td>
-      <td style="padding:4px 2px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};">${col}</td>
-      <td style="padding:4px 2px;text-align:center;font-size:7.5px;white-space:nowrap;">${level.movies || 0}</td>
-      <td style="padding:4px 2px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};">${each}</td>
-      <td style="padding:4px 2px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};">${daily}</td>
-      <td style="padding:4px 2px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:var(--muted);">${monthly}</td>
-      <td style="padding:4px 2px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:var(--muted);">${annual}</td>
+    html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid var(--border);">
+      <td style="padding:5px 3px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.name || key}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};border-right:1px solid var(--border);">${col}</td>
+      <td style="padding:5px 3px;text-align:center;font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.movies || 0}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};border-right:1px solid var(--border);">${each}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:${isCurrent ? 'var(--accent)' : 'var(--text)'};border-right:1px solid var(--border);">${daily}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:var(--muted);border-right:1px solid var(--border);">${monthly}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;color:var(--muted);">${annual}</td>
     </tr>`;
   }
   
   // If only Trainee exists, show a message
   if (!hasNonTraineeLevels && sortedKeys.length <= 1) {
-    tbody.innerHTML = html + `<tr><td colspan="7" style="padding:8px;text-align:center;color:var(--muted);font-size:8px;">No additional levels configured.</td></tr>`;
+    tbody.innerHTML = html + `<tr><td colspan="7" style="padding:8px;text-align:center;color:var(--muted);font-size:8px;border-bottom:none;">No additional levels configured.</td></tr>`;
   } else {
     tbody.innerHTML = html;
   }
