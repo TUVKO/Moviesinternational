@@ -734,8 +734,11 @@ input[type="password"]{padding-right:46px;}
 // ============================================================
 // DIAMOND EARN - WATCH & EARN PLATFORM
 // STAKE ONLY - Deposit kept via MarzPay
-// FIXED: Login/Register working
+// FULLY FIXED - Login/Register Working
 // ============================================================
+
+// Check if Firebase is loaded
+console.log('Firebase loaded:', typeof firebase !== 'undefined');
 
 const firebaseConfig = {
   apiKey: "AIzaSyAo3bA7iQ5S_6css-tWCaVbWnzzJ6zZwNQ",
@@ -749,6 +752,8 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+console.log('✅ Firebase initialized');
 
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
@@ -1639,10 +1644,25 @@ function updateRegPrefix() {
 function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
 function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
 
+function setErr(id, show, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (show) { el.classList.add('show'); if (msg) el.textContent = msg; }
+  else { el.classList.remove('show'); }
+}
+
+function clearErrors(...ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
+  });
+}
+
 // ============================================================
-// LOGIN / REGISTER - FIXED
+// LOGIN - FIXED
 // ============================================================
 async function doLogin() {
+  console.log('✅ Login button clicked');
   clearErrors('login-user-err', 'login-pw-err');
   setErr('login-general-err', false);
   
@@ -1653,6 +1673,7 @@ async function doLogin() {
   if (!password) { setErr('login-pw-err', true); return; }
   
   try {
+    console.log('🔍 Checking user:', username);
     const userSnap = await db.ref('users/' + safeKey(username)).get();
     
     if (!userSnap.exists()) {
@@ -1672,6 +1693,7 @@ async function doLogin() {
       return;
     }
     
+    console.log('✅ Login successful for:', username);
     currentUser = userData;
     currentUsername = username;
     sessionStorage.setItem('pp_current_user', username);
@@ -1691,15 +1713,17 @@ async function doLogin() {
     showDashboard();
     switchTab('home');
     
-    // Silent login - no toast
-    
   } catch (error) {
     console.error('Login error:', error);
     setErr('login-general-err', true, '❌ Login failed. Please try again.');
   }
 }
 
+// ============================================================
+// REGISTER - FIXED
+// ============================================================
 async function doRegister() {
+  console.log('✅ Register button clicked');
   clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
   
   const username = document.getElementById('reg-username').value.trim();
@@ -1716,60 +1740,67 @@ async function doRegister() {
   if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
   if (!ok) return;
   
-  const existing = await db.ref('users/' + safeKey(username)).get();
-  if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
-  
-  const prefix = country === 'KE' ? '+254' : '+256';
-  const fullPhone = prefix + phoneDigits;
-  const now = dateStr();
-  const todayKey = getDateKey(new Date());
-  
-  const newUser = {
-    username: username,
-    password: password,
-    country: country,
-    phone: fullPhone,
-    stake: 0,
-    totalVideosWatched: 0,
-    streakDays: 0,
-    lastWatchDate: null,
-    joinedDate: new Date().getFullYear().toString(),
-    locked: false,
-    referrals: [],
-    referralBonus: 0,
-    watchHistory: {},
-    transactions: {
-      t0: {
-        type: 'Bonus',
-        amount: 4000,
-        note: 'Registration Bonus 🎁',
-        date: now,
-        status: 'completed'
+  try {
+    const existing = await db.ref('users/' + safeKey(username)).get();
+    if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+    
+    const prefix = country === 'KE' ? '+254' : '+256';
+    const fullPhone = prefix + phoneDigits;
+    const now = dateStr();
+    const todayKey = getDateKey(new Date());
+    
+    const newUser = {
+      username: username,
+      password: password,
+      country: country,
+      phone: fullPhone,
+      stake: 0,
+      totalVideosWatched: 0,
+      streakDays: 0,
+      lastWatchDate: null,
+      joinedDate: new Date().getFullYear().toString(),
+      locked: false,
+      referrals: [],
+      referralBonus: 0,
+      watchHistory: {},
+      transactions: {
+        t0: {
+          type: 'Bonus',
+          amount: 4000,
+          note: 'Registration Bonus 🎁',
+          date: now,
+          status: 'completed'
+        }
       }
-    }
-  };
-  
-  await db.ref('users/' + safeKey(username)).set(newUser);
-  
-  currentUser = newUser;
-  currentUsername = username;
-  sessionStorage.setItem('pp_current_user', username);
-  
-  startUserListener(username);
-  startVideoListener();
-  updateBalanceUI();
-  renderHistory();
-  updateProfileUI();
-  updateLevelProgress();
-  renderLevelsTable();
-  showDashboard();
-  switchTab('home');
-  
-  document.getElementById('reg-username').value = '';
-  document.getElementById('reg-phone').value = '';
-  document.getElementById('reg-password').value = '';
-  document.getElementById('reg-confirm').value = '';
-  document.getElementById('reg-country').value = '';
+    };
+    
+    await db.ref('users/' + safeKey(username)).set(newUser);
+    console.log('✅ User registered:', username);
+    
+    currentUser = newUser;
+    currentUsername = username;
+    sessionStorage.setItem('pp_current_user', username);
+    
+    startUserListener(username);
+    startVideoListener();
+    updateBalanceUI();
+    renderHistory();
+    updateProfileUI();
+    updateLevelProgress();
+    renderLevelsTable();
+    showDashboard();
+    switchTab('home');
+    
+    document.getElementById('reg-username').value = '';
+    document.getElementById('reg-phone').value = '';
+    document.getElementById('reg-password').value = '';
+    document.getElementById('reg-confirm').value = '';
+    document.getElementById('reg-country').value = '';
+    
+  } catch (error) {
+    console.error('Registration error:', error);
+    setErr('reg-general-err', true, '❌ Registration failed. Please try again.');
+  }
 }
 
 async function doLogout() {
@@ -1886,9 +1917,46 @@ function closePrivacyModal(event) {
 }
 
 // ============================================================
+// MAKE FUNCTIONS GLOBALLY ACCESSIBLE
+// ============================================================
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.showAuth = showAuth;
+window.switchTab = switchTab;
+window.doLogout = doLogout;
+window.copyReferralLink = copyReferralLink;
+window.showTerms = showTerms;
+window.closeTermsModal = closeTermsModal;
+window.showPrivacy = showPrivacy;
+window.closePrivacyModal = closePrivacyModal;
+window.closeVideoPlayer = closeVideoPlayer;
+window.claimSalary = claimSalary;
+window.setTxFilter = setTxFilter;
+window.renderHistory = renderHistory;
+window.toggleEye = toggleEye;
+window.updateWithdrawPreview = updateWithdrawPreview;
+window.doDeposit = doDeposit;
+window.doWithdraw = doWithdraw;
+window.depPhoneInput = depPhoneInput;
+window.updateRegPrefix = updateRegPrefix;
+window.regPhoneInput = regPhoneInput;
+window.checkStrength = checkStrength;
+window.closeModal = closeModal;
+window.openVideoPlayer = openVideoPlayer;
+window.startVideoListener = startVideoListener;
+window.renderVideoGrid = renderVideoGrid;
+window.updateBalanceUI = updateBalanceUI;
+window.updateProfileUI = updateProfileUI;
+window.updateLevelProgress = updateLevelProgress;
+window.renderLevelsTable = renderLevelsTable;
+
+console.log('✅ All functions exposed to window');
+
+// ============================================================
 // INIT APP
 // ============================================================
 async function initApp() {
+  console.log('🚀 Initializing app...');
   startSettingsListener();
   startLevelsListener();
   startVideoListener();
@@ -1908,6 +1976,7 @@ async function initApp() {
         renderLevelsTable();
         showDashboard();
         switchTab('home');
+        console.log('✅ Auto-login successful for:', savedUser);
       } else {
         sessionStorage.removeItem('pp_current_user');
         showAuth('login-page');
@@ -1922,6 +1991,7 @@ async function initApp() {
   }
   
   document.getElementById('loading-screen').style.display = 'none';
+  console.log('✅ App initialized');
 }
 
 initApp();
