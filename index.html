@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta property="og:title" content="DiamondEarn — Watch Movies, Earn Money">
-<meta property="og:description" content="Watch movies, trailers, and clips. Earn real money. No deposit needed.">
+<meta property="og:description" content="Watch movies, trailers, and clips. Earn real money. Deposit to boost your earnings.">
 <meta property="og:image" content="https://profit-pulse.site/logo.png">
 <meta property="og:url" content="https://profit-pulse.site">
 <meta property="og:type" content="website">
@@ -103,9 +103,13 @@ input[type="password"]{padding-right:46px;}
 .dash-section{display:none;}
 .dash-section.active{display:block;}
 .stats-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 20px;}
-.balance-big{text-align:center;padding:8px 0 16px;}
-.balance-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;}
-.balance-amount{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--accent);}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
+.stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
+.stat-value.stake{color:var(--accent);}
+.stat-value.videos{color:var(--accent3);}
+.stat-value.streak{color:var(--gold);}
 
 /* Video grid (TIERS page) */
 .video-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -135,19 +139,10 @@ input[type="password"]{padding-right:46px;}
 .claim-salary-btn{background:#5CA378;color:#fff;border:none;padding:16px 28px;border-radius:14px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 6px 20px rgba(92,163,120,.4);animation:claimPopIn .3s ease;}
 .claim-salary-btn:disabled{opacity:.6;}
 @keyframes claimPopIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;}
-.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
-.stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
-.stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
-.stat-value.stake{color:var(--accent);}
-.stat-value.videos{color:var(--accent3);}
-.stat-value.streak{color:var(--gold);}
-.action-grid{display:flex;flex-direction:column;gap:12px;padding-left:16px;}
-.action-btn{border:none;border-radius:14px;padding:14px 18px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;width:fit-content;}
+.action-grid{display:flex;flex-direction:column;gap:12px;margin:8px 0;align-items:flex-start;}
+.action-btn{border:none;border-radius:12px;padding:12px 20px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;width:fit-content;}
 .action-btn:active{transform:scale(.96);}
 .btn-icon{font-size:20px;}
-.btn-deposit{background:var(--accent3);color:#fff;}
-.btn-withdraw{background:var(--gold);color:#fff;}
 
 /* Table (Scrollable) */
 .plan-footer{padding:12px;background:var(--surface2);}
@@ -224,13 +219,6 @@ input[type="password"]{padding-right:46px;}
 .red-btn{width:100%;background:#b85c20;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
 .red-btn:active{transform:scale(.98);}
 .red-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.amber-btn{width:100%;background:#06b6d4;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;}
-.amber-btn:active{transform:scale(.98);}
-.amber-btn:disabled{opacity:0.4;cursor:not-allowed;}
-
-/* Section-specific backgrounds */
-#sec-deposit .action-card{background:linear-gradient(135deg, rgba(16,185,129,.1) 0%, rgba(16,185,129,.05) 100%);border:1px solid rgba(16,185,129,.3);}
-#sec-withdraw .action-card{background:linear-gradient(135deg, rgba(255,107,91,.1) 0%, rgba(255,107,91,.05) 100%);border:1px solid rgba(255,107,91,.3);}
 
 .popup-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:#1e293b;color:#fff;font-size:13px;font-weight:600;padding:14px 22px;border-radius:16px;opacity:0;transition:.35s;z-index:9998;pointer-events:none;text-align:center;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.25);line-height:1.5;}
 .popup-banner.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -282,7 +270,7 @@ input[type="password"]{padding-right:46px;}
 
 .tx-card.tx-deposit::before{background:linear-gradient(90deg, #10b981, #059669);}
 .tx-card.tx-withdrawal::before{background:linear-gradient(90deg, #ef4444, #dc2626);}
-.tx-card.tx-profit::before{background:linear-gradient(90deg, #22c55e, #16a34a);}
+.tx-card.tx-reward::before{background:linear-gradient(90deg, #22c55e, #16a34a);}
 .tx-card.tx-bonus::before{background:linear-gradient(90deg, #f59e0b, #d97706);}
 
 .tx-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
@@ -424,23 +412,23 @@ input[type="password"]{padding-right:46px;}
   <div class="dash-section active" id="sec-home">
     <div class="section">
       <div class="stats-card">
-        <div class="stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="stat-box" style="padding:14px 8px;text-align:center;">
-            <div class="stat-label" style="font-size:8px;margin-bottom:6px;">STAKE</div>
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="stat-box">
+            <div class="stat-label">STAKE</div>
             <div class="stat-value stake" id="stat-stake">UGX 0</div>
           </div>
-          <div class="stat-box" style="padding:14px 8px;text-align:center;">
-            <div class="stat-label" style="font-size:8px;margin-bottom:6px;">TODAY'S VIDEOS</div>
+          <div class="stat-box">
+            <div class="stat-label">TODAY'S VIDEOS</div>
             <div class="stat-value videos" id="stat-today-videos">0/10</div>
           </div>
         </div>
-        <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="stat-box" style="padding:12px 8px;text-align:center;">
-            <div class="stat-label" style="font-size:8px;margin-bottom:4px;">🔥 STREAK</div>
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
+          <div class="stat-box">
+            <div class="stat-label">🔥 STREAK</div>
             <div class="stat-value streak" id="stat-streak">0 days</div>
           </div>
-          <div class="stat-box" style="padding:12px 8px;text-align:center;">
-            <div class="stat-label" style="font-size:8px;margin-bottom:4px;">📊 LEVEL</div>
+          <div class="stat-box">
+            <div class="stat-label">📊 LEVEL</div>
             <div class="stat-value" style="font-size:12px;font-weight:800;color:var(--accent);" id="stat-level">Trainee</div>
           </div>
         </div>
@@ -459,9 +447,10 @@ input[type="password"]{padding-right:46px;}
     </div>
 
     <div class="section">
-      <div class="action-grid" style="display:flex;flex-direction:column;gap:12px;margin:8px 0;align-items:flex-start;">
-        <button class="action-btn" style="background:#22c55e;border:none;color:white;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;" onclick="switchTab('team')"><span class="btn-icon">🎬</span> Watch Videos</button>
-        <button class="action-btn" style="background:#ef4444;border:none;color:white;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;" onclick="switchTab('withdraw')"><span class="btn-icon">💰</span> Withdraw</button>
+      <div class="action-grid">
+        <button class="action-btn" style="background:#22c55e;border:none;color:white;" onclick="switchTab('team')"><span class="btn-icon">🎬</span> Watch Videos</button>
+        <button class="action-btn" style="background:#F2B84B;border:none;color:#14110F;" onclick="switchTab('deposit')"><span class="btn-icon">💳</span> Deposit</button>
+        <button class="action-btn" style="background:#ef4444;border:none;color:white;" onclick="switchTab('withdraw')"><span class="btn-icon">💰</span> Withdraw</button>
       </div>
     </div>
   </div>
@@ -470,12 +459,10 @@ input[type="password"]{padding-right:46px;}
   <div class="dash-section" id="sec-history">
     <div class="inner-header"><span style="font-size:22px">📋</span><div><div class="inner-title">Records</div><div class="inner-sub">All your transactions</div></div></div>
     
-    <!-- Search and Filter -->
     <div style="margin-bottom:16px;padding:0 16px;">
       <input type="text" id="tx-search-box" placeholder="🔍 Search transactions..." class="tx-search-input" oninput="renderHistory()">
     </div>
     
-    <!-- Filter Pills -->
     <div style="padding:0 16px;">
       <div class="tx-filter-pills">
         <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
@@ -486,7 +473,6 @@ input[type="password"]{padding-right:46px;}
       </div>
     </div>
     
-    <!-- Transaction Cards -->
     <div class="section">
       <div id="history-list" class="tx-cards-grid"><div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Yet</div><div class="tx-empty-text">Your transaction history will appear here.</div></div></div>
     </div>
@@ -586,7 +572,7 @@ input[type="password"]{padding-right:46px;}
         <div class="profile-simple-item"><span class="profile-simple-label">Videos Watched</span><span class="profile-simple-value" id="profile-videos-simple">0</span></div>
         <div class="profile-simple-item"><span class="profile-simple-label">Streak</span><span class="profile-simple-value" id="profile-streak-simple">0 days</span></div>
       </div>
-      <button class="logout-btn-new" onclick="doLogout()">?? Sign Out</button>
+      <button class="logout-btn-new" onclick="doLogout()">🚪 Sign Out</button>
     </div>
   </div>
 
@@ -698,22 +684,16 @@ input[type="password"]{padding-right:46px;}
     <div class="modal-msg" style="text-align:left;">
       <strong>1. Introduction</strong><br>
       Welcome to DiamondEarn. These Terms of Service govern your use of our platform.<br><br>
-      
       <strong>2. User Responsibilities</strong><br>
       You are responsible for maintaining the confidentiality of your account and password.<br><br>
-      
       <strong>3. Earning Policy</strong><br>
       You earn by watching videos. Rewards are credited to your STAKE account.<br><br>
-      
       <strong>4. Prohibited Activities</strong><br>
       You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.<br><br>
-      
       <strong>5. Limitation of Liability</strong><br>
       DiamondEarn is provided "as is" without warranties.<br><br>
-      
       <strong>6. Modifications</strong><br>
       We reserve the right to modify these terms at any time.<br><br>
-      
       <strong>7. Governing Law</strong><br>
       These terms are governed by the laws of Uganda and Kenya as applicable.
     </div>
@@ -729,19 +709,14 @@ input[type="password"]{padding-right:46px;}
     <div class="modal-msg" style="text-align:left;">
       <strong>1. Information We Collect</strong><br>
       We collect personal information including name, phone number, and transaction history.<br><br>
-      
       <strong>2. How We Use Information</strong><br>
       Your information is used to process transactions, prevent fraud, and improve our services.<br><br>
-      
       <strong>3. Data Protection</strong><br>
       We implement industry-standard security measures to protect your data.<br><br>
-      
       <strong>4. Third-Party Sharing</strong><br>
       We do not sell your personal information.<br><br>
-      
       <strong>5. Your Rights</strong><br>
       You have the right to access, modify, or delete your personal information.<br><br>
-      
       <strong>6. Contact Us</strong><br>
       For privacy concerns, contact our support team.
     </div>
@@ -758,7 +733,7 @@ input[type="password"]{padding-right:46px;}
 <script>
 // ============================================================
 // DIAMOND EARN - WATCH & EARN PLATFORM
-// STAKE ONLY - No investment features
+// STAKE ONLY - Deposit kept via MarzPay
 // ============================================================
 
 const firebaseConfig = {
@@ -808,7 +783,6 @@ let settingsData = {
 };
 let levelsData = {};
 let videosData = {};
-let profitInterval = null;
 let userListener = null;
 
 // ============================================================
@@ -1011,7 +985,6 @@ function openVideoPlayer(id) {
   const v = videosData[id];
   if (!v) return;
   
-  // Check daily limit
   const today = getDateKey(new Date());
   const watchedToday = currentUser?.watchHistory?.[today] || 0;
   const dailyLimit = settingsData.dailyVideoLimit || 10;
@@ -1117,9 +1090,7 @@ async function claimSalary() {
       const yesterdayStr = getDateKey(yesterday);
       
       if (lastWatchDate === yesterdayStr) {
-        // Consecutive day
         streakDays = (user.streakDays || 0) + 1;
-        // Bonus every 5 days
         if (streakDays % 5 === 0) {
           const bonus = settingsData.streakBonus || 1000;
           updates.stake = newStake + bonus;
@@ -1132,7 +1103,6 @@ async function claimSalary() {
           };
         }
       } else {
-        // Streak broken
         streakDays = 1;
       }
     }
@@ -1142,7 +1112,6 @@ async function claimSalary() {
     
     await userRef.update(updates);
     
-    // Update currentUser
     currentUser = await userRef.get().then(s => s.val());
     updateBalanceUI();
     renderHistory();
@@ -1178,7 +1147,6 @@ function updateBalanceUI() {
   const streak = currentUser.streakDays || 0;
   document.getElementById('stat-streak').textContent = streak + ' days';
   
-  // Get current level name
   const userVideos = currentUser.totalVideosWatched || 0;
   let levelName = 'Trainee';
   const levelKeys = Object.keys(levelsData).sort((a, b) => {
@@ -1210,7 +1178,6 @@ function updateProfileUI() {
   document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
   document.getElementById('top-username').textContent = currentUser.username || 'User';
   
-  // Referral info
   document.getElementById('total-referrals').textContent = currentUser.referrals?.length || 0;
   document.getElementById('referral-bonus').textContent = fmt(currentUser.referralBonus || 0);
 }
@@ -1265,7 +1232,7 @@ function renderHistory() {
   }
   
   const typeIcons = { 'Video Reward': '🎬', 'Streak Bonus': '🔥', Deposit: '💳', Withdrawal: '💸', Bonus: '🎁' };
-  const typeClasses = { 'Video Reward': 'tx-deposit', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus' };
+  const typeClasses = { 'Video Reward': 'tx-reward', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus' };
   
   if (wrap) {
     wrap.innerHTML = '<div class="tx-cards-grid">' + 
@@ -1275,7 +1242,7 @@ function renderHistory() {
         const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
         const statusText = isPending ? '⏳ Pending' : isFailed ? '❌ Failed' : '✅ Completed';
         const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
-        const typeClass = typeClasses[tx.type] || 'tx-profit';
+        const typeClass = typeClasses[tx.type] || 'tx-reward';
         const icon = typeIcons[tx.type] || '💰';
         const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
         
@@ -1308,32 +1275,322 @@ function startSettingsListener() {
 }
 
 // ============================================================
+// MARZPAY FUNCTIONS
+// ============================================================
+function getMarzAuth() {
+  let key = (settingsData.marzApiKey || '').trim();
+  if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
+  return 'Basic ' + key;
+}
+
+async function marzCollect(phone, amount, reference, description) {
+  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
+  const formData = new FormData();
+  formData.append('phone_number', phone);
+  formData.append('amount', String(amount));
+  formData.append('country', 'UG');
+  formData.append('reference', reference);
+  formData.append('description', description);
+  const response = await fetch(MARZ_API + '/collect-money', {
+    method: 'POST',
+    headers: { 'Authorization': getMarzAuth() },
+    body: formData
+  });
+  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
+  return await response.json();
+}
+
+async function marzSend(phone, amount, reference, description) {
+  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
+  const formData = new FormData();
+  formData.append('phone_number', phone);
+  formData.append('amount', String(amount));
+  formData.append('country', 'UG');
+  formData.append('reference', reference);
+  formData.append('description', description);
+  const response = await fetch(MARZ_API + '/send-money', {
+    method: 'POST',
+    headers: { 'Authorization': getMarzAuth() },
+    body: formData
+  });
+  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
+  return await response.json();
+}
+
+async function marzCheckStatus(uuid) {
+  const response = await fetch(MARZ_API + '/transactions/' + uuid, {
+    headers: { 'Authorization': getMarzAuth() }
+  });
+  if (!response.ok) return null;
+  return await response.json();
+}
+
+async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, intervalMs));
+    try {
+      const result = await marzCheckStatus(uuid);
+      if (!result) continue;
+      const status = (result?.transaction?.status || result?.data?.transaction?.status || result?.status || '').toLowerCase();
+      if (status === 'completed' || status === 'successful' || status === 'success') return 'success';
+      if (status === 'failed' || status === 'cancelled') return 'failed';
+    } catch (e) { continue; }
+  }
+  return 'timeout';
+}
+
+// ============================================================
 // DEPOSIT
 // ============================================================
 async function doDeposit() {
-  // Deposit function - adds to STAKE only
-  // Similar to original but simplified
+  clearErrors('dep-phone-err', 'dep-amount-err');
+  const phoneDigits = document.getElementById('dep-phone').value.trim();
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
+    setErr('dep-phone-err', true, 'Enter 9 digits starting with 7');
+    return;
+  }
+  const minDep = settingsData.minDeposit || 10000;
+  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
+  if (amount < minDep) {
+    setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
+    return;
+  }
+  if (!settingsData.marzApiKey) {
+    sendAdminNotification('deposit_error', currentUsername, amount, 'Payment API not configured');
+    return;
+  }
+  
+  const btn = document.getElementById('dep-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  const fullPhone = '+256' + phoneDigits;
+  const reference = genUUID();
+  const totalAmount = amount;
+  const oldStake = currentUser.stake || 0;
+  
+  document.getElementById('dep-phone').value = '';
+  document.getElementById('dep-amount').value = '';
+  
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = '🔐 Confirm with mobile money PIN';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1000);
+  
+  const adminTxKey = 'adm_dep_' + Date.now();
+  const adminTxRecord = {
+    type: 'Deposit',
+    username: currentUsername,
+    phone: fullPhone,
+    amount: amount,
+    reference: reference,
+    date: dateStr(),
+    status: 'pending'
+  };
+  
+  try {
+    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+    
+    const result = await marzCollect(fullPhone, totalAmount, reference, 'DiamondEarn Deposit');
+    if (result.status !== 'success') {
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
+      btn.disabled = false;
+      btn.textContent = '💳 DEPOSIT TO STAKE';
+      return;
+    }
+    
+    const txUuid = result?.data?.transaction?.uuid;
+    const pollResult = await pollPaymentStatus(txUuid);
+    
+    if (pollResult === 'success') {
+      const newStake = oldStake + amount;
+      const updates = {
+        stake: newStake,
+        [`transactions/tx_dep_${Date.now()}`]: {
+          type: 'Deposit',
+          amount: amount,
+          note: 'Deposit confirmed ✅',
+          date: dateStr(),
+          status: 'completed'
+        }
+      };
+      await db.ref('users/' + safeKey(currentUsername)).update(updates);
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+      
+      popup.textContent = `✅ Deposit of ${fmt(amount)} added to STAKE!`;
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 2000);
+      
+    } else if (pollResult === 'failed') {
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
+    } else {
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
+    }
+  } catch (error) {
+    console.error('Deposit error:', error);
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    sendAdminNotification('deposit_error', currentUsername, amount, error.message);
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '💳 DEPOSIT TO STAKE';
+  switchTab('home');
 }
 
 // ============================================================
 // WITHDRAWAL
 // ============================================================
 async function doWithdraw() {
-  // Withdrawal from STAKE only
-  // Similar to original but uses stake instead of balance
+  clearErrors('with-amount-err');
+  if (settingsData.withdrawLocked) {
+    sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
+    return;
+  }
+  
+  const minWith = settingsData.minWithdraw || 10000;
+  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  if (amount < minWith) {
+    setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith));
+    return;
+  }
+  
+  const stake = currentUser.stake || 0;
+  if (stake < amount) {
+    setErr('with-amount-err', true, 'Insufficient STAKE.');
+    return;
+  }
+  
+  const feePercent = (settingsData.withdrawCharge || 10) / 100;
+  const fee = Math.floor(amount * feePercent);
+  const sendAmount = amount - fee;
+  const userPhone = currentUser.phone;
+  const btn = document.getElementById('with-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  const newStake = stake - amount;
+  const txKey = 'tx_wd_' + Date.now();
+  const reqKey = 'wreq_' + Date.now();
+  const reference = genUUID();
+  
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = '💸 You will receive your funds shortly';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1000);
+  
+  const adminTxKey = 'adm_wd_' + Date.now();
+  const adminTxRecord = {
+    type: 'Withdrawal',
+    username: currentUsername,
+    phone: userPhone,
+    amount: amount,
+    reference: reference,
+    date: dateStr(),
+    status: 'pending'
+  };
+  
+  try {
+    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+    
+    await db.ref('users/' + safeKey(currentUsername)).update({
+      stake: newStake,
+      [`transactions/${txKey}`]: {
+        type: 'Withdrawal',
+        amount: -amount,
+        note: 'Withdrawal Pending',
+        date: dateStr(),
+        status: 'pending'
+      }
+    });
+    
+    await db.ref('pendingWithdrawals/' + reqKey).set({
+      username: currentUsername,
+      userId: safeKey(currentUsername),
+      phone: userPhone,
+      amount,
+      fee,
+      sendAmount,
+      txKey,
+      adminTxKey,
+      date: dateStr(),
+      status: 'pending',
+      processed: false
+    });
+    
+    if (settingsData.withdrawApproval === true) {
+      sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
+    } else {
+      await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
+    }
+    
+    document.getElementById('with-amount').value = '';
+    document.getElementById('withdraw-preview').style.display = 'none';
+  } catch (error) {
+    console.error('Withdrawal error:', error);
+    const refundedStake = stake;
+    await db.ref('users/' + safeKey(currentUsername)).update({ stake: refundedStake });
+    await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '💰 WITHDRAW';
+  switchTab('home');
 }
 
-// ============================================================
-// REFERRAL
-// ============================================================
-function copyReferralLink() {
-  const link = document.getElementById('referral-link-display').textContent;
-  navigator.clipboard.writeText(link).then(() => {
-    const popup = document.getElementById('popup-banner');
-    popup.textContent = '📋 Referral link copied!';
-    popup.classList.add('show');
-    setTimeout(() => popup.classList.remove('show'), 2000);
-  });
+async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee) {
+  const username = currentUsername;
+  const userId = safeKey(username);
+  
+  try {
+    const sendResult = await marzSend(userPhone, sendAmount, reference, 'DiamondEarn Withdrawal');
+    if (sendResult && sendResult.status === 'success') {
+      await db.ref('users/' + userId + '/transactions/' + txKey).update({
+        status: 'completed',
+        note: `Withdrawal sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
+      });
+      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+    } else {
+      const userSnap = await db.ref('users/' + userId).get();
+      const user = userSnap.val();
+      const refundedStake = (user.stake || 0) + amount;
+      
+      await db.ref('users/' + userId).update({
+        stake: refundedStake,
+        [`transactions/${txKey}`]: {
+          type: 'Withdrawal',
+          amount: -amount,
+          note: 'Withdrawal Failed - Refunded',
+          date: dateStr(),
+          status: 'failed'
+        }
+      });
+      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('withdrawal_auto_failed', username, amount, 'Marz send failed: ' + (sendResult?.message || 'Unknown error'));
+    }
+  } catch (sendError) {
+    const userSnap = await db.ref('users/' + userId).get();
+    const user = userSnap.val();
+    const refundedStake = (user.stake || 0) + amount;
+    
+    await db.ref('users/' + userId).update({
+      stake: refundedStake,
+      [`transactions/${txKey}`]: {
+        type: 'Withdrawal',
+        amount: -amount,
+        note: 'Withdrawal Failed - Refunded',
+        date: dateStr(),
+        status: 'failed'
+      }
+    });
+    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    sendAdminNotification('withdrawal_auto_failed', username, amount, 'Withdrawal error: ' + sendError.message);
+  }
 }
 
 // ============================================================
@@ -1379,21 +1636,145 @@ function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 
 // LOGIN / REGISTER
 // ============================================================
 async function doLogin() {
-  // Login function - similar to original
+  clearErrors('login-user-err', 'login-pw-err');
+  setErr('login-general-err', false);
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username) { setErr('login-user-err', true); return; }
+  if (!password) { setErr('login-pw-err', true); return; }
+  try {
+    const userSnap = await db.ref('users/' + safeKey(username)).get();
+    if (!userSnap.exists()) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
+    const userData = userSnap.val();
+    if (userData.password !== password) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
+    if (userData.locked) { setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.'); return; }
+    currentUser = userData;
+    currentUsername = username;
+    sessionStorage.setItem('pp_current_user', username);
+    
+    startUserListener(username);
+    startVideoListener();
+    updateBalanceUI();
+    renderHistory();
+    updateProfileUI();
+    updateLevelProgress();
+    renderLevelsTable();
+    showDashboard();
+    switchTab('home');
+  } catch (error) {
+    console.error('Login error:', error);
+    setErr('login-general-err', true, '❌ Login failed. Please try again.');
+  }
 }
 
 async function doRegister() {
-  // Register function - similar to original
+  clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
+  const username = document.getElementById('reg-username').value.trim();
+  const country = document.getElementById('reg-country').value;
+  const phoneDigits = document.getElementById('reg-phone').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  let ok = true;
+  if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
+  if (!country) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('reg-phone-err', true, 'Enter 9 digits starting with 7'); ok = false; }
+  if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
+  if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
+  if (!ok) return;
+  const existing = await db.ref('users/' + safeKey(username)).get();
+  if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+  const prefix = country === 'KE' ? '+254' : '+256';
+  const fullPhone = prefix + phoneDigits;
+  const now = dateStr();
+  const todayKey = getDateKey(new Date());
+  const newUser = {
+    username, password, country, phone: fullPhone, stake: 0,
+    totalVideosWatched: 0,
+    streakDays: 0,
+    lastWatchDate: null,
+    joinedDate: new Date().getFullYear().toString(),
+    locked: false,
+    referrals: [],
+    referralBonus: 0,
+    watchHistory: {},
+    transactions: {
+      t0: {
+        type: 'Bonus',
+        amount: 4000,
+        note: 'Registration Bonus 🎁',
+        date: now,
+        status: 'completed'
+      }
+    }
+  };
+  await db.ref('users/' + safeKey(username)).set(newUser);
+  currentUser = newUser;
+  currentUsername = username;
+  sessionStorage.setItem('pp_current_user', username);
+  startUserListener(username);
+  startVideoListener();
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderLevelsTable();
+  showDashboard();
+  switchTab('home');
+  
+  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-phone').value = '';
+  document.getElementById('reg-password').value = '';
+  document.getElementById('reg-confirm').value = '';
+  document.getElementById('reg-country').value = '';
 }
 
 async function doLogout() {
-  // Logout function - similar to original
+  if (userListener && currentUsername) db.ref('users/' + safeKey(currentUsername)).off('value', userListener);
+  sessionStorage.removeItem('pp_current_user');
+  currentUser = null;
+  currentUsername = null;
+  setTimeout(() => {
+    document.getElementById('dashboard-page').style.display = 'none';
+    document.getElementById('dashboard-page').classList.remove('active');
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    showAuth('login-page');
+  }, 800);
+}
+
+function copyReferralLink() {
+  const link = document.getElementById('referral-link-display').textContent;
+  navigator.clipboard.writeText(link).then(() => {
+    const popup = document.getElementById('popup-banner');
+    popup.textContent = '📋 Referral link copied!';
+    popup.classList.add('show');
+    setTimeout(() => popup.classList.remove('show'), 2000);
+  });
+}
+
+function sendAdminNotification(type, username, amount, message) {
+  try {
+    db.ref('adminNotifications/notif_' + Date.now()).set({
+      type, username, amount, message,
+      date: dateStr(),
+      read: false
+    });
+  } catch (e) { console.warn(e); }
 }
 
 // ============================================================
 // TAB SWITCHING
 // ============================================================
-const tabMap = { home: 'sec-home', history: 'sec-history', team: 'sec-team', plan: 'sec-plan', profile: 'sec-profile', deposit: 'sec-deposit', withdraw: 'sec-withdraw', errands: 'sec-errands' };
+const tabMap = {
+  home: 'sec-home',
+  history: 'sec-history',
+  team: 'sec-team',
+  plan: 'sec-plan',
+  profile: 'sec-profile',
+  deposit: 'sec-deposit',
+  withdraw: 'sec-withdraw',
+  errands: 'sec-errands'
+};
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
 function switchTab(tab) {
@@ -1408,17 +1789,51 @@ function switchTab(tab) {
   if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
 
+function updateWithdrawPreview() {
+  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  const feePercent = (settingsData.withdrawCharge || 10) / 100;
+  const fee = Math.floor(amount * feePercent);
+  const net = amount - fee;
+  const preview = document.getElementById('withdraw-preview');
+  const netEl = document.getElementById('withdraw-net-amount');
+  const feeEl = document.getElementById('withdraw-fee-amount');
+  if (amount > 0) {
+    if (preview) preview.style.display = 'block';
+    if (netEl) netEl.textContent = fmt(net);
+    if (feeEl) feeEl.textContent = fmt(fee);
+  } else {
+    if (preview) preview.style.display = 'none';
+  }
+}
+
+function startUserListener(username) {
+  if (userListener) db.ref('users/' + safeKey(username)).off('value', userListener);
+  userListener = db.ref('users/' + safeKey(username)).on('value', (snap) => {
+    if (snap.exists()) {
+      currentUser = snap.val();
+      updateBalanceUI();
+      renderHistory();
+      updateProfileUI();
+      updateLevelProgress();
+      renderLevelsTable();
+    }
+  });
+}
+
+function closeModal() {}
+function showToast() {}
+
 // ============================================================
 // TERMS & PRIVACY
 // ============================================================
-function showTerms() { 
+function showTerms() {
   document.getElementById('terms-modal-overlay').classList.add('open');
 }
 function closeTermsModal(event) {
   if (event && event.target.id !== 'terms-modal-overlay') return;
   document.getElementById('terms-modal-overlay').classList.remove('open');
 }
-function showPrivacy() { 
+function showPrivacy() {
   document.getElementById('privacy-modal-overlay').classList.add('open');
 }
 function closePrivacyModal(event) {
@@ -1445,6 +1860,8 @@ async function initApp() {
         updateBalanceUI();
         renderHistory();
         updateProfileUI();
+        updateLevelProgress();
+        renderLevelsTable();
         showDashboard();
         switchTab('home');
       } else {
@@ -1461,19 +1878,6 @@ async function initApp() {
   }
   
   document.getElementById('loading-screen').style.display = 'none';
-}
-
-function startUserListener(username) {
-  if (userListener) db.ref('users/' + safeKey(username)).off('value', userListener);
-  userListener = db.ref('users/' + safeKey(username)).on('value', (snap) => {
-    if (snap.exists()) {
-      currentUser = snap.val();
-      updateBalanceUI();
-      renderHistory();
-      updateProfileUI();
-      updateLevelProgress();
-    }
-  });
 }
 
 initApp();
