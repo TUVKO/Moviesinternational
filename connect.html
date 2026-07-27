@@ -4,46 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta property="og:title" content="DiamondEarn Command Center">
-<meta property="og:description" content="Watch Movies, Earn Money — Admin Panel">
+<meta property="og:description" content="Just like mining diamonds — rare, valuable, and worth the investment. With DiamondEarn, you mine daily profits effortlessly using AI-powered trading.">
 <meta property="og:image" content="https://profit-pulse.site/logo.png">
 <meta property="og:url" content="https://profit-pulse.site/connect.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://profit-pulse.site/logo.png">
 <title>DiamondEarn Command Center</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 :root{
-  --bg:#14110F;
-  --surface:#211D18;
-  --surface2:#2A2520;
-  --surface3:#332C24;
-  --border:#3D362C;
-  --accent:#F2B84B;
-  --accent2:#D99A3D;
-  --accent3:#F2B84B;
-  --warn:#E1584B;
-  --gold:#F2B84B;
-  --text:#F6F1E7;
-  --muted:#B8AF9E;
-  --table-header:#211D18;
-  --success:#5CA378;
-  --danger:#E1584B;
+  --bg:#0f9d58;
+  --surface:#0f9d58;
+  --surface2:#0f9d58;
+  --surface3:#0f9d58;
+  --border:#ffffff;
+  --accent:#ffffff;
+  --accent2:#ffffff;
+  --accent3:#ffffff;
+  --warn:#ef4444;
+  --gold:#ffffff;
+  --btn:#0c8046;
+  --text:#ffffff;
+  --muted:#ffffff;
+  --table-header:#0f9d58;
+  --success:#10b981;
+  --danger:#ef4444;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 .auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg);}
 .auth-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:32px;width:100%;max-width:450px;}
 .auth-logo{text-align:center;margin-bottom:28px;}
-.auth-logo-icon{width:64px;height:64px;background:var(--accent);border-radius:16px;display:grid;place-items:center;font-size:28px;margin:0 auto 12px;color:#fff;}
-.auth-title{font-family:'Fraunces',serif;font-size:24px;font-weight:900;color:var(--accent);margin-bottom:4px;text-align:center;}
+.auth-logo-icon{width:64px;height:64px;background:var(--btn);border-radius:16px;display:grid;place-items:center;font-size:28px;margin:0 auto 12px;color:#fff;}
+.auth-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--accent);margin-bottom:4px;text-align:center;}
 .auth-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:24px;}
 .f-group{margin-bottom:16px;}
 .f-label{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
 .f-wrap{position:relative;}
 .f-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
-.f-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 42px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);outline:none;}
+.f-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 42px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;}
 .f-input:focus{border-color:var(--accent);}
 .f-err{font-size:11px;color:var(--warn);margin-top:5px;display:none;}
 .f-err.show{display:block;}
@@ -52,30 +53,30 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 input[type="password"]{padding-right:46px;}
 .auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted);}
 .auth-switch a{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;}
-.submit-btn{width:100%;background:var(--accent);border:none;border-radius:14px;padding:15px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;}
+.submit-btn{width:100%;background:var(--btn);border:none;border-radius:14px;padding:15px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;}
 .submit-btn:active{transform:scale(.98);}
-.select-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);outline:none;}
+.select-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;}
 .select-input:focus{border-color:var(--accent);}
 .phone-prefix-badge{background:var(--surface3);border-right:1px solid var(--border);padding:13px 12px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:700;white-space:nowrap;}
 .admin-wrap{display:none;min-height:100vh;}
 .admin-wrap.active{display:flex;}
 .sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);min-height:100vh;display:flex;flex-direction:column;position:fixed;left:0;top:0;z-index:100;}
 .sidebar-brand{padding:24px 20px 18px;border-bottom:1px solid var(--border);}
-.sidebar-brand-name{font-family:'Fraunces',serif;font-size:20px;font-weight:900;color:var(--accent);}
+.sidebar-brand-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--accent);}
 .sidebar-sub{font-size:10px;color:var(--muted);margin-top:2px;}
 .sidebar-nav{flex:1;padding:16px 12px;overflow-y:auto;}
 .nav-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;margin-bottom:4px;font-size:13px;font-weight:600;color:var(--muted);}
 .nav-item:hover{background:var(--surface2);color:var(--text);}
-.nav-item.active{background:var(--surface3);color:var(--accent);}
+.nav-item.active{background:var(--btn);color:#fff;}
 .nav-icon{font-size:18px;width:24px;text-align:center;}
 .nav-badge{margin-left:auto;background:var(--warn);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px;display:none;}
 .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border);}
-.logout-btn{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--warn);cursor:pointer;}
+.logout-btn{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:var(--warn);cursor:pointer;}
 .logout-btn:active{transform:scale(.98);}
 .main-content{margin-left:260px;flex:1;padding:28px;min-height:100vh;}
 .page{display:none;}
 .page.active{display:block;}
-.page-title{font-family:'Fraunces',serif;font-size:24px;font-weight:800;margin-bottom:4px;color:var(--accent);}
+.page-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:800;margin-bottom:4px;color:var(--accent);}
 .page-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 16px;}
@@ -99,7 +100,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .badge-rejected{background:var(--surface2);color:var(--warn);border:1px solid var(--warn);}
 .badge-locked{background:var(--surface2);color:var(--warn);border:1px solid var(--warn);}
 .badge-active{background:var(--surface2);color:var(--success);border:1px solid var(--success);}
-.btn{border:none;border-radius:8px;padding:7px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn{border:none;border-radius:8px;padding:7px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 .btn:active{transform:scale(.97);}
 .btn-approve{background:var(--surface2);color:var(--success);border:1px solid var(--success);}
 .btn-approve:hover{background:var(--surface3);}
@@ -109,7 +110,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .btn-edit:hover{background:var(--surface3);}
 .btn-delete{background:var(--surface2);color:var(--warn);border:1px solid var(--warn);}
 .btn-delete:hover{background:var(--surface3);}
-.btn-save{background:var(--accent);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
+.btn-save{background:var(--btn);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .btn-danger{background:var(--warn);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .btn-success{background:var(--success);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .settings-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
@@ -117,7 +118,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .settings-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
 .settings-row{display:flex;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
 .settings-label{font-size:12px;font-weight:700;color:var(--muted);min-width:200px;}
-.settings-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;min-width:200px;}
+.settings-input{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;min-width:200px;}
 .settings-input:focus{border-color:var(--accent);}
 .settings-input.mono{font-family:'JetBrains Mono',monospace;font-size:12px;}
 .pct-input{width:80px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);outline:none;text-align:center;}
@@ -141,7 +142,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;}
 .loading-spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.notif-bell{position:fixed;bottom:28px;right:28px;width:54px;height:54px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:300;color:#fff;}
+.notif-bell{position:fixed;bottom:28px;right:28px;width:54px;height:54px;background:var(--btn);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;z-index:300;color:#fff;}
 .notif-bell:hover{transform:scale(1.08);}
 .notif-badge{position:absolute;top:-4px;right:-4px;background:var(--warn);color:#fff;font-size:10px;font-weight:800;width:20px;height:20px;border-radius:50%;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);}
 .notif-badge.show{display:flex;}
@@ -149,7 +150,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .notif-drawer.open{right:0;}
 .notif-drawer-header{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .notif-drawer-title{font-size:16px;font-weight:800;}
-.notif-close{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;}
+.notif-close{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;}
 .notif-list{flex:1;overflow-y:auto;padding:16px;}
 .notif-item{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;position:relative;}
 .notif-item.unread{border-color:var(--warn);background:var(--surface2);}
@@ -158,12 +159,12 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .notif-item-dismiss{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px;}
 .notif-item-dismiss:hover{color:var(--warn);}
 .notif-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
-.notif-clear-btn{margin:12px 16px;width:calc(100% - 32px);background:var(--surface2);border:1px solid var(--warn);border-radius:10px;padding:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--warn);cursor:pointer;}
+.notif-clear-btn{margin:12px 16px;width:calc(100% - 32px);background:var(--surface2);border:1px solid var(--warn);border-radius:10px;padding:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:var(--warn);cursor:pointer;}
 .notif-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:350;display:none;}
 .notif-overlay.open{display:block;}
 .tube-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
 .tube-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}
-.tube-avatar{width:52px;height:52px;background:var(--accent);border-radius:50%;display:grid;place-items:center;font-size:22px;margin:0 auto 10px;color:#fff;}
+.tube-avatar{width:52px;height:52px;background:var(--btn);border-radius:50%;display:grid;place-items:center;font-size:22px;margin:0 auto 10px;color:#fff;}
 .tube-name{font-size:14px;font-weight:800;margin-bottom:4px;}
 .tube-amt{font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--accent3);}
 .admin-footer{position:fixed;bottom:0;left:260px;right:0;background:var(--surface);border-top:1px solid var(--border);padding:8px 16px;z-index:100;}
@@ -172,16 +173,13 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .admin-footer-links{display:flex;align-items:center;gap:8px;}
 .admin-footer-link{background:none;border:none;color:var(--accent);font-size:10px;font-weight:700;cursor:pointer;}
 .admin-footer-divider{color:var(--border);font-size:8px;}
-.level-input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-size:11px;font-family:'Inter',sans-serif;width:100%;min-width:50px;}
-.level-input:focus{border-color:var(--accent);outline:none;}
-.level-input.mono{font-family:'JetBrains Mono',monospace;}
 @media(max-width:900px){.sidebar{width:60px;}.sidebar-brand,.sidebar-sub,.nav-item span:not(.nav-icon){display:none;}.main-content{margin-left:60px;}.stats-row{grid-template-columns:repeat(2,1fr);}.admin-footer{left:60px;}}
 </style>
 </head>
 <body>
 
 <div class="loading-screen" id="loading-screen">
-  <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:8px;">DiamondEarn</div>
+  <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:8px;">DiamondEarn</div>
   <div class="loading-spinner"></div>
 </div>
 
@@ -289,11 +287,14 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showPage('pg-dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
       <div class="nav-item" onclick="showPage('pg-users')"><span class="nav-icon">👥</span><span>Users</span></div>
+      <div class="nav-item" onclick="showPage('pg-machines')"><span class="nav-icon">🛠️</span><span>Machines</span></div>
+      <div class="nav-item" onclick="showPage('pg-tube')"><span class="nav-icon">📈</span><span>Investors</span></div>
       <div class="nav-item" onclick="showPage('pg-transactions')"><span class="nav-icon">💰</span><span>Transactions</span></div>
       <div class="nav-item" onclick="showPage('pg-withdrawals')"><span class="nav-icon">💸</span><span>Withdrawals</span><span class="nav-badge" id="withdrawals-nav-badge">0</span></div>
-      <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
-      <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
+      <div class="nav-item" onclick="showPage('pg-debit')"><span class="nav-icon">💳</span><span>Debit User</span></div>
+      <div class="nav-item" onclick="showPage('pg-sog')"><span class="nav-icon">🗑️</span><span>SOG</span></div>
       <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+      <div class="nav-item" onclick="showPage('pg-admin-withdraw')"><span class="nav-icon">💵</span><span>Admin Withdraw</span></div>
     </div>
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="adminLogout()">🚪 Logout</button>
@@ -306,14 +307,15 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       <div class="page-sub">Real-time platform overview</div>
       <div class="stats-row">
         <div class="stat-card"><div class="stat-card-label">Total Users</div><div class="stat-card-val green" id="d-total-users">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total STAKE</div><div class="stat-card-val gold" id="d-total-stake">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total Videos Watched</div><div class="stat-card-val emerald" id="d-total-videos">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Locked in Machines</div><div class="stat-card-val gold" id="d-total-locked">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Total Prime Accounts</div><div class="stat-card-val emerald" id="d-total-balance">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Total Scrayd Wallets</div><div class="stat-card-val emerald" id="d-total-scrayd">—</div></div>
       </div>
       <div class="pct-summary" id="pct-summary"></div>
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
         <div class="stat-card"><div class="stat-card-label">Locked Users</div><div class="stat-card-val red" id="d-locked">—</div></div>
         <div class="stat-card"><div class="stat-card-label">Min Deposit</div><div class="stat-card-val gold" id="d-min-deposit">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Videos Today</div><div class="stat-card-val amber" id="d-videos-today">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Active Investors</div><div class="stat-card-val amber" id="d-active-investors">—</div></div>
       </div>
     </div>
 
@@ -328,11 +330,79 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         </div>
         <table>
           <thead>
-            <tr><th>Username</th><th>Phone</th><th>Password</th><th>STAKE</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
+            <tr><th>Username</th><th>Phone</th><th>Password</th><th>PRIME</th><th>SCRAYD</th><th>Machines</th><th>Status</th><th>Actions</th></tr>
           </thead>
-          <tbody id="users-table-body"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+          <tbody id="users-table-body"><tr class="empty-row"><td colspan="8">Loading...</td></tr></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- MACHINES -->
+    <div class="page" id="pg-machines">
+      <div class="page-title">🛠️ Machines</div>
+      <div class="page-sub">Create and manage machines shown on the user's TIERS page</div>
+
+      <div class="table-wrap" style="max-width:600px;margin-bottom:24px;">
+        <div class="table-header"><div class="table-title" id="machine-form-title">➕ Add New Machine</div></div>
+        <div style="padding:24px;">
+          <input type="hidden" id="machine-edit-id">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div><label class="f-label">Machine Name</label><input type="text" class="f-input" style="padding:11px 14px;" id="machine-name" placeholder="e.g. NOB 1"></div>
+            <div><label class="f-label">Category</label>
+              <select class="f-input" style="padding:11px 14px;" id="machine-category">
+                <option value="Ordinary">Ordinary</option>
+                <option value="VIP">VIP</option>
+                <option value="VVIP">VVIP</option>
+                <option value="Platinum">Platinum</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:14px;">
+            <label class="f-label">Machine Image</label>
+            <div style="display:flex;gap:12px;align-items:center;">
+              <div id="machine-image-preview-wrap" style="width:56px;height:56px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">
+                <img id="machine-image-preview" style="width:100%;height:100%;object-fit:cover;display:none;">
+                <span id="machine-image-placeholder" style="font-size:20px;color:var(--muted);">📷</span>
+              </div>
+              <div style="flex:1;">
+                <input type="file" accept="image/*" id="machine-image-file" onchange="handleMachineImageUpload(this)" style="display:none;">
+                <button type="button" class="btn btn-save" style="padding:9px 16px;font-size:12px;" onclick="document.getElementById('machine-image-file').click()">📁 Upload Image</button>
+                <div id="machine-image-status" style="font-size:11px;color:var(--muted);margin-top:6px;">No image selected</div>
+              </div>
+            </div>
+            <details style="margin-top:10px;">
+              <summary style="font-size:11px;color:var(--muted);cursor:pointer;">Or paste an image URL instead</summary>
+              <input type="text" class="f-input" style="padding:11px 14px;margin-top:8px;" id="machine-image" placeholder="https://..." oninput="previewMachineImageUrl()">
+            </details>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div><label class="f-label">Price (UGX)</label><input type="number" class="f-input" style="padding:11px 14px;" id="machine-price" placeholder="24000" min="0" oninput="updateMachinePayoutPreview()"></div>
+            <div><label class="f-label">Days</label><input type="number" class="f-input" style="padding:11px 14px;" id="machine-days" placeholder="14" min="1"></div>
+            <div><label class="f-label">Return %</label><input type="number" class="f-input" style="padding:11px 14px;" id="machine-percent" placeholder="e.g. 50" min="1" max="100" step="0.1" oninput="updateMachinePayoutPreview()"></div>
+          </div>
+          <input type="hidden" id="machine-payout">
+          <div id="machine-payout-preview" style="font-size:12px;color:var(--muted);margin-bottom:14px;">💰 Payout will be calculated automatically</div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-save" style="flex:1;padding:12px;" onclick="saveMachine()">💾 Save Machine</button>
+            <button class="btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);display:none;" id="machine-cancel-btn" onclick="cancelMachineEdit()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-header"><div class="table-title">📦 All Machines</div></div>
+        <table>
+          <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Days</th><th>Payout</th><th>Return %</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="machines-table-body"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INVESTORS (TUBE) -->
+    <div class="page" id="pg-tube">
+      <div class="page-title">Active Investors</div>
+      <div class="page-sub">Users with machines currently locked</div>
+      <div class="tube-grid" id="tube-grid"><p style="color:var(--muted);font-size:13px">Loading...</p></div>
     </div>
 
     <!-- TRANSACTIONS -->
@@ -387,79 +457,63 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- VIDEOS -->
-    <div class="page" id="pg-videos">
-      <div class="page-title">🎬 Videos</div>
-      <div class="page-sub">Add YouTube videos that appear on the user WATCH page</div>
-      <div class="table-wrap" style="padding:20px;margin-bottom:24px;">
-        <div class="table-title" style="margin-bottom:14px;">Add New Video</div>
-        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
-          <div>
-            <label class="f-label">Movie / Video Title</label>
-            <input type="text" class="f-input" id="video-title-input" placeholder="e.g. Avatar 3 — Official Trailer" style="width:100%;padding:11px 14px;">
+    <!-- DEBIT USER -->
+    <div class="page" id="pg-debit">
+      <div class="page-title">Debit User</div>
+      <div class="page-sub">Deduct an amount from a user's BALANCE</div>
+      <div class="table-wrap" style="max-width:520px;">
+        <div class="table-header"><div class="table-title">💳 Debit User Account</div></div>
+        <div style="padding:24px;">
+          <div style="margin-bottom:16px;">
+            <label class="f-label">Search Username</label>
+            <input type="text" class="f-input" style="padding:11px 14px;" id="debit-search" placeholder="Enter exact username..." oninput="searchDebitUser()">
           </div>
-          <div>
-            <label class="f-label">YouTube Link or Video ID</label>
-            <input type="text" class="f-input" id="video-url-input" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;padding:11px 14px;">
+          <div id="debit-user-info" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div><div style="font-size:15px;font-weight:800;" id="debit-user-name">—</div><div style="font-size:12px;color:var(--muted);" id="debit-user-phone">—</div></div>
+              <div style="text-align:right;">
+                <div style="font-size:11px;color:var(--muted);">PRIME</div><div style="font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;" id="debit-user-prime">—</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:4px;">SCRAYD</div><div style="font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;" id="debit-user-scrayd">—</div>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);">Locked in Machines: <span id="debit-user-locked">—</span></div>
           </div>
-          <div>
-            <label class="f-label">Reward (UGX)</label>
-            <input type="number" class="f-input" id="video-reward-input" placeholder="e.g. 500" min="1" style="width:100%;padding:11px 14px;">
+          <div id="debit-not-found" style="display:none;color:var(--warn);font-size:13px;margin-bottom:12px;">❌ User not found</div>
+          <div style="margin-bottom:16px;"><label class="f-label">Debit From</label>
+            <select class="f-input" style="padding:11px 14px;" id="debit-account">
+              <option value="primeBalance">Prime Account</option>
+              <option value="scraydWallet">Scrayd Wallet</option>
+            </select>
           </div>
-          <div id="video-add-err" style="display:none;color:var(--warn);font-size:12.5px;"></div>
-          <button class="btn btn-save" onclick="adminSaveVideo()" style="align-self:flex-start;">💾 Save Video</button>
+          <div style="margin-bottom:16px;"><label class="f-label">Amount to Debit (UGX)</label><input type="number" class="f-input" style="padding:11px 14px;" id="debit-amount" placeholder="Enter amount" min="1" oninput="updateDebitPreview()"></div>
+          <div id="debit-preview" style="display:none;background:var(--surface2);border:1px solid var(--warn);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--warn);"></div>
+          <button class="btn btn-danger" style="width:100%;padding:14px;font-size:14px;" onclick="processDebit()">💳 PROCESS DEBIT</button>
         </div>
       </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Video Library</div>
-          <span id="video-count" style="font-size:12px;color:var(--muted);">0 videos</span>
-        </div>
+      <div class="table-wrap" style="max-width:520px;margin-top:20px;">
+        <div class="table-header"><div class="table-title">📋 Recent Debits</div></div>
         <table>
-          <thead>
-            <tr><th>Thumbnail</th><th>Title</th><th>YouTube ID</th><th>Reward</th><th>Added</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="video-table-body"><tr class="empty-row"><td colspan="6">No videos yet</td></tr></tbody>
+          <thead><tr><th>Username</th><th>Amount Debited</th><th>Balance After</th><th>Date & Time</th></tr></thead>
+          <tbody id="debit-history-body"><tr class="empty-row"><td colspan="4">No debits yet</tr></tbody>
         </table>
       </div>
     </div>
 
-    <!-- LEVELS MANAGEMENT -->
-    <div class="page" id="pg-levels">
-      <div class="page-title">📊 Levels</div>
-      <div class="page-sub">Configure all earning levels (Trainee + WM1 to WM11)</div>
-      
-      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="btn btn-save" onclick="addLevelRow()">➕ Add Level</button>
-        <button class="btn btn-danger" onclick="resetDefaultLevels()">🔄 Reset Defaults</button>
+    <!-- SOG -->
+    <div class="page" id="pg-sog">
+      <div class="page-title">🗑️ SOG - Search & Obliterate</div>
+      <div class="page-sub">Wipe user financial data (keeps account structure) - Account becomes brand new</div>
+      <div style="background:#fff0f4;border:1px solid var(--border);padding:16px;border-radius:12px;margin-bottom:20px;"><strong style="color:var(--warn);">⚠️ WARNING:</strong> This will reset ALL user financial data (BALANCE, transactions, owned machines) to zero. The user account will look brand new but username, password, phone, country, and joined date will remain. This cannot be undone.</div>
+      <div style="display:flex;gap:12px;margin-bottom:20px;">
+        <input type="text" class="f-input" id="sog-username-search" placeholder="Enter username to search..." oninput="searchSOGUser()" style="flex:1;padding:11px 14px;">
+        <button class="btn btn-approve" onclick="clearSOGSearch()">Clear</button>
       </div>
-      
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Levels Configuration</div>
-          <span id="level-count" style="font-size:12px;color:var(--muted);">0 levels</span>
-        </div>
-        <div style="overflow-x:auto;padding:0 4px;">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:650px;">
-            <thead>
-              <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Key</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Name</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Videos Needed</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Movies/Day</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Each</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Daily</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Monthly</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Annual</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="levels-admin-body">
-              <tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <div id="sog-user-found" style="display:none;background:#fff0f4;padding:16px;border-radius:12px;margin-bottom:20px;border-left:4px solid var(--accent);">
+        <div style="font-weight:700;margin-bottom:8px;">User Found:</div>
+        <div id="sog-user-display" style="font-size:14px;color:var(--muted);margin-bottom:12px;"></div>
+        <button class="btn btn-reject" style="background:var(--warn);" onclick="obliterateUserData()">🗑️ OBLITERATE ALL FINANCIAL DATA (Make Account New)</button>
       </div>
+      <div id="sog-not-found" style="display:none;color:var(--muted);text-align:center;padding:40px 20px;">No user found. Try again.</div>
     </div>
 
     <!-- SETTINGS -->
@@ -485,14 +539,24 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         </div>
       </div>
 
+      <!-- URA Tax -->
+      <div class="settings-section">
+        <div class="settings-title">💰 URA Tax Settings</div>
+        <div class="settings-sub">Tax percentage added to user deposits (charged to user, not deducted from invested amount)</div>
+        <div class="settings-row">
+          <span class="settings-label">URA Tax Percentage</span>
+          <div class="pct-group"><input type="number" class="pct-input" id="ura-tax-input" min="0" max="50" step="0.5" placeholder="4"><span class="pct-label">%</span></div>
+          <button class="btn btn-save" onclick="saveUraTax()">Save</button>
+        </div>
+      </div>
+
       <!-- Deposit & Withdrawal Settings -->
       <div class="settings-section">
         <div class="settings-title">💰 Deposit & Withdrawal Settings</div>
         <div class="settings-row"><span class="settings-label">Minimum Deposit (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-deposit-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinDeposit()">Save</button></div>
+        <div class="settings-row"><span class="settings-label">Maximum Deposit (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="max-deposit-input" min="10000" step="1000" placeholder="2350000"></div><button class="btn btn-save" onclick="saveMaxDeposit()">Save</button></div>
         <div class="settings-row"><span class="settings-label">Minimum Withdrawal (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-withdraw-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinWithdraw()">Save</button></div>
         <div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
-        <div class="settings-row"><span class="settings-label">Daily Video Limit</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="daily-video-limit" min="1" max="200" step="1" placeholder="10"><span class="pct-label">videos</span></div><button class="btn btn-save" onclick="saveDailyVideoLimit()">Save</button></div>
-        <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
       </div>
 
       <!-- Withdrawal Approval Toggle -->
@@ -527,13 +591,53 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         </div>
       </div>
     </div>
+
+    <!-- ADMIN WITHDRAW -->
+    <div class="page" id="pg-admin-withdraw">
+      <div class="page-title">💵 Admin Withdraw</div>
+      <div class="page-sub">Send funds from MarzPay wallet directly to any mobile money number</div>
+      <div class="table-wrap" style="max-width:520px;">
+        <div class="table-header"><div class="table-title">💵 Send Funds via MarzPay</div></div>
+        <div style="padding:24px;">
+          <div style="margin-bottom:16px;">
+            <label class="f-label">Phone Number</label>
+            <div class="f-wrap"><span class="f-icon">📱</span><input type="tel" class="f-input" id="aw-phone" placeholder="+256712345678"></div>
+            <div class="f-err" id="aw-phone-err">Enter a valid phone number</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <label class="f-label">Amount (UGX)</label>
+            <div class="f-wrap"><span class="f-icon">💰</span><input type="number" class="f-input" id="aw-amount" placeholder="Enter amount e.g. 50000" min="1000"></div>
+            <div class="f-err" id="aw-amount-err">Enter a valid amount</div>
+          </div>
+          <div id="aw-result" style="display:none;border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:13px;font-weight:700;"></div>
+          <button class="btn btn-success" style="width:100%;padding:14px;font-size:14px;" onclick="processAdminWithdraw()">💵 SEND FUNDS</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="max-width:520px;margin-top:20px;">
+        <div class="table-header"><div class="table-title">📋 Admin Withdrawal History</div></div>
+        <table>
+          <thead><tr><th>Date</th><th>Phone</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody id="aw-history-body"><tr class="empty-row"><td colspan="4">No withdrawals yet</tr></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- MODALS -->
-<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">✏️ Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
+<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">✏️ Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">PRIME ACCOUNT (UGX)</label><input type="number" class="modal-input" id="edit-balance" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">SCRAYD WALLET (UGX)</label><input type="number" class="modal-input" id="edit-scrayd" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
 
-<div class="toast" id="toast" style="position:fixed;top:24px;right:24px;background:var(--accent3);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:12px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;transform:translateY(-10px);"></div>
+<div class="modal-ov" id="user-machines-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;">
+  <div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:560px;max-height:80vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <div class="modal-title" style="font-family:'Playfair Display',serif;font-size:17px;font-weight:800;color:var(--accent);margin-bottom:0;">🛠️ Machines — <span id="um-username">—</span></div>
+      <button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeUserMachinesModal()">✕ Close</button>
+    </div>
+    <div id="um-list" style="display:flex;flex-direction:column;gap:12px;"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" style="position:fixed;top:24px;right:24px;background:var(--btn);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:12px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;transform:translateY(-10px);"></div>
 <div class="notif-overlay" id="notif-overlay" onclick="closeNotifDrawer()"></div>
 <div class="notif-bell" onclick="openNotifDrawer()">🔔<div class="notif-badge" id="notif-badge">0</div></div>
 <div class="notif-drawer" id="notif-drawer">
@@ -564,31 +668,35 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 
 <script>
 // ============================================================
-// DIAMOND EARN ADMIN - WATCH & EARN PLATFORM
-// STAKE ONLY - Deposit kept via MarzPay
+// DIAMOND EARN ADMIN - FIREBASE REALTIME DATABASE
+// Username + Password Login | MarzPay Integration
+// ADDED: Delete transaction button (one by one)
 // ============================================================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAo3bA7iQ5S_6css-tWCaVbWnzzJ6zZwNQ",
-  authDomain: "money-c6b24.firebaseapp.com",
-  projectId: "money-c6b24",
-  storageBucket: "money-c6b24.firebasestorage.app",
-  messagingSenderId: "940795117401",
-  appId: "1:940795117401:web:53945795f9c2c07fef1648",
-  databaseURL: "https://money-c6b24-default-rtdb.europe-west1.firebasedatabase.app/"
+  apiKey: "AIzaSyBy7GqVddjFZUMH9gQSl76NIQXMuri4Fj0",
+  authDomain: "ai-bot-9eea4.firebaseapp.com",
+  projectId: "ai-bot-9eea4",
+  storageBucket: "ai-bot-9eea4.firebasestorage.app",
+  messagingSenderId: "585644033119",
+  appId: "1:585644033119:web:1a34b8882e45d5e5b407ea",
+  databaseURL: "https://ai-bot-9eea4-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
 
 const SESSION_KEY = 'pp_admin_session';
 
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
 function getMarzAuth() {
+  // Use original API key from session if available (set during saveMarzApiKey)
   let key = (window.MARZ_API_KEY || allSettings.marzApiKey || '').trim();
   if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
   if (key.startsWith('vvvv')) {
+    // If key is masked (starts with vvvv), it won't work - need admin to re-enter
     throw new Error('MarzPay API key needs to be re-entered');
   }
   return 'Basic ' + key;
@@ -613,32 +721,34 @@ async function marzSend(phone, amount, reference, description) {
 
 let allUsers = {};
 let allSettings = {
+  uraTax: 4,
   withdrawCharge: 10,
   withdrawLocked: false,
   withdrawApproval: false,
   minDeposit: 10000,
+  maxDeposit: 2350000,
   minWithdraw: 10000,
-  marzApiKey: '',
-  dailyVideoLimit: 10,
-  streakBonus: 1000
+  marzApiKey: ''
 };
-let allLevels = {};
 let currentAdmin = null;
 let searchFilter = '';
+let txFilter = 'all';
 let admTxFilter = 'all';
 let wdFilter = 'pending';
+let debitTargetUser = null;
+let debitHistory = [];
 let allWithdrawals = {};
+let awHistory = [];
 let allAdminTransactions = {};
+let allMachines = {};
 
 let usersUnsubscribe = null;
 let settingsUnsubscribe = null;
 let withdrawalsUnsubscribe = null;
 let adminTxUnsubscribe = null;
-let levelsUnsubscribe = null;
-let videosUnsubscribe = null;
+let machinesUnsubscribe = null;
 
 function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
-function fmtShort(n) { return Number(n || 0).toLocaleString(); }
 function dateStr() { const d = new Date(); return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }); }
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
 function genUUID() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)); }
@@ -647,270 +757,16 @@ function toast(msg, color) { const t = document.getElementById('toast'); t.textC
 function confirmAction(title, text) { return Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#22c55e', confirmButtonText: 'Yes, proceed!' }).then(result => result.isConfirmed); }
 function setErr(id, show, msg) { const el = document.getElementById(id); if (!el) return; if (show) { el.classList.add('show'); if (msg) el.textContent = msg; } else { el.classList.remove('show'); } }
 function clearErrors(...ids) { ids.forEach(id => setErr(id, false)); }
-function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
-// ============================================================
-// LEVELS MANAGEMENT (ADMIN)
-// ============================================================
-
-const DEFAULT_LEVELS = {
-  trainee: { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500 },
-  wm1: { name: "WM1", collateral: 10, movies: 5, each: 400, daily: 2000, monthly: 60000, annual: 730000 },
-  wm2: { name: "WM2", collateral: 25, movies: 8, each: 700, daily: 5600, monthly: 168000, annual: 2044000 },
-  wm3: { name: "WM3", collateral: 50, movies: 12, each: 1000, daily: 12000, monthly: 360000, annual: 4380000 },
-  wm4: { name: "WM4", collateral: 100, movies: 18, each: 1500, daily: 27000, monthly: 810000, annual: 9855000 },
-  wm5: { name: "WM5", collateral: 200, movies: 25, each: 2200, daily: 55000, monthly: 1650000, annual: 20075000 },
-  wm6: { name: "WM6", collateral: 400, movies: 35, each: 3000, daily: 105000, monthly: 3150000, annual: 38325000 },
-  wm7: { name: "WM7", collateral: 700, movies: 50, each: 4500, daily: 225000, monthly: 6750000, annual: 82125000 },
-  wm8: { name: "WM8", collateral: 1200, movies: 70, each: 6500, daily: 455000, monthly: 13650000, annual: 166075000 },
-  wm9: { name: "WM9", collateral: 2000, movies: 90, each: 8500, daily: 765000, monthly: 22950000, annual: 279225000 },
-  wm10: { name: "WM10", collateral: 3500, movies: 110, each: 11000, daily: 1210000, monthly: 36300000, annual: 441650000 },
-  wm11: { name: "WM11", collateral: 5000, movies: 130, each: 14000, daily: 1820000, monthly: 54600000, annual: 664300000 }
-};
-
-function ensureTraineeExists(levels) {
-  if (!levels || !levels.trainee) {
-    levels = levels || {};
-    levels.trainee = { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500 };
-  }
-  return levels;
-}
-
-function startLevelsListener() {
-  if (levelsUnsubscribe) levelsUnsubscribe();
-  levelsUnsubscribe = db.ref('levels').on('value', (snap) => {
-    let levels = snap.val() || {};
-    levels = ensureTraineeExists(levels);
-    allLevels = levels;
-    renderLevelsAdminTable();
-  });
-}
-
-function renderLevelsAdminTable() {
-  const tbody = document.getElementById('levels-admin-body');
-  const countEl = document.getElementById('level-count');
-  if (!tbody) return;
-  
-  const levels = ensureTraineeExists(allLevels);
-  const keys = Object.keys(levels).sort((a, b) => {
-    if (a === 'trainee') return -1;
-    if (b === 'trainee') return 1;
-    const numA = parseInt(a.replace('wm', '')) || 0;
-    const numB = parseInt(b.replace('wm', '')) || 0;
-    return numA - numB;
-  });
-  
-  if (countEl) countEl.textContent = keys.length + ' levels';
-  
-  if (!keys.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="padding:20px;text-align:center;color:var(--muted);">No levels configured. Click "Reset Defaults" to load default levels.</td></tr>';
-    return;
-  }
-  
-  tbody.innerHTML = keys.map(key => {
-    const l = levels[key];
-    if (!l) return '';
-    const isTrainee = (key === 'trainee');
-    return `<tr>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${key}</td>
-      <td style="padding:8px 10px;"><input type="text" class="level-input" data-key="${key}" data-field="name" value="${escapeHtml(l.name || '')}" style="width:65px;"></td>
-      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="collateral" value="${l.collateral || 0}" style="width:70px;"></td>
-      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="movies" value="${l.movies || 0}" style="width:55px;"></td>
-      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="each" value="${l.each || 0}" style="width:80px;"></td>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);">${fmtShort(l.daily || 0)}</td>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.monthly || 0)}</td>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.annual || 0)}</td>
-      <td style="padding:8px 10px;">
-        <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;">💾</button>
-        ${!isTrainee ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;">🗑️</button>` : '<span style="font-size:9px;color:var(--muted);">🔒</span>'}
-      </td>
-    </tr>`;
-  }).join('');
-  
-  document.querySelectorAll('.level-input').forEach(input => {
-    input.onchange = function() { saveLevel(this.dataset.key); };
-    input.oninput = function() {
-      const row = this.closest('tr');
-      const key = this.dataset.key;
-      const l = allLevels[key] || {};
-      const inputs = row.querySelectorAll('.level-input');
-      let movies = l.movies || 0;
-      let each = l.each || 0;
-      inputs.forEach(inp => {
-        if (inp.dataset.field === 'movies') movies = parseInt(inp.value) || 0;
-        if (inp.dataset.field === 'each') each = parseInt(inp.value) || 0;
-      });
-      const daily = movies * each;
-      const monthly = daily * 30;
-      const annual = monthly * 12;
-      const cells = row.querySelectorAll('td');
-      if (cells.length >= 9) {
-        cells[5].textContent = fmtShort(daily);
-        cells[6].textContent = fmtShort(monthly);
-        cells[7].textContent = fmtShort(annual);
-      }
-    };
-  });
-}
-
-async function saveLevel(key) {
-  const inputs = document.querySelectorAll(`.level-input[data-key="${key}"]`);
-  const levelData = { name: '', collateral: 0, movies: 0, each: 0, daily: 0, monthly: 0, annual: 0 };
-  
-  inputs.forEach(input => {
-    const field = input.dataset.field;
-    const val = input.value.trim();
-    if (field === 'name') {
-      levelData.name = val;
-    } else {
-      levelData[field] = parseInt(val) || 0;
-    }
-  });
-  
-  levelData.daily = (levelData.movies || 0) * (levelData.each || 0);
-  levelData.monthly = levelData.daily * 30;
-  levelData.annual = levelData.monthly * 12;
-  
-  try {
-    await db.ref('levels/' + key).update(levelData);
-    toast('✅ Level ' + key + ' saved');
-  } catch (e) {
-    toast('❌ Error saving level', '#f87171');
-  }
-}
-
-async function addLevelRow() {
-  const keys = Object.keys(allLevels);
-  const existingWMs = keys.filter(k => k.startsWith('wm')).map(k => parseInt(k.replace('wm', '')) || 0);
-  let nextNum = 1;
-  while (existingWMs.includes(nextNum)) nextNum++;
-  const newKey = 'wm' + nextNum;
-  
-  const defaultData = {
-    name: 'WM' + nextNum,
-    collateral: nextNum * 200,
-    movies: nextNum * 10 + 5,
-    each: nextNum * 1000 + 500,
-    daily: (nextNum * 10 + 5) * (nextNum * 1000 + 500),
-    monthly: ((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30,
-    annual: (((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30) * 12
-  };
-  
-  await db.ref('levels/' + newKey).set(defaultData);
-  toast('✅ Added ' + newKey);
-}
-
-async function deleteLevel(key) {
-  if (key === 'trainee') { toast('❌ Cannot delete Trainee - it is the default level', '#f87171'); return; }
-  const confirmed = await confirmAction('Delete Level?', 'Delete ' + key + '? This cannot be undone.');
-  if (confirmed) {
-    await db.ref('levels/' + key).remove();
-    toast('🗑️ Deleted ' + key);
-  }
-}
-
-async function resetDefaultLevels() {
-  const confirmed = await confirmAction('Reset Default Levels?', 'This will replace all current levels with default values. Trainee will always be included. This cannot be undone.');
-  if (confirmed) {
-    await db.ref('levels').set(DEFAULT_LEVELS);
-    toast('🔄 Default levels restored');
-  }
-}
-
-// ============================================================
-// VIDEOS MANAGEMENT
-// ============================================================
-let allVideos = {};
-
-function extractYouTubeId(input) {
-  const s = (input || '').trim();
-  if (!s) return null;
-  if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
-  const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-  ];
-  for (const p of patterns) {
-    const m = s.match(p);
-    if (m) return m[1];
-  }
-  return null;
-}
-
-function startVideosListener() {
-  if (videosUnsubscribe) videosUnsubscribe();
-  videosUnsubscribe = db.ref('videos').on('value', (snap) => {
-    allVideos = snap.val() || {};
-    renderAdminVideosTable();
-  });
-}
-
-async function adminSaveVideo() {
-  clearErrors('video-add-err');
-  const title = document.getElementById('video-title-input').value.trim();
-  const urlInput = document.getElementById('video-url-input').value.trim();
-  const reward = Number(document.getElementById('video-reward-input').value);
-  const youtubeId = extractYouTubeId(urlInput);
-
-  if (!title) { setErr('video-add-err', true, 'Please enter a video title.'); return; }
-  if (!youtubeId) { setErr('video-add-err', true, 'Could not read a YouTube video ID from that link.'); return; }
-  if (!reward || reward <= 0) { setErr('video-add-err', true, 'Please enter a valid reward amount.'); return; }
-
-  const videoKey = 'vid_' + Date.now();
-  try {
-    await db.ref('videos/' + videoKey).set({
-      title, youtubeId, reward, addedDate: dateStr()
-    });
-    document.getElementById('video-title-input').value = '';
-    document.getElementById('video-url-input').value = '';
-    document.getElementById('video-reward-input').value = '';
-    toast('✅ Video saved');
-  } catch (e) {
-    setErr('video-add-err', true, 'Failed to save video. Try again.');
-  }
-}
-
-async function adminDeleteVideo(key) {
-  const ok = await confirmAction('Delete this video?', 'It will be removed from the user WATCH page immediately.');
-  if (!ok) return;
-  await db.ref('videos/' + key).remove();
-  toast('🗑️ Video deleted');
-}
-
-function renderAdminVideosTable() {
-  const body = document.getElementById('video-table-body');
-  const countEl = document.getElementById('video-count');
-  if (!body) return;
-  const ids = Object.keys(allVideos).sort((a, b) => b.localeCompare(a));
-  if (countEl) countEl.textContent = ids.length + (ids.length === 1 ? ' video' : ' videos');
-  if (!ids.length) {
-    body.innerHTML = '<tr class="empty-row"><td colspan="6">No videos yet</td></tr>';
-    return;
-  }
-  body.innerHTML = ids.map(key => {
-    const v = allVideos[key];
-    return `<tr>
-      <td><img src="https://img.youtube.com/vi/${v.youtubeId}/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;" alt=""></td>
-      <td>${escapeHtml(v.title)}</td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">${escapeHtml(v.youtubeId)}</td>
-      <td>${fmt(v.reward)}</td>
-      <td style="font-size:12px;color:var(--muted);">${escapeHtml(v.addedDate || '—')}</td>
-      <td><button class="btn btn-reject" onclick="adminDeleteVideo('${key}')">🗑️ Delete</button></td>
-    </tr>`;
-  }).join('');
-}
-
-// ============================================================
-// REALTIME LISTENERS
-// ============================================================
 function startRealtimeListeners() {
-  startVideosListener();
-  startLevelsListener();
-  
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
     allUsers = snap.val() || {};
     renderDashboard();
     renderUsersTable();
+    renderTube();
+    renderTransactions();
+    if (umCurrentUsername) renderUserMachinesModal();
   });
   
   if (settingsUnsubscribe) settingsUnsubscribe();
@@ -928,92 +784,73 @@ function startRealtimeListeners() {
     updateWithdrawalsBadge();
   });
   
+  // Real-time admin transactions listener
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
     allAdminTransactions = snap.val() || {};
     renderAdminTransactions();
   });
   
-  startNotifListener();
-}
-
-// ============================================================
-// DASHBOARD
-// ============================================================
-function renderDashboard() {
-  const users = Object.values(allUsers);
-  let totalStake = 0, totalVideos = 0, locked = 0, videosToday = 0;
-  const today = new Date().toISOString().slice(0, 10);
-  
-  users.forEach(u => {
-    totalStake += u.stake || 0;
-    totalVideos += u.totalVideosWatched || 0;
-    if (u.locked) locked++;
-    const watchedToday = u.watchHistory?.[today] || 0;
-    videosToday += watchedToday;
+  if (machinesUnsubscribe) machinesUnsubscribe();
+  machinesUnsubscribe = db.ref('machines').on('value', (snap) => {
+    allMachines = snap.val() || {};
+    renderMachinesTable();
   });
   
+  startNotifListener();
+  loadAwHistory();
+}
+
+function renderDashboard() {
+  const users = Object.values(allUsers);
+  let totalLocked = 0, totalPrime = 0, totalScrayd = 0, locked = 0, activeInvestors = 0;
+  users.forEach(u => {
+    const userLocked = userLockedTotal(u);
+    totalLocked += userLocked;
+    totalPrime += u.primeBalance || 0;
+    totalScrayd += u.scraydWallet || 0;
+    if (u.locked) locked++;
+    if (userLocked > 0) activeInvestors++;
+  });
   document.getElementById('d-total-users').textContent = users.length;
-  document.getElementById('d-total-stake').textContent = fmt(totalStake);
-  document.getElementById('d-total-videos').textContent = totalVideos;
+  document.getElementById('d-total-locked').textContent = fmt(totalLocked);
+  document.getElementById('d-total-balance').textContent = fmt(totalPrime);
+  if (document.getElementById('d-total-scrayd')) document.getElementById('d-total-scrayd').textContent = fmt(totalScrayd);
   document.getElementById('d-locked').textContent = locked;
   document.getElementById('d-min-deposit').textContent = fmt(allSettings.minDeposit || 10000);
-  document.getElementById('d-videos-today').textContent = videosToday;
+  document.getElementById('d-active-investors').textContent = activeInvestors;
   
   const s = allSettings;
   document.getElementById('pct-summary').innerHTML = `
     <div class="pct-pill">Min Deposit <span>${fmt(s.minDeposit || 10000)}</span></div>
-    <div class="pct-pill">Daily Video Limit <span>${s.dailyVideoLimit || 10}</span></div>
-    <div class="pct-pill">Streak Bonus <span>${fmt(s.streakBonus || 1000)}</span></div>
+    <div class="pct-pill">URA Tax <span>${s.uraTax || 4}%</span></div>
     <div class="pct-pill">Withdrawal Charge <span>${s.withdrawCharge || 10}%</span></div>
     <div class="pct-pill">MarzPay API <span style="color:${s.marzApiKey ? 'var(--accent3)' : 'var(--warn)'};">${s.marzApiKey ? '✅ Set' : '⚠️ Not Set'}</span></div>
     <div class="pct-pill">Withdrawals <span style="color:${s.withdrawLocked ? 'var(--warn)' : 'var(--success)'};">${s.withdrawLocked ? '🔒 LOCKED' : '🔓 OPEN'}</span></div>
   `;
 }
 
-// ============================================================
-// USERS TABLE
-// ============================================================
 function filterUsers(val) { searchFilter = val; renderUsersTable(); }
 
 function renderUsersTable() {
   const users = Object.values(allUsers);
   const filtered = searchFilter ? users.filter(u => u.username && u.username.toLowerCase().includes(searchFilter.toLowerCase())) : users;
   const tbody = document.getElementById('users-table-body');
-  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No users found</tr>'; return; }
-  
-  // Get level names
-  const levelKeys = Object.keys(allLevels).sort((a, b) => {
-    if (a === 'trainee') return -1;
-    if (b === 'trainee') return 1;
-    const numA = parseInt(a.replace('wm', '')) || 0;
-    const numB = parseInt(b.replace('wm', '')) || 0;
-    return numA - numB;
-  });
-  
+  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No users found<\/tr>'; return; }
   tbody.innerHTML = filtered.map(u => {
     const sk = safeKey(u.username || '');
-    let levelName = 'Trainee';
-    const userVideos = u.totalVideosWatched || 0;
-    for (const key of levelKeys) {
-      const level = allLevels[key];
-      if (level && userVideos >= (level.collateral || 0)) {
-        levelName = level.name || 'Trainee';
-      }
-    }
-    
+    const machineCount = Object.keys(u.ownedMachines || {}).length;
     return `<tr>
       <td><strong>${u.username || '—'}</strong></td>
       <td class="mono">${u.phone || '—'}</td>
       <td><div class="pw-cell" id="pwcell_${sk}"><span class="pw-val" onclick="editPw('${sk}')">${u.password || '—'}</span></div></td>
-      <td class="mono" style="color:var(--gold)">${fmt(u.stake)}</td>
-      <td class="mono">${u.totalVideosWatched || 0}</td>
-      <td class="mono">${u.streakDays || 0}</td>
-      <td style="color:var(--accent);font-weight:700;">${levelName}</td>
+      <td class="mono" style="color:var(--success);font-weight:700">${fmt(u.primeBalance)}</td>
+      <td class="mono" style="color:var(--accent3);font-weight:700">${fmt(u.scraydWallet)}</td>
+      <td><span class="mono" style="color:var(--btn);font-weight:800;cursor:pointer;text-decoration:underline;" onclick="openUserMachinesModal('${u.username}')">${machineCount}</span></td>
       <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
       <td style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-edit" onclick="openEditModal('${u.username}')">✏️</button>
-        <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${u.username}', ${!u.locked})">${u.locked ? '🔓' : '🔒'}</button>
+        <button class="btn btn-edit" onclick="openEditModal('${u.username}')">✏️ Edit</button>
+        <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${u.username}', ${!u.locked})">${u.locked ? '🔓 Unlock' : '🔒 Lock'}</button>
         <button class="btn btn-delete" onclick="deleteUser('${u.username}')">🗑️</button>
       </td>
     </tr>`;
@@ -1048,9 +885,8 @@ function openEditModal(username) {
   document.getElementById('edit-username').value = username;
   document.getElementById('edit-password').value = u.password || '';
   document.getElementById('edit-phone-modal').value = u.phone || '';
-  document.getElementById('edit-stake').value = u.stake || 0;
-  document.getElementById('edit-videos').value = u.totalVideosWatched || 0;
-  document.getElementById('edit-streak').value = u.streakDays || 0;
+  document.getElementById('edit-balance').value = u.primeBalance || 0;
+  document.getElementById('edit-scrayd').value = u.scraydWallet || 0;
   document.getElementById('edit-modal').style.display = 'flex';
 }
 
@@ -1060,9 +896,8 @@ async function saveEditUser() {
   const username = document.getElementById('edit-username').value;
   const newPassword = document.getElementById('edit-password').value;
   const newPhone = document.getElementById('edit-phone-modal').value;
-  const newStake = parseInt(document.getElementById('edit-stake').value) || 0;
-  const newVideos = parseInt(document.getElementById('edit-videos').value) || 0;
-  const newStreak = parseInt(document.getElementById('edit-streak').value) || 0;
+  const newPrimeBalance = parseInt(document.getElementById('edit-balance').value) || 0;
+  const newScraydWallet = parseInt(document.getElementById('edit-scrayd').value) || 0;
   
   const sk = safeKey(username);
   const user = allUsers[sk];
@@ -1071,10 +906,30 @@ async function saveEditUser() {
   const updates = {
     password: newPassword,
     phone: newPhone,
-    stake: newStake,
-    totalVideosWatched: newVideos,
-    streakDays: newStreak
+    primeBalance: newPrimeBalance,
+    scraydWallet: newScraydWallet
   };
+  
+  if (newPrimeBalance > (user.primeBalance || 0)) {
+    const addedAmount = newPrimeBalance - (user.primeBalance || 0);
+    updates['transactions/dep_admin_' + Date.now()] = {
+      type: 'Deposit',
+      amount: addedAmount,
+      note: 'Admin credited to Prime Account',
+      date: dateStr(),
+      status: 'completed'
+    };
+  }
+  if (newScraydWallet > (user.scraydWallet || 0)) {
+    const addedScrayd = newScraydWallet - (user.scraydWallet || 0);
+    updates['transactions/scrayd_admin_' + Date.now()] = {
+      type: 'Bonus',
+      amount: addedScrayd,
+      note: 'Admin credited to Scrayd Wallet',
+      date: dateStr(),
+      status: 'completed'
+    };
+  }
   
   await db.ref('users/' + sk).update(updates);
   closeEditModal();
@@ -1095,8 +950,363 @@ async function deleteUser(username) {
 }
 
 // ============================================================
-// ADMIN TRANSACTIONS
+// USER MACHINES MODAL — view, cancel, or delete a user's
+// purchased machines from the Users page.
 // ============================================================
+let umCurrentUsername = null;
+
+function openUserMachinesModal(username) {
+  umCurrentUsername = username;
+  document.getElementById('um-username').textContent = username;
+  document.getElementById('user-machines-modal').style.display = 'flex';
+  renderUserMachinesModal();
+}
+
+function closeUserMachinesModal() {
+  umCurrentUsername = null;
+  document.getElementById('user-machines-modal').style.display = 'none';
+}
+
+function renderUserMachinesModal() {
+  if (!umCurrentUsername) return;
+  const sk = safeKey(umCurrentUsername);
+  const u = allUsers[sk];
+  const list = document.getElementById('um-list');
+  if (!u) { list.innerHTML = '<div style="color:var(--muted);font-size:13px;">User not found.</div>'; return; }
+  const owned = Object.entries(u.ownedMachines || {});
+  if (!owned.length) { list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;text-align:center;">No machines purchased yet.</div>'; return; }
+
+  const now = Date.now();
+  list.innerHTML = owned.map(([key, m]) => {
+    const statusLabel = m.status === 'active' ? 'Active' : (m.status === 'cancelled' ? 'Cancelled' : 'Completed');
+    const badgeClass = m.status === 'active' ? 'badge-active' : 'badge-locked';
+    const daysLeft = m.status === 'active' ? Math.max(0, Math.ceil(((m.maturityDate || now) - now) / 86400000)) : null;
+    return `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-weight:800;font-size:14px;color:var(--text);">${m.name || 'Machine'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">${m.days || 0} day contract${daysLeft !== null ? ' — ' + daysLeft + 'd left' : ''}</div>
+        </div>
+        <span class="badge ${badgeClass}">${statusLabel}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+        Price: <strong style="color:var(--text);">${fmt(m.price || 0)}</strong> &nbsp;•&nbsp; Payout: <strong style="color:var(--success);">${fmt(m.payout || 0)}</strong>
+      </div>
+      ${m.status === 'active' ? `
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-reject" onclick="cancelUserMachine('${key}')">↩️ Cancel & Refund</button>
+        <button class="btn btn-delete" onclick="deleteUserMachine('${key}')">🗑️ Delete (No Refund)</button>
+      </div>` : `
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-delete" onclick="deleteUserMachine('${key}')">🗑️ Delete Record</button>
+      </div>`}
+    </div>`;
+  }).join('');
+}
+
+async function cancelUserMachine(machineKey) {
+  if (!umCurrentUsername) return;
+  const sk = safeKey(umCurrentUsername);
+  const u = allUsers[sk];
+  if (!u) return;
+  const m = (u.ownedMachines || {})[machineKey];
+  if (!m) return;
+
+  const confirmed = await confirmAction('Cancel Machine?', 'Cancel "' + (m.name || 'this machine') + '" for ' + umCurrentUsername + '? The price (' + fmt(m.price || 0) + ') will be refunded to their Prime Account, and no payout will be earned.');
+  if (!confirmed) return;
+
+  const newPrimeBalance = (u.primeBalance || 0) + (m.price || 0);
+  const updates = {};
+  updates['primeBalance'] = newPrimeBalance;
+  updates['ownedMachines/' + machineKey + '/status'] = 'cancelled';
+  updates['transactions/tx_cancel_' + Date.now()] = {
+    type: 'Machine Cancelled',
+    amount: m.price || 0,
+    note: (m.name || 'Machine') + ' cancelled by admin — refunded to Prime Account',
+    date: dateStr(),
+    status: 'completed'
+  };
+
+  await db.ref('users/' + sk).update(updates);
+  toast('↩️ Machine cancelled, ' + fmt(m.price || 0) + ' refunded');
+  renderUserMachinesModal();
+}
+
+async function deleteUserMachine(machineKey) {
+  if (!umCurrentUsername) return;
+  const sk = safeKey(umCurrentUsername);
+  const u = allUsers[sk];
+  if (!u) return;
+  const m = (u.ownedMachines || {})[machineKey];
+  if (!m) return;
+
+  const confirmed = await confirmAction('Delete Machine Record?', 'Permanently delete "' + (m.name || 'this machine') + '" from ' + umCurrentUsername + ' account? No refund will be given. This cannot be undone.');
+  if (!confirmed) return;
+
+  await db.ref('users/' + sk + '/ownedMachines/' + machineKey).remove();
+  toast('🗑️ Machine record deleted', '#f87171');
+  renderUserMachinesModal();
+}
+
+function userLockedTotal(u) {
+  const owned = u.ownedMachines || {};
+  let total = 0;
+  Object.values(owned).forEach(m => { if (m.status === 'active') total += (m.price || 0); });
+  return total;
+}
+
+function renderTube() {
+  const investors = Object.values(allUsers).filter(u => userLockedTotal(u) > 0);
+  const grid = document.getElementById('tube-grid');
+  if (!investors.length) { grid.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px">No investors yet.</div>'; return; }
+  grid.innerHTML = investors.map(u => `
+    <div class="tube-card">
+      <div class="tube-avatar">📈</div>
+      <div class="tube-name">${u.username}</div>
+      <div class="tube-amt">LOCKED: ${fmt(userLockedTotal(u))}</div>
+      <div class="tube-amt" style="font-size:10px;color:var(--success)">PRIME: ${fmt(u.primeBalance)}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// MACHINES — admin CRUD for the machine catalog shown on the
+// user app's TIERS page.
+// ============================================================
+function renderMachinesTable() {
+  const tbody = document.getElementById('machines-table-body');
+  if (!tbody) return;
+  const list = Object.entries(allMachines);
+  if (!list.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No machines yet. Add one above.</td></tr>'; return; }
+  tbody.innerHTML = list.map(([id, m]) => {
+    const price = m.price || 0;
+    const payout = m.payout || 0;
+    const pct = price > 0 ? Math.round(((payout - price) / price) * 100) : 0;
+    const imgHtml = m.imageUrl ? `<img src="${m.imageUrl}" style="width:44px;height:44px;border-radius:8px;object-fit:cover;" onerror="this.style.opacity='0.2'">` : '—';
+    return `<tr>
+      <td>${imgHtml}</td>
+      <td><strong>${m.name || '—'}</strong></td>
+      <td class="mono">${m.category || '—'}</td>
+      <td class="mono" style="color:var(--gold)">${fmt(price)}</td>
+      <td class="mono">${m.days || 0}d</td>
+      <td class="mono" style="color:var(--success)">${fmt(payout)}</td>
+      <td class="mono" style="color:var(--accent3)">+${pct}%</td>
+      <td><span class="badge ${m.active === false ? 'badge-locked' : 'badge-active'}">${m.active === false ? 'Locked' : 'Unlocked'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="btn btn-edit" onclick="editMachine('${id}')">✏️ Edit</button>
+        <button class="btn ${m.active === false ? 'btn-approve' : 'btn-reject'}" onclick="toggleMachineActive('${id}', ${m.active === false})">${m.active === false ? '🔓 Unlock' : '🔒 Lock'}</button>
+        <button class="btn btn-delete" onclick="deleteMachine('${id}')">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function updateMachineImagePreview(url) {
+  const img = document.getElementById('machine-image-preview');
+  const placeholder = document.getElementById('machine-image-placeholder');
+  if (url) {
+    img.src = url;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    placeholder.style.display = 'block';
+  }
+}
+
+function previewMachineImageUrl() {
+  const url = document.getElementById('machine-image').value.trim();
+  document.getElementById('machine-image-status').textContent = url ? '🔗 Using pasted URL' : 'No image selected';
+  updateMachineImagePreview(url);
+}
+
+function handleMachineImageUpload(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('Please choose an image file', '#f87171'); return; }
+
+  const statusEl = document.getElementById('machine-image-status');
+  statusEl.textContent = '⏳ Processing image...';
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      // Resize/compress client-side so it stores compactly in the database
+      const maxDim = 400;
+      let w = img.width, h = img.height;
+      if (w > h && w > maxDim) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+      else if (h > maxDim) { w = Math.round(w * (maxDim / h)); h = maxDim; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+      document.getElementById('machine-image').value = dataUrl;
+      updateMachineImagePreview(dataUrl);
+      statusEl.textContent = '✅ Image ready — ' + file.name;
+    };
+    img.onerror = () => { statusEl.textContent = '❌ Could not read that image'; };
+    img.src = e.target.result;
+  };
+  reader.onerror = () => { statusEl.textContent = '❌ Could not read that file'; };
+  reader.readAsDataURL(file);
+}
+
+function updateMachinePayoutPreview() {
+  const price = parseFloat(document.getElementById('machine-price').value) || 0;
+  const percent = parseFloat(document.getElementById('machine-percent').value) || 0;
+  const preview = document.getElementById('machine-payout-preview');
+  if (price <= 0 || percent <= 0) {
+    document.getElementById('machine-payout').value = '';
+    preview.textContent = '💰 Payout will be calculated automatically';
+    return;
+  }
+  const payout = Math.round(price + (price * percent / 100));
+  document.getElementById('machine-payout').value = payout;
+  preview.innerHTML = `💰 Payout: <strong style="color:var(--success)">${fmt(payout)}</strong> (Price ${fmt(price)} + ${percent}% return)`;
+}
+
+async function saveMachine() {
+  const editId = document.getElementById('machine-edit-id').value;
+  const name = document.getElementById('machine-name').value.trim();
+  const category = document.getElementById('machine-category').value || 'Ordinary';
+  const imageUrl = document.getElementById('machine-image').value.trim();
+  const price = parseInt(document.getElementById('machine-price').value) || 0;
+  const days = parseInt(document.getElementById('machine-days').value) || 0;
+  const percent = parseFloat(document.getElementById('machine-percent').value) || 0;
+  const payout = Math.round(price + (price * percent / 100));
+
+  if (!name) { toast('Machine name is required', '#f87171'); return; }
+  if (price <= 0) { toast('Price must be greater than 0', '#f87171'); return; }
+  if (days <= 0) { toast('Days must be greater than 0', '#f87171'); return; }
+  if (percent <= 0 || percent > 100) { toast('Return % must be between 1 and 100', '#f87171'); return; }
+
+  const machineData = { name, category, imageUrl, price, days, payout, percent, active: true };
+
+  if (editId) {
+    // Preserve existing active state on edit
+    const existing = allMachines[editId];
+    machineData.active = existing ? (existing.active !== false) : true;
+    await db.ref('machines/' + editId).update(machineData);
+    toast('✅ Machine updated');
+  } else {
+    const newId = 'mach_' + Date.now();
+    await db.ref('machines/' + newId).set(machineData);
+    toast('✅ Machine added');
+  }
+  cancelMachineEdit();
+}
+
+function editMachine(id) {
+  const m = allMachines[id];
+  if (!m) return;
+  document.getElementById('machine-edit-id').value = id;
+  document.getElementById('machine-name').value = m.name || '';
+  const validCats = ['Ordinary', 'VIP', 'VVIP', 'Platinum'];
+  document.getElementById('machine-category').value = validCats.includes(m.category) ? m.category : 'Ordinary';
+  document.getElementById('machine-image').value = m.imageUrl || '';
+  document.getElementById('machine-price').value = m.price || 0;
+  document.getElementById('machine-days').value = m.days || 0;
+  const price = m.price || 0;
+  const payout = m.payout || 0;
+  const percent = m.percent !== undefined ? m.percent : (price > 0 ? Math.round(((payout - price) / price) * 10000) / 100 : 0);
+  document.getElementById('machine-percent').value = percent;
+  document.getElementById('machine-payout').value = payout;
+  document.getElementById('machine-form-title').textContent = '✏️ Edit Machine — ' + (m.name || '');
+  document.getElementById('machine-cancel-btn').style.display = 'inline-block';
+  document.getElementById('machine-image-status').textContent = m.imageUrl ? '✅ Current image' : 'No image selected';
+  updateMachineImagePreview(m.imageUrl || '');
+  updateMachinePayoutPreview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelMachineEdit() {
+  document.getElementById('machine-edit-id').value = '';
+  document.getElementById('machine-name').value = '';
+  document.getElementById('machine-category').value = 'Ordinary';
+  document.getElementById('machine-image').value = '';
+  document.getElementById('machine-image-file').value = '';
+  document.getElementById('machine-price').value = '';
+  document.getElementById('machine-days').value = '';
+  document.getElementById('machine-percent').value = '';
+  document.getElementById('machine-payout').value = '';
+  document.getElementById('machine-form-title').textContent = '➕ Add New Machine';
+  document.getElementById('machine-cancel-btn').style.display = 'none';
+  document.getElementById('machine-image-status').textContent = 'No image selected';
+  updateMachineImagePreview('');
+  updateMachinePayoutPreview();
+}
+
+async function toggleMachineActive(id, newActive) {
+  await db.ref('machines/' + id + '/active').set(newActive);
+  toast(newActive ? '🔓 Machine unlocked' : '🔒 Machine locked', newActive ? undefined : '#f87171');
+}
+
+async function deleteMachine(id) {
+  const m = allMachines[id];
+  const confirmed = await confirmAction('Delete Machine?', 'Delete "' + (m ? m.name : 'this machine') + '"? Users who already own it keep their purchase — this only removes it from the shop. This cannot be undone.');
+  if (confirmed) {
+    await db.ref('machines/' + id).remove();
+    toast('🗑️ Machine deleted', '#f87171');
+  }
+}
+
+function filterTx(type) { txFilter = type; renderTransactions(); }
+
+// NEW: Delete a single transaction
+async function deleteTransaction(username, txKey, txType) {
+  const confirmed = await confirmAction('Delete Transaction?', `Delete this ${txType} transaction for ${username}? This cannot be undone.`);
+  if (!confirmed) return;
+  
+  try {
+    // Remove the transaction from the user's transactions node
+    await db.ref('users/' + safeKey(username) + '/transactions/' + txKey).remove();
+    toast(`✅ ${txType} transaction deleted for ${username}`);
+    renderTransactions(); // Refresh the table
+  } catch (error) {
+    toast('Error deleting transaction', '#f87171');
+  }
+}
+
+function renderTransactions() {
+  const tbody = document.getElementById('tx-table-body');
+  const countEl = document.getElementById('tx-count');
+  const allTxs = [];
+  Object.values(allUsers).forEach(u => {
+    if (!u.transactions) return;
+    Object.entries(u.transactions).forEach(([txKey, tx]) => {
+      allTxs.push({ ...tx, username: u.username, txKey: txKey });
+    });
+  });
+  allTxs.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  
+  let filtered = allTxs;
+  if (txFilter === 'deposit') filtered = allTxs.filter(t => t.type === 'Deposit');
+  else if (txFilter === 'withdrawal') filtered = allTxs.filter(t => t.type === 'Withdrawal');
+  else if (txFilter === 'profit') filtered = allTxs.filter(t => t.type === 'Profit');
+  else if (txFilter === 'bonus') filtered = allTxs.filter(t => t.type === 'Bonus');
+  
+  if (countEl) countEl.textContent = filtered.length + ' transactions';
+  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No transactions found<\/tr>'; return; }
+  
+  tbody.innerHTML = filtered.map(tx => {
+    let statusColor = 'var(--gold)', statusText = '⏳ Pending';
+    if (tx.status === 'completed' || tx.status === 'successful') { statusColor = 'var(--success)'; statusText = '✅ Completed'; }
+    else if (tx.status === 'failed') { statusColor = 'var(--warn)'; statusText = '❌ Failed'; }
+    const amountColor = tx.amount > 0 ? 'var(--success)' : 'var(--warn)';
+    return `<tr>
+      <td class="mono" style="font-size:11px;">${tx.date || '—'}</td>
+      <td><strong>${tx.username || '—'}</strong></td>
+      <td><span class="badge ${tx.type === 'Deposit' ? 'badge-approved' : tx.type === 'Profit' ? 'badge-approved' : 'badge-pending'}">${tx.type}</span></td>
+      <td class="mono" style="color:${amountColor};">${tx.amount > 0 ? '+' + fmt(tx.amount) : fmt(tx.amount)}</td>
+      <td style="font-size:11px;color:var(--muted);max-width:200px;">${tx.note || '—'}</td>
+      <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
+      <td><button class="btn btn-delete" onclick="deleteTransaction('${tx.username}', '${tx.txKey}', '${tx.type}')">🗑️ Delete</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// NEW: Admin Transactions (Deposits & Withdrawals)
 function filterAdmTx(type) { admTxFilter = type; renderAdminTransactions(); }
 
 function renderAdminTransactions() {
@@ -1106,12 +1316,13 @@ function renderAdminTransactions() {
   let txs = Object.entries(allAdminTransactions).map(([key, tx]) => ({ ...tx, key }));
   txs.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   
+  // Filter by type
   if (admTxFilter !== 'all') {
     txs = txs.filter(t => t.type === admTxFilter);
   }
   
   if (countEl) countEl.textContent = txs.length + ' transactions';
-  if (!txs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No transactions found</tr>'; return; }
+  if (!txs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No transactions found<\/tr>'; return; }
   
   tbody.innerHTML = txs.map(tx => {
     let statusColor = 'var(--gold)', statusText = '⏳ Pending';
@@ -1128,7 +1339,7 @@ function renderAdminTransactions() {
       <td class="mono">${amountStr}</td>
       <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
       <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
-      <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">🗑️</button></td>
+      <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">🗑️ Delete</button></td>
     </tr>`;
   }).join('');
 }
@@ -1136,6 +1347,7 @@ function renderAdminTransactions() {
 async function deleteAdmTx(key) {
   const confirmed = await confirmAction('Delete Transaction?', 'Delete this admin transaction? This cannot be undone.');
   if (!confirmed) return;
+  
   try {
     await db.ref('adminTransactions/' + key).remove();
     toast('✅ Transaction deleted');
@@ -1144,9 +1356,6 @@ async function deleteAdmTx(key) {
   }
 }
 
-// ============================================================
-// WITHDRAWALS
-// ============================================================
 function updateWithdrawalsBadge() {
   const count = Object.values(allWithdrawals).filter(v => v.status === 'pending').length;
   const badge = document.getElementById('withdrawals-nav-badge');
@@ -1173,7 +1382,7 @@ function renderWithdrawalsTable() {
   if (wdFilter !== 'all') entries = entries.filter(([k, v]) => v.status === wdFilter);
   entries.sort((a, b) => b[0].localeCompare(a[0]));
   if (countEl) countEl.textContent = entries.length + ' requests';
-  if (!entries.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No withdrawal requests yet</tr>'; return; }
+  if (!entries.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No withdrawal requests yet<\/tr>'; return; }
   
   tbody.innerHTML = entries.map(([k, v]) => {
     const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : 'var(--gold)';
@@ -1209,59 +1418,71 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
     const fee = withdrawal?.fee;
     const reference = genUUID();
     
+    // First mark as processing in pendingWithdrawals
     await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'processing' });
     
+    // Now attempt to send via Marz (same as automatic mode)
     try {
       const sendResult = await marzSend(userPhone, sendAmount, reference, 'DiamondEarn Withdrawal');
       
       if (sendResult && sendResult.status === 'success') {
+        // Success - update transaction and admin record
         await db.ref('users/' + userId + '/transactions/' + txKey).update({
           status: 'completed',
           note: `Withdrawal approved and sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
         });
         await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
         await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+        
         toast('✅ Withdrawal approved and sent for ' + username);
       } else {
+        // Marz send failed - REFUND user instantly to Scrayd Wallet
         const userSnap = await db.ref('users/' + userId).get();
         const user = userSnap.val();
-        const refundedStake = (user.stake || 0) + amount;
+        const refundedScraydWallet = (user.scraydWallet || 0) + amount;
+        
         await db.ref('users/' + userId).update({
-          stake: refundedStake,
+          scraydWallet: refundedScraydWallet,
           ['transactions/' + txKey + '/status']: 'failed',
-          ['transactions/' + txKey + '/note']: 'Withdrawal Failed - Refunded'
+          ['transactions/' + txKey + '/note']: 'Withdrawal Failed at Marz - Refunded to Scrayd Wallet'
         });
         await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
         await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+        
         await db.ref('adminNotifications/notif_' + Date.now()).set({
           type: 'withdrawal_marz_failed',
           username: username,
           amount: amount,
-          message: `Withdrawal Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued`,
-          date: dateStr(),
+          message: `Withdrawal Marz Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Error: ${sendResult?.message || 'Unknown error'} | Full refund issued`,
+          date: new Date().toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }),
           read: false
         });
-        toast('❌ Marz failed - refund issued to ' + username, '#f87171');
+        
+        toast('❌ Marz processing failed - refund issued to ' + username, '#f87171');
       }
     } catch (marzError) {
+      // Exception during Marz send - REFUND user instantly to Scrayd Wallet
       const userSnap = await db.ref('users/' + userId).get();
       const user = userSnap.val();
-      const refundedStake = (user.stake || 0) + amount;
+      const refundedScraydWallet = (user.scraydWallet || 0) + amount;
+      
       await db.ref('users/' + userId).update({
-        stake: refundedStake,
+        scraydWallet: refundedScraydWallet,
         ['transactions/' + txKey + '/status']: 'failed',
-        ['transactions/' + txKey + '/note']: 'Withdrawal Error - Refunded'
+        ['transactions/' + txKey + '/note']: 'Withdrawal Error - Refunded to Scrayd Wallet'
       });
       await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
       await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      
       await db.ref('adminNotifications/notif_' + Date.now()).set({
         type: 'withdrawal_marz_failed',
         username: username,
         amount: amount,
-        message: `Withdrawal Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued`,
-        date: dateStr(),
+        message: `Withdrawal Marz Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Error: ${marzError.message} | Full refund issued`,
+        date: new Date().toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }),
         read: false
       });
+      
       toast('❌ Marz error - refund issued to ' + username, '#f87171');
     }
   } catch (error) { 
@@ -1271,33 +1492,41 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
 }
 
 async function rejectWithdrawal(reqKey, userId, username, amount) {
-  const confirmed = await confirmAction('Reject Withdrawal?', 'Reject withdrawal of ' + fmt(amount) + ' for ' + username + '? Full amount will be refunded to STAKE.');
+  const confirmed = await confirmAction('Reject Withdrawal?', 'Reject withdrawal of ' + fmt(amount) + ' for ' + username + '? Full amount will be refunded to Scrayd Wallet.');
   if (!confirmed) return;
   
   try {
     const userSnap = await db.ref('users/' + userId).get();
     const user = userSnap.val();
-    const newStake = (user.stake || 0) + amount;
+    const newScraydWallet = (user.scraydWallet || 0) + amount;
     const txKey = allWithdrawals[reqKey]?.txKey;
     const adminTxKey = allWithdrawals[reqKey]?.adminTxKey;
     
+    // Refund to user's Scrayd Wallet
     await db.ref('users/' + userId).update({
-      stake: newStake,
+      scraydWallet: newScraydWallet,
       ['transactions/' + txKey + '/status']: 'failed',
-      ['transactions/' + txKey + '/note']: 'Withdrawal Rejected ❌ - Amount refunded'
+      ['transactions/' + txKey + '/note']: 'Withdrawal Rejected ❌ - Amount refunded to Scrayd Wallet'
     });
+    
+    // Update withdrawal request status
     await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'rejected' });
+    
+    // Update admin transaction status to failed
     if (adminTxKey) {
       await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
     }
+    
+    // Send admin notification about the rejection
     await db.ref('adminNotifications/notif_' + Date.now()).set({ 
       type: 'withdrawal_rejected',
       username: username,
       amount: amount,
-      message: `Withdrawal Rejected: ${username} | Amount: ${fmt(amount)} | Full refund issued`,
-      date: dateStr(),
+      message: `Withdrawal Rejected: ${username} | Phone: ${user.phone} | Amount: ${fmt(amount)} | Status: REJECTED BY ADMIN | Full amount refunded`,
+      date: new Date().toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + new Date().toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }),
       read: false 
     });
+    
     toast('✅ Rejected — amount refunded to ' + username);
   } catch (error) { 
     console.error('Error rejecting withdrawal:', error);
@@ -1305,16 +1534,142 @@ async function rejectWithdrawal(reqKey, userId, username, amount) {
   }
 }
 
-// ============================================================
-// SETTINGS
-// ============================================================
+function searchDebitUser() {
+  const q = document.getElementById('debit-search').value.trim().toLowerCase();
+  const infoBox = document.getElementById('debit-user-info');
+  const notFound = document.getElementById('debit-not-found');
+  debitTargetUser = null;
+  infoBox.style.display = 'none';
+  notFound.style.display = 'none';
+  document.getElementById('debit-preview').style.display = 'none';
+  if (!q) return;
+  const found = Object.values(allUsers).find(u => (u.username || '').toLowerCase() === q);
+  if (found) {
+    debitTargetUser = found;
+    document.getElementById('debit-user-name').textContent = found.username;
+    document.getElementById('debit-user-phone').textContent = found.phone || '—';
+    document.getElementById('debit-user-prime').textContent = fmt(found.primeBalance || 0);
+    document.getElementById('debit-user-scrayd').textContent = fmt(found.scraydWallet || 0);
+    document.getElementById('debit-user-locked').textContent = fmt(userLockedTotal(found));
+    infoBox.style.display = 'block';
+    updateDebitPreview();
+  } else { notFound.style.display = 'block'; }
+}
+
+function updateDebitPreview() {
+  const amt = parseInt(document.getElementById('debit-amount').value) || 0;
+  const account = document.getElementById('debit-account').value;
+  const accountLabel = account === 'scraydWallet' ? 'Scrayd Wallet' : 'Prime Account';
+  const prev = document.getElementById('debit-preview');
+  if (!debitTargetUser || amt <= 0) { prev.style.display = 'none'; return; }
+  const currentVal = debitTargetUser[account] || 0;
+  const newBal = currentVal - amt;
+  prev.style.display = 'block';
+  prev.innerHTML = '<strong>⚠️ DEBIT WARNING</strong><br>' + accountLabel + ': ' + fmt(currentVal) + ' → After debit: <strong>' + fmt(newBal) + '</strong><br>Locked in Machines: ' + fmt(userLockedTotal(debitTargetUser));
+  prev.style.color = newBal < 0 ? 'var(--warn)' : 'var(--muted)';
+}
+
+async function processDebit() {
+  if (!debitTargetUser) { toast('Search and select a user first', '#f87171'); return; }
+  const amt = parseInt(document.getElementById('debit-amount').value) || 0;
+  const account = document.getElementById('debit-account').value;
+  const accountLabel = account === 'scraydWallet' ? 'Scrayd Wallet' : 'Prime Account';
+  if (amt <= 0) { toast('Enter a valid amount', '#f87171'); return; }
+  const currentBalance = debitTargetUser[account] || 0;
+  if (currentBalance < amt) { toast('Insufficient ' + accountLabel + '! User only has ' + fmt(currentBalance), '#f87171'); return; }
+  
+  const confirmed = await confirmAction('Debit ' + accountLabel + '?', 'Debit ' + fmt(amt) + ' from ' + debitTargetUser.username + '\'s ' + accountLabel + '?');
+  if (confirmed) {
+    try {
+      const newBal = currentBalance - amt;
+      const txKey = 'tx_debit_' + Date.now();
+      const updates = {
+        [account]: newBal,
+        ['transactions/' + txKey]: {
+          type: 'Withdrawal',
+          amount: -amt,
+          note: 'Admin Debit from ' + accountLabel,
+          date: dateStr(),
+          status: 'completed'
+        }
+      };
+      await db.ref('users/' + safeKey(debitTargetUser.username)).update(updates);
+      debitHistory.unshift({ username: debitTargetUser.username, amount: amt, balAfter: newBal, date: dateStr() });
+      renderDebitHistory();
+      document.getElementById('debit-search').value = '';
+      document.getElementById('debit-amount').value = '';
+      document.getElementById('debit-user-info').style.display = 'none';
+      document.getElementById('debit-preview').style.display = 'none';
+      debitTargetUser = null;
+      toast('✅ Debit of ' + fmt(amt) + ' processed from ' + accountLabel);
+    } catch (error) { toast('Error processing debit', '#f87171'); }
+  }
+}
+
+function renderDebitHistory() {
+  const tbody = document.getElementById('debit-history-body');
+  if (!debitHistory.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No debits yet<\/tr>'; return; }
+  tbody.innerHTML = debitHistory.slice(0, 20).map(d => `
+    <tr>
+      <td><strong>${d.username}</strong></td>
+      <td class="mono" style="color:var(--warn);">-${fmt(d.amount)}</td>
+      <td class="mono" style="color:${d.balAfter < 0 ? 'var(--warn)' : 'var(--success)'};">${fmt(d.balAfter)}</td>
+      <td class="mono" style="font-size:11px;">${d.date}</td>
+    </tr>
+  `).join('');
+}
+
+let sogTargetUser = null;
+
+function searchSOGUser() {
+  const q = document.getElementById('sog-username-search').value.trim().toLowerCase();
+  const foundDiv = document.getElementById('sog-user-found');
+  const notFound = document.getElementById('sog-not-found');
+  sogTargetUser = null;
+  foundDiv.style.display = 'none';
+  notFound.style.display = 'none';
+  if (!q) return;
+  const user = Object.values(allUsers).find(u => (u.username || '').toLowerCase() === q);
+  if (user) {
+    sogTargetUser = user;
+    const userDisplay = 'Username: <strong>' + user.username + '</strong><br>Phone: ' + (user.phone || '—') + '<br>PRIME: ' + fmt(user.primeBalance || 0) + ' | SCRAYD: ' + fmt(user.scraydWallet || 0);
+    document.getElementById('sog-user-display').innerHTML = userDisplay;
+    foundDiv.style.display = 'block';
+  } else { notFound.style.display = 'block'; }
+}
+
+function clearSOGSearch() {
+  sogTargetUser = null;
+  document.getElementById('sog-username-search').value = '';
+  document.getElementById('sog-user-found').style.display = 'none';
+  document.getElementById('sog-not-found').style.display = 'none';
+}
+
+async function obliterateUserData() {
+  if (!sogTargetUser) { toast('No user selected', '#f87171'); return; }
+  const confirmed = await confirmAction('🗑️ OBLITERATE ALL FINANCIAL DATA?', 'Delete ALL financial data for ' + sogTargetUser.username + '? PRIME, SCRAYD, transactions, and owned machines will be reset to zero. Account will become brand new. THIS CANNOT BE UNDONE.');
+  if (confirmed) {
+    const updates = {
+      primeBalance: 0,
+      scraydWallet: 0,
+      withdrawn: 0,
+      activated: false,
+      ownedMachines: {},
+      transactions: {}
+    };
+    await db.ref('users/' + safeKey(sogTargetUser.username)).update(updates);
+    toast('🗑️ All financial data obliterated for ' + sogTargetUser.username, '#f87171');
+    clearSOGSearch();
+  }
+}
+
 function loadSettingsUI() {
   const s = allSettings;
-  document.getElementById('min-deposit-input').value = s.minDeposit || 10000;
-  document.getElementById('min-withdraw-input').value = s.minWithdraw || 10000;
+  document.getElementById('ura-tax-input').value = s.uraTax || 4;
   document.getElementById('with-charge-input').value = s.withdrawCharge || 10;
-  document.getElementById('daily-video-limit').value = s.dailyVideoLimit || 10;
-  document.getElementById('streak-bonus-input').value = s.streakBonus || 1000;
+  document.getElementById('min-deposit-input').value = s.minDeposit || 10000;
+  document.getElementById('max-deposit-input').value = s.maxDeposit || 2350000;
+  document.getElementById('min-withdraw-input').value = s.minWithdraw || 10000;
   
   const apiInp = document.getElementById('marz-api-key-input');
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
@@ -1341,14 +1696,49 @@ function loadSettingsUI() {
   }
 }
 
+function toggleApiKeyVis() {
+  const inp = document.getElementById('marz-api-key-input');
+  const btn = document.querySelector('#pg-settings .btn-edit');
+  if (inp.type === 'password') { inp.type = 'text'; if (btn) btn.textContent = '🙈'; }
+  else { inp.type = 'password'; if (btn) btn.textContent = '👁️'; }
+}
+
 async function saveMarzApiKey() {
   const val = document.getElementById('marz-api-key-input').value.trim();
   if (!val) { toast('Please enter a valid API key', '#f87171'); return; }
+  
+  // Save the REAL API key to Firebase
   await db.ref('settings/marzApiKey').set(val);
+  
+  // Keep original in session for immediate use
   window.MARZ_API_KEY = val;
+  
+  // Show full API key in input (no masking)
   document.getElementById('marz-api-key-input').type = 'text';
   document.getElementById('marz-api-key-input').value = val;
-  toast('✅ MarzPay API key saved');
+  
+  toast('✅ MarzPay API key saved securely — Payments enabled!');
+}
+
+function loadMarzApiKey() {
+  db.ref('settings/marzApiKey').on('value', snap => {
+    const maskedKey = snap.val();
+    if (maskedKey) {
+      document.getElementById('marz-api-key-input').value = maskedKey;
+      document.getElementById('api-status-badge').innerHTML = '✅ API Key Set';
+      document.getElementById('api-status-badge').style.color = 'var(--success)';
+    } else {
+      document.getElementById('api-status-badge').innerHTML = '⚠️ Not Set';
+      document.getElementById('api-status-badge').style.color = 'var(--muted)';
+    }
+  });
+}
+
+async function saveUraTax() {
+  const v = parseFloat(document.getElementById('ura-tax-input').value) || 4;
+  if (v < 0) { toast('Tax cannot be negative', '#f87171'); return; }
+  await db.ref('settings/uraTax').set(v);
+  toast('✅ URA Tax updated to ' + v + '%');
 }
 
 async function saveMinDeposit() {
@@ -1356,6 +1746,14 @@ async function saveMinDeposit() {
   if (v < 500) { toast('Min deposit must be at least UGX 500', '#f87171'); return; }
   await db.ref('settings/minDeposit').set(v);
   toast('✅ Minimum deposit set to ' + fmt(v));
+}
+
+async function saveMaxDeposit() {
+  const v = parseInt(document.getElementById('max-deposit-input').value) || 2350000;
+  const minDep = parseInt(document.getElementById('min-deposit-input').value) || 10000;
+  if (v < minDep) { toast('Maximum deposit must be greater than minimum', '#f87171'); return; }
+  await db.ref('settings/maxDeposit').set(v);
+  toast('✅ Maximum deposit set to ' + fmt(v));
 }
 
 async function saveMinWithdraw() {
@@ -1371,20 +1769,6 @@ async function saveWithCharge() {
   toast('✅ Withdrawal charge updated to ' + v + '%');
 }
 
-async function saveDailyVideoLimit() {
-  const v = parseInt(document.getElementById('daily-video-limit').value) || 10;
-  if (v < 1) { toast('Daily limit must be at least 1', '#f87171'); return; }
-  await db.ref('settings/dailyVideoLimit').set(v);
-  toast('✅ Daily video limit set to ' + v);
-}
-
-async function saveStreakBonus() {
-  const v = parseInt(document.getElementById('streak-bonus-input').value) || 1000;
-  if (v < 100) { toast('Streak bonus must be at least UGX 100', '#f87171'); return; }
-  await db.ref('settings/streakBonus').set(v);
-  toast('✅ Streak bonus set to ' + fmt(v));
-}
-
 async function lockWithdrawals(lock) {
   await db.ref('settings/withdrawLocked').set(lock);
   toast(lock ? '🔒 Withdrawals LOCKED' : '🔓 Withdrawals UNLOCKED', lock ? '#f87171' : undefined);
@@ -1392,7 +1776,7 @@ async function lockWithdrawals(lock) {
 
 async function setWithdrawApproval(val) {
   await db.ref('settings/withdrawApproval').set(val);
-  toast(val ? '✅ Manual approval ON' : '⚡ Automatic withdrawals ON', val ? undefined : '#38bdf8');
+  toast(val ? '✅ Manual approval ON — admin must approve withdrawals' : '⚡ Automatic withdrawals ON', val ? undefined : '#38bdf8');
 }
 
 async function deleteAllUsers() {
@@ -1418,9 +1802,95 @@ async function deleteAllData() {
   }
 }
 
-// ============================================================
-// NOTIFICATIONS
-// ============================================================
+async function processAdminWithdraw() {
+  const phoneErr = document.getElementById('aw-phone-err');
+  const amtErr = document.getElementById('aw-amount-err');
+  const resultDiv = document.getElementById('aw-result');
+  phoneErr.classList.remove('show');
+  amtErr.classList.remove('show');
+  resultDiv.style.display = 'none';
+  
+  const phone = document.getElementById('aw-phone').value.trim();
+  const amount = parseInt(document.getElementById('aw-amount').value) || 0;
+  
+  if (!phone) { phoneErr.classList.add('show'); return; }
+  if (amount < 1000) { amtErr.classList.add('show'); return; }
+  
+  if (!allSettings.marzApiKey) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(248,113,113,.12)';
+    resultDiv.style.border = '1px solid rgba(248,113,113,.3)';
+    resultDiv.style.color = 'var(--warn)';
+    resultDiv.textContent = '❌ MarzPay API key not configured. Go to Settings first.';
+    return;
+  }
+  
+  const btn = document.querySelector('#pg-admin-withdraw .btn-success');
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending...';
+  
+  const reference = 'adm_' + Date.now();
+  const now = dateStr();
+  
+  try {
+    const res = await marzSend(phone, amount, reference, 'DiamondEarn Admin Withdrawal');
+    if (res && res.status === 'success') {
+      resultDiv.style.display = 'block';
+      resultDiv.style.background = 'rgba(52,211,153,.12)';
+      resultDiv.style.border = '1px solid rgba(52,211,153,.3)';
+      resultDiv.style.color = 'var(--accent3)';
+      resultDiv.textContent = '✅ Success! ' + fmt(amount) + ' sent to ' + phone;
+      awHistory.unshift({ date: now, phone, amount, status: '✅ Success' });
+      await db.ref('adminWithdrawals/' + reference).set({ date: now, phone, amount, status: 'success', reference });
+      document.getElementById('aw-phone').value = '';
+      document.getElementById('aw-amount').value = '';
+    } else {
+      const msg = res?.message || 'Unknown error';
+      resultDiv.style.display = 'block';
+      resultDiv.style.background = 'rgba(248,113,113,.12)';
+      resultDiv.style.border = '1px solid rgba(248,113,113,.3)';
+      resultDiv.style.color = 'var(--warn)';
+      resultDiv.textContent = '❌ Failed: ' + msg;
+      awHistory.unshift({ date: now, phone, amount, status: '❌ Failed: ' + msg });
+      await db.ref('adminWithdrawals/' + reference).set({ date: now, phone, amount, status: 'failed', message: msg });
+    }
+  } catch (e) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.background = 'rgba(248,113,113,.12)';
+    resultDiv.style.border = '1px solid rgba(248,113,113,.3)';
+    resultDiv.style.color = 'var(--warn)';
+    resultDiv.textContent = '❌ Error: ' + e.message;
+    awHistory.unshift({ date: now, phone, amount, status: '❌ Error: ' + e.message });
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '💵 SEND FUNDS';
+  renderAwHistory();
+}
+
+function renderAwHistory() {
+  const tbody = document.getElementById('aw-history-body');
+  if (!awHistory.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="4">No withdrawals yet<\/tr>'; return; }
+  tbody.innerHTML = awHistory.slice(0, 30).map(h => `
+    <tr>
+      <td class="mono" style="font-size:11px;">${h.date}</td>
+      <td class="mono">${h.phone}</td>
+      <td class="mono" style="color:var(--gold);">${fmt(h.amount)}</td>
+      <td style="font-size:12px;font-weight:700;">${h.status}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadAwHistory() {
+  try {
+    const snap = await db.ref('adminWithdrawals').orderByKey().limitToLast(30).get();
+    if (snap.exists()) {
+      awHistory = Object.values(snap.val()).reverse();
+      renderAwHistory();
+    }
+  } catch (e) { console.warn('Could not load admin withdrawal history:', e); }
+}
+
 let adminNotifications = {};
 
 function updateNotifBadge() {
@@ -1487,9 +1957,6 @@ function startNotifListener() {
   });
 }
 
-// ============================================================
-// AUTH FUNCTIONS
-// ============================================================
 function showPanel() {
   document.getElementById('loading-screen').style.display = 'none';
   document.getElementById('auth-wrap').style.display = 'none';
@@ -1497,9 +1964,11 @@ function showPanel() {
   startRealtimeListeners();
 }
 
+
 function maskPassword(password) {
   if (!password || password.length < 5) return 'xxx' + password.slice(-2);
-  return 'x'.repeat(password.length - 2) + password.slice(-2);
+  const masked = 'x'.repeat(password.length - 2) + password.slice(-2);
+  return masked;
 }
 
 function unmaskPassword(maskedPassword, originalAttempt) {
@@ -1512,6 +1981,7 @@ function unmaskPassword(maskedPassword, originalAttempt) {
 function toggleApiKeyVisibility(inputId) {
   const input = document.getElementById(inputId);
   const eyeBtn = event.target;
+  
   if (input.type === 'password') {
     input.type = 'text';
     eyeBtn.textContent = '👁️‍🗨️';
@@ -1550,6 +2020,7 @@ async function adminLogin() {
       return;
     }
     
+    // Unmask password from Firebase storage
     const storedPassword = admin.password;
     const unmaskedPassword = unmaskPassword(storedPassword, password);
     
@@ -1559,6 +2030,7 @@ async function adminLogin() {
       return;
     }
     
+    // Login successful
     localStorage.setItem(SESSION_KEY, 'true');
     localStorage.setItem('ADMIN_USERNAME', username);
     localStorage.setItem('ADMIN_POSITION', admin.position || 'Moderator');
@@ -1582,6 +2054,7 @@ async function adminRegister() {
   
   if (err) err.classList.remove('show');
   
+  // Validation
   if (!username || !phone || !pin || !password || !confirmPassword || !position) {
     if (err) { err.textContent = '❌ All fields are required'; err.classList.add('show'); }
     return;
@@ -1613,6 +2086,7 @@ async function adminRegister() {
   }
   
   try {
+    // Check max 4 admin accounts
     const snap = await db.ref('adminAccounts').get();
     const admins = snap.val() || {};
     const adminCount = Object.keys(admins).length;
@@ -1622,13 +2096,16 @@ async function adminRegister() {
       return;
     }
     
+    // Check if username already exists
     if (admins[safeKey(username)]) {
       if (err) { err.textContent = '❌ Username already exists'; err.classList.add('show'); }
       return;
     }
     
+    // Mask password for storage
     const maskedPassword = maskPassword(password);
     
+    // Save to Firebase
     await db.ref('adminAccounts/' + safeKey(username)).set({
       username: username,
       phone: phone,
@@ -1646,10 +2123,20 @@ async function adminRegister() {
     document.getElementById('reg-password').value = '';
     document.getElementById('reg-confirm-password').value = '';
     document.getElementById('reg-position').value = 'Moderator';
+    
+    // Switch to login tab
+    switchAuthTab('login');
   } catch (error) {
     console.error('Registration error:', error);
     if (err) { err.textContent = '❌ Registration error: ' + error.message; err.classList.add('show'); }
   }
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('[data-auth-tab]').forEach(el => el.classList.remove('active'));
+  document.querySelector('[data-auth-tab="' + tab + '"]').classList.add('active');
+  document.querySelectorAll('.auth-tab-content').forEach(el => el.style.display = 'none');
+  document.getElementById(tab + '-tab').style.display = 'block';
 }
 
 function adminLogout() {
@@ -1658,8 +2145,6 @@ function adminLogout() {
   if (settingsUnsubscribe) settingsUnsubscribe();
   if (withdrawalsUnsubscribe) withdrawalsUnsubscribe();
   if (adminTxUnsubscribe) adminTxUnsubscribe();
-  if (levelsUnsubscribe) levelsUnsubscribe();
-  if (videosUnsubscribe) videosUnsubscribe();
   document.getElementById('admin-wrap').classList.remove('active');
   document.getElementById('auth-wrap').style.display = 'flex';
   document.getElementById('login-username').value = '';
@@ -1699,28 +2184,49 @@ function toggleRegConfirm() {
   else { inp.type = 'password'; btn.textContent = '👁️'; }
 }
 
+function toggleRegSecond() {
+  const inp = document.getElementById('reg-second-pw');
+  const btn = document.getElementById('reg-second-eye');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+function toggleRegSecondConfirm() {
+  const inp = document.getElementById('reg-second-confirm');
+  const btn = document.getElementById('reg-second-confirm-eye');
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+  else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+
+
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-videos': 4, 'pg-levels': 5, 'pg-settings': 6 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-machines': 2, 'pg-tube': 3, 'pg-transactions': 4, 'pg-withdrawals': 5, 'pg-debit': 6, 'pg-sog': 7, 'pg-settings': 8, 'pg-admin-withdraw': 9 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
-  if (id === 'pg-videos') renderAdminVideosTable();
-  if (id === 'pg-levels') renderLevelsAdminTable();
+  if (id === 'pg-debit') renderDebitHistory();
+  if (id === 'pg-machines') renderMachinesTable();
 }
 
 function showTerms() { 
   Swal.fire({
     title: 'Terms of Service',
     html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
-      <p><strong>1. Introduction</strong><br>Welcome to DiamondEarn. These Terms of Service govern your use of our platform.</p>
-      <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password.</p>
-      <p><strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your STAKE account.</p>
+      <p><strong>1. Introduction</strong><br>Welcome to DiamondEarn. These Terms of Service govern your use of our investment platform.</p>
+      
+      <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.</p>
+      
+      <p><strong>3. Investment Risks</strong><br>All investments carry risk. DiamondEarn does not guarantee returns. Past performance is not indicative of future results.</p>
+      
       <p><strong>4. Prohibited Activities</strong><br>You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.</p>
-      <p><strong>5. Limitation of Liability</strong><br>DiamondEarn is provided "as is" without warranties.</p>
-      <p><strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time.</p>
+      
+      <p><strong>5. Limitation of Liability</strong><br>DiamondEarn is provided "as is" without warranties. We are not liable for any indirect or consequential damages.</p>
+      
+      <p><strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time. Your continued use constitutes acceptance of changes.</p>
+      
       <p><strong>7. Governing Law</strong><br>These terms are governed by the laws of Uganda and Kenya as applicable.</p>
     </div>`,
     icon: 'info',
@@ -1734,12 +2240,19 @@ function showPrivacy() {
   Swal.fire({
     title: 'Privacy Policy',
     html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
-      <p><strong>1. Information We Collect</strong><br>We collect personal information including name, phone number, and transaction history.</p>
-      <p><strong>2. How We Use Information</strong><br>Your information is used to process transactions, prevent fraud, and improve our services.</p>
-      <p><strong>3. Data Protection</strong><br>We implement industry-standard security measures to protect your data.</p>
-      <p><strong>4. Third-Party Sharing</strong><br>We do not sell your personal information.</p>
-      <p><strong>5. Your Rights</strong><br>You have the right to access, modify, or delete your personal information.</p>
-      <p><strong>6. Contact Us</strong><br>For privacy concerns, contact our support team.</p>
+      <p><strong>1. Information We Collect</strong><br>We collect personal information including name, phone number, email, and transaction history to provide our services.</p>
+      
+      <p><strong>2. How We Use Information</strong><br>Your information is used to process transactions, prevent fraud, improve our services, and comply with legal obligations.</p>
+      
+      <p><strong>3. Data Protection</strong><br>We implement industry-standard security measures to protect your data from unauthorized access.</p>
+      
+      <p><strong>4. Third-Party Sharing</strong><br>We do not sell your personal information. We may share data with payment processors and legal authorities when required.</p>
+      
+      <p><strong>5. Cookies & Tracking</strong><br>We use cookies and similar technologies to enhance user experience and analyze platform usage.</p>
+      
+      <p><strong>6. Your Rights</strong><br>You have the right to access, modify, or delete your personal information at any time.</p>
+      
+      <p><strong>7. Contact Us</strong><br>For privacy concerns, contact our support team via the support channels.</p>
     </div>`,
     icon: 'info',
     confirmButtonText: 'Understood',
