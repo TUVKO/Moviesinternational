@@ -306,9 +306,11 @@ input[type="password"]{padding-right:46px;}
 .level-progress{background:var(--surface2);border-radius:10px;height:8px;margin:8px 0;overflow:hidden;}
 .level-progress-fill{background:var(--accent);height:100%;border-radius:10px;transition:width 0.5s;}
 
-/* Referral Section */
-.referral-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px;}
-.referral-link{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);word-break:break-all;margin:8px 0;}
+/* Empty Stage Page */
+.stage-empty{text-align:center;padding:60px 20px;}
+.stage-empty-icon{font-size:64px;margin-bottom:16px;}
+.stage-empty-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.stage-empty-text{font-size:13px;color:var(--muted);line-height:1.6;}
 </style>
 </head>
 <body>
@@ -511,12 +513,12 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- DIVIDENDS / LEVELS -->
+  <!-- WAGES (Formerly DIVIDENDS / LEVELS) -->
   <div class="dash-section" id="sec-plan">
     <div class="inner-header">
-      <span style="font-size:22px">🎯</span>
+      <span style="font-size:22px">💰</span>
       <div>
-        <div class="inner-title">DIVIDENDS</div>
+        <div class="inner-title">WAGES</div>
         <div class="inner-sub">Your earning levels</div>
       </div>
     </div>
@@ -537,7 +539,7 @@ input[type="password"]{padding-right:46px;}
         <div id="user-next-level" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
       </div>
 
-      <!-- Levels Table - WITH LINES/BORDERS -->
+      <!-- Levels Table -->
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
           <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid var(--border);">
@@ -557,6 +559,24 @@ input[type="password"]{padding-right:46px;}
             </tbody>
           </table>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGES (Empty Page) -->
+  <div class="dash-section" id="sec-errands">
+    <div class="inner-header">
+      <span style="font-size:22px">📍</span>
+      <div>
+        <div class="inner-title">STAGES</div>
+        <div class="inner-sub">Coming soon</div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="stage-empty">
+        <div class="stage-empty-icon">🚀</div>
+        <div class="stage-empty-title">Coming Soon</div>
+        <div class="stage-empty-text">This page is under development.<br>Check back later for exciting new features!</div>
       </div>
     </div>
   </div>
@@ -628,28 +648,11 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- Errands (Referral) -->
-  <div class="dash-section" id="sec-errands">
-    <div class="inner-header"><span style="font-size:22px">👥</span><div><div class="inner-title">REFER & EARN</div><div class="inner-sub">Invite friends and earn bonuses</div></div></div>
-    <div class="section">
-      <div class="referral-box">
-        <div style="font-size:14px;font-weight:700;color:var(--accent);">🎁 Refer a Friend</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Earn <strong style="color:var(--accent);">UGX 500</strong> when your friend watches their first video!</div>
-        <div class="referral-link" id="referral-link-display">Loading referral link...</div>
-        <button class="btn btn-save" onclick="copyReferralLink()" style="width:100%;padding:12px;font-size:13px;margin-top:8px;">📋 Copy Referral Link</button>
-        <div style="margin-top:12px;display:flex;justify-content:space-between;font-size:12px;">
-          <span style="color:var(--muted);">Total Referrals: <span id="total-referrals" style="color:var(--accent);font-weight:700;">0</span></span>
-          <span style="color:var(--muted);">Bonus Earned: <span id="referral-bonus" style="color:var(--success);font-weight:700;">UGX 0</span></span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <nav class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
-    <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="nav-label">REFER</span></div>
+    <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="nav-label">STAGES</span></div>
     <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span><span class="nav-label">WATCH</span></div>
-    <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span class="nav-label">LEVELS</span></div>
+    <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span class="nav-label">WAGES</span></div>
     <div class="nav-item" onclick="switchTab('profile')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span><span class="nav-label">ME</span></div>
   </nav>
 
@@ -735,6 +738,7 @@ input[type="password"]{padding-right:46px;}
 // DIAMOND EARN - WATCH & EARN PLATFORM
 // STAKE ONLY - Deposit kept via MarzPay
 // FULLY FIXED - Login/Register Working
+// STAGES (empty) + WAGES (levels)
 // ============================================================
 
 // Check if Firebase is loaded
@@ -1189,9 +1193,6 @@ function updateProfileUI() {
   document.getElementById('profile-streak-simple').textContent = (currentUser.streakDays || 0) + ' days';
   document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
   document.getElementById('top-username').textContent = currentUser.username || 'User';
-  
-  document.getElementById('total-referrals').textContent = currentUser.referrals?.length || 0;
-  document.getElementById('referral-bonus').textContent = fmt(currentUser.referralBonus || 0);
 }
 
 function updateSettingsUI() {
@@ -1817,16 +1818,6 @@ async function doLogout() {
   }, 800);
 }
 
-function copyReferralLink() {
-  const link = document.getElementById('referral-link-display').textContent;
-  navigator.clipboard.writeText(link).then(() => {
-    const popup = document.getElementById('popup-banner');
-    popup.textContent = '📋 Referral link copied!';
-    popup.classList.add('show');
-    setTimeout(() => popup.classList.remove('show'), 2000);
-  });
-}
-
 function sendAdminNotification(type, username, amount, message) {
   try {
     db.ref('adminNotifications/notif_' + Date.now()).set({
@@ -1924,7 +1915,6 @@ window.doRegister = doRegister;
 window.showAuth = showAuth;
 window.switchTab = switchTab;
 window.doLogout = doLogout;
-window.copyReferralLink = copyReferralLink;
 window.showTerms = showTerms;
 window.closeTermsModal = closeTermsModal;
 window.showPrivacy = showPrivacy;
