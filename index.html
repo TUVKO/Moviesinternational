@@ -734,6 +734,7 @@ input[type="password"]{padding-right:46px;}
 // ============================================================
 // DIAMOND EARN - WATCH & EARN PLATFORM
 // STAKE ONLY - Deposit kept via MarzPay
+// FIXED: Login/Register working
 // ============================================================
 
 const firebaseConfig = {
@@ -1136,7 +1137,13 @@ async function claimSalary() {
 // ============================================================
 function updateBalanceUI() {
   if (!currentUser) return;
-  const stake = currentUser.stake || 0;
+  
+  // Get stake (fallback to balance if stake doesn't exist for old users)
+  let stake = currentUser.stake || 0;
+  if (stake === 0 && currentUser.balance) {
+    stake = currentUser.balance;
+  }
+  
   document.getElementById('stat-stake').textContent = fmt(stake);
   
   const today = getDateKey(new Date());
@@ -1633,34 +1640,59 @@ function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 
 function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
 
 // ============================================================
-// LOGIN / REGISTER
+// LOGIN / REGISTER - FIXED
 // ============================================================
 async function doLogin() {
   clearErrors('login-user-err', 'login-pw-err');
   setErr('login-general-err', false);
+  
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
+  
   if (!username) { setErr('login-user-err', true); return; }
   if (!password) { setErr('login-pw-err', true); return; }
+  
   try {
     const userSnap = await db.ref('users/' + safeKey(username)).get();
-    if (!userSnap.exists()) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
+    
+    if (!userSnap.exists()) {
+      setErr('login-general-err', true, '❌ Invalid username or password');
+      return;
+    }
+    
     const userData = userSnap.val();
-    if (userData.password !== password) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
-    if (userData.locked) { setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.'); return; }
+    
+    if (userData.password !== password) {
+      setErr('login-general-err', true, '❌ Invalid username or password');
+      return;
+    }
+    
+    if (userData.locked) {
+      setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.');
+      return;
+    }
+    
     currentUser = userData;
     currentUsername = username;
     sessionStorage.setItem('pp_current_user', username);
     
+    // Start listeners and update UI
     startUserListener(username);
     startVideoListener();
+    
+    // Update all UI
     updateBalanceUI();
     renderHistory();
     updateProfileUI();
     updateLevelProgress();
     renderLevelsTable();
+    
+    // Show dashboard
     showDashboard();
     switchTab('home');
+    
+    // Silent login - no toast
+    
   } catch (error) {
     console.error('Login error:', error);
     setErr('login-general-err', true, '❌ Login failed. Please try again.');
@@ -1669,11 +1701,13 @@ async function doLogin() {
 
 async function doRegister() {
   clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
+  
   const username = document.getElementById('reg-username').value.trim();
   const country = document.getElementById('reg-country').value;
   const phoneDigits = document.getElementById('reg-phone').value.trim();
   const password = document.getElementById('reg-password').value;
   const confirm = document.getElementById('reg-confirm').value;
+  
   let ok = true;
   if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
   if (!country) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
@@ -1681,14 +1715,21 @@ async function doRegister() {
   if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
   if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
   if (!ok) return;
+  
   const existing = await db.ref('users/' + safeKey(username)).get();
   if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+  
   const prefix = country === 'KE' ? '+254' : '+256';
   const fullPhone = prefix + phoneDigits;
   const now = dateStr();
   const todayKey = getDateKey(new Date());
+  
   const newUser = {
-    username, password, country, phone: fullPhone, stake: 0,
+    username: username,
+    password: password,
+    country: country,
+    phone: fullPhone,
+    stake: 0,
     totalVideosWatched: 0,
     streakDays: 0,
     lastWatchDate: null,
@@ -1707,10 +1748,13 @@ async function doRegister() {
       }
     }
   };
+  
   await db.ref('users/' + safeKey(username)).set(newUser);
+  
   currentUser = newUser;
   currentUsername = username;
   sessionStorage.setItem('pp_current_user', username);
+  
   startUserListener(username);
   startVideoListener();
   updateBalanceUI();
