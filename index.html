@@ -309,11 +309,11 @@ input[type="password"]{padding-right:46px;}
 .level-progress{background:var(--surface2);border-radius:10px;height:8px;margin:8px 0;overflow:hidden;}
 .level-progress-fill{background:var(--accent);height:100%;border-radius:10px;transition:width 0.5s;}
 
-/* Stages Cards */
+/* Stages Cards - NO LOCK INDICATORS */
 .stages-grid{display:flex;flex-direction:column;gap:8px;}
 .stage-card{background:var(--surface2);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;min-height:60px;}
 .stage-card:active{transform:scale(0.98);}
-.stage-card.active{background:rgba(92,163,120,0.15);border-color:var(--success);}
+.stage-card.purchased{border-color:var(--success);background:rgba(92,163,120,0.1);}
 .stage-color{width:6px;height:40px;border-radius:4px;flex-shrink:0;}
 .stage-info{flex:1;display:flex;flex-direction:column;gap:1px;}
 .stage-name{font-size:11px;font-weight:700;color:var(--text);}
@@ -324,7 +324,7 @@ input[type="password"]{padding-right:46px;}
 .stage-action{flex-shrink:0;}
 .stage-btn{background:var(--accent);border:none;border-radius:6px;padding:4px 10px;font-size:8px;font-weight:700;color:#14110F;cursor:pointer;font-family:'Inter',sans-serif;}
 .stage-btn:active{transform:scale(0.95);}
-.stage-btn.active-btn{background:var(--success);color:#fff;cursor:default;}
+.stage-btn.purchased-btn{background:var(--success);color:#fff;}
 .stage-btn.need-funds{background:var(--warn);color:#fff;}
 
 /* Video count badge on thumbnails */
@@ -466,18 +466,11 @@ input[type="password"]{padding-right:46px;}
       </div>
     </div>
 
-    <!-- 3 Buttons Side by Side -->
     <div class="section">
-      <div style="display:flex;gap:8px;margin:8px 0;">
-        <button class="action-btn" style="flex:1;background:#F2B84B;border:none;color:#14110F;justify-content:center;padding:12px 4px;font-size:13px;border-radius:12px;font-weight:700;" onclick="switchTab('deposit')">
-          <span class="btn-icon">💳</span> Recharge
-        </button>
-        <button class="action-btn" style="flex:1;background:#22c55e;border:none;color:white;justify-content:center;padding:12px 4px;font-size:13px;border-radius:12px;font-weight:700;" onclick="switchTab('team')">
-          <span class="btn-icon">🎬</span> Watch
-        </button>
-        <button class="action-btn" style="flex:1;background:#ef4444;border:none;color:white;justify-content:center;padding:12px 4px;font-size:13px;border-radius:12px;font-weight:700;" onclick="switchTab('withdraw')">
-          <span class="btn-icon">💰</span> Withdrawal
-        </button>
+      <div class="action-grid">
+        <button class="action-btn" style="background:#22c55e;border:none;color:white;" onclick="switchTab('team')"><span class="btn-icon">🎬</span> Watch Videos</button>
+        <button class="action-btn" style="background:#F2B84B;border:none;color:#14110F;" onclick="switchTab('deposit')"><span class="btn-icon">💳</span> Deposit</button>
+        <button class="action-btn" style="background:#ef4444;border:none;color:white;" onclick="switchTab('withdraw')"><span class="btn-icon">💰</span> Withdraw</button>
       </div>
     </div>
   </div>
@@ -516,7 +509,7 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- Video Player Overlay -->
+  <!-- Video Player Overlay - REDESIGNED -->
   <div class="video-overlay" id="video-overlay">
     <div class="video-overlay-header">
       <span id="video-overlay-title">Movie Title</span>
@@ -590,7 +583,7 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- STAGES (Level Purchase) - ONE ACTIVE LEVEL ONLY -->
+  <!-- STAGES (Level Purchase) - NO LOCK INDICATORS -->
   <div class="dash-section" id="sec-errands">
     <div class="inner-header">
       <span style="font-size:22px">📍</span>
@@ -613,7 +606,7 @@ input[type="password"]{padding-right:46px;}
         </div>
       </div>
 
-      <!-- Level Cards -->
+      <!-- Level Cards - NO LOCK INDICATORS -->
       <div id="stages-grid" class="stages-grid">
         <div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading levels...</div>
       </div>
@@ -664,7 +657,7 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- Withdraw - USES MOB -->
+  <!-- Withdraw -->
   <div class="dash-section" id="sec-withdraw">
     <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div></div>
     <div class="section">
@@ -780,10 +773,10 @@ input[type="password"]{padding-right:46px;}
 <script>
 // ============================================================
 // DIAMOND EARN - WATCH & EARN PLATFORM
-// FIXED: Loading Screen | MOB Account | 3 Buttons | Level Refund
+// FIXED: MOB Account Added | Video Rewards go to MOB | Button Fixed
 // ============================================================
 
-console.log('🚀 DiamondEarn Starting...');
+console.log('Firebase loaded:', typeof firebase !== 'undefined');
 
 const firebaseConfig = {
   apiKey: "AIzaSyAo3bA7iQ5S_6css-tWCaVbWnzzJ6zZwNQ",
@@ -795,14 +788,10 @@ const firebaseConfig = {
   databaseURL: "https://money-c6b24-default-rtdb.europe-west1.firebasedatabase.app/"
 };
 
-try {
-  firebase.initializeApp(firebaseConfig);
-  console.log('✅ Firebase initialized');
-} catch (e) {
-  console.error('❌ Firebase init error:', e);
-}
-
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+console.log('✅ Firebase initialized');
 
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
@@ -810,7 +799,7 @@ function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
 function fmtShort(n) { return Number(n || 0).toLocaleString(); }
 
 // ============================================================
-// UTC DATE FUNCTIONS
+// UTC DATE FUNCTIONS (NOT LOCAL)
 // ============================================================
 function getUTCKey(d) {
   if (!d) d = new Date();
@@ -820,9 +809,18 @@ function getUTCKey(d) {
   return `${year}-${month}-${day}`;
 }
 
+function getUTCDateStr() {
+  const d = new Date();
+  return d.toUTCString();
+}
+
 function dateStr() {
   const d = new Date();
   return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' });
+}
+
+function getUTCNow() {
+  return new Date();
 }
 
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
@@ -908,11 +906,6 @@ function getUserLevel() {
 
 function getLevelData(levelKey) {
   return levelsData[levelKey] || levelsData['trainee'] || DEFAULT_TRAINEE;
-}
-
-function getLevelCost(levelKey) {
-  const level = getLevelData(levelKey);
-  return level.collateral || 0;
 }
 
 function renderLevelsTable() {
@@ -1030,7 +1023,7 @@ function updateLevelProgress() {
 }
 
 // ============================================================
-// VIDEO SYSTEM
+// VIDEO SYSTEM - LEVEL BASED + UTC + ROTATION
 // ============================================================
 function startVideoListener() {
   db.ref('videos').on('value', (snap) => {
@@ -1061,9 +1054,11 @@ function getRemainingVideos() {
   const remaining = Math.max(0, totalVideos - watchedToday);
   const reward = level.each || 0;
   
+  // Get video IDs for rotation
   const allVideoIds = getVideoIds();
   const position = getUserVideoPosition();
   
+  // Get the next videos based on position
   let videoIds = [];
   if (allVideoIds.length > 0) {
     for (let i = 0; i < remaining; i++) {
@@ -1101,14 +1096,14 @@ function renderVideoGrid() {
   const level = getLevelData(levelKey);
   const levelName = level.name || 'Trainee';
   
-  // Sweet completion message
+  // Check if user has completed all videos
   if (remaining <= 0 && total > 0) {
     grid.innerHTML = `
       <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);">
-        <div style="font-size:42px;margin-bottom:10px;">🎬</div>
-        <div style="font-size:18px;font-weight:800;color:var(--accent);margin-bottom:4px;">That's a wrap for today!</div>
-        <div style="font-size:11px;color:var(--muted);">You watched ${watched}/${total} videos today.</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:6px;">⏰ Next reset at 00:00 UTC</div>
+        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">All videos completed for today!</div>
+        <div style="font-size:12px;color:var(--muted);">You watched ${watched}/${total} videos today.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;">⏰ Next reset at 00:00 UTC</div>
       </div>
     `;
     return;
@@ -1120,9 +1115,11 @@ function renderVideoGrid() {
     return;
   }
   
+  // Show videos based on rotation
   const videosToShow = videoIds.slice(0, remaining);
   
   if (videosToShow.length === 0 && remaining > 0) {
+    // Fallback
     grid.innerHTML = allVideoIds.slice(0, remaining).map(id => {
       const v = videosData[id];
       if (!v) return '';
@@ -1163,7 +1160,7 @@ function escapeHtml(s) {
 }
 
 // ============================================================
-// VIDEO PLAYER
+// VIDEO PLAYER - REDESIGNED (Countdown below video)
 // ============================================================
 let currentPlayingVideo = null;
 let countdownTimer = null;
@@ -1174,15 +1171,17 @@ function openVideoPlayer(id) {
   const v = videosData[id];
   if (!v) return;
   
+  // Check remaining videos
   const { remaining } = getRemainingVideos();
   if (remaining <= 0) {
     const popup = document.getElementById('popup-banner');
-    popup.textContent = '🎬 That\'s a wrap for today!';
+    popup.textContent = '🎉 All videos completed for today!';
     popup.classList.add('show');
     setTimeout(() => popup.classList.remove('show'), 2500);
     return;
   }
   
+  // Check Trainee 3-day limit
   if (getUserLevel() === 'trainee') {
     const traineeCompleted = currentUser?.traineeCompleted || false;
     if (traineeCompleted) {
@@ -1204,6 +1203,7 @@ function openVideoPlayer(id) {
   document.getElementById('video-player-embed').innerHTML =
     `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   
+  // Reset controls
   const claimBtn = document.getElementById('claim-btn');
   claimBtn.disabled = true;
   claimBtn.className = 'claim-btn';
@@ -1264,8 +1264,14 @@ function closeVideoPlayer() {
 }
 
 async function claimReward() {
-  if (!currentPlayingVideo || !currentUser) return;
-  if (!isClaimReady) return;
+  if (!currentPlayingVideo || !currentUser) {
+    console.log('No video or user');
+    return;
+  }
+  if (!isClaimReady) {
+    console.log('Not ready yet');
+    return;
+  }
   
   const btn = document.getElementById('claim-btn');
   btn.disabled = true;
@@ -1290,20 +1296,21 @@ async function claimReward() {
       return;
     }
     
+    // Update video position
     const allVideoIds = getVideoIds();
     let newPosition = (user.videoPosition || 0) + 1;
     if (newPosition >= allVideoIds.length) {
       newPosition = 0;
     }
     
-    // Reward goes to MOB
+    // ✅ FIX: Reward goes to MOB account (not STAKE!)
     const currentMob = user.mob || 0;
     const newMob = currentMob + reward;
     const newTotalVideos = (user.totalVideosWatched || 0) + 1;
     const txKey = 'tx_video_' + Date.now();
     
     const updates = {
-      mob: newMob,
+      mob: newMob,  // ← MOB gets the reward
       totalVideosWatched: newTotalVideos,
       videoPosition: newPosition,
       [`watchHistory/${todayUTC}`]: watchedToday + 1,
@@ -1316,12 +1323,13 @@ async function claimReward() {
       }
     };
     
+    // Check streak (UTC-based)
     const lastWatchDate = user.lastWatchDate || null;
     const todayStr = getUTCKey(new Date());
     let streakDays = user.streakDays || 0;
     
     if (lastWatchDate === todayStr) {
-      // Already watched today
+      // Already watched today - no streak change
     } else {
       const yesterday = new Date();
       yesterday.setUTCDate(yesterday.getUTCDate() - 1);
@@ -1331,6 +1339,7 @@ async function claimReward() {
         streakDays = (user.streakDays || 0) + 1;
         if (streakDays % 5 === 0) {
           const bonus = settingsData.streakBonus || 1000;
+          // Streak bonus also goes to MOB
           updates.mob = newMob + bonus;
           updates[`transactions/streak_${Date.now()}`] = {
             type: 'Streak Bonus',
@@ -1348,6 +1357,7 @@ async function claimReward() {
     updates.streakDays = streakDays;
     updates.lastWatchDate = todayStr;
     
+    // Check Trainee days
     if (levelKey === 'trainee') {
       const traineeStartDate = user.traineeStartDate || todayStr;
       const startDate = new Date(traineeStartDate + 'T00:00:00Z');
@@ -1364,6 +1374,7 @@ async function claimReward() {
     
     await userRef.update(updates);
     
+    // Update currentUser
     currentUser = await userRef.get().then(s => s.val());
     updateBalanceUI();
     renderHistory();
@@ -1372,10 +1383,12 @@ async function claimReward() {
     renderStages();
     updateVideoDisplay();
     
+    // ✅ FIX: Show completed state and allow watching next
     btn.className = 'claim-btn claimed';
     btn.textContent = '✅ Completed! +' + fmt(reward) + ' to MOB';
     btn.disabled = false;
     
+    // Auto-close after 2 seconds and allow next video
     setTimeout(() => {
       closeVideoPlayer();
       const popup = document.getElementById('popup-banner');
@@ -1404,12 +1417,15 @@ function updateBalanceUI() {
   if (!currentUser) return;
   
   let stake = currentUser.stake || 0;
+  if (stake === 0 && currentUser.balance) {
+    stake = currentUser.balance;
+  }
+  
   let mob = currentUser.mob || 0;
   
   document.getElementById('stat-stake').textContent = fmt(stake);
   document.getElementById('stat-mob').textContent = fmt(mob);
   document.getElementById('stages-stake').textContent = fmt(stake);
-  document.getElementById('withdraw-mob-balance').textContent = fmt(mob);
   
   const todayUTC = getUTCKey(new Date());
   const levelKey = getUserLevel();
@@ -1422,6 +1438,10 @@ function updateBalanceUI() {
   document.getElementById('stat-level').textContent = levelName;
   document.getElementById('stages-current-level').textContent = levelName;
   
+  // Update withdraw MOB balance display
+  document.getElementById('withdraw-mob-balance').textContent = fmt(mob);
+  
+  // Trainee status
   const traineeStatus = document.getElementById('stages-trainee-status');
   const traineeStatus2 = document.getElementById('user-trainee-status');
   if (levelKey === 'trainee') {
@@ -1490,7 +1510,7 @@ function updateSettingsUI() {
 }
 
 // ============================================================
-// STAGES - ONE ACTIVE LEVEL ONLY WITH REFUND
+// STAGES (Level Purchase) - NO LOCK INDICATORS
 // ============================================================
 function renderStages() {
   const grid = document.getElementById('stages-grid');
@@ -1498,8 +1518,8 @@ function renderStages() {
   
   const levelKeys = getLevelKeys();
   const userStake = currentUser?.stake || 0;
+  const purchased = currentUser?.purchasedLevels || {};
   const userLevel = currentUser?.currentLevel || 'trainee';
-  const previousLevelCost = getLevelCost(userLevel);
   
   document.getElementById('stages-stake').textContent = fmt(userStake);
   const levelName = levelsData[userLevel]?.name || 'Trainee';
@@ -1511,31 +1531,22 @@ function renderStages() {
   }
   
   let html = '';
-  let foundCurrent = false;
+  let previousPurchased = true;
   
   for (const key of levelKeys) {
     const level = levelsData[key];
     if (!level) continue;
-    if (key === 'trainee') continue;
+    if (key === 'trainee') {
+      previousPurchased = true;
+      continue;
+    }
     
-    const isCurrent = (userLevel === key);
+    const isPurchased = purchased[key] === true;
     const isLocked = level.locked === true;
+    const isCurrent = userLevel === key;
     const cost = level.collateral || 0;
     const hasEnough = userStake >= cost;
-    
-    let btnHtml = '';
-    let cardClass = 'stage-card';
-    
-    if (isCurrent) {
-      cardClass += ' active';
-      btnHtml = `<button class="stage-btn active-btn" disabled>✅ Active</button>`;
-    } else if (isLocked) {
-      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
-    } else if (!hasEnough) {
-      btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
-    } else {
-      btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${level.name || key}', ${previousLevelCost})">🔓 Purchase Level</button>`;
-    }
+    const canPurchase = previousPurchased && !isPurchased && !isLocked && hasEnough;
     
     const color = LEVEL_COLORS[key] || '#666';
     const name = level.name || key;
@@ -1543,29 +1554,43 @@ function renderStages() {
     const each = level.each || 0;
     const daily = level.daily || 0;
     
-    let refundText = '';
-    if (!isCurrent && previousLevelCost > 0 && userLevel !== 'trainee') {
-      refundText = `<span style="color:var(--success);font-size:7px;">↩️ Refund: ${fmt(previousLevelCost)} to MOB</span>`;
+    let btnHtml = '';
+    let cardClass = 'stage-card';
+    
+    if (isPurchased) {
+      cardClass += ' purchased';
+      btnHtml = `<button class="stage-btn purchased-btn" disabled>✅ Active</button>`;
+    } else if (isLocked) {
+      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
+    } else if (!hasEnough) {
+      btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
+    } else if (canPurchase) {
+      btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${name}')">🔓 Purchase Level</button>`;
+    } else if (!previousPurchased) {
+      btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" onclick="showNeedPreviousPopup('${name}')">🔓 Purchase Level</button>`;
+    } else {
+      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
     }
     
     html += `
       <div class="${cardClass}" style="border-left:4px solid ${color};">
         <div class="stage-color" style="background:${color};"></div>
         <div class="stage-info">
-          <div class="stage-name">${name} ${isCurrent ? '⭐' : ''}</div>
+          <div class="stage-name">${name} ${isCurrent ? '⭐' : ''} ${isPurchased ? '✅' : ''}</div>
           <div class="stage-details">
             <span class="cost">Cost: ${fmt(cost)}</span>
             <span>Movies: ${movies}/day</span>
             <span>Each: ${fmt(each)}</span>
             <span class="daily">Daily: ${fmt(daily)}</span>
-            ${refundText}
           </div>
         </div>
         <div class="stage-action">${btnHtml}</div>
       </div>
     `;
     
-    if (isCurrent) foundCurrent = true;
+    if (isPurchased) {
+      previousPurchased = true;
+    }
   }
   
   grid.innerHTML = html;
@@ -1579,12 +1604,15 @@ function showInsufficientPopup(needed) {
   showPopup('Insufficient Funds', `You need ${needed} to purchase this level. Please deposit to STAKE.`, 'error');
 }
 
-// Level Purchase with Refund to MOB + One Active Level
-async function purchaseLevel(levelKey, cost, levelName, previousCost) {
+function showNeedPreviousPopup(levelName) {
+  showPopup('Level Required', `You need to purchase previous levels before ${levelName}`, 'info');
+}
+
+async function purchaseLevel(levelKey, cost, levelName) {
   if (!currentUser) return;
   
-  if (currentUser.currentLevel === levelKey) {
-    showPopup('Already Active', `You already have ${levelName} active ✅`, 'info');
+  if (currentUser.purchasedLevels && currentUser.purchasedLevels[levelKey]) {
+    showPopup('Already Purchased', `You already own ${levelName} ✅`, 'info');
     return;
   }
   
@@ -1594,38 +1622,45 @@ async function purchaseLevel(levelKey, cost, levelName, previousCost) {
     return;
   }
   
-  const userStake = currentUser.stake || 0;
-  if (userStake < cost) {
+  if ((currentUser.stake || 0) < cost) {
     showInsufficientPopup(fmt(cost));
     return;
   }
   
-  let confirmMessage = `Purchase ${levelName} for ${fmt(cost)}?`;
-  if (previousCost > 0 && currentUser.currentLevel !== 'trainee') {
-    confirmMessage += `\n\n↩️ You will receive ${fmt(previousCost)} refund to MOB for your current level.`;
+  const levelKeys = getLevelKeys();
+  let previousKey = null;
+  for (const key of levelKeys) {
+    if (key === levelKey) break;
+    if (key !== 'trainee') {
+      previousKey = key;
+    }
+  }
+  if (previousKey && !currentUser.purchasedLevels?.[previousKey]) {
+    showNeedPreviousPopup(levelName);
+    return;
   }
   
-  const confirmed = await showConfirmPopup('Confirm Purchase', confirmMessage, levelKey);
+  const confirmed = await showConfirmPopup('Confirm Purchase', `Purchase ${levelName} for ${fmt(cost)}?`, levelKey);
   if (!confirmed) return;
   
   try {
     const userRef = db.ref('users/' + safeKey(currentUsername));
-    const userSnap = await userRef.get();
-    const user = userSnap.val() || {};
+    const newStake = (currentUser.stake || 0) - cost;
+    const purchasedLevels = currentUser.purchasedLevels || {};
+    purchasedLevels[levelKey] = true;
     
-    let newStake = userStake - cost;
-    let newMob = (user.mob || 0);
-    
-    // Refund previous level cost to MOB
-    if (previousCost > 0 && user.currentLevel !== 'trainee') {
-      newMob += previousCost;
+    let newCurrentLevel = 'trainee';
+    for (const key of levelKeys) {
+      if (purchasedLevels[key] === true) {
+        newCurrentLevel = key;
+      }
     }
     
     const txKey = 'tx_level_' + Date.now();
     const updates = {
       stake: newStake,
-      mob: newMob,
-      currentLevel: levelKey,
+      currentLevel: newCurrentLevel,
+      purchasedLevels: purchasedLevels,
       [`transactions/${txKey}`]: {
         type: 'Level Purchase',
         amount: -cost,
@@ -1634,17 +1669,6 @@ async function purchaseLevel(levelKey, cost, levelName, previousCost) {
         status: 'completed'
       }
     };
-    
-    // Add refund transaction if applicable
-    if (previousCost > 0 && user.currentLevel !== 'trainee') {
-      updates[`transactions/refund_${Date.now()}`] = {
-        type: 'Level Refund',
-        amount: previousCost,
-        note: `Refund for previous level to MOB`,
-        date: dateStr(),
-        status: 'completed'
-      };
-    }
     
     await userRef.update(updates);
     
@@ -1655,12 +1679,7 @@ async function purchaseLevel(levelKey, cost, levelName, previousCost) {
     updateProfileUI();
     updateVideoDisplay();
     
-    let refundMsg = '';
-    if (previousCost > 0 && user.currentLevel !== 'trainee') {
-      refundMsg = ` ✅ ${fmt(previousCost)} refunded to MOB!`;
-    }
-    
-    showPopup('🎉 Level Purchased!', `${levelName} activated!${refundMsg}`, 'success');
+    showPopup('🎉 Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!`, 'success');
     
   } catch (error) {
     console.error('Purchase error:', error);
@@ -1826,8 +1845,8 @@ function renderHistory() {
     return;
   }
   
-  const typeIcons = { 'Video Reward': '🎬', 'Streak Bonus': '🔥', Deposit: '💳', Withdrawal: '💸', Bonus: '🎁', 'Level Purchase': '📊', 'Level Refund': '↩️' };
-  const typeClasses = { 'Video Reward': 'tx-reward', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus', 'Level Purchase': 'tx-deposit', 'Level Refund': 'tx-bonus' };
+  const typeIcons = { 'Video Reward': '🎬', 'Streak Bonus': '🔥', Deposit: '💳', Withdrawal: '💸', Bonus: '🎁', 'Level Purchase': '📊' };
+  const typeClasses = { 'Video Reward': 'tx-reward', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus', 'Level Purchase': 'tx-deposit' };
   
   if (wrap) {
     wrap.innerHTML = '<div class="tx-cards-grid">' + 
@@ -2039,7 +2058,7 @@ async function doDeposit() {
 }
 
 // ============================================================
-// WITHDRAWAL - USES MOB
+// WITHDRAWAL - NOW USES MOB ACCOUNT
 // ============================================================
 async function doWithdraw() {
   clearErrors('with-amount-err');
@@ -2055,7 +2074,7 @@ async function doWithdraw() {
     return;
   }
   
-  // Check MOB balance
+  // ✅ FIX: Check MOB balance instead of STAKE
   const mob = currentUser.mob || 0;
   if (mob < amount) {
     setErr('with-amount-err', true, 'Insufficient MOB balance.');
@@ -2093,6 +2112,7 @@ async function doWithdraw() {
   try {
     await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
     
+    // ✅ FIX: Withdraw from MOB
     await db.ref('users/' + safeKey(currentUsername)).update({
       mob: newMob,
       [`transactions/${txKey}`]: {
@@ -2128,6 +2148,7 @@ async function doWithdraw() {
     document.getElementById('withdraw-preview').style.display = 'none';
   } catch (error) {
     console.error('Withdrawal error:', error);
+    // Refund to MOB
     const refundedMob = mob;
     await db.ref('users/' + safeKey(currentUsername)).update({ mob: refundedMob });
     await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
@@ -2352,13 +2373,14 @@ async function doRegister() {
       country: country,
       phone: fullPhone,
       stake: 0,
-      mob: 0,
+      mob: 0,  // ✅ MOB account starts at 0
       totalVideosWatched: 0,
       streakDays: 0,
       lastWatchDate: null,
       joinedDate: new Date().getFullYear().toString(),
       locked: false,
       currentLevel: 'trainee',
+      purchasedLevels: {},
       traineeStartDate: todayUTC,
       traineeDayCount: 1,
       traineeCompleted: false,
@@ -2543,61 +2565,49 @@ window.showConfirmPopup = showConfirmPopup;
 console.log('✅ All functions exposed to window');
 
 // ============================================================
-// INIT APP - WITH ERROR HANDLING TO HIDE LOADING SCREEN
+// INIT APP
 // ============================================================
 async function initApp() {
   console.log('🚀 Initializing app...');
+  startSettingsListener();
+  startLevelsListener();
+  startVideoListener();
   
-  try {
-    startSettingsListener();
-    startLevelsListener();
-    startVideoListener();
-    
-    const savedUser = sessionStorage.getItem('pp_current_user');
-    if (savedUser) {
-      try {
-        const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
-        if (userSnap.exists() && !userSnap.val().locked) {
-          currentUser = userSnap.val();
-          currentUsername = savedUser;
-          startUserListener(savedUser);
-          updateBalanceUI();
-          renderHistory();
-          updateProfileUI();
-          updateLevelProgress();
-          renderLevelsTable();
-          renderStages();
-          updateVideoDisplay();
-          showDashboard();
-          switchTab('home');
-          console.log('✅ Auto-login successful for:', savedUser);
-        } else {
-          sessionStorage.removeItem('pp_current_user');
-          showAuth('login-page');
-        }
-      } catch (err) {
-        console.warn('Login check error:', err);
+  const savedUser = sessionStorage.getItem('pp_current_user');
+  if (savedUser) {
+    try {
+      const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
+      if (userSnap.exists() && !userSnap.val().locked) {
+        currentUser = userSnap.val();
+        currentUsername = savedUser;
+        startUserListener(savedUser);
+        updateBalanceUI();
+        renderHistory();
+        updateProfileUI();
+        updateLevelProgress();
+        renderLevelsTable();
+        renderStages();
+        updateVideoDisplay();
+        showDashboard();
+        switchTab('home');
+        console.log('✅ Auto-login successful for:', savedUser);
+      } else {
         sessionStorage.removeItem('pp_current_user');
         showAuth('login-page');
       }
-    } else {
+    } catch (err) {
+      console.warn('Login check error:', err);
+      sessionStorage.removeItem('pp_current_user');
       showAuth('login-page');
     }
-  } catch (error) {
-    console.error('❌ Init error:', error);
-    // Show login page as fallback
+  } else {
     showAuth('login-page');
   }
   
-  // ✅ ALWAYS hide loading screen
-  const loadingScreen = document.getElementById('loading-screen');
-  if (loadingScreen) {
-    loadingScreen.style.display = 'none';
-  }
-  console.log('✅ App initialized - Loading screen hidden');
+  document.getElementById('loading-screen').style.display = 'none';
+  console.log('✅ App initialized');
 }
 
-// Start the app
 initApp();
 </script>
 </body>
