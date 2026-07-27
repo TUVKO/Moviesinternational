@@ -308,7 +308,7 @@ input[type="password"]{padding-right:46px;}
 .level-progress{background:var(--surface2);border-radius:10px;height:8px;margin:8px 0;overflow:hidden;}
 .level-progress-fill{background:var(--accent);height:100%;border-radius:10px;transition:width 0.5s;}
 
-/* Stages Cards */
+/* Stages Cards - NO LOCK INDICATORS */
 .stages-grid{display:flex;flex-direction:column;gap:8px;}
 .stage-card{background:var(--surface2);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;min-height:60px;}
 .stage-card:active{transform:scale(0.98);}
@@ -324,8 +324,7 @@ input[type="password"]{padding-right:46px;}
 .stage-btn{background:var(--accent);border:none;border-radius:6px;padding:4px 10px;font-size:8px;font-weight:700;color:#14110F;cursor:pointer;font-family:'Inter',sans-serif;}
 .stage-btn:active{transform:scale(0.95);}
 .stage-btn.purchased-btn{background:var(--success);color:#fff;}
-.stage-btn.locked-btn{background:var(--surface3);color:var(--muted);cursor:not-allowed;}
-.stage-badge{font-size:7px;font-weight:700;padding:2px 6px;border-radius:10px;background:var(--success);color:#fff;display:inline-block;}
+.stage-btn.need-funds{background:var(--warn);color:#fff;}
 
 /* Video count badge on thumbnails */
 .video-count-badge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'JetBrains Mono',monospace;}
@@ -583,7 +582,7 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- STAGES (Level Purchase) -->
+  <!-- STAGES (Level Purchase) - NO LOCK INDICATORS -->
   <div class="dash-section" id="sec-errands">
     <div class="inner-header">
       <span style="font-size:22px">📍</span>
@@ -606,7 +605,7 @@ input[type="password"]{padding-right:46px;}
         </div>
       </div>
 
-      <!-- Level Cards -->
+      <!-- Level Cards - NO LOCK INDICATORS -->
       <div id="stages-grid" class="stages-grid">
         <div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading levels...</div>
       </div>
@@ -772,7 +771,7 @@ input[type="password"]{padding-right:46px;}
 <script>
 // ============================================================
 // DIAMOND EARN - WATCH & EARN PLATFORM
-// FIXED: UTC Timezone | Level-based videos | Trainee 3 days
+// FIXED: UTC Timezone | Video Rotation | Hide Lock Icons | Redesigned Player
 // ============================================================
 
 console.log('Firebase loaded:', typeof firebase !== 'undefined');
@@ -820,12 +819,6 @@ function dateStr() {
 
 function getUTCNow() {
   return new Date();
-}
-
-function isUTCNewDay(lastDate) {
-  if (!lastDate) return true;
-  const todayUTC = getUTCKey(new Date());
-  return todayUTC !== lastDate;
 }
 
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
@@ -892,6 +885,25 @@ function startLevelsListener() {
     renderStages();
     updateVideoDisplay();
   });
+}
+
+function getLevelKeys() {
+  return Object.keys(levelsData).sort((a, b) => {
+    if (a === 'trainee') return -1;
+    if (b === 'trainee') return 1;
+    const numA = parseInt(a.replace('wm', '')) || 0;
+    const numB = parseInt(b.replace('wm', '')) || 0;
+    return numA - numB;
+  });
+}
+
+function getUserLevel() {
+  if (!currentUser) return 'trainee';
+  return currentUser.currentLevel || 'trainee';
+}
+
+function getLevelData(levelKey) {
+  return levelsData[levelKey] || levelsData['trainee'] || DEFAULT_TRAINEE;
 }
 
 function renderLevelsTable() {
@@ -966,26 +978,6 @@ function renderLevelsTable() {
   }
 }
 
-function getLevelKeys() {
-  return Object.keys(levelsData).sort((a, b) => {
-    if (a === 'trainee') return -1;
-    if (b === 'trainee') return 1;
-    const numA = parseInt(a.replace('wm', '')) || 0;
-    const numB = parseInt(b.replace('wm', '')) || 0;
-    return numA - numB;
-  });
-}
-
-function getUserLevel() {
-  if (!currentUser) return 'trainee';
-  const userLevel = currentUser.currentLevel || 'trainee';
-  return userLevel;
-}
-
-function getLevelData(levelKey) {
-  return levelsData[levelKey] || levelsData['trainee'] || DEFAULT_TRAINEE;
-}
-
 function updateLevelProgress() {
   const userVideos = currentUser?.totalVideosWatched || 0;
   const levelKeys = getLevelKeys();
@@ -1029,7 +1021,7 @@ function updateLevelProgress() {
 }
 
 // ============================================================
-// VIDEO SYSTEM - LEVEL BASED + UTC
+// VIDEO SYSTEM - LEVEL BASED + UTC + ROTATION
 // ============================================================
 function startVideoListener() {
   db.ref('videos').on('value', (snap) => {
@@ -1038,13 +1030,17 @@ function startVideoListener() {
   });
 }
 
-function updateVideoDisplay() {
-  renderVideoGrid();
-  updateVideoCount();
+function getVideoIds() {
+  return Object.keys(videosData);
+}
+
+function getUserVideoPosition() {
+  if (!currentUser) return 0;
+  return currentUser.videoPosition || 0;
 }
 
 function getRemainingVideos() {
-  if (!currentUser) return { remaining: 0, total: 0, watched: 0, reward: 0 };
+  if (!currentUser) return { remaining: 0, total: 0, watched: 0, reward: 0, videoIds: [] };
   
   const levelKey = getUserLevel();
   const level = getLevelData(levelKey);
@@ -1056,7 +1052,25 @@ function getRemainingVideos() {
   const remaining = Math.max(0, totalVideos - watchedToday);
   const reward = level.each || 0;
   
-  return { remaining, total: totalVideos, watched: watchedToday, reward };
+  // Get video IDs for rotation
+  const allVideoIds = getVideoIds();
+  const position = getUserVideoPosition();
+  
+  // Get the next videos based on position
+  let videoIds = [];
+  if (allVideoIds.length > 0) {
+    for (let i = 0; i < remaining; i++) {
+      const idx = (position + i) % allVideoIds.length;
+      videoIds.push(allVideoIds[idx]);
+    }
+  }
+  
+  return { remaining, total: totalVideos, watched: watchedToday, reward, videoIds, position };
+}
+
+function updateVideoDisplay() {
+  renderVideoGrid();
+  updateVideoCount();
 }
 
 function updateVideoCount() {
@@ -1065,11 +1079,9 @@ function updateVideoCount() {
   const level = getLevelData(levelKey);
   const levelName = level.name || 'Trainee';
   
-  // Update dashboard
   document.getElementById('stat-today-videos').textContent = `${watched}/${total}`;
   document.getElementById('stat-level').textContent = levelName;
   
-  // Update video grid
   renderVideoGrid();
 }
 
@@ -1077,8 +1089,7 @@ function renderVideoGrid() {
   const grid = document.getElementById('video-grid');
   if (!grid) return;
   
-  const ids = Object.keys(videosData);
-  const { remaining, total, watched, reward } = getRemainingVideos();
+  const { remaining, total, watched, reward, videoIds } = getRemainingVideos();
   const levelKey = getUserLevel();
   const level = getLevelData(levelKey);
   const levelName = level.name || 'Trainee';
@@ -1096,21 +1107,20 @@ function renderVideoGrid() {
     return;
   }
   
-  // No videos in database
-  if (!ids.length) {
+  const allVideoIds = getVideoIds();
+  if (!allVideoIds.length) {
     grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
     return;
   }
   
-  // Show only remaining videos
-  // Randomize video selection or show in order
-  const shuffledIds = [...ids].sort(() => Math.random() - 0.5);
-  const videosToShow = shuffledIds.slice(0, remaining);
+  // Show videos based on rotation
+  const videosToShow = videoIds.slice(0, remaining);
   
   if (videosToShow.length === 0 && remaining > 0) {
-    // Fallback: show all videos if something is wrong
-    grid.innerHTML = ids.map(id => {
+    // Fallback
+    grid.innerHTML = allVideoIds.slice(0, remaining).map(id => {
       const v = videosData[id];
+      if (!v) return '';
       return `<div class="video-card" onclick="openVideoPlayer('${id}')">
         <div class="video-thumb-wrap">
           <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
@@ -1119,14 +1129,16 @@ function renderVideoGrid() {
           </div>
           <div class="video-reward-badge">${fmt(reward)}</div>
         </div>
-        <div class="video-title">${escapeHtml(v.title)}</div>
+        <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
       </div>`;
     }).join('');
     return;
   }
   
-  grid.innerHTML = videosToShow.map(id => {
+  grid.innerHTML = videosToShow.map((id, index) => {
     const v = videosData[id];
+    if (!v) return '';
+    const videoNumber = watched + index + 1;
     return `<div class="video-card" onclick="openVideoPlayer('${id}')">
       <div class="video-thumb-wrap">
         <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
@@ -1134,9 +1146,9 @@ function renderVideoGrid() {
           <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
         </div>
         <div class="video-reward-badge">${fmt(reward)}</div>
-        <div class="video-count-badge">${watched+1}/${total}</div>
+        <div class="video-count-badge">${videoNumber}/${total}</div>
       </div>
-      <div class="video-title">${escapeHtml(v.title)}</div>
+      <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
     </div>`;
   }).join('');
 }
@@ -1185,7 +1197,7 @@ function openVideoPlayer(id) {
   
   currentPlayingVideo = { id, title: v.title, youtubeId: v.youtubeId, reward: reward };
   
-  document.getElementById('video-overlay-title').textContent = v.title;
+  document.getElementById('video-overlay-title').textContent = v.title || 'Movie';
   document.getElementById('video-player-embed').innerHTML =
     `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   
@@ -1210,7 +1222,6 @@ function openVideoPlayer(id) {
 
 function startCountdown() {
   countdownValue = 5;
-  const circumference = 100;
   const numberEl = document.getElementById('countdown-number');
   const progressEl = document.getElementById('countdown-progress-fill');
   const claimBtn = document.getElementById('claim-btn');
@@ -1276,6 +1287,13 @@ async function claimReward() {
       return;
     }
     
+    // Update video position
+    const allVideoIds = getVideoIds();
+    let newPosition = (user.videoPosition || 0) + 1;
+    if (newPosition >= allVideoIds.length) {
+      newPosition = 0;
+    }
+    
     const newStake = (user.stake || 0) + reward;
     const newTotalVideos = (user.totalVideosWatched || 0) + 1;
     const txKey = 'tx_video_' + Date.now();
@@ -1283,6 +1301,7 @@ async function claimReward() {
     const updates = {
       stake: newStake,
       totalVideosWatched: newTotalVideos,
+      videoPosition: newPosition,
       [`watchHistory/${todayUTC}`]: watchedToday + 1,
       [`transactions/${txKey}`]: {
         type: 'Video Reward',
@@ -1465,7 +1484,7 @@ function updateSettingsUI() {
 }
 
 // ============================================================
-// STAGES (Level Purchase)
+// STAGES (Level Purchase) - NO LOCK INDICATORS
 // ============================================================
 function renderStages() {
   const grid = document.getElementById('stages-grid');
@@ -1476,7 +1495,6 @@ function renderStages() {
   const purchased = currentUser?.purchasedLevels || {};
   const userLevel = currentUser?.currentLevel || 'trainee';
   
-  // Update summary
   document.getElementById('stages-stake').textContent = fmt(userStake);
   const levelName = levelsData[userLevel]?.name || 'Trainee';
   document.getElementById('stages-current-level').textContent = levelName;
@@ -1517,15 +1535,16 @@ function renderStages() {
       cardClass += ' purchased';
       btnHtml = `<button class="stage-btn purchased-btn" disabled>✅ Active</button>`;
     } else if (isLocked) {
-      btnHtml = `<button class="stage-btn locked-btn" onclick="showCompanyReservedPopup()">🔒 Purchase Level</button>`;
+      // NO LOCK INDICATOR - looks normal, but shows popup on click
+      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
     } else if (!hasEnough) {
-      btnHtml = `<button class="stage-btn" style="background:var(--warn);color:#fff;" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
+      btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
     } else if (canPurchase) {
       btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${name}')">🔓 Purchase Level</button>`;
     } else if (!previousPurchased) {
-      btnHtml = `<button class="stage-btn locked-btn" onclick="showNeedPreviousPopup('${name}')">🔒 Purchase Level</button>`;
+      btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" onclick="showNeedPreviousPopup('${name}')">🔓 Purchase Level</button>`;
     } else {
-      btnHtml = `<button class="stage-btn locked-btn" onclick="showCompanyReservedPopup()">🔒 Purchase Level</button>`;
+      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
     }
     
     html += `
@@ -1552,37 +1571,41 @@ function renderStages() {
   grid.innerHTML = html;
 }
 
+function showReservedPopup() {
+  showPopup('🌟 Level Not Available', 'This level is currently reserved. Please check back later for availability.', 'info');
+}
+
+function showInsufficientPopup(needed) {
+  showPopup('Insufficient Funds', `You need ${needed} to purchase this level. Please deposit to STAKE.`, 'error');
+}
+
+function showNeedPreviousPopup(levelName) {
+  showPopup('Level Required', `You need to purchase previous levels before ${levelName}`, 'info');
+}
+
 async function purchaseLevel(levelKey, cost, levelName) {
   if (!currentUser) return;
   
-  // Check if already purchased
   if (currentUser.purchasedLevels && currentUser.purchasedLevels[levelKey]) {
     showPopup('Already Purchased', `You already own ${levelName} ✅`, 'info');
     return;
   }
   
-  // Check if locked
   const level = levelsData[levelKey];
   if (level && level.locked === true) {
-    showCompanyReservedPopup();
+    showReservedPopup();
     return;
   }
   
-  // Check if enough stake
   if ((currentUser.stake || 0) < cost) {
     showInsufficientPopup(fmt(cost));
     return;
   }
   
-  // Check previous levels
   const levelKeys = getLevelKeys();
   let previousKey = null;
-  let foundCurrent = false;
   for (const key of levelKeys) {
-    if (key === levelKey) {
-      foundCurrent = true;
-      break;
-    }
+    if (key === levelKey) break;
     if (key !== 'trainee') {
       previousKey = key;
     }
@@ -1592,7 +1615,6 @@ async function purchaseLevel(levelKey, cost, levelName) {
     return;
   }
   
-  // Show confirmation
   const confirmed = await showConfirmPopup('Confirm Purchase', `Purchase ${levelName} for ${fmt(cost)}?`, levelKey);
   if (!confirmed) return;
   
@@ -1602,7 +1624,6 @@ async function purchaseLevel(levelKey, cost, levelName) {
     const purchasedLevels = currentUser.purchasedLevels || {};
     purchasedLevels[levelKey] = true;
     
-    // Determine new current level (highest purchased)
     let newCurrentLevel = 'trainee';
     for (const key of levelKeys) {
       if (purchasedLevels[key] === true) {
@@ -1680,11 +1701,9 @@ function showConfirmPopup(title, message, levelKey) {
     titleEl.textContent = title;
     msgEl.textContent = message;
     
-    // Remove any existing actions
     const existingActions = document.querySelector('.modal-actions');
     if (existingActions) existingActions.remove();
     
-    // Create actions container
     const box = document.querySelector('.modal-box');
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'modal-actions';
@@ -1693,7 +1712,6 @@ function showConfirmPopup(title, message, levelKey) {
     actionsDiv.style.marginTop = '16px';
     actionsDiv.style.justifyContent = 'center';
     
-    // Create Cancel button
     const cancelBtn = document.createElement('button');
     cancelBtn.textContent = 'Cancel';
     cancelBtn.style.background = 'var(--surface2)';
@@ -1707,7 +1725,6 @@ function showConfirmPopup(title, message, levelKey) {
     cancelBtn.style.cursor = 'pointer';
     cancelBtn.style.width = '45%';
     
-    // Create Confirm button
     const confirmBtn = document.createElement('button');
     confirmBtn.textContent = 'Confirm';
     confirmBtn.style.background = 'var(--success)';
@@ -1725,7 +1742,6 @@ function showConfirmPopup(title, message, levelKey) {
     actionsDiv.appendChild(confirmBtn);
     box.appendChild(actionsDiv);
     
-    // Hide original close button
     closeBtn.style.display = 'none';
     
     overlay.classList.add('open');
@@ -1764,18 +1780,6 @@ function closeModal() {
   if (actions) actions.remove();
   const closeBtn = document.querySelector('.modal-close');
   if (closeBtn) closeBtn.style.display = 'block';
-}
-
-function showCompanyReservedPopup() {
-  showPopup('Company Reserved', 'This is company reserved level', 'info');
-}
-
-function showInsufficientPopup(needed) {
-  showPopup('Insufficient Funds', `You need ${needed} to purchase this level. Please deposit to STAKE.`, 'error');
-}
-
-function showNeedPreviousPopup(levelName) {
-  showPopup('Level Required', `You need to purchase previous levels before ${levelName}`, 'info');
 }
 
 // ============================================================
@@ -2351,6 +2355,7 @@ async function doRegister() {
       traineeStartDate: todayUTC,
       traineeDayCount: 1,
       traineeCompleted: false,
+      videoPosition: 0,
       referrals: [],
       referralBonus: 0,
       watchHistory: {},
@@ -2522,7 +2527,7 @@ window.updateLevelProgress = updateLevelProgress;
 window.renderLevelsTable = renderLevelsTable;
 window.renderStages = renderStages;
 window.purchaseLevel = purchaseLevel;
-window.showCompanyReservedPopup = showCompanyReservedPopup;
+window.showReservedPopup = showReservedPopup;
 window.showInsufficientPopup = showInsufficientPopup;
 window.showNeedPreviousPopup = showNeedPreviousPopup;
 window.showPopup = showPopup;

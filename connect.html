@@ -392,24 +392,22 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       </div>
     </div>
 
-    <!-- VIDEOS -->
+    <!-- VIDEOS - NO REWARD FIELD -->
     <div class="page" id="pg-videos">
       <div class="page-title">🎬 Videos</div>
-      <div class="page-sub">Add YouTube videos that appear on the user WATCH page</div>
+      <div class="page-sub">Add YouTube videos. Reward is determined by user's level.</div>
       <div class="table-wrap" style="padding:20px;margin-bottom:24px;">
         <div class="table-title" style="margin-bottom:14px;">Add New Video</div>
         <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
           <div>
             <label class="f-label">Movie / Video Title</label>
             <input type="text" class="f-input" id="video-title-input" placeholder="e.g. Avatar 3 — Official Trailer" style="width:100%;padding:11px 14px;">
+            <div class="f-hint">Optional - system will try to fetch title from YouTube</div>
           </div>
           <div>
             <label class="f-label">YouTube Link or Video ID</label>
             <input type="text" class="f-input" id="video-url-input" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;padding:11px 14px;">
-          </div>
-          <div>
-            <label class="f-label">Reward (UGX)</label>
-            <input type="number" class="f-input" id="video-reward-input" placeholder="e.g. 500" min="1" style="width:100%;padding:11px 14px;">
+            <div class="f-hint">Paste any YouTube video link or video ID</div>
           </div>
           <div id="video-add-err" style="display:none;color:var(--warn);font-size:12.5px;"></div>
           <button class="btn btn-save" onclick="adminSaveVideo()" style="align-self:flex-start;">💾 Save Video</button>
@@ -422,9 +420,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         </div>
         <table>
           <thead>
-            <tr><th>Thumbnail</th><th>Title</th><th>YouTube ID</th><th>Reward</th><th>Added</th><th>Actions</th></tr>
+            <tr><th>Thumbnail</th><th>Title</th><th>YouTube ID</th><th>Added</th><th>Actions</th></tr>
           </thead>
-          <tbody id="video-table-body"><tr class="empty-row"><td colspan="6">No videos yet</td></tr></tbody>
+          <tbody id="video-table-body"><tr class="empty-row"><td colspan="5">No videos yet</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -571,8 +569,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 // ============================================================
 // DIAMOND EARN ADMIN - WATCH & EARN PLATFORM
 // STAKE ONLY - Deposit kept via MarzPay
-// LEVELS - Lock/Unlock toggle
-// REMOVED: Daily Video Limit (now controlled by levels)
+// REMOVED: Reward field from videos (uses level.each)
 // ============================================================
 
 const firebaseConfig = {
@@ -855,7 +852,7 @@ async function resetDefaultLevels() {
 }
 
 // ============================================================
-// VIDEOS MANAGEMENT
+// VIDEOS MANAGEMENT - NO REWARD FIELD
 // ============================================================
 let allVideos = {};
 
@@ -885,21 +882,25 @@ async function adminSaveVideo() {
   clearErrors('video-add-err');
   const title = document.getElementById('video-title-input').value.trim();
   const urlInput = document.getElementById('video-url-input').value.trim();
-  const reward = Number(document.getElementById('video-reward-input').value);
   const youtubeId = extractYouTubeId(urlInput);
 
-  if (!title) { setErr('video-add-err', true, 'Please enter a video title.'); return; }
-  if (!youtubeId) { setErr('video-add-err', true, 'Could not read a YouTube video ID from that link.'); return; }
-  if (!reward || reward <= 0) { setErr('video-add-err', true, 'Please enter a valid reward amount.'); return; }
+  if (!youtubeId) { 
+    setErr('video-add-err', true, 'Could not read a YouTube video ID from that link. Please paste a valid YouTube URL or video ID.'); 
+    return; 
+  }
+
+  // Use provided title or fallback to "Video"
+  const videoTitle = title || 'Video';
 
   const videoKey = 'vid_' + Date.now();
   try {
     await db.ref('videos/' + videoKey).set({
-      title, youtubeId, reward, addedDate: dateStr()
+      title: videoTitle,
+      youtubeId: youtubeId,
+      addedDate: dateStr()
     });
     document.getElementById('video-title-input').value = '';
     document.getElementById('video-url-input').value = '';
-    document.getElementById('video-reward-input').value = '';
     toast('✅ Video saved');
   } catch (e) {
     setErr('video-add-err', true, 'Failed to save video. Try again.');
@@ -920,16 +921,15 @@ function renderAdminVideosTable() {
   const ids = Object.keys(allVideos).sort((a, b) => b.localeCompare(a));
   if (countEl) countEl.textContent = ids.length + (ids.length === 1 ? ' video' : ' videos');
   if (!ids.length) {
-    body.innerHTML = '<tr class="empty-row"><td colspan="6">No videos yet</td></tr>';
+    body.innerHTML = '<tr class="empty-row"><td colspan="5">No videos yet</td></tr>';
     return;
   }
   body.innerHTML = ids.map(key => {
     const v = allVideos[key];
     return `<tr>
       <td><img src="https://img.youtube.com/vi/${v.youtubeId}/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;" alt=""></td>
-      <td>${escapeHtml(v.title)}</td>
+      <td>${escapeHtml(v.title || 'Video')}</td>
       <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">${escapeHtml(v.youtubeId)}</td>
-      <td>${fmt(v.reward)}</td>
       <td style="font-size:12px;color:var(--muted);">${escapeHtml(v.addedDate || '—')}</td>
       <td><button class="btn btn-reject" onclick="adminDeleteVideo('${key}')">🗑️ Delete</button></td>
     </tr>`;
