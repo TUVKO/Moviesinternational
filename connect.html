@@ -81,7 +81,7 @@ input[type="password"]{padding-right:46px;}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px 16px;}
 .stat-card-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:10px;}
 .stat-card-val{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;}
-.stat-card-val.green{color:var(--accent)}.stat-card-val.emerald{color:var(--success)}.stat-card-val.gold{color:var(--gold)}.stat-card-val.red{color:var(--warn)}.stat-card-val.amber{color:var(--accent2)}
+.stat-card-val.green{color:var(--accent)}.stat-card-val.emerald{color:var(--success)}.stat-card-val.gold{color:var(--gold)}.stat-card-val.red{color:var(--warn)}.stat-card-val.amber{color:var(--accent2)}.stat-card-val.purple{color:#9B59B6}.stat-card-val.blue{color:#3498DB}
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;}
 .table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .table-title{font-size:14px;font-weight:800;}
@@ -312,7 +312,8 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
       <div class="stats-row">
         <div class="stat-card"><div class="stat-card-label">Total Users</div><div class="stat-card-val green" id="d-total-users">—</div></div>
         <div class="stat-card"><div class="stat-card-label">Total STAKE</div><div class="stat-card-val gold" id="d-total-stake">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total Videos Watched</div><div class="stat-card-val emerald" id="d-total-videos">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Total MOB</div><div class="stat-card-val purple" id="d-total-mob">—</div></div>
+        <div class="stat-card"><div class="stat-card-label">Total Videos</div><div class="stat-card-val blue" id="d-total-videos">—</div></div>
       </div>
       <div class="pct-summary" id="pct-summary"></div>
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
@@ -333,9 +334,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         </div>
         <table>
           <thead>
-            <tr><th>Username</th><th>Phone</th><th>Password</th><th>STAKE</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
+            <tr><th>Username</th><th>Phone</th><th>Password</th><th>STAKE</th><th>MOB</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
           </thead>
-          <tbody id="users-table-body"><tr class="empty-row"><td colspan="9">Loading...</td></tr></tbody>
+          <tbody id="users-table-body"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -534,7 +535,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 
 <!-- MODALS -->
-<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">✏️ Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
+<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">✏️ Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">MOB (UGX)</label><input type="number" class="modal-input" id="edit-mob" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
 
 <div class="toast" id="toast" style="position:fixed;top:24px;right:24px;background:var(--accent3);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:12px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;transform:translateY(-10px);"></div>
 <div class="notif-overlay" id="notif-overlay" onclick="closeNotifDrawer()"></div>
@@ -568,8 +569,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <script>
 // ============================================================
 // DIAMOND EARN ADMIN - WATCH & EARN PLATFORM
-// STAKE ONLY - Deposit kept via MarzPay
-// REMOVED: Reward field from videos (uses level.each)
+// STAKE + MOB Accounts | Total Videos Card
 // ============================================================
 
 const firebaseConfig = {
@@ -626,6 +626,7 @@ let allSettings = {
   streakBonus: 1000
 };
 let allLevels = {};
+let allVideos = {};
 let currentAdmin = null;
 let searchFilter = '';
 let admTxFilter = 'all';
@@ -783,7 +784,6 @@ async function saveLevel(key) {
   levelData.monthly = levelData.daily * 30;
   levelData.annual = levelData.monthly * 12;
   
-  // Preserve locked status
   const current = allLevels[key] || {};
   levelData.locked = current.locked === true;
   
@@ -854,7 +854,6 @@ async function resetDefaultLevels() {
 // ============================================================
 // VIDEOS MANAGEMENT - NO REWARD FIELD
 // ============================================================
-let allVideos = {};
 
 function extractYouTubeId(input) {
   const s = (input || '').trim();
@@ -875,6 +874,7 @@ function startVideosListener() {
   videosUnsubscribe = db.ref('videos').on('value', (snap) => {
     allVideos = snap.val() || {};
     renderAdminVideosTable();
+    renderDashboard();
   });
 }
 
@@ -889,7 +889,6 @@ async function adminSaveVideo() {
     return; 
   }
 
-  // Use provided title or fallback to "Video"
   const videoTitle = title || 'Video';
 
   const videoKey = 'vid_' + Date.now();
@@ -975,16 +974,17 @@ function startRealtimeListeners() {
 }
 
 // ============================================================
-// DASHBOARD
+// DASHBOARD - WITH TOTAL VIDEOS
 // ============================================================
 function renderDashboard() {
   const users = Object.values(allUsers);
-  let totalStake = 0, totalVideos = 0, locked = 0, videosToday = 0;
+  let totalStake = 0, totalMob = 0, locked = 0, videosToday = 0;
   const today = new Date().toISOString().slice(0, 10);
+  const totalVideos = Object.keys(allVideos).length;
   
   users.forEach(u => {
     totalStake += u.stake || 0;
-    totalVideos += u.totalVideosWatched || 0;
+    totalMob += u.mob || 0;
     if (u.locked) locked++;
     const watchedToday = u.watchHistory?.[today] || 0;
     videosToday += watchedToday;
@@ -992,6 +992,7 @@ function renderDashboard() {
   
   document.getElementById('d-total-users').textContent = users.length;
   document.getElementById('d-total-stake').textContent = fmt(totalStake);
+  document.getElementById('d-total-mob').textContent = fmt(totalMob);
   document.getElementById('d-total-videos').textContent = totalVideos;
   document.getElementById('d-locked').textContent = locked;
   document.getElementById('d-min-deposit').textContent = fmt(allSettings.minDeposit || 10000);
@@ -1004,6 +1005,7 @@ function renderDashboard() {
     <div class="pct-pill">Withdrawal Charge <span>${s.withdrawCharge || 10}%</span></div>
     <div class="pct-pill">MarzPay API <span style="color:${s.marzApiKey ? 'var(--accent3)' : 'var(--warn)'};">${s.marzApiKey ? '✅ Set' : '⚠️ Not Set'}</span></div>
     <div class="pct-pill">Withdrawals <span style="color:${s.withdrawLocked ? 'var(--warn)' : 'var(--success)'};">${s.withdrawLocked ? '🔒 LOCKED' : '🔓 OPEN'}</span></div>
+    <div class="pct-pill">Total Videos <span>${totalVideos}</span></div>
   `;
 }
 
@@ -1016,7 +1018,7 @@ function renderUsersTable() {
   const users = Object.values(allUsers);
   const filtered = searchFilter ? users.filter(u => u.username && u.username.toLowerCase().includes(searchFilter.toLowerCase())) : users;
   const tbody = document.getElementById('users-table-body');
-  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No users found</tr>'; return; }
+  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No users found</tr>'; return; }
   
   const levelKeys = Object.keys(allLevels).sort((a, b) => {
     if (a === 'trainee') return -1;
@@ -1042,6 +1044,7 @@ function renderUsersTable() {
       <td class="mono">${u.phone || '—'}</td>
       <td><div class="pw-cell" id="pwcell_${sk}"><span class="pw-val" onclick="editPw('${sk}')">${u.password || '—'}</span></div></td>
       <td class="mono" style="color:var(--gold)">${fmt(u.stake)}</td>
+      <td class="mono" style="color:var(--purple, #9B59B6)">${fmt(u.mob)}</td>
       <td class="mono">${u.totalVideosWatched || 0}</td>
       <td class="mono">${u.streakDays || 0}</td>
       <td style="color:var(--accent);font-weight:700;">${levelName}</td>
@@ -1084,6 +1087,7 @@ function openEditModal(username) {
   document.getElementById('edit-password').value = u.password || '';
   document.getElementById('edit-phone-modal').value = u.phone || '';
   document.getElementById('edit-stake').value = u.stake || 0;
+  document.getElementById('edit-mob').value = u.mob || 0;
   document.getElementById('edit-videos').value = u.totalVideosWatched || 0;
   document.getElementById('edit-streak').value = u.streakDays || 0;
   document.getElementById('edit-modal').style.display = 'flex';
@@ -1096,6 +1100,7 @@ async function saveEditUser() {
   const newPassword = document.getElementById('edit-password').value;
   const newPhone = document.getElementById('edit-phone-modal').value;
   const newStake = parseInt(document.getElementById('edit-stake').value) || 0;
+  const newMob = parseInt(document.getElementById('edit-mob').value) || 0;
   const newVideos = parseInt(document.getElementById('edit-videos').value) || 0;
   const newStreak = parseInt(document.getElementById('edit-streak').value) || 0;
   
@@ -1107,6 +1112,7 @@ async function saveEditUser() {
     password: newPassword,
     phone: newPhone,
     stake: newStake,
+    mob: newMob,
     totalVideosWatched: newVideos,
     streakDays: newStreak
   };
@@ -1260,11 +1266,11 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
       } else {
         const userSnap = await db.ref('users/' + userId).get();
         const user = userSnap.val();
-        const refundedStake = (user.stake || 0) + amount;
+        const refundedMob = (user.mob || 0) + amount;
         await db.ref('users/' + userId).update({
-          stake: refundedStake,
+          mob: refundedMob,
           ['transactions/' + txKey + '/status']: 'failed',
-          ['transactions/' + txKey + '/note']: 'Withdrawal Failed - Refunded'
+          ['transactions/' + txKey + '/note']: 'Withdrawal Failed - Refunded to MOB'
         });
         await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
         await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
@@ -1272,7 +1278,7 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
           type: 'withdrawal_marz_failed',
           username: username,
           amount: amount,
-          message: `Withdrawal Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued`,
+          message: `Withdrawal Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
           date: dateStr(),
           read: false
         });
@@ -1281,11 +1287,11 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
     } catch (marzError) {
       const userSnap = await db.ref('users/' + userId).get();
       const user = userSnap.val();
-      const refundedStake = (user.stake || 0) + amount;
+      const refundedMob = (user.mob || 0) + amount;
       await db.ref('users/' + userId).update({
-        stake: refundedStake,
+        mob: refundedMob,
         ['transactions/' + txKey + '/status']: 'failed',
-        ['transactions/' + txKey + '/note']: 'Withdrawal Error - Refunded'
+        ['transactions/' + txKey + '/note']: 'Withdrawal Error - Refunded to MOB'
       });
       await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
       await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
@@ -1293,7 +1299,7 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
         type: 'withdrawal_marz_failed',
         username: username,
         amount: amount,
-        message: `Withdrawal Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued`,
+        message: `Withdrawal Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
         date: dateStr(),
         read: false
       });
@@ -1306,20 +1312,20 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
 }
 
 async function rejectWithdrawal(reqKey, userId, username, amount) {
-  const confirmed = await confirmAction('Reject Withdrawal?', 'Reject withdrawal of ' + fmt(amount) + ' for ' + username + '? Full amount will be refunded to STAKE.');
+  const confirmed = await confirmAction('Reject Withdrawal?', 'Reject withdrawal of ' + fmt(amount) + ' for ' + username + '? Full amount will be refunded to MOB.');
   if (!confirmed) return;
   
   try {
     const userSnap = await db.ref('users/' + userId).get();
     const user = userSnap.val();
-    const newStake = (user.stake || 0) + amount;
+    const newMob = (user.mob || 0) + amount;
     const txKey = allWithdrawals[reqKey]?.txKey;
     const adminTxKey = allWithdrawals[reqKey]?.adminTxKey;
     
     await db.ref('users/' + userId).update({
-      stake: newStake,
+      mob: newMob,
       ['transactions/' + txKey + '/status']: 'failed',
-      ['transactions/' + txKey + '/note']: 'Withdrawal Rejected ❌ - Amount refunded'
+      ['transactions/' + txKey + '/note']: 'Withdrawal Rejected ❌ - Amount refunded to MOB'
     });
     await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'rejected' });
     if (adminTxKey) {
@@ -1329,11 +1335,11 @@ async function rejectWithdrawal(reqKey, userId, username, amount) {
       type: 'withdrawal_rejected',
       username: username,
       amount: amount,
-      message: `Withdrawal Rejected: ${username} | Amount: ${fmt(amount)} | Full refund issued`,
+      message: `Withdrawal Rejected: ${username} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
       date: dateStr(),
       read: false 
     });
-    toast('✅ Rejected — amount refunded to ' + username);
+    toast('✅ Rejected — amount refunded to MOB for ' + username);
   } catch (error) { 
     console.error('Error rejecting withdrawal:', error);
     toast('Error rejecting withdrawal', '#f87171'); 
@@ -1744,7 +1750,7 @@ function showTerms() {
     html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
       <p><strong>1. Introduction</strong><br>Welcome to DiamondEarn. These Terms of Service govern your use of our platform.</p>
       <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password.</p>
-      <p><strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your STAKE account.</p>
+      <p><strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your MOB account.</p>
       <p><strong>4. Prohibited Activities</strong><br>You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.</p>
       <p><strong>5. Limitation of Liability</strong><br>DiamondEarn is provided "as is" without warranties.</p>
       <p><strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time.</p>

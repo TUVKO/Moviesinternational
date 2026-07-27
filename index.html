@@ -108,6 +108,7 @@ input[type="password"]{padding-right:46px;}
 .stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
 .stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .stat-value.stake{color:var(--accent);}
+.stat-value.mob{color:var(--success);}
 .stat-value.videos{color:var(--accent3);}
 .stat-value.streak{color:var(--gold);}
 
@@ -136,9 +137,9 @@ input[type="password"]{padding-right:46px;}
 .countdown-progress{width:100%;max-width:300px;height:4px;background:var(--surface2);border-radius:4px;overflow:hidden;}
 .countdown-progress-fill{height:100%;background:var(--muted);border-radius:4px;transition:width 0.3s;}
 .claim-btn{width:100%;max-width:300px;padding:14px;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s;background:var(--surface2);color:var(--muted);}
-.claim-btn.ready{background:#3B82F6;color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.4);}
+.claim-btn.ready{background:#3B82F6;color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.4);cursor:pointer;}
 .claim-btn.ready:active{transform:scale(0.97);}
-.claim-btn.claimed{background:var(--success);color:#fff;}
+.claim-btn.claimed{background:var(--success);color:#fff;cursor:default;}
 .claim-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
 .action-grid{display:flex;flex-direction:column;gap:12px;margin:8px 0;align-items:flex-start;}
@@ -433,18 +434,18 @@ input[type="password"]{padding-right:46px;}
       <div class="stats-card">
         <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
           <div class="stat-box">
-            <div class="stat-label">STAKE</div>
+            <div class="stat-label">💰 STAKE</div>
             <div class="stat-value stake" id="stat-stake">UGX 0</div>
           </div>
           <div class="stat-box">
-            <div class="stat-label">TODAY'S VIDEOS</div>
-            <div class="stat-value videos" id="stat-today-videos">0/3</div>
+            <div class="stat-label">🎬 MOB ACCOUNT</div>
+            <div class="stat-value mob" id="stat-mob">UGX 0</div>
           </div>
         </div>
         <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
           <div class="stat-box">
-            <div class="stat-label">🔥 STREAK</div>
-            <div class="stat-value streak" id="stat-streak">0 days</div>
+            <div class="stat-label">TODAY'S VIDEOS</div>
+            <div class="stat-value videos" id="stat-today-videos">0/3</div>
           </div>
           <div class="stat-box">
             <div class="stat-label">📊 LEVEL</div>
@@ -525,7 +526,7 @@ input[type="password"]{padding-right:46px;}
       <div class="countdown-progress">
         <div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
       </div>
-      <button class="claim-btn" id="claim-btn" disabled>
+      <button class="claim-btn" id="claim-btn" onclick="claimReward()" disabled>
         ⏳ Watch for 5 seconds...
       </button>
     </div>
@@ -658,10 +659,11 @@ input[type="password"]{padding-right:46px;}
 
   <!-- Withdraw -->
   <div class="dash-section" id="sec-withdraw">
-    <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your STAKE</div></div></div>
+    <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div></div>
     <div class="section">
       <div id="withdraw-locked-msg" class="locked-banner" style="display:none">🔒 Withdrawals are currently disabled. Please contact support.</div>
       <div class="action-card">
+        <div class="deposit-note">📱 Your MOB balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
         <div class="charge-note">⚠️ Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
         <div class="deposit-note">📱 Funds will be sent to your registered mobile money number.</div>
         <div class="field-group">
@@ -678,7 +680,7 @@ input[type="password"]{padding-right:46px;}
           <span>💸 You receive: </span><strong id="withdraw-net-amount">UGX 0</strong><br>
           <span>🔧 Fee: </span><strong id="withdraw-fee-amount">UGX 0</strong>
         </div>
-        <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">💰 WITHDRAW</button>
+        <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">💰 WITHDRAW FROM MOB</button>
       </div>
     </div>
   </div>
@@ -725,7 +727,7 @@ input[type="password"]{padding-right:46px;}
       <strong>2. User Responsibilities</strong><br>
       You are responsible for maintaining the confidentiality of your account and password.<br><br>
       <strong>3. Earning Policy</strong><br>
-      You earn by watching videos. Rewards are credited to your STAKE account.<br><br>
+      You earn by watching videos. Rewards are credited to your MOB account.<br><br>
       <strong>4. Prohibited Activities</strong><br>
       You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.<br><br>
       <strong>5. Limitation of Liability</strong><br>
@@ -771,7 +773,7 @@ input[type="password"]{padding-right:46px;}
 <script>
 // ============================================================
 // DIAMOND EARN - WATCH & EARN PLATFORM
-// FIXED: UTC Timezone | Video Rotation | Hide Lock Icons | Redesigned Player
+// FIXED: MOB Account Added | Video Rewards go to MOB | Button Fixed
 // ============================================================
 
 console.log('Firebase loaded:', typeof firebase !== 'undefined');
@@ -1206,6 +1208,7 @@ function openVideoPlayer(id) {
   claimBtn.disabled = true;
   claimBtn.className = 'claim-btn';
   claimBtn.textContent = '⏳ Watch for 5 seconds...';
+  claimBtn.onclick = claimReward;
   
   const countdownNum = document.getElementById('countdown-number');
   countdownNum.textContent = '5';
@@ -1261,8 +1264,14 @@ function closeVideoPlayer() {
 }
 
 async function claimReward() {
-  if (!currentPlayingVideo || !currentUser) return;
-  if (!isClaimReady) return;
+  if (!currentPlayingVideo || !currentUser) {
+    console.log('No video or user');
+    return;
+  }
+  if (!isClaimReady) {
+    console.log('Not ready yet');
+    return;
+  }
   
   const btn = document.getElementById('claim-btn');
   btn.disabled = true;
@@ -1294,12 +1303,14 @@ async function claimReward() {
       newPosition = 0;
     }
     
-    const newStake = (user.stake || 0) + reward;
+    // ✅ FIX: Reward goes to MOB account (not STAKE!)
+    const currentMob = user.mob || 0;
+    const newMob = currentMob + reward;
     const newTotalVideos = (user.totalVideosWatched || 0) + 1;
     const txKey = 'tx_video_' + Date.now();
     
     const updates = {
-      stake: newStake,
+      mob: newMob,  // ← MOB gets the reward
       totalVideosWatched: newTotalVideos,
       videoPosition: newPosition,
       [`watchHistory/${todayUTC}`]: watchedToday + 1,
@@ -1328,7 +1339,8 @@ async function claimReward() {
         streakDays = (user.streakDays || 0) + 1;
         if (streakDays % 5 === 0) {
           const bonus = settingsData.streakBonus || 1000;
-          updates.stake = newStake + bonus;
+          // Streak bonus also goes to MOB
+          updates.mob = newMob + bonus;
           updates[`transactions/streak_${Date.now()}`] = {
             type: 'Streak Bonus',
             amount: bonus,
@@ -1371,12 +1383,19 @@ async function claimReward() {
     renderStages();
     updateVideoDisplay();
     
-    closeVideoPlayer();
+    // ✅ FIX: Show completed state and allow watching next
+    btn.className = 'claim-btn claimed';
+    btn.textContent = '✅ Completed! +' + fmt(reward) + ' to MOB';
+    btn.disabled = false;
     
-    const popup = document.getElementById('popup-banner');
-    popup.textContent = `✅ Earned ${fmt(reward)}! ${streakDays}-day streak! 🔥`;
-    popup.classList.add('show');
-    setTimeout(() => popup.classList.remove('show'), 2000);
+    // Auto-close after 2 seconds and allow next video
+    setTimeout(() => {
+      closeVideoPlayer();
+      const popup = document.getElementById('popup-banner');
+      popup.textContent = `✅ Earned ${fmt(reward)} to MOB! ${streakDays}-day streak! 🔥`;
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 2000);
+    }, 1500);
     
   } catch (e) {
     console.error('Claim error:', e);
@@ -1386,6 +1405,7 @@ async function claimReward() {
       btn.textContent = `💰 GET REWARD (${fmt(currentPlayingVideo?.reward || 0)})`;
       btn.className = 'claim-btn ready';
       btn.disabled = false;
+      isClaimReady = true;
     }, 2000);
   }
 }
@@ -1401,7 +1421,10 @@ function updateBalanceUI() {
     stake = currentUser.balance;
   }
   
+  let mob = currentUser.mob || 0;
+  
   document.getElementById('stat-stake').textContent = fmt(stake);
+  document.getElementById('stat-mob').textContent = fmt(mob);
   document.getElementById('stages-stake').textContent = fmt(stake);
   
   const todayUTC = getUTCKey(new Date());
@@ -1414,6 +1437,9 @@ function updateBalanceUI() {
   document.getElementById('stat-today-videos').textContent = `${watchedToday}/${total}`;
   document.getElementById('stat-level').textContent = levelName;
   document.getElementById('stages-current-level').textContent = levelName;
+  
+  // Update withdraw MOB balance display
+  document.getElementById('withdraw-mob-balance').textContent = fmt(mob);
   
   // Trainee status
   const traineeStatus = document.getElementById('stages-trainee-status');
@@ -1535,7 +1561,6 @@ function renderStages() {
       cardClass += ' purchased';
       btnHtml = `<button class="stage-btn purchased-btn" disabled>✅ Active</button>`;
     } else if (isLocked) {
-      // NO LOCK INDICATOR - looks normal, but shows popup on click
       btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
     } else if (!hasEnough) {
       btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
@@ -2033,7 +2058,7 @@ async function doDeposit() {
 }
 
 // ============================================================
-// WITHDRAWAL
+// WITHDRAWAL - NOW USES MOB ACCOUNT
 // ============================================================
 async function doWithdraw() {
   clearErrors('with-amount-err');
@@ -2049,9 +2074,10 @@ async function doWithdraw() {
     return;
   }
   
-  const stake = currentUser.stake || 0;
-  if (stake < amount) {
-    setErr('with-amount-err', true, 'Insufficient STAKE.');
+  // ✅ FIX: Check MOB balance instead of STAKE
+  const mob = currentUser.mob || 0;
+  if (mob < amount) {
+    setErr('with-amount-err', true, 'Insufficient MOB balance.');
     return;
   }
   
@@ -2062,7 +2088,7 @@ async function doWithdraw() {
   const btn = document.getElementById('with-submit-btn');
   btn.disabled = true;
   btn.textContent = '⏳ Processing...';
-  const newStake = stake - amount;
+  const newMob = mob - amount;
   const txKey = 'tx_wd_' + Date.now();
   const reqKey = 'wreq_' + Date.now();
   const reference = genUUID();
@@ -2086,8 +2112,9 @@ async function doWithdraw() {
   try {
     await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
     
+    // ✅ FIX: Withdraw from MOB
     await db.ref('users/' + safeKey(currentUsername)).update({
-      stake: newStake,
+      mob: newMob,
       [`transactions/${txKey}`]: {
         type: 'Withdrawal',
         amount: -amount,
@@ -2121,15 +2148,16 @@ async function doWithdraw() {
     document.getElementById('withdraw-preview').style.display = 'none';
   } catch (error) {
     console.error('Withdrawal error:', error);
-    const refundedStake = stake;
-    await db.ref('users/' + safeKey(currentUsername)).update({ stake: refundedStake });
+    // Refund to MOB
+    const refundedMob = mob;
+    await db.ref('users/' + safeKey(currentUsername)).update({ mob: refundedMob });
     await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
     await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
     sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
   }
   
   btn.disabled = false;
-  btn.textContent = '💰 WITHDRAW';
+  btn.textContent = '💰 WITHDRAW FROM MOB';
   switchTab('home');
 }
 
@@ -2149,14 +2177,14 @@ async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference,
     } else {
       const userSnap = await db.ref('users/' + userId).get();
       const user = userSnap.val();
-      const refundedStake = (user.stake || 0) + amount;
+      const refundedMob = (user.mob || 0) + amount;
       
       await db.ref('users/' + userId).update({
-        stake: refundedStake,
+        mob: refundedMob,
         [`transactions/${txKey}`]: {
           type: 'Withdrawal',
           amount: -amount,
-          note: 'Withdrawal Failed - Refunded',
+          note: 'Withdrawal Failed - Refunded to MOB',
           date: dateStr(),
           status: 'failed'
         }
@@ -2168,14 +2196,14 @@ async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference,
   } catch (sendError) {
     const userSnap = await db.ref('users/' + userId).get();
     const user = userSnap.val();
-    const refundedStake = (user.stake || 0) + amount;
+    const refundedMob = (user.mob || 0) + amount;
     
     await db.ref('users/' + userId).update({
-      stake: refundedStake,
+      mob: refundedMob,
       [`transactions/${txKey}`]: {
         type: 'Withdrawal',
         amount: -amount,
-        note: 'Withdrawal Failed - Refunded',
+        note: 'Withdrawal Failed - Refunded to MOB',
         date: dateStr(),
         status: 'failed'
       }
@@ -2345,6 +2373,7 @@ async function doRegister() {
       country: country,
       phone: fullPhone,
       stake: 0,
+      mob: 0,  // ✅ MOB account starts at 0
       totalVideosWatched: 0,
       streakDays: 0,
       lastWatchDate: null,
