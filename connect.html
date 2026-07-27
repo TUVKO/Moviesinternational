@@ -497,7 +497,6 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
         <div class="settings-row"><span class="settings-label">Minimum Deposit (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-deposit-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinDeposit()">Save</button></div>
         <div class="settings-row"><span class="settings-label">Minimum Withdrawal (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-withdraw-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinWithdraw()">Save</button></div>
         <div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
-        <div class="settings-row"><span class="settings-label">Daily Video Limit</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="daily-video-limit" min="1" max="200" step="1" placeholder="10"><span class="pct-label">videos</span></div><button class="btn btn-save" onclick="saveDailyVideoLimit()">Save</button></div>
         <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
       </div>
 
@@ -573,6 +572,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 // DIAMOND EARN ADMIN - WATCH & EARN PLATFORM
 // STAKE ONLY - Deposit kept via MarzPay
 // LEVELS - Lock/Unlock toggle
+// REMOVED: Daily Video Limit (now controlled by levels)
 // ============================================================
 
 const firebaseConfig = {
@@ -626,7 +626,6 @@ let allSettings = {
   minDeposit: 10000,
   minWithdraw: 10000,
   marzApiKey: '',
-  dailyVideoLimit: 10,
   streakBonus: 1000
 };
 let allLevels = {};
@@ -1001,7 +1000,6 @@ function renderDashboard() {
   const s = allSettings;
   document.getElementById('pct-summary').innerHTML = `
     <div class="pct-pill">Min Deposit <span>${fmt(s.minDeposit || 10000)}</span></div>
-    <div class="pct-pill">Daily Video Limit <span>${s.dailyVideoLimit || 10}</span></div>
     <div class="pct-pill">Streak Bonus <span>${fmt(s.streakBonus || 1000)}</span></div>
     <div class="pct-pill">Withdrawal Charge <span>${s.withdrawCharge || 10}%</span></div>
     <div class="pct-pill">MarzPay API <span style="color:${s.marzApiKey ? 'var(--accent3)' : 'var(--warn)'};">${s.marzApiKey ? '✅ Set' : '⚠️ Not Set'}</span></div>
@@ -1350,7 +1348,6 @@ function loadSettingsUI() {
   document.getElementById('min-deposit-input').value = s.minDeposit || 10000;
   document.getElementById('min-withdraw-input').value = s.minWithdraw || 10000;
   document.getElementById('with-charge-input').value = s.withdrawCharge || 10;
-  document.getElementById('daily-video-limit').value = s.dailyVideoLimit || 10;
   document.getElementById('streak-bonus-input').value = s.streakBonus || 1000;
   
   const apiInp = document.getElementById('marz-api-key-input');
@@ -1406,13 +1403,6 @@ async function saveWithCharge() {
   const v = parseFloat(document.getElementById('with-charge-input').value) || 10;
   await db.ref('settings/withdrawCharge').set(v);
   toast('✅ Withdrawal charge updated to ' + v + '%');
-}
-
-async function saveDailyVideoLimit() {
-  const v = parseInt(document.getElementById('daily-video-limit').value) || 10;
-  if (v < 1) { toast('Daily limit must be at least 1', '#f87171'); return; }
-  await db.ref('settings/dailyVideoLimit').set(v);
-  toast('✅ Daily video limit set to ' + v);
 }
 
 async function saveStreakBonus() {
