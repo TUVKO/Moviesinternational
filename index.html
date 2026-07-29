@@ -780,6 +780,15 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+// Server-synced time (prevents users from spoofing the daily reset by changing device clock)
+let serverTimeOffset = 0;
+db.ref('.info/serverTimeOffset').on('value', (snap) => {
+  serverTimeOffset = snap.val() || 0;
+});
+function getServerTime() {
+  return new Date(Date.now() + serverTimeOffset);
+}
+
 console.log('✅ Firebase initialized');
 
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
@@ -791,10 +800,12 @@ function fmtShort(n) { return Number(n || 0).toLocaleString(); }
 // UTC DATE FUNCTIONS (NOT LOCAL)
 // ============================================================
 function getUTCKey(d) {
-  if (!d) d = new Date();
-  const year = d.getUTCFullYear();
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(d.getUTCDate()).padStart(2, '0');
+  if (!d) d = getServerTime();
+  // Shift to East Africa Time (UTC+3) so the daily reset happens at 00:00 EAT, not 00:00 UTC
+  const eat = new Date(d.getTime() + 3 * 60 * 60 * 1000);
+  const year = eat.getUTCFullYear();
+  const month = String(eat.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(eat.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
@@ -1037,7 +1048,7 @@ function getRemainingVideos() {
   const level = getLevelData(levelKey);
   const totalVideos = level.movies || 0;
   
-  const todayUTC = getUTCKey(new Date());
+  const todayUTC = getUTCKey();
   const watchedToday = currentUser.watchHistory?.[todayUTC] || 0;
   
   const remaining = Math.max(0, totalVideos - watchedToday);
@@ -1267,7 +1278,7 @@ async function claimReward() {
   btn.textContent = 'Adding...';
   
   try {
-    const todayUTC = getUTCKey(new Date());
+    const todayUTC = getUTCKey();
     const userRef = db.ref('users/' + safeKey(currentUsername));
     const snap = await userRef.get();
     const user = snap.val() || {};
@@ -1314,13 +1325,13 @@ async function claimReward() {
     
     // Check streak (UTC-based)
     const lastWatchDate = user.lastWatchDate || null;
-    const todayStr = getUTCKey(new Date());
+    const todayStr = getUTCKey();
     let streakDays = user.streakDays || 0;
     
     if (lastWatchDate === todayStr) {
       // Already watched today - no streak change
     } else {
-      const yesterday = new Date();
+      const yesterday = getServerTime();
       yesterday.setUTCDate(yesterday.getUTCDate() - 1);
       const yesterdayStr = getUTCKey(yesterday);
       
@@ -1416,7 +1427,7 @@ function updateBalanceUI() {
   document.getElementById('stat-mob').textContent = fmt(mob);
   document.getElementById('stages-stake').textContent = fmt(stake);
   
-  const todayUTC = getUTCKey(new Date());
+  const todayUTC = getUTCKey();
   const levelKey = getUserLevel();
   const level = getLevelData(levelKey);
   const total = level.movies || 0;
@@ -2354,7 +2365,7 @@ async function doRegister() {
     const prefix = country === 'KE' ? '+254' : '+256';
     const fullPhone = prefix + phoneDigits;
     const now = dateStr();
-    const todayUTC = getUTCKey(new Date());
+    const todayUTC = getUTCKey();
     
     const newUser = {
       username: username,
