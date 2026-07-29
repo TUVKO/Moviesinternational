@@ -2543,10 +2543,17 @@ window.showConfirmPopup = showConfirmPopup;
 console.log('✅ All functions exposed to window');
 
 // ============================================================
-// INIT APP - WITH ERROR HANDLING TO HIDE LOADING SCREEN
+// INIT APP - FIXED: LOADING SCREEN HIDES IMMEDIATELY
 // ============================================================
 async function initApp() {
   console.log('🚀 Initializing app...');
+  
+  // Hide loading screen IMMEDIATELY - do it first, then initialize
+  const loadingScreen = document.getElementById('loading-screen');
+  if (loadingScreen) {
+    loadingScreen.style.display = 'none';
+    console.log('✅ Loading screen hidden immediately');
+  }
   
   try {
     startSettingsListener();
@@ -2589,12 +2596,7 @@ async function initApp() {
     showAuth('login-page');
   }
   
-  // ✅ ALWAYS hide loading screen
-  const loadingScreen = document.getElementById('loading-screen');
-  if (loadingScreen) {
-    loadingScreen.style.display = 'none';
-  }
-  console.log('✅ App initialized - Loading screen hidden');
+  console.log('✅ App initialized');
 }
 
 // Start the app
