@@ -56,7 +56,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .auth-logo{width:72px;height:72px;background:var(--accent);border-radius:22px;display:grid;place-items:center;font-size:34px;margin:0 auto 14px;color:#fff;}
 .auth-brand{font-family:'Fraunces',serif;font-size:30px;font-weight:900;color:var(--accent);margin-bottom:4px;}
 .auth-tagline{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
-.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:28px 22px;}
+.auth-card{}
 .auth-title{font-family:'Fraunces',serif;font-size:21px;font-weight:800;margin-bottom:4px;color:var(--accent);}
 .auth-subtitle{font-size:12px;color:var(--muted);margin-bottom:20px;}
 .field-group{margin-bottom:14px;}
@@ -102,7 +102,6 @@ input[type="password"]{padding-right:46px;}
 .section{padding:0 16px;margin-bottom:14px;}
 .dash-section{display:none;}
 .dash-section.active{display:block;}
-.stats-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 20px;}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
 .stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
@@ -431,7 +430,6 @@ input[type="password"]{padding-right:46px;}
   <!-- HOME / DASHBOARD -->
 <div class="dash-section active" id="sec-home">
 <div class="section">
-<div class="stats-card">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
 <div class="stat-label">STAKE</div>
@@ -452,18 +450,7 @@ input[type="password"]{padding-right:46px;}
 <div class="stat-value" style="font-size:12px;font-weight:800;color:var(--accent);" id="stat-level">Trainee</div>
 </div>
 </div>
-</div>
 
-  <!-- Level Progress -->
-<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:12px;">
-<div style="display:flex;justify-content:space-between;font-size:11px;">
-  <span style="color:var(--muted);">Progress to <span id="level-progress-next">WM1</span></span>
-  <span id="level-progress-text" style="color:var(--accent);">0/10 videos</span>
-</div>
-<div class="level-progress">
-<div class="level-progress-fill" id="level-progress-fill" style="width:0%;"></div>
-</div>
-</div>
 </div>
 
 <div class="section">
@@ -621,14 +608,11 @@ input[type="password"]{padding-right:46px;}
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">INFOR</div><div class="inner-sub">Your account details</div></div></div>
 <div class="section">
 <div class="profile-simple-info">
-<div class="profile-simple-item"><span class="profile-simple-label">Username</span><span class="profile-simple-value" id="profile-user-simple">—</span></div>
-<div class="profile-simple-item"><span class="profile-simple-label">Phone Number</span><span class="profile-simple-value" id="profile-phone-simple">—</span></div>
 <div class="profile-simple-item"><span class="profile-simple-label">Registered Date</span><span class="profile-simple-value" id="profile-date-simple">—</span></div>
 <div class="profile-simple-item"><span class="profile-simple-label">Videos Watched</span><span class="profile-simple-value" id="profile-videos-simple">0</span></div>
 <div class="profile-simple-item"><span class="profile-simple-label">Streak</span><span class="profile-simple-value" id="profile-streak-simple">0 days</span></div>
 <div class="profile-simple-item"><span class="profile-simple-label">Current Level</span><span class="profile-simple-value" id="profile-level-simple">Trainee</span></div>
 </div>
-  <button class="logout-btn-new" onclick="doLogout()">Sign Out</button>
 </div>
 </div>
 
@@ -994,6 +978,7 @@ function updateLevelProgress() {
   const progressEl = document.getElementById('level-progress-fill');
   const progressText = document.getElementById('level-progress-text');
   const progressNext = document.getElementById('level-progress-next');
+  if (!progressEl || !progressText || !progressNext) return;
   
   if (nextLevel) {
   const current = userVideos - (currentLevel.collateral || 0);
@@ -1473,8 +1458,6 @@ function updateBalanceUI() {
 
 function updateProfileUI() {
   if (!currentUser) return;
-  document.getElementById('profile-user-simple').textContent = currentUser.username || '—';
-  document.getElementById('profile-phone-simple').textContent = currentUser.phone || '—';
   document.getElementById('profile-date-simple').textContent = currentUser.joinedDate || '2025';
   document.getElementById('profile-videos-simple').textContent = currentUser.totalVideosWatched || 0;
   document.getElementById('profile-streak-simple').textContent = (currentUser.streakDays || 0) + 'days';
