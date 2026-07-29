@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-<meta property="og:title" content="WEA — Mine Your Wealth, One Day at a Time">
-<meta property="og:description" content="Just like mining diamonds — rare, valuable, and worth the investment. With WEA, you mine daily profits effortlessly using AI-powered trading.">
+<meta property="og:title" content="DiamondEarn — Watch Movies, Earn Money">
+<meta property="og:description" content="Watch movies, trailers, and clips. Earn real money. Deposit to boost your earnings.">
 <meta property="og:image" content="https://profit-pulse.site/logo.png">
 <meta property="og:url" content="https://profit-pulse.site">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://profit-pulse.site/logo.png">
-<title>WEA — Mine Your Wealth, One Day at a Time</title>
+<title>DiamondEarn — Watch Movies, Earn Money</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -96,8 +96,6 @@ input[type="password"]{padding-right:46px;}
 .brand-icon{width:34px;height:34px;background:var(--accent);border-radius:10px;display:grid;place-items:center;font-size:16px;color:#fff;}
 .brand-name{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:var(--accent);}
 .topbar-right{display:flex;align-items:center;gap:10px;}
-.theme-toggle{background:none;border:none;font-size:18px;cursor:pointer;padding:6px;color:var(--accent);transition:.3s;}
-.theme-toggle:active{transform:scale(.95);}
 .username-top{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--accent3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
 /* Sections */
@@ -105,9 +103,14 @@ input[type="password"]{padding-right:46px;}
 .dash-section{display:none;}
 .dash-section.active{display:block;}
 .stats-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 20px;}
-.balance-big{text-align:center;padding:8px 0 16px;}
-.balance-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:8px;}
-.balance-amount{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:700;color:var(--accent);}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
+.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
+.stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
+.stat-value.stake{color:var(--accent);}
+.stat-value.mob{color:var(--success);}
+.stat-value.videos{color:var(--accent3);}
+.stat-value.streak{color:var(--gold);}
 
 /* Video grid (TIERS page) */
 .video-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -120,44 +123,29 @@ input[type="password"]{padding-right:46px;}
 .video-title{padding:8px 10px 10px;font-size:12.5px;font-weight:600;color:var(--text);line-height:1.3;}
 .video-empty{grid-column:1/-1;text-align:center;padding:40px 10px;color:var(--muted);font-size:13px;}
 
-/* Video player overlay */
+/* Video player overlay - REDESIGNED */
 .video-overlay{position:fixed;inset:0;background:#000;z-index:999;display:none;flex-direction:column;}
 .video-overlay.active{display:flex;}
 .video-overlay-header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;color:#F6F1E7;font-family:'Fraunces',serif;font-weight:700;font-size:15px;background:#14110F;}
 .video-overlay-close{cursor:pointer;font-size:18px;padding:4px 8px;}
-.video-player-wrap{position:relative;width:100%;aspect-ratio:16/9;background:#000;}
+.video-player-wrap{width:100%;aspect-ratio:16/9;background:#000;flex-shrink:0;}
 #video-player-embed, #video-player-embed iframe{width:100%;height:100%;border:0;display:block;}
-.video-countdown-mask{position:absolute;inset:0;background:rgba(20,17,15,.6);display:flex;align-items:center;justify-content:center;}
-.reel-ring{position:relative;width:88px;height:88px;}
-.reel-ring svg{width:100%;height:100%;transform:rotate(-90deg);}
-.reel-track{fill:none;stroke:rgba(184,175,158,.3);stroke-width:6;}
-.reel-progress{fill:none;stroke:#B8AF9E;stroke-width:6;stroke-linecap:round;stroke-dasharray:282.6;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;}
-.reel-number{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;color:#B8AF9E;}
-.video-claim-wrap{padding:24px;display:flex;justify-content:center;background:#14110F;flex:1;align-items:flex-start;}
-.claim-salary-btn{background:#5CA378;color:#fff;border:none;padding:16px 28px;border-radius:14px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:8px;cursor:pointer;box-shadow:0 6px 20px rgba(92,163,120,.4);animation:claimPopIn .3s ease;}
-.claim-salary-btn:disabled{opacity:.6;}
-@keyframes claimPopIn{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
-.stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 6px;text-align:center;}
-.stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
-.stat-value{font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;}
-.stat-value.dep{color:var(--gold)}.stat-value.earn{color:var(--accent3)}.stat-value.with{color:var(--warn)}.stat-value.total{color:var(--accent)}
-.action-grid{display:flex;flex-direction:column;gap:12px;padding-left:16px;}
-.action-btn{border:none;border-radius:14px;padding:14px 18px;font-family:'Inter',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:10px;width:fit-content;}
+.video-controls{flex:1;background:#14110F;padding:16px 20px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;}
+.countdown-display{display:flex;align-items:center;gap:12px;}
+.countdown-number{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;color:var(--text);}
+.countdown-label{font-size:12px;color:var(--muted);}
+.countdown-progress{width:100%;max-width:300px;height:4px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.countdown-progress-fill{height:100%;background:var(--muted);border-radius:4px;transition:width 0.3s;}
+.claim-btn{width:100%;max-width:300px;padding:14px;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s;background:var(--surface2);color:var(--muted);}
+.claim-btn.ready{background:#3B82F6;color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.4);cursor:pointer;}
+.claim-btn.ready:active{transform:scale(0.97);}
+.claim-btn.claimed{background:var(--success);color:#fff;cursor:default;}
+.claim-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+.action-grid{display:flex;flex-direction:column;gap:12px;margin:8px 0;align-items:flex-start;}
+.action-btn{border:none;border-radius:12px;padding:12px 20px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:10px;width:fit-content;}
 .action-btn:active{transform:scale(.96);}
 .btn-icon{font-size:20px;}
-.btn-deposit{background:var(--accent3);color:#fff;}
-.btn-withdraw{background:var(--gold);color:#fff;}
-.btn-transactions{background:var(--accent2);color:#fff;}
-
-/* Investment Active Card */
-.investment-card{background:linear-gradient(135deg, #1e3a5f 0%, #0f2b45 100%);border:1px solid var(--accent);border-radius:16px;padding:16px;margin-bottom:16px;}
-.investment-title{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
-.investment-amount{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#fff;margin-bottom:8px;}
-.investment-progress{background:var(--surface2);border-radius:10px;height:8px;margin:12px 0;overflow:hidden;}
-.investment-progress-fill{background:var(--accent);height:100%;border-radius:10px;transition:width 0.3s;}
-.investment-days{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;}
-.investment-status{font-size:10px;color:var(--accent3);margin-top:8px;}
 
 /* Table (Scrollable) */
 .plan-footer{padding:12px;background:var(--surface2);}
@@ -234,13 +222,6 @@ input[type="password"]{padding-right:46px;}
 .red-btn{width:100%;background:#b85c20;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
 .red-btn:active{transform:scale(.98);}
 .red-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.amber-btn{width:100%;background:#06b6d4;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;}
-.amber-btn:active{transform:scale(.98);}
-.amber-btn:disabled{opacity:0.4;cursor:not-allowed;}
-
-/* Section-specific backgrounds */
-#sec-deposit .action-card{background:linear-gradient(135deg, rgba(16,185,129,.1) 0%, rgba(16,185,129,.05) 100%);border:1px solid rgba(16,185,129,.3);}
-#sec-withdraw .action-card{background:linear-gradient(135deg, rgba(255,107,91,.1) 0%, rgba(255,107,91,.05) 100%);border:1px solid rgba(255,107,91,.3);}
 
 .popup-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:#1e293b;color:#fff;font-size:13px;font-weight:600;padding:14px 22px;border-radius:16px;opacity:0;transition:.35s;z-index:9998;pointer-events:none;text-align:center;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.25);line-height:1.5;}
 .popup-banner.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -292,7 +273,7 @@ input[type="password"]{padding-right:46px;}
 
 .tx-card.tx-deposit::before{background:linear-gradient(90deg, #10b981, #059669);}
 .tx-card.tx-withdrawal::before{background:linear-gradient(90deg, #ef4444, #dc2626);}
-.tx-card.tx-profit::before{background:linear-gradient(90deg, #22c55e, #16a34a);}
+.tx-card.tx-reward::before{background:linear-gradient(90deg, #22c55e, #16a34a);}
 .tx-card.tx-bonus::before{background:linear-gradient(90deg, #f59e0b, #d97706);}
 
 .tx-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
@@ -323,12 +304,37 @@ input[type="password"]{padding-right:46px;}
 .loading-spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:14px;color:var(--muted);}
+
+/* Level Progress Bar */
+.level-progress{background:var(--surface2);border-radius:10px;height:8px;margin:8px 0;overflow:hidden;}
+.level-progress-fill{background:var(--accent);height:100%;border-radius:10px;transition:width 0.5s;}
+
+/* Stages Cards - NO LOCK INDICATORS */
+.stages-grid{display:flex;flex-direction:column;gap:8px;}
+.stage-card{background:var(--surface2);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s;min-height:60px;}
+.stage-card:active{transform:scale(0.98);}
+.stage-card.purchased{border-color:var(--success);background:rgba(92,163,120,0.1);}
+.stage-color{width:6px;height:40px;border-radius:4px;flex-shrink:0;}
+.stage-info{flex:1;display:flex;flex-direction:column;gap:1px;}
+.stage-name{font-size:11px;font-weight:700;color:var(--text);}
+.stage-details{font-size:8px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;}
+.stage-details span{color:var(--muted);}
+.stage-details .cost{color:var(--accent);font-weight:700;}
+.stage-details .daily{color:var(--success);font-weight:700;}
+.stage-action{flex-shrink:0;}
+.stage-btn{background:var(--accent);border:none;border-radius:6px;padding:4px 10px;font-size:8px;font-weight:700;color:#14110F;cursor:pointer;font-family:'Inter',sans-serif;}
+.stage-btn:active{transform:scale(0.95);}
+.stage-btn.purchased-btn{background:var(--success);color:#fff;}
+.stage-btn.need-funds{background:var(--warn);color:#fff;}
+
+/* Video count badge on thumbnails */
+.video-count-badge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'JetBrains Mono',monospace;}
 </style>
 </head>
 <body>
 
 <div class="loading-screen" id="loading-screen">
-  <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:10px;">WEA</div>
+  <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:10px;">DiamondEarn</div>
   <div class="loading-spinner"></div>
   <div class="loading-text">Loading...</div>
 </div>
@@ -336,13 +342,13 @@ input[type="password"]{padding-right:46px;}
 <!-- LOGIN -->
 <div class="auth-page" id="login-page">
   <div class="auth-hero">
-    <div class="auth-logo">📈</div>
-    <div class="auth-brand">WEA</div>
-    <div class="auth-tagline">Mine Your Wealth, One Day at a Time</div>
+    <div class="auth-logo">🎬</div>
+    <div class="auth-brand">DiamondEarn</div>
+    <div class="auth-tagline">Watch Movies, Earn Money</div>
   </div>
   <div class="auth-card">
     <div class="auth-title">Welcome Back</div>
-    <div class="auth-subtitle">Sign in to your investment account</div>
+    <div class="auth-subtitle">Sign in to your account</div>
     <div class="field-group">
       <label class="field-label">Username</label>
       <div class="field-wrap"><span class="field-icon">👤</span><input type="text" id="login-username" placeholder="Enter your username"></div>
@@ -362,13 +368,13 @@ input[type="password"]{padding-right:46px;}
 <!-- REGISTER -->
 <div class="auth-page" id="register-page">
   <div class="auth-hero">
-    <div class="auth-logo">📈</div>
-    <div class="auth-brand">WEA</div>
-    <div class="auth-tagline">Mine Your Wealth, One Day at a Time</div>
+    <div class="auth-logo">🎬</div>
+    <div class="auth-brand">DiamondEarn</div>
+    <div class="auth-tagline">Watch Movies, Earn Money</div>
   </div>
   <div class="auth-card">
     <div class="auth-title">Create Account</div>
-    <div class="auth-subtitle">Get UGX 4,000 registration bonus 🎁</div>
+    <div class="auth-subtitle">Start earning by watching videos 🎁</div>
     <div class="field-group">
       <label class="field-label">Username</label>
       <div class="field-wrap"><span class="field-icon">👤</span><input type="text" id="reg-username" placeholder="Choose a username"></div>
@@ -406,7 +412,7 @@ input[type="password"]{padding-right:46px;}
       <div class="field-error" id="reg-confirm-err">Passwords do not match</div>
     </div>
     <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
-    <button class="submit-btn" onclick="doRegister()">Create Account & Earn 🎁</button>
+    <button class="submit-btn" onclick="doRegister()">Create Account & Start Earning 🎬</button>
     <div class="auth-switch">Already have an account? <a onclick="showAuth('login-page')">Sign In</a></div>
   </div>
 </div>
@@ -415,9 +421,10 @@ input[type="password"]{padding-right:46px;}
 <div class="dashboard-page" id="dashboard-page">
   <div class="topbar">
     <div class="topbar-left">
-      <div class="brand"><div class="brand-icon">📈</div><div class="brand-name">WEA</div></div>
+      <div class="brand"><div class="brand-icon">🎬</div><div class="brand-name">DiamondEarn</div></div>
     </div>
     <div class="topbar-right">
+      <span class="username-top" id="top-username">User</span>
     </div>
   </div>
 
@@ -425,65 +432,76 @@ input[type="password"]{padding-right:46px;}
   <div class="dash-section active" id="sec-home">
     <div class="section">
       <div class="stats-card">
-        <div class="stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-          <div class="stat-box" style="padding:14px 8px;text-align:center;">
-            <div class="stat-label" style="font-size:8px;margin-bottom:6px;">STAKE</div>
-            <div class="stat-value" style="font-size:14px;font-weight:800;color:var(--accent);" id="stat-stake">UGX 0</div>
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="stat-box">
+            <div class="stat-label">💰 STAKE</div>
+            <div class="stat-value stake" id="stat-stake">UGX 0</div>
           </div>
-          <div class="stat-box" style="padding:14px 8px;text-align:center;">
-            <div class="stat-label" style="font-size:8px;margin-bottom:6px;">BALANCE</div>
-            <div class="stat-value" style="font-size:14px;font-weight:800;color:var(--success);" id="stat-balance">UGX 0</div>
+          <div class="stat-box">
+            <div class="stat-label">🎬 MOB ACCOUNT</div>
+            <div class="stat-value mob" id="stat-mob">UGX 0</div>
           </div>
+        </div>
+        <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
+          <div class="stat-box">
+            <div class="stat-label">TODAY'S VIDEOS</div>
+            <div class="stat-value videos" id="stat-today-videos">0/3</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">📊 LEVEL</div>
+            <div class="stat-value" style="font-size:12px;font-weight:800;color:var(--accent);" id="stat-level">Trainee</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Level Progress -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;">
+          <span style="color:var(--muted);">Progress to <span id="level-progress-next">WM1</span></span>
+          <span id="level-progress-text" style="color:var(--accent);">0/10 videos</span>
+        </div>
+        <div class="level-progress">
+          <div class="level-progress-fill" id="level-progress-fill" style="width:0%;"></div>
         </div>
       </div>
     </div>
 
-    <!-- Active Investment Display -->
-    <div class="section" id="active-investment-section" style="display:none;">
-      <div class="investment-card">
-        <div class="investment-title">📈 ACTIVE INVESTMENT</div>
-        <div class="investment-amount" id="active-stake-amount">UGX 0</div>
-        <div class="investment-progress"><div class="investment-progress-fill" id="investment-progress-fill" style="width:0%"></div></div>
-        <div class="investment-days"><span id="days-completed">0</span><span>Day 56</span></div>
-        <div class="investment-status" id="investment-status">Generating 10% daily profit</div>
-      </div>
-    </div>
-
     <div class="section">
-      <div class="action-grid" style="display:flex;flex-direction:column;gap:12px;margin:16px 0;align-items:flex-start;">
-        <button class="action-btn" style="background:#22c55e;border:none;color:white;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;" onclick="switchTab('deposit')"><span class="btn-icon">💳</span> Invest</button>
-        <button class="action-btn" style="background:#ef4444;border:none;color:white;padding:12px 20px;border-radius:12px;font-weight:600;font-size:15px;" onclick="switchTab('withdraw')"><span class="btn-icon">💸</span> Withdraw</button>
+      <div class="action-grid">
+        <button class="action-btn" style="background:#22c55e;border:none;color:white;" onclick="switchTab('team')"><span class="btn-icon">🎬</span> Watch Videos</button>
+        <button class="action-btn" style="background:#F2B84B;border:none;color:#14110F;" onclick="switchTab('deposit')"><span class="btn-icon">💳</span> Deposit</button>
+        <button class="action-btn" style="background:#ef4444;border:none;color:white;" onclick="switchTab('withdraw')"><span class="btn-icon">💰</span> Withdraw</button>
       </div>
     </div>
   </div>
 
-  <!-- History - New Card Design -->
+  <!-- History -->
   <div class="dash-section" id="sec-history">
     <div class="inner-header"><span style="font-size:22px">📋</span><div><div class="inner-title">Records</div><div class="inner-sub">All your transactions</div></div></div>
     
-    <!-- Search and Filter -->
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:16px;padding:0 16px;">
       <input type="text" id="tx-search-box" placeholder="🔍 Search transactions..." class="tx-search-input" oninput="renderHistory()">
     </div>
     
-    <!-- Filter Pills -->
-    <div class="tx-filter-pills">
-      <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
-      <button class="tx-pill" onclick="setTxFilter('Deposit',this)">💳 Deposits</button>
-      <button class="tx-pill" onclick="setTxFilter('Withdrawal',this)">💸 Withdrawals</button>
-      <button class="tx-pill" onclick="setTxFilter('Profit',this)">📈 Profits</button>
-      <button class="tx-pill" onclick="setTxFilter('Bonus',this)">🎁 Bonuses</button>
+    <div style="padding:0 16px;">
+      <div class="tx-filter-pills">
+        <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
+        <button class="tx-pill" onclick="setTxFilter('Video Reward',this)">🎬 Rewards</button>
+        <button class="tx-pill" onclick="setTxFilter('Streak Bonus',this)">🔥 Streak</button>
+        <button class="tx-pill" onclick="setTxFilter('Deposit',this)">💳 Deposit</button>
+        <button class="tx-pill" onclick="setTxFilter('Withdrawal',this)">💰 Withdrawals</button>
+        <button class="tx-pill" onclick="setTxFilter('Level Purchase',this)">📊 Levels</button>
+      </div>
     </div>
     
-    <!-- Transaction Cards -->
     <div class="section">
       <div id="history-list" class="tx-cards-grid"><div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Yet</div><div class="tx-empty-text">Your transaction history will appear here.</div></div></div>
     </div>
   </div>
 
-  <!-- Tiers (blank) -->
+  <!-- WATCH & EARN -->
   <div class="dash-section" id="sec-team">
-    <div class="inner-header"><span style="font-size:22px">🎬</span><div><div class="inner-title">TIERS</div><div class="inner-sub">Watch a video, earn your salary</div></div></div>
+    <div class="inner-header"><span style="font-size:22px">🎬</span><div><div class="inner-title">WATCH & EARN</div><div class="inner-sub">Watch videos and earn money</div></div></div>
     <div class="section">
       <div id="video-grid" class="video-grid">
         <div class="video-empty">No videos yet. Check back soon.</div>
@@ -491,7 +509,7 @@ input[type="password"]{padding-right:46px;}
     </div>
   </div>
 
-  <!-- Video Player Overlay -->
+  <!-- Video Player Overlay - REDESIGNED -->
   <div class="video-overlay" id="video-overlay">
     <div class="video-overlay-header">
       <span id="video-overlay-title">Movie Title</span>
@@ -499,24 +517,103 @@ input[type="password"]{padding-right:46px;}
     </div>
     <div class="video-player-wrap">
       <div id="video-player-embed"></div>
-      <div class="video-countdown-mask" id="video-countdown-mask">
-        <div class="reel-ring">
-          <svg viewBox="0 0 100 100">
-            <circle class="reel-track" cx="50" cy="50" r="45"/>
-            <circle class="reel-progress" id="reel-progress" cx="50" cy="50" r="45"/>
-          </svg>
-          <div class="reel-number" id="reel-number">5</div>
-        </div>
-      </div>
     </div>
-    <div class="video-claim-wrap" id="video-claim-wrap" style="display:none;">
-      <button class="claim-salary-btn" id="claim-salary-btn" onclick="claimSalary()">💰 Get salary <span id="claim-amount-label">UGX 0</span></button>
+    <div class="video-controls" id="video-controls">
+      <div class="countdown-display">
+        <span class="countdown-number" id="countdown-number">5</span>
+        <span class="countdown-label">seconds</span>
+      </div>
+      <div class="countdown-progress">
+        <div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
+      </div>
+      <button class="claim-btn" id="claim-btn" onclick="claimReward()" disabled>
+        ⏳ Watch for 5 seconds...
+      </button>
     </div>
   </div>
 
-  <!-- Returns Plan -->
+  <!-- WAGES -->
   <div class="dash-section" id="sec-plan">
-    <div class="inner-header"><span style="font-size:22px">🎯</span><div><div class="inner-title">DIVIDENDS</div><div class="inner-sub">Coming soon</div></div></div>
+    <div class="inner-header">
+      <span style="font-size:22px">💰</span>
+      <div>
+        <div class="inner-title">WAGES</div>
+        <div class="inner-sub">Your earning levels</div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <!-- User Level Display -->
+      <div id="user-level-display" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Your Level</div>
+            <div style="font-size:17px;font-weight:800;color:var(--accent);" id="user-current-level">Trainee</div>
+            <div style="font-size:9px;color:var(--muted);" id="user-trainee-status"></div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Daily Earnings</div>
+            <div style="font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--success);" id="user-current-daily">UGX 1,500</div>
+          </div>
+        </div>
+        <div id="user-next-level" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
+      </div>
+
+      <!-- Levels Table -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
+          <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid var(--border);">
+            <thead>
+              <tr style="background:var(--surface2);border-bottom:2px solid var(--accent);">
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">LvL</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Col</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Mov</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Each</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Daily</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Monthly</th>
+                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:24%;border-bottom:2px solid var(--accent);">Annual</th>
+              </tr>
+            </thead>
+            <tbody id="levels-table-body">
+              <tr><td colspan="7" style="padding:16px;text-align:center;color:var(--muted);font-size:9px;">Loading levels...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGES (Level Purchase) - NO LOCK INDICATORS -->
+  <div class="dash-section" id="sec-errands">
+    <div class="inner-header">
+      <span style="font-size:22px">📍</span>
+      <div>
+        <div class="inner-title">STAGES</div>
+        <div class="inner-sub">Purchase levels to unlock higher earnings</div>
+      </div>
+    </div>
+    <div class="section">
+      <!-- STAKE & Level Summary -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your STAKE</div>
+          <div style="font-size:15px;font-weight:800;color:var(--accent);" id="stages-stake">UGX 0</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Current Level</div>
+          <div style="font-size:13px;font-weight:800;color:var(--success);" id="stages-current-level">Trainee</div>
+          <div style="font-size:8px;color:var(--muted);" id="stages-trainee-status"></div>
+        </div>
+      </div>
+
+      <!-- Level Cards - NO LOCK INDICATORS -->
+      <div id="stages-grid" class="stages-grid">
+        <div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading levels...</div>
+      </div>
+
+      <!-- Deposit Button -->
+      <button class="green-btn" onclick="switchTab('deposit')" style="margin-top:12px;width:100%;">💳 Deposit to STAKE</button>
+    </div>
   </div>
 
   <!-- Profile -->
@@ -527,7 +624,9 @@ input[type="password"]{padding-right:46px;}
         <div class="profile-simple-item"><span class="profile-simple-label">Username</span><span class="profile-simple-value" id="profile-user-simple">—</span></div>
         <div class="profile-simple-item"><span class="profile-simple-label">Phone Number</span><span class="profile-simple-value" id="profile-phone-simple">—</span></div>
         <div class="profile-simple-item"><span class="profile-simple-label">Registered Date</span><span class="profile-simple-value" id="profile-date-simple">—</span></div>
-        <div class="profile-simple-item"><span class="profile-simple-label">Status</span><span class="profile-simple-value" id="profile-status-simple">—</span></div>
+        <div class="profile-simple-item"><span class="profile-simple-label">Videos Watched</span><span class="profile-simple-value" id="profile-videos-simple">0</span></div>
+        <div class="profile-simple-item"><span class="profile-simple-label">Streak</span><span class="profile-simple-value" id="profile-streak-simple">0 days</span></div>
+        <div class="profile-simple-item"><span class="profile-simple-label">Current Level</span><span class="profile-simple-value" id="profile-level-simple">Trainee</span></div>
       </div>
       <button class="logout-btn-new" onclick="doLogout()">🚪 Sign Out</button>
     </div>
@@ -535,10 +634,10 @@ input[type="password"]{padding-right:46px;}
 
   <!-- Deposit -->
   <div class="dash-section" id="sec-deposit">
-    <div class="inner-header"><span style="font-size:22px">💳</span><div><div class="inner-title">Invest</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
+    <div class="inner-header"><span style="font-size:22px">💳</span><div><div class="inner-title">Deposit</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
     <div class="section">
       <div class="action-card">
-        <div class="deposit-note" id="dep-min-note">✅ Minimum deposit: <strong>UGX 10,000</strong>. Includes 4% URA tax added to amount you pay.</div>
+        <div class="deposit-note">✅ Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your STAKE.</div>
         <div class="field-group">
           <label class="field-label">Mobile Money Phone Number</label>
           <div class="phone-prefix-wrap" id="dep-phone-wrap">
@@ -549,22 +648,22 @@ input[type="password"]{padding-right:46px;}
           <div class="field-error" id="dep-phone-err">Enter 9 digits starting with 7</div>
         </div>
         <div class="field-group">
-          <label class="field-label">Amount to Invest (UGX)</label>
-          <div class="field-wrap"><span class="field-icon">💰</span><input type="number" id="dep-amount" placeholder="Min 10,000 — Max 2,350,000" min="10000" max="2350000"></div>
-          <div class="field-error" id="dep-amount-err">Please check the amount limits</div>
+          <label class="field-label">Amount to Deposit (UGX)</label>
+          <div class="field-wrap"><span class="field-icon">💰</span><input type="number" id="dep-amount" placeholder="Min 10,000" min="10000"></div>
+          <div class="field-error" id="dep-amount-err">Please check the amount</div>
         </div>
-        <div class="deposit-note" id="tax-note" style="font-size:11px;background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--gold);">📊 You will pay: <strong id="tax-amount">UGX 0</strong> (includes 4% URA tax)</div>
-        <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">💳 INVEST NOW</button>
+        <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">💳 DEPOSIT TO STAKE</button>
       </div>
     </div>
   </div>
 
   <!-- Withdraw -->
   <div class="dash-section" id="sec-withdraw">
-    <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your BALANCE</div></div></div>
+    <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div></div>
     <div class="section">
       <div id="withdraw-locked-msg" class="locked-banner" style="display:none">🔒 Withdrawals are currently disabled. Please contact support.</div>
       <div class="action-card">
+        <div class="deposit-note">📱 Your MOB balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
         <div class="charge-note">⚠️ Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
         <div class="deposit-note">📱 Funds will be sent to your registered mobile money number.</div>
         <div class="field-group">
@@ -581,27 +680,22 @@ input[type="password"]{padding-right:46px;}
           <span>💸 You receive: </span><strong id="withdraw-net-amount">UGX 0</strong><br>
           <span>🔧 Fee: </span><strong id="withdraw-fee-amount">UGX 0</strong>
         </div>
-        <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">💸 WITHDRAW</button>
+        <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">💰 WITHDRAW FROM MOB</button>
       </div>
     </div>
   </div>
 
-  <!-- Errands -->
-  <div class="dash-section" id="sec-errands">
-    <div class="inner-header"><span style="font-size:22px">📝</span><div><div class="inner-title">Errands</div><div class="inner-sub">Coming soon</div></div></div>
-  </div>
-
   <nav class="bottom-nav">
     <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
-    <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="nav-label">ERRANDS</span></div>
-    <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span><span class="nav-label">TIERS</span></div>
-    <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span class="nav-label">DIVIDENDS</span></div>
+    <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span class="nav-label">STAGES</span></div>
+    <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="12" x2="21" y2="12"/></svg></span><span class="nav-label">WATCH</span></div>
+    <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span class="nav-label">WAGES</span></div>
     <div class="nav-item" onclick="switchTab('profile')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span><span class="nav-label">ME</span></div>
   </nav>
 
   <footer class="app-footer">
     <div class="footer-content">
-      <div class="footer-copyright">Copyright © 2026-2031 WEA</div>
+      <div class="footer-copyright">Copyright © 2026-2031 DiamondEarn</div>
       <div class="footer-links">
         <button class="footer-link" onclick="showTerms()">Terms</button>
         <span class="footer-divider">•</span>
@@ -629,23 +723,17 @@ input[type="password"]{padding-right:46px;}
     <div class="modal-title">Terms of Service</div>
     <div class="modal-msg" style="text-align:left;">
       <strong>1. Introduction</strong><br>
-      Welcome to WEA. These Terms of Service govern your use of our investment platform.<br><br>
-      
+      Welcome to DiamondEarn. These Terms of Service govern your use of our platform.<br><br>
       <strong>2. User Responsibilities</strong><br>
-      You are responsible for maintaining the confidentiality of your account and password. You agree to accept responsibility for all activities that occur under your account.<br><br>
-      
-      <strong>3. Investment Risks</strong><br>
-      All investments carry risk. WEA does not guarantee returns. Past performance is not indicative of future results.<br><br>
-      
+      You are responsible for maintaining the confidentiality of your account and password.<br><br>
+      <strong>3. Earning Policy</strong><br>
+      You earn by watching videos. Rewards are credited to your MOB account.<br><br>
       <strong>4. Prohibited Activities</strong><br>
-      You may not use WEA for any illegal activities, fraud, or unauthorized access.<br><br>
-      
+      You may not use DiamondEarn for any illegal activities, fraud, or unauthorized access.<br><br>
       <strong>5. Limitation of Liability</strong><br>
-      WEA is provided "as is" without warranties. We are not liable for any indirect or consequential damages.<br><br>
-      
+      DiamondEarn is provided "as is" without warranties.<br><br>
       <strong>6. Modifications</strong><br>
-      We reserve the right to modify these terms at any time. Your continued use constitutes acceptance of changes.<br><br>
-      
+      We reserve the right to modify these terms at any time.<br><br>
       <strong>7. Governing Law</strong><br>
       These terms are governed by the laws of Uganda and Kenya as applicable.
     </div>
@@ -660,24 +748,16 @@ input[type="password"]{padding-right:46px;}
     <div class="modal-title">Privacy Policy</div>
     <div class="modal-msg" style="text-align:left;">
       <strong>1. Information We Collect</strong><br>
-      We collect personal information including name, phone number, email, and transaction history to provide our services.<br><br>
-      
+      We collect personal information including name, phone number, and transaction history.<br><br>
       <strong>2. How We Use Information</strong><br>
-      Your information is used to process transactions, prevent fraud, improve our services, and comply with legal obligations.<br><br>
-      
+      Your information is used to process transactions, prevent fraud, and improve our services.<br><br>
       <strong>3. Data Protection</strong><br>
-      We implement industry-standard security measures to protect your data from unauthorized access.<br><br>
-      
+      We implement industry-standard security measures to protect your data.<br><br>
       <strong>4. Third-Party Sharing</strong><br>
-      We do not sell your personal information. We may share data with payment processors and legal authorities when required.<br><br>
-      
-      <strong>5. Cookies & Tracking</strong><br>
-      We use cookies and similar technologies to enhance user experience and analyze platform usage.<br><br>
-      
-      <strong>6. Your Rights</strong><br>
-      You have the right to access, modify, or delete your personal information at any time.<br><br>
-      
-      <strong>7. Contact Us</strong><br>
+      We do not sell your personal information.<br><br>
+      <strong>5. Your Rights</strong><br>
+      You have the right to access, modify, or delete your personal information.<br><br>
+      <strong>6. Contact Us</strong><br>
       For privacy concerns, contact our support team.
     </div>
   </div>
@@ -692,9 +772,11 @@ input[type="password"]{padding-right:46px;}
 
 <script>
 // ============================================================
-// DIAMOND EARN - FIREBASE REALTIME DATABASE WITH MARZPAY
-// FIXED: Daily profit pays on new day login + Silent mode + No user popups
+// DIAMOND EARN - WATCH & EARN PLATFORM
+// FIXED: MOB Account Added | Video Rewards go to MOB | Button Fixed
 // ============================================================
+
+console.log('Firebase loaded:', typeof firebase !== 'undefined');
 
 const firebaseConfig = {
   apiKey: "AIzaSyAo3bA7iQ5S_6css-tWCaVbWnzzJ6zZwNQ",
@@ -709,38 +791,36 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+console.log('✅ Firebase initialized');
+
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
 function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
-function dateStr() { 
-  const d = new Date(); 
-  return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' }); 
-}
+function fmtShort(n) { return Number(n || 0).toLocaleString(); }
+
 // ============================================================
-// FIXED: Use LOCAL timezone for date key (not UTC)
-// Format: YYYY-MM-DD based on user's local time
+// UTC DATE FUNCTIONS (NOT LOCAL)
 // ============================================================
-function getDateKey(d) {
+function getUTCKey(d) {
   if (!d) d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const year = d.getUTCFullYear();
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
-// Helper: Parse date string (YYYY-MM-DD) to local Date object at 00:00:00
-function parseDateKey(dateStr) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(year, month - 1, day, 0, 0, 0, 0);
+function getUTCDateStr() {
+  const d = new Date();
+  return d.toUTCString();
 }
 
-// Helper: Calculate days between two date strings
-function daysBetweenDateKeys(startDateStr, endDateStr) {
-  const startDate = parseDateKey(startDateStr);
-  const endDate = parseDateKey(endDateStr);
-  const diffTime = endDate - startDate;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
+function dateStr() {
+  const d = new Date();
+  return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' });
+}
+
+function getUTCNow() {
+  return new Date();
 }
 
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
@@ -749,175 +829,1405 @@ function genUUID() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^
 let currentUser = null;
 let currentUsername = null;
 let settingsData = {
-  uraTax: 4, withdrawCharge: 10,
-  withdrawLocked: false, withdrawApproval: false,
-  minDeposit: 10000, maxDeposit: 2350000, minWithdraw: 10000, marzApiKey: ''
+  withdrawCharge: 10,
+  withdrawLocked: false,
+  withdrawApproval: false,
+  minDeposit: 10000,
+  minWithdraw: 10000,
+  marzApiKey: '',
+  streakBonus: 1000
 };
-let profitInterval = null;
+let levelsData = {};
+let videosData = {};
 let userListener = null;
 
+// Level Colors
+const LEVEL_COLORS = {
+  trainee: '#F2B84B',
+  wm1: '#E74C3C',
+  wm2: '#E67E22',
+  wm3: '#F1C40F',
+  wm4: '#2ECC71',
+  wm5: '#3498DB',
+  wm6: '#9B59B6',
+  wm7: '#E91E63',
+  wm8: '#1ABC9C',
+  wm9: '#3F51B5',
+  wm10: '#00BCD4',
+  wm11: '#8BC34A',
+  wm12: '#673AB7'
+};
+
 // ============================================================
-// FIXED: Daily profit calculation (ONCE per calendar day) - ATOMIC UPDATE
-// Reads fresh data from Firebase, calculates profit, updates atomically
+// DEFAULT TRAINEE LEVEL
 // ============================================================
-async function calculateAndPayDailyProfits() {
-  if (!currentUsername) return;
+const DEFAULT_TRAINEE = {
+  name: "Trainee",
+  collateral: 0,
+  movies: 3,
+  each: 500,
+  daily: 1500,
+  monthly: 4500,
+  annual: 4500,
+  locked: false
+};
+
+// ============================================================
+// LEVELS FUNCTIONS
+// ============================================================
+function startLevelsListener() {
+  db.ref('levels').on('value', (snap) => {
+    const firebaseLevels = snap.val() || {};
+    levelsData = { trainee: { ...DEFAULT_TRAINEE }, ...firebaseLevels };
+    if (firebaseLevels.trainee) {
+      levelsData.trainee = { ...DEFAULT_TRAINEE, ...firebaseLevels.trainee };
+    }
+    renderLevelsTable();
+    updateLevelProgress();
+    renderStages();
+    updateVideoDisplay();
+  });
+}
+
+function getLevelKeys() {
+  return Object.keys(levelsData).sort((a, b) => {
+    if (a === 'trainee') return -1;
+    if (b === 'trainee') return 1;
+    const numA = parseInt(a.replace('wm', '')) || 0;
+    const numB = parseInt(b.replace('wm', '')) || 0;
+    return numA - numB;
+  });
+}
+
+function getUserLevel() {
+  if (!currentUser) return 'trainee';
+  return currentUser.currentLevel || 'trainee';
+}
+
+function getLevelData(levelKey) {
+  return levelsData[levelKey] || levelsData['trainee'] || DEFAULT_TRAINEE;
+}
+
+function renderLevelsTable() {
+  const tbody = document.getElementById('levels-table-body');
+  if (!tbody) return;
+  
+  const levelKeys = getLevelKeys();
+  const userVideos = currentUser?.totalVideosWatched || 0;
+  let currentLevelKey = 'trainee';
+  let currentLevelData = levelsData['trainee'] || DEFAULT_TRAINEE;
+  
+  for (const key of levelKeys) {
+    const level = levelsData[key];
+    if (level && userVideos >= (level.collateral || 0)) {
+      currentLevelKey = key;
+      currentLevelData = level;
+    }
+  }
+  
+  const levelNameEl = document.getElementById('user-current-level');
+  const dailyEl = document.getElementById('user-current-daily');
+  const nextEl = document.getElementById('user-next-level');
+  
+  if (currentLevelData) {
+    levelNameEl.textContent = currentLevelData.name || 'Trainee';
+    dailyEl.textContent = fmt(currentLevelData.daily || 0);
+    
+    let nextLevel = null;
+    for (const key of levelKeys) {
+      const level = levelsData[key];
+      if (level && (level.collateral || 0) > userVideos) {
+        nextLevel = level;
+        break;
+      }
+    }
+    
+    if (nextLevel) {
+      const need = (nextLevel.collateral || 0) - userVideos;
+      nextEl.textContent = `Next: ${nextLevel.name} needs ${nextLevel.collateral || 0} videos (${need} more)`;
+    } else {
+      nextEl.textContent = '🎉 You are at the highest level!';
+    }
+  }
+  
+  let html = '';
+  let hasNonTrainee = false;
+  
+  for (const key of levelKeys) {
+    const level = levelsData[key];
+    if (!level) continue;
+    if (key !== 'trainee') hasNonTrainee = true;
+    
+    const isCurrent = (key === currentLevelKey);
+    const bgColor = isCurrent ? 'rgba(242,184,75,0.12)' : 'transparent';
+    const borderLeft = isCurrent ? '2px solid var(--accent)' : 'none';
+    
+    html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid var(--border);">
+      <td style="padding:5px 3px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.name || key}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.collateral || 0)}</td>
+      <td style="padding:5px 3px;text-align:center;font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.movies || 0}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.each || 0)}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.daily || 0)}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.monthly || 0)}</td>
+      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;">${fmtShort(level.annual || 0)}</td>
+    </tr>`;
+  }
+  
+  if (!hasNonTrainee && levelKeys.length <= 1) {
+    tbody.innerHTML = html + `<tr><td colspan="7" style="padding:8px;text-align:center;color:var(--muted);font-size:8px;border-bottom:none;">No additional levels configured.</td></tr>`;
+  } else {
+    tbody.innerHTML = html;
+  }
+}
+
+function updateLevelProgress() {
+  const userVideos = currentUser?.totalVideosWatched || 0;
+  const levelKeys = getLevelKeys();
+  
+  let currentLevelKey = 'trainee';
+  let currentLevel = levelsData['trainee'] || DEFAULT_TRAINEE;
+  let nextLevel = null;
+  
+  for (const key of levelKeys) {
+    const level = levelsData[key];
+    if (level && userVideos >= (level.collateral || 0)) {
+      currentLevelKey = key;
+      currentLevel = level;
+    }
+  }
+  
+  for (const key of levelKeys) {
+    const level = levelsData[key];
+    if (level && (level.collateral || 0) > userVideos) {
+      nextLevel = level;
+      break;
+    }
+  }
+  
+  const progressEl = document.getElementById('level-progress-fill');
+  const progressText = document.getElementById('level-progress-text');
+  const progressNext = document.getElementById('level-progress-next');
+  
+  if (nextLevel) {
+    const current = userVideos - (currentLevel.collateral || 0);
+    const needed = (nextLevel.collateral || 0) - (currentLevel.collateral || 0);
+    const percent = Math.min((current / needed) * 100, 100);
+    progressEl.style.width = percent + '%';
+    progressText.textContent = `${current}/${needed} videos`;
+    progressNext.textContent = nextLevel.name || 'WM1';
+  } else {
+    progressEl.style.width = '100%';
+    progressText.textContent = '🎉 Max level reached!';
+    progressNext.textContent = 'MAX';
+  }
+}
+
+// ============================================================
+// VIDEO SYSTEM - LEVEL BASED + UTC + ROTATION
+// ============================================================
+function startVideoListener() {
+  db.ref('videos').on('value', (snap) => {
+    videosData = snap.val() || {};
+    updateVideoDisplay();
+  });
+}
+
+function getVideoIds() {
+  return Object.keys(videosData);
+}
+
+function getUserVideoPosition() {
+  if (!currentUser) return 0;
+  return currentUser.videoPosition || 0;
+}
+
+function getRemainingVideos() {
+  if (!currentUser) return { remaining: 0, total: 0, watched: 0, reward: 0, videoIds: [] };
+  
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const totalVideos = level.movies || 0;
+  
+  const todayUTC = getUTCKey(new Date());
+  const watchedToday = currentUser.watchHistory?.[todayUTC] || 0;
+  
+  const remaining = Math.max(0, totalVideos - watchedToday);
+  const reward = level.each || 0;
+  
+  // Get video IDs for rotation
+  const allVideoIds = getVideoIds();
+  const position = getUserVideoPosition();
+  
+  // Get the next videos based on position
+  let videoIds = [];
+  if (allVideoIds.length > 0) {
+    for (let i = 0; i < remaining; i++) {
+      const idx = (position + i) % allVideoIds.length;
+      videoIds.push(allVideoIds[idx]);
+    }
+  }
+  
+  return { remaining, total: totalVideos, watched: watchedToday, reward, videoIds, position };
+}
+
+function updateVideoDisplay() {
+  renderVideoGrid();
+  updateVideoCount();
+}
+
+function updateVideoCount() {
+  const { remaining, total, watched, reward } = getRemainingVideos();
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const levelName = level.name || 'Trainee';
+  
+  document.getElementById('stat-today-videos').textContent = `${watched}/${total}`;
+  document.getElementById('stat-level').textContent = levelName;
+  
+  renderVideoGrid();
+}
+
+function renderVideoGrid() {
+  const grid = document.getElementById('video-grid');
+  if (!grid) return;
+  
+  const { remaining, total, watched, reward, videoIds } = getRemainingVideos();
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const levelName = level.name || 'Trainee';
+  
+  // Check if user has completed all videos
+  if (remaining <= 0 && total > 0) {
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);">
+        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
+        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">All videos completed for today!</div>
+        <div style="font-size:12px;color:var(--muted);">You watched ${watched}/${total} videos today.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:8px;">⏰ Next reset at 00:00 UTC</div>
+      </div>
+    `;
+    return;
+  }
+  
+  const allVideoIds = getVideoIds();
+  if (!allVideoIds.length) {
+    grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
+    return;
+  }
+  
+  // Show videos based on rotation
+  const videosToShow = videoIds.slice(0, remaining);
+  
+  if (videosToShow.length === 0 && remaining > 0) {
+    // Fallback
+    grid.innerHTML = allVideoIds.slice(0, remaining).map(id => {
+      const v = videosData[id];
+      if (!v) return '';
+      return `<div class="video-card" onclick="openVideoPlayer('${id}')">
+        <div class="video-thumb-wrap">
+          <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
+          <div class="video-play-badge">
+            <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
+          </div>
+          <div class="video-reward-badge">${fmt(reward)}</div>
+        </div>
+        <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
+      </div>`;
+    }).join('');
+    return;
+  }
+  
+  grid.innerHTML = videosToShow.map((id, index) => {
+    const v = videosData[id];
+    if (!v) return '';
+    const videoNumber = watched + index + 1;
+    return `<div class="video-card" onclick="openVideoPlayer('${id}')">
+      <div class="video-thumb-wrap">
+        <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
+        <div class="video-play-badge">
+          <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
+        </div>
+        <div class="video-reward-badge">${fmt(reward)}</div>
+        <div class="video-count-badge">${videoNumber}/${total}</div>
+      </div>
+      <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
+    </div>`;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============================================================
+// VIDEO PLAYER - REDESIGNED (Countdown below video)
+// ============================================================
+let currentPlayingVideo = null;
+let countdownTimer = null;
+let countdownValue = 5;
+let isClaimReady = false;
+
+function openVideoPlayer(id) {
+  const v = videosData[id];
+  if (!v) return;
+  
+  // Check remaining videos
+  const { remaining } = getRemainingVideos();
+  if (remaining <= 0) {
+    const popup = document.getElementById('popup-banner');
+    popup.textContent = '🎉 All videos completed for today!';
+    popup.classList.add('show');
+    setTimeout(() => popup.classList.remove('show'), 2500);
+    return;
+  }
+  
+  // Check Trainee 3-day limit
+  if (getUserLevel() === 'trainee') {
+    const traineeCompleted = currentUser?.traineeCompleted || false;
+    if (traineeCompleted) {
+      const popup = document.getElementById('popup-banner');
+      popup.textContent = '⚠️ Trainee period expired! Upgrade to continue earning.';
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 3000);
+      return;
+    }
+  }
+  
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const reward = level.each || 0;
+  
+  currentPlayingVideo = { id, title: v.title, youtubeId: v.youtubeId, reward: reward };
+  
+  document.getElementById('video-overlay-title').textContent = v.title || 'Movie';
+  document.getElementById('video-player-embed').innerHTML =
+    `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  
+  // Reset controls
+  const claimBtn = document.getElementById('claim-btn');
+  claimBtn.disabled = true;
+  claimBtn.className = 'claim-btn';
+  claimBtn.textContent = '⏳ Watch for 5 seconds...';
+  claimBtn.onclick = claimReward;
+  
+  const countdownNum = document.getElementById('countdown-number');
+  countdownNum.textContent = '5';
+  
+  const progressFill = document.getElementById('countdown-progress-fill');
+  progressFill.style.width = '0%';
+  
+  isClaimReady = false;
+  countdownValue = 5;
+  
+  document.getElementById('video-overlay').classList.add('active');
+  startCountdown();
+}
+
+function startCountdown() {
+  countdownValue = 5;
+  const numberEl = document.getElementById('countdown-number');
+  const progressEl = document.getElementById('countdown-progress-fill');
+  const claimBtn = document.getElementById('claim-btn');
+  
+  numberEl.textContent = countdownValue;
+  progressEl.style.width = '0%';
+  claimBtn.disabled = true;
+  claimBtn.className = 'claim-btn';
+  claimBtn.textContent = '⏳ Watch for 5 seconds...';
+  isClaimReady = false;
+  
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    countdownValue--;
+    const progress = ((5 - countdownValue) / 5) * 100;
+    progressEl.style.width = progress + '%';
+    
+    if (countdownValue <= 0) {
+      clearInterval(countdownTimer);
+      numberEl.textContent = '✓';
+      claimBtn.disabled = false;
+      claimBtn.className = 'claim-btn ready';
+      claimBtn.textContent = `💰 GET REWARD (${fmt(currentPlayingVideo.reward)})`;
+      isClaimReady = true;
+      return;
+    }
+    numberEl.textContent = countdownValue;
+  }, 1000);
+}
+
+function closeVideoPlayer() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  document.getElementById('video-overlay').classList.remove('active');
+  document.getElementById('video-player-embed').innerHTML = '';
+  currentPlayingVideo = null;
+  isClaimReady = false;
+}
+
+async function claimReward() {
+  if (!currentPlayingVideo || !currentUser) {
+    console.log('No video or user');
+    return;
+  }
+  if (!isClaimReady) {
+    console.log('Not ready yet');
+    return;
+  }
+  
+  const btn = document.getElementById('claim-btn');
+  btn.disabled = true;
+  btn.textContent = 'Adding...';
   
   try {
-    // STEP 1: Read FRESH data from Firebase (not from currentUser cache)
+    const todayUTC = getUTCKey(new Date());
     const userRef = db.ref('users/' + safeKey(currentUsername));
-    const freshSnap = await userRef.get();
-    if (!freshSnap.exists()) return;
+    const snap = await userRef.get();
+    const user = snap.val() || {};
     
-    const userData = freshSnap.val();
-    const stake = userData.stake || 0;
+    const levelKey = getUserLevel();
+    const level = getLevelData(levelKey);
+    const reward = level.each || 0;
+    const totalVideos = level.movies || 0;
+    const watchedToday = user.watchHistory?.[todayUTC] || 0;
     
-    // No stake = no profit
-    if (stake <= 0) return;
-    
-    // STEP 2: Get today's date key
-    const todayKey = getDateKey(new Date());
-    const lastProfitDate = userData.lastProfitDate || null;
-    
-    // STEP 3: Check if already paid today
-    // This is the KEY to paying only ONCE per day
-    if (lastProfitDate === todayKey) {
-      // Already paid today - exit silently
+    if (watchedToday >= totalVideos) {
+      btn.disabled = false;
+      btn.className = 'claim-btn claimed';
+      btn.textContent = '✅ Already completed!';
       return;
     }
     
-    // STEP 4: Calculate days difference
-    let daysDiff = 1; // At least 1 day has passed
-    if (lastProfitDate) {
-      daysDiff = daysBetweenDateKeys(lastProfitDate, todayKey);
-      // If no days difference, don't pay
-      if (daysDiff <= 0) return;
+    // Update video position
+    const allVideoIds = getVideoIds();
+    let newPosition = (user.videoPosition || 0) + 1;
+    if (newPosition >= allVideoIds.length) {
+      newPosition = 0;
     }
     
-    // STEP 5: Calculate profit
-    const dailyProfit = Math.floor(stake * 0.10);
-    const totalProfit = dailyProfit * daysDiff;
+    // ✅ FIX: Reward goes to MOB account (not STAKE!)
+    const currentMob = user.mob || 0;
+    const newMob = currentMob + reward;
+    const newTotalVideos = (user.totalVideosWatched || 0) + 1;
+    const txKey = 'tx_video_' + Date.now();
     
-    // STEP 6: Update balance
-    const currentBalance = userData.balance || 0;
-    const newBalance = currentBalance + totalProfit;
-    
-    // STEP 7: Update daysRun in activeInvestment
-    let newDaysRun = (userData.activeInvestment?.daysRun || 0) + daysDiff;
-    if (newDaysRun > 56) newDaysRun = 56;
-    
-    // STEP 8: Prepare activeInvestment object (handle if null/missing)
-    let updatedActiveInvestment = userData.activeInvestment || { daysRun: 0 };
-    updatedActiveInvestment.daysRun = newDaysRun;
-    
-    // STEP 9: ATOMIC UPDATE - write everything together
     const updates = {
-      balance: newBalance,
-      lastProfitDate: todayKey,
-      activeInvestment: updatedActiveInvestment
+      mob: newMob,  // ← MOB gets the reward
+      totalVideosWatched: newTotalVideos,
+      videoPosition: newPosition,
+      [`watchHistory/${todayUTC}`]: watchedToday + 1,
+      [`transactions/${txKey}`]: {
+        type: 'Video Reward',
+        amount: reward,
+        note: `Watched: ${currentPlayingVideo.title}`,
+        date: dateStr(),
+        status: 'completed'
+      }
+    };
+    
+    // Check streak (UTC-based)
+    const lastWatchDate = user.lastWatchDate || null;
+    const todayStr = getUTCKey(new Date());
+    let streakDays = user.streakDays || 0;
+    
+    if (lastWatchDate === todayStr) {
+      // Already watched today - no streak change
+    } else {
+      const yesterday = new Date();
+      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+      const yesterdayStr = getUTCKey(yesterday);
+      
+      if (lastWatchDate === yesterdayStr) {
+        streakDays = (user.streakDays || 0) + 1;
+        if (streakDays % 5 === 0) {
+          const bonus = settingsData.streakBonus || 1000;
+          // Streak bonus also goes to MOB
+          updates.mob = newMob + bonus;
+          updates[`transactions/streak_${Date.now()}`] = {
+            type: 'Streak Bonus',
+            amount: bonus,
+            note: `🔥 ${streakDays}-day streak bonus!`,
+            date: dateStr(),
+            status: 'completed'
+          };
+        }
+      } else {
+        streakDays = 1;
+      }
+    }
+    
+    updates.streakDays = streakDays;
+    updates.lastWatchDate = todayStr;
+    
+    // Check Trainee days
+    if (levelKey === 'trainee') {
+      const traineeStartDate = user.traineeStartDate || todayStr;
+      const startDate = new Date(traineeStartDate + 'T00:00:00Z');
+      const now = new Date();
+      const diffTime = now - startDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const dayCount = Math.min(diffDays + 1, 3);
+      
+      updates.traineeDayCount = dayCount;
+      if (dayCount >= 3) {
+        updates.traineeCompleted = true;
+      }
+    }
+    
+    await userRef.update(updates);
+    
+    // Update currentUser
+    currentUser = await userRef.get().then(s => s.val());
+    updateBalanceUI();
+    renderHistory();
+    updateProfileUI();
+    updateLevelProgress();
+    renderStages();
+    updateVideoDisplay();
+    
+    // ✅ FIX: Show completed state and allow watching next
+    btn.className = 'claim-btn claimed';
+    btn.textContent = '✅ Completed! +' + fmt(reward) + ' to MOB';
+    btn.disabled = false;
+    
+    // Auto-close after 2 seconds and allow next video
+    setTimeout(() => {
+      closeVideoPlayer();
+      const popup = document.getElementById('popup-banner');
+      popup.textContent = `✅ Earned ${fmt(reward)} to MOB! ${streakDays}-day streak! 🔥`;
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 2000);
+    }, 1500);
+    
+  } catch (e) {
+    console.error('Claim error:', e);
+    btn.disabled = false;
+    btn.textContent = '❌ Error, try again';
+    setTimeout(() => {
+      btn.textContent = `💰 GET REWARD (${fmt(currentPlayingVideo?.reward || 0)})`;
+      btn.className = 'claim-btn ready';
+      btn.disabled = false;
+      isClaimReady = true;
+    }, 2000);
+  }
+}
+
+// ============================================================
+// UI UPDATE FUNCTIONS
+// ============================================================
+function updateBalanceUI() {
+  if (!currentUser) return;
+  
+  let stake = currentUser.stake || 0;
+  if (stake === 0 && currentUser.balance) {
+    stake = currentUser.balance;
+  }
+  
+  let mob = currentUser.mob || 0;
+  
+  document.getElementById('stat-stake').textContent = fmt(stake);
+  document.getElementById('stat-mob').textContent = fmt(mob);
+  document.getElementById('stages-stake').textContent = fmt(stake);
+  
+  const todayUTC = getUTCKey(new Date());
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const total = level.movies || 0;
+  const watchedToday = currentUser.watchHistory?.[todayUTC] || 0;
+  const levelName = level.name || 'Trainee';
+  
+  document.getElementById('stat-today-videos').textContent = `${watchedToday}/${total}`;
+  document.getElementById('stat-level').textContent = levelName;
+  document.getElementById('stages-current-level').textContent = levelName;
+  
+  // Update withdraw MOB balance display
+  document.getElementById('withdraw-mob-balance').textContent = fmt(mob);
+  
+  // Trainee status
+  const traineeStatus = document.getElementById('stages-trainee-status');
+  const traineeStatus2 = document.getElementById('user-trainee-status');
+  if (levelKey === 'trainee') {
+    const dayCount = currentUser.traineeDayCount || 1;
+    const completed = currentUser.traineeCompleted || false;
+    if (completed) {
+      traineeStatus.textContent = '✅ Trainee Complete! Upgrade Now';
+      traineeStatus.style.color = 'var(--warn)';
+      if (traineeStatus2) {
+        traineeStatus2.textContent = '✅ Trainee Complete - Upgrade Now';
+        traineeStatus2.style.color = 'var(--warn)';
+      }
+    } else {
+      traineeStatus.textContent = `📅 Day ${dayCount}/3`;
+      traineeStatus.style.color = 'var(--accent)';
+      if (traineeStatus2) {
+        traineeStatus2.textContent = `📅 Day ${dayCount}/3`;
+        traineeStatus2.style.color = 'var(--accent)';
+      }
+    }
+  } else {
+    traineeStatus.textContent = '';
+    if (traineeStatus2) traineeStatus2.textContent = '';
+  }
+  
+  const userVideos = currentUser.totalVideosWatched || 0;
+  let userLevelName = 'Trainee';
+  const levelKeys = getLevelKeys();
+  for (const key of levelKeys) {
+    const lv = levelsData[key];
+    if (lv && userVideos >= (lv.collateral || 0)) {
+      userLevelName = lv.name || 'Trainee';
+    }
+  }
+  document.getElementById('stat-level').textContent = userLevelName;
+  
+  updateLevelProgress();
+  renderLevelsTable();
+  renderStages();
+  updateVideoDisplay();
+}
+
+function updateProfileUI() {
+  if (!currentUser) return;
+  document.getElementById('profile-user-simple').textContent = currentUser.username || '—';
+  document.getElementById('profile-phone-simple').textContent = currentUser.phone || '—';
+  document.getElementById('profile-date-simple').textContent = currentUser.joinedDate || '2025';
+  document.getElementById('profile-videos-simple').textContent = currentUser.totalVideosWatched || 0;
+  document.getElementById('profile-streak-simple').textContent = (currentUser.streakDays || 0) + ' days';
+  
+  const levelName = levelsData[currentUser?.currentLevel || 'trainee']?.name || 'Trainee';
+  document.getElementById('profile-level-simple').textContent = levelName;
+  document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
+  document.getElementById('top-username').textContent = currentUser.username || 'User';
+}
+
+function updateSettingsUI() {
+  const minWith = settingsData.minWithdraw || 10000;
+  document.getElementById('with-min-display').textContent = fmt(minWith);
+  const withdrawLockedMsg = document.getElementById('withdraw-locked-msg');
+  if (withdrawLockedMsg) withdrawLockedMsg.style.display = settingsData.withdrawLocked ? 'block' : 'none';
+  const feePercent = document.getElementById('with-fee-percent');
+  if (feePercent) feePercent.textContent = settingsData.withdrawCharge || 10;
+  const receivePercent = document.getElementById('with-receive-percent');
+  if (receivePercent) receivePercent.textContent = 100 - (settingsData.withdrawCharge || 10);
+}
+
+// ============================================================
+// STAGES (Level Purchase) - NO LOCK INDICATORS
+// ============================================================
+function renderStages() {
+  const grid = document.getElementById('stages-grid');
+  if (!grid) return;
+  
+  const levelKeys = getLevelKeys();
+  const userStake = currentUser?.stake || 0;
+  const purchased = currentUser?.purchasedLevels || {};
+  const userLevel = currentUser?.currentLevel || 'trainee';
+  
+  document.getElementById('stages-stake').textContent = fmt(userStake);
+  const levelName = levelsData[userLevel]?.name || 'Trainee';
+  document.getElementById('stages-current-level').textContent = levelName;
+  
+  if (!levelKeys.length || !levelsData) {
+    grid.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No levels configured.</div>';
+    return;
+  }
+  
+  let html = '';
+  let previousPurchased = true;
+  
+  for (const key of levelKeys) {
+    const level = levelsData[key];
+    if (!level) continue;
+    if (key === 'trainee') {
+      previousPurchased = true;
+      continue;
+    }
+    
+    const isPurchased = purchased[key] === true;
+    const isLocked = level.locked === true;
+    const isCurrent = userLevel === key;
+    const cost = level.collateral || 0;
+    const hasEnough = userStake >= cost;
+    const canPurchase = previousPurchased && !isPurchased && !isLocked && hasEnough;
+    
+    const color = LEVEL_COLORS[key] || '#666';
+    const name = level.name || key;
+    const movies = level.movies || 0;
+    const each = level.each || 0;
+    const daily = level.daily || 0;
+    
+    let btnHtml = '';
+    let cardClass = 'stage-card';
+    
+    if (isPurchased) {
+      cardClass += ' purchased';
+      btnHtml = `<button class="stage-btn purchased-btn" disabled>✅ Active</button>`;
+    } else if (isLocked) {
+      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
+    } else if (!hasEnough) {
+      btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
+    } else if (canPurchase) {
+      btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${name}')">🔓 Purchase Level</button>`;
+    } else if (!previousPurchased) {
+      btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" onclick="showNeedPreviousPopup('${name}')">🔓 Purchase Level</button>`;
+    } else {
+      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
+    }
+    
+    html += `
+      <div class="${cardClass}" style="border-left:4px solid ${color};">
+        <div class="stage-color" style="background:${color};"></div>
+        <div class="stage-info">
+          <div class="stage-name">${name} ${isCurrent ? '⭐' : ''} ${isPurchased ? '✅' : ''}</div>
+          <div class="stage-details">
+            <span class="cost">Cost: ${fmt(cost)}</span>
+            <span>Movies: ${movies}/day</span>
+            <span>Each: ${fmt(each)}</span>
+            <span class="daily">Daily: ${fmt(daily)}</span>
+          </div>
+        </div>
+        <div class="stage-action">${btnHtml}</div>
+      </div>
+    `;
+    
+    if (isPurchased) {
+      previousPurchased = true;
+    }
+  }
+  
+  grid.innerHTML = html;
+}
+
+function showReservedPopup() {
+  showPopup('🌟 Level Not Available', 'This level is currently reserved. Please check back later for availability.', 'info');
+}
+
+function showInsufficientPopup(needed) {
+  showPopup('Insufficient Funds', `You need ${needed} to purchase this level. Please deposit to STAKE.`, 'error');
+}
+
+function showNeedPreviousPopup(levelName) {
+  showPopup('Level Required', `You need to purchase previous levels before ${levelName}`, 'info');
+}
+
+async function purchaseLevel(levelKey, cost, levelName) {
+  if (!currentUser) return;
+  
+  if (currentUser.purchasedLevels && currentUser.purchasedLevels[levelKey]) {
+    showPopup('Already Purchased', `You already own ${levelName} ✅`, 'info');
+    return;
+  }
+  
+  const level = levelsData[levelKey];
+  if (level && level.locked === true) {
+    showReservedPopup();
+    return;
+  }
+  
+  if ((currentUser.stake || 0) < cost) {
+    showInsufficientPopup(fmt(cost));
+    return;
+  }
+  
+  const levelKeys = getLevelKeys();
+  let previousKey = null;
+  for (const key of levelKeys) {
+    if (key === levelKey) break;
+    if (key !== 'trainee') {
+      previousKey = key;
+    }
+  }
+  if (previousKey && !currentUser.purchasedLevels?.[previousKey]) {
+    showNeedPreviousPopup(levelName);
+    return;
+  }
+  
+  const confirmed = await showConfirmPopup('Confirm Purchase', `Purchase ${levelName} for ${fmt(cost)}?`, levelKey);
+  if (!confirmed) return;
+  
+  try {
+    const userRef = db.ref('users/' + safeKey(currentUsername));
+    const newStake = (currentUser.stake || 0) - cost;
+    const purchasedLevels = currentUser.purchasedLevels || {};
+    purchasedLevels[levelKey] = true;
+    
+    let newCurrentLevel = 'trainee';
+    for (const key of levelKeys) {
+      if (purchasedLevels[key] === true) {
+        newCurrentLevel = key;
+      }
+    }
+    
+    const txKey = 'tx_level_' + Date.now();
+    const updates = {
+      stake: newStake,
+      currentLevel: newCurrentLevel,
+      purchasedLevels: purchasedLevels,
+      [`transactions/${txKey}`]: {
+        type: 'Level Purchase',
+        amount: -cost,
+        note: `Purchased ${levelName}`,
+        date: dateStr(),
+        status: 'completed'
+      }
     };
     
     await userRef.update(updates);
     
-    // STEP 10: Update currentUser so UI reflects changes immediately
-    currentUser = await userRef.get().then(snap => snap.val());
+    currentUser = await userRef.get().then(s => s.val());
     updateBalanceUI();
+    renderStages();
+    renderLevelsTable();
+    updateProfileUI();
+    updateVideoDisplay();
     
-    // Silent success - no toast notification
+    showPopup('🎉 Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!`, 'success');
+    
   } catch (error) {
-    console.error('Profit calculation error:', error);
+    console.error('Purchase error:', error);
+    showPopup('Error', 'Failed to purchase level. Please try again.', 'error');
   }
 }
 
 // ============================================================
-// Loading screen hides immediately after login check
+// POPUP SYSTEM
 // ============================================================
-async function initApp() {
-  initTheme();
-  startSettingsListener();
+function showPopup(title, message, type) {
+  const overlay = document.getElementById('modal-overlay');
+  const iconEl = document.getElementById('modal-icon');
+  const titleEl = document.getElementById('modal-title');
+  const msgEl = document.getElementById('modal-msg');
+  const closeBtn = document.querySelector('.modal-close');
   
-  const savedUser = sessionStorage.getItem('pp_current_user');
-  if (savedUser) {
-    try {
-      const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
-      if (userSnap.exists() && !userSnap.val().locked) {
-        currentUser = userSnap.val();
-        currentUsername = savedUser;
-        
-        // PROFIT CALCULATION FIRST - before UI updates
-        // This ensures balance is updated with today's profit before UI renders
-        await calculateAndPayDailyProfits().catch(err => console.warn('Profit calc error:', err));
-        
-        // CHECK PENDING DEPOSITS SILENTLY - in background
-        checkPendingDeposits(savedUser).catch(err => console.warn('Pending deposits check error:', err));
-        
-        // Re-fetch user data after profit calculation to get updated balance
-        const updatedSnap = await db.ref('users/' + safeKey(savedUser)).get();
-        if (updatedSnap.exists()) {
-          currentUser = updatedSnap.val();
-        }
-        
-        // Now show UI with updated balance
-        startUserListener(savedUser); startVideoListener();
-        updateBalanceUI();
-        renderHistory();
-        updateProfileUI();
-        showDashboard();
-        switchTab('home');
-        startDailyProfitLoop();
-        startInactivityWatcher();
-      } else {
-        sessionStorage.removeItem('pp_current_user');
-        showAuth('login-page');
+  const icons = {
+    success: '✅',
+    error: '❌',
+    info: 'ℹ️',
+    warning: '⚠️'
+  };
+  
+  iconEl.textContent = icons[type] || '📱';
+  titleEl.textContent = title;
+  msgEl.textContent = message;
+  closeBtn.textContent = 'OK, Got It';
+  closeBtn.style.background = 'var(--accent)';
+  closeBtn.style.width = '100%';
+  closeBtn.style.display = 'block';
+  overlay.classList.add('open');
+}
+
+function showConfirmPopup(title, message, levelKey) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('modal-overlay');
+    const iconEl = document.getElementById('modal-icon');
+    const titleEl = document.getElementById('modal-title');
+    const msgEl = document.getElementById('modal-msg');
+    const closeBtn = document.querySelector('.modal-close');
+    
+    iconEl.textContent = '❓';
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+    
+    const existingActions = document.querySelector('.modal-actions');
+    if (existingActions) existingActions.remove();
+    
+    const box = document.querySelector('.modal-box');
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'modal-actions';
+    actionsDiv.style.display = 'flex';
+    actionsDiv.style.gap = '10px';
+    actionsDiv.style.marginTop = '16px';
+    actionsDiv.style.justifyContent = 'center';
+    
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.background = 'var(--surface2)';
+    cancelBtn.style.border = '1px solid var(--border)';
+    cancelBtn.style.borderRadius = '12px';
+    cancelBtn.style.padding = '13px 20px';
+    cancelBtn.style.fontFamily = 'Inter, sans-serif';
+    cancelBtn.style.fontSize = '14px';
+    cancelBtn.style.fontWeight = '700';
+    cancelBtn.style.color = 'var(--muted)';
+    cancelBtn.style.cursor = 'pointer';
+    cancelBtn.style.width = '45%';
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.style.background = 'var(--success)';
+    confirmBtn.style.border = 'none';
+    confirmBtn.style.borderRadius = '12px';
+    confirmBtn.style.padding = '13px 20px';
+    confirmBtn.style.fontFamily = 'Inter, sans-serif';
+    confirmBtn.style.fontSize = '14px';
+    confirmBtn.style.fontWeight = '700';
+    confirmBtn.style.color = '#fff';
+    confirmBtn.style.cursor = 'pointer';
+    confirmBtn.style.width = '45%';
+    
+    actionsDiv.appendChild(cancelBtn);
+    actionsDiv.appendChild(confirmBtn);
+    box.appendChild(actionsDiv);
+    
+    closeBtn.style.display = 'none';
+    
+    overlay.classList.add('open');
+    
+    const cleanup = () => {
+      overlay.classList.remove('open');
+      closeBtn.style.display = 'block';
+      const actions = document.querySelector('.modal-actions');
+      if (actions) actions.remove();
+      cancelBtn.onclick = null;
+      confirmBtn.onclick = null;
+    };
+    
+    cancelBtn.onclick = () => {
+      cleanup();
+      resolve(false);
+    };
+    
+    confirmBtn.onclick = () => {
+      cleanup();
+      resolve(true);
+    };
+    
+    overlay.onclick = (e) => {
+      if (e.target === overlay) {
+        cleanup();
+        resolve(false);
       }
-    } catch (err) {
-      console.warn('Login check error:', err);
-      sessionStorage.removeItem('pp_current_user');
-      showAuth('login-page');
-    }
-  } else {
-    showAuth('login-page');
+    };
+  });
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  const actions = document.querySelector('.modal-actions');
+  if (actions) actions.remove();
+  const closeBtn = document.querySelector('.modal-close');
+  if (closeBtn) closeBtn.style.display = 'block';
+}
+
+// ============================================================
+// TRANSACTION HISTORY
+// ============================================================
+let currentHistoryFilter = 'all';
+
+function setTxFilter(type, btnEl) {
+  currentHistoryFilter = type;
+  document.querySelectorAll('.tx-pill').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderHistory();
+}
+
+function renderHistory() {
+  const wrap = document.getElementById('history-list');
+  if (!currentUser) { if (wrap) wrap.innerHTML = ''; return; }
+  const allTxs = currentUser.transactions ? Object.values(currentUser.transactions).reverse() : [];
+  
+  const searchBox = document.getElementById('tx-search-box');
+  const searchQuery = (searchBox?.value || '').toLowerCase().trim();
+  
+  let txs = allTxs;
+  if (currentHistoryFilter !== 'all') {
+    txs = allTxs.filter(tx => tx.type === currentHistoryFilter);
   }
   
-  // HIDE LOADING SCREEN IMMEDIATELY
-  document.getElementById('loading-screen').style.display = 'none';
+  if (searchQuery) {
+    txs = txs.filter(tx => 
+      (tx.type || '').toLowerCase().includes(searchQuery) ||
+      (tx.note || '').toLowerCase().includes(searchQuery) ||
+      fmt(tx.amount).toLowerCase().includes(searchQuery)
+    );
+  }
+  
+  if (!txs.length) {
+    if (wrap) wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Found</div><div class="tx-empty-text">Try adjusting your filters or search.</div></div>';
+    return;
+  }
+  
+  const typeIcons = { 'Video Reward': '🎬', 'Streak Bonus': '🔥', Deposit: '💳', Withdrawal: '💸', Bonus: '🎁', 'Level Purchase': '📊' };
+  const typeClasses = { 'Video Reward': 'tx-reward', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus', 'Level Purchase': 'tx-deposit' };
+  
+  if (wrap) {
+    wrap.innerHTML = '<div class="tx-cards-grid">' + 
+      txs.map(tx => {
+        const isPending = tx.status === 'pending';
+        const isFailed = tx.status === 'failed';
+        const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
+        const statusText = isPending ? '⏳ Pending' : isFailed ? '❌ Failed' : '✅ Completed';
+        const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
+        const typeClass = typeClasses[tx.type] || 'tx-reward';
+        const icon = typeIcons[tx.type] || '💰';
+        const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
+        
+        return `<div class="tx-card ${typeClass}">
+          <div class="tx-card-header">
+            <div class="tx-card-icon">${icon}</div>
+            <div>
+              <div class="tx-card-type">${tx.type || 'Transaction'}</div>
+              <div class="tx-card-date">${tx.date || '—'}</div>
+            </div>
+          </div>
+          <div class="tx-card-amount ${amountClass}">${amountStr}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="tx-card-status ${statusClass}">${statusText}</span>
+          </div>
+        </div>`;
+      }).join('') + '</div>';
+  }
 }
 
-// Background profit loop (every 30 min) - SILENT
-function startDailyProfitLoop() {
-  if (profitInterval) clearInterval(profitInterval);
-  profitInterval = setInterval(() => {
-    if (currentUser && currentUsername) {
-      calculateAndPayDailyProfits().catch(err => console.warn('Profit interval error:', err));
+// ============================================================
+// SETTINGS LISTENER
+// ============================================================
+function startSettingsListener() {
+  db.ref('settings').on('value', (snap) => {
+    if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
+    updateSettingsUI();
+    updateBalanceUI();
+  });
+}
+
+// ============================================================
+// MARZPAY FUNCTIONS
+// ============================================================
+function getMarzAuth() {
+  let key = (settingsData.marzApiKey || '').trim();
+  if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
+  return 'Basic ' + key;
+}
+
+async function marzCollect(phone, amount, reference, description) {
+  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
+  const formData = new FormData();
+  formData.append('phone_number', phone);
+  formData.append('amount', String(amount));
+  formData.append('country', 'UG');
+  formData.append('reference', reference);
+  formData.append('description', description);
+  const response = await fetch(MARZ_API + '/collect-money', {
+    method: 'POST',
+    headers: { 'Authorization': getMarzAuth() },
+    body: formData
+  });
+  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
+  return await response.json();
+}
+
+async function marzSend(phone, amount, reference, description) {
+  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
+  const formData = new FormData();
+  formData.append('phone_number', phone);
+  formData.append('amount', String(amount));
+  formData.append('country', 'UG');
+  formData.append('reference', reference);
+  formData.append('description', description);
+  const response = await fetch(MARZ_API + '/send-money', {
+    method: 'POST',
+    headers: { 'Authorization': getMarzAuth() },
+    body: formData
+  });
+  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
+  return await response.json();
+}
+
+async function marzCheckStatus(uuid) {
+  const response = await fetch(MARZ_API + '/transactions/' + uuid, {
+    headers: { 'Authorization': getMarzAuth() }
+  });
+  if (!response.ok) return null;
+  return await response.json();
+}
+
+async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, intervalMs));
+    try {
+      const result = await marzCheckStatus(uuid);
+      if (!result) continue;
+      const status = (result?.transaction?.status || result?.data?.transaction?.status || result?.status || '').toLowerCase();
+      if (status === 'completed' || status === 'successful' || status === 'success') return 'success';
+      if (status === 'failed' || status === 'cancelled') return 'failed';
+    } catch (e) { continue; }
+  }
+  return 'timeout';
+}
+
+// ============================================================
+// DEPOSIT
+// ============================================================
+async function doDeposit() {
+  clearErrors('dep-phone-err', 'dep-amount-err');
+  const phoneDigits = document.getElementById('dep-phone').value.trim();
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
+    setErr('dep-phone-err', true, 'Enter 9 digits starting with 7');
+    return;
+  }
+  const minDep = settingsData.minDeposit || 10000;
+  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
+  if (amount < minDep) {
+    setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
+    return;
+  }
+  if (!settingsData.marzApiKey) {
+    sendAdminNotification('deposit_error', currentUsername, amount, 'Payment API not configured');
+    return;
+  }
+  
+  const btn = document.getElementById('dep-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  const fullPhone = '+256' + phoneDigits;
+  const reference = genUUID();
+  const totalAmount = amount;
+  const oldStake = currentUser.stake || 0;
+  
+  document.getElementById('dep-phone').value = '';
+  document.getElementById('dep-amount').value = '';
+  
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = '🔐 Confirm with mobile money PIN';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1000);
+  
+  const adminTxKey = 'adm_dep_' + Date.now();
+  const adminTxRecord = {
+    type: 'Deposit',
+    username: currentUsername,
+    phone: fullPhone,
+    amount: amount,
+    reference: reference,
+    date: dateStr(),
+    status: 'pending'
+  };
+  
+  try {
+    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+    
+    const result = await marzCollect(fullPhone, totalAmount, reference, 'DiamondEarn Deposit');
+    if (result.status !== 'success') {
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
+      btn.disabled = false;
+      btn.textContent = '💳 DEPOSIT TO STAKE';
+      return;
     }
-  }, 1800000);
+    
+    const txUuid = result?.data?.transaction?.uuid;
+    const pollResult = await pollPaymentStatus(txUuid);
+    
+    if (pollResult === 'success') {
+      const newStake = oldStake + amount;
+      const updates = {
+        stake: newStake,
+        [`transactions/tx_dep_${Date.now()}`]: {
+          type: 'Deposit',
+          amount: amount,
+          note: 'Deposit confirmed ✅',
+          date: dateStr(),
+          status: 'completed'
+        }
+      };
+      await db.ref('users/' + safeKey(currentUsername)).update(updates);
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+      
+      popup.textContent = `✅ Deposit of ${fmt(amount)} added to STAKE!`;
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 2000);
+      
+      currentUser = await db.ref('users/' + safeKey(currentUsername)).get().then(s => s.val());
+      updateBalanceUI();
+      renderStages();
+      
+    } else if (pollResult === 'failed') {
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
+    } else {
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
+    }
+  } catch (error) {
+    console.error('Deposit error:', error);
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    sendAdminNotification('deposit_error', currentUsername, amount, error.message);
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '💳 DEPOSIT TO STAKE';
+  switchTab('home');
 }
 
 // ============================================================
-// SILENT FUNCTIONS - No user-facing toasts or modals
+// WITHDRAWAL - NOW USES MOB ACCOUNT
 // ============================================================
-function showToast(msg, color) {
-  // COMPLETELY DISABLED - users see no toasts
-  // Function kept empty to prevent errors
+async function doWithdraw() {
+  clearErrors('with-amount-err');
+  if (settingsData.withdrawLocked) {
+    sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
+    return;
+  }
+  
+  const minWith = settingsData.minWithdraw || 10000;
+  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  if (amount < minWith) {
+    setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith));
+    return;
+  }
+  
+  // ✅ FIX: Check MOB balance instead of STAKE
+  const mob = currentUser.mob || 0;
+  if (mob < amount) {
+    setErr('with-amount-err', true, 'Insufficient MOB balance.');
+    return;
+  }
+  
+  const feePercent = (settingsData.withdrawCharge || 10) / 100;
+  const fee = Math.floor(amount * feePercent);
+  const sendAmount = amount - fee;
+  const userPhone = currentUser.phone;
+  const btn = document.getElementById('with-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Processing...';
+  const newMob = mob - amount;
+  const txKey = 'tx_wd_' + Date.now();
+  const reqKey = 'wreq_' + Date.now();
+  const reference = genUUID();
+  
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = '💸 You will receive your funds shortly';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 1000);
+  
+  const adminTxKey = 'adm_wd_' + Date.now();
+  const adminTxRecord = {
+    type: 'Withdrawal',
+    username: currentUsername,
+    phone: userPhone,
+    amount: amount,
+    reference: reference,
+    date: dateStr(),
+    status: 'pending'
+  };
+  
+  try {
+    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+    
+    // ✅ FIX: Withdraw from MOB
+    await db.ref('users/' + safeKey(currentUsername)).update({
+      mob: newMob,
+      [`transactions/${txKey}`]: {
+        type: 'Withdrawal',
+        amount: -amount,
+        note: 'Withdrawal Pending',
+        date: dateStr(),
+        status: 'pending'
+      }
+    });
+    
+    await db.ref('pendingWithdrawals/' + reqKey).set({
+      username: currentUsername,
+      userId: safeKey(currentUsername),
+      phone: userPhone,
+      amount,
+      fee,
+      sendAmount,
+      txKey,
+      adminTxKey,
+      date: dateStr(),
+      status: 'pending',
+      processed: false
+    });
+    
+    if (settingsData.withdrawApproval === true) {
+      sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
+    } else {
+      await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
+    }
+    
+    document.getElementById('with-amount').value = '';
+    document.getElementById('withdraw-preview').style.display = 'none';
+  } catch (error) {
+    console.error('Withdrawal error:', error);
+    // Refund to MOB
+    const refundedMob = mob;
+    await db.ref('users/' + safeKey(currentUsername)).update({ mob: refundedMob });
+    await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
+  }
+  
+  btn.disabled = false;
+  btn.textContent = '💰 WITHDRAW FROM MOB';
+  switchTab('home');
 }
 
-function showModal(icon, title, msg) {
-  // COMPLETELY DISABLED - users see no modals
-  // Function kept empty to prevent errors
+async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee) {
+  const username = currentUsername;
+  const userId = safeKey(username);
+  
+  try {
+    const sendResult = await marzSend(userPhone, sendAmount, reference, 'DiamondEarn Withdrawal');
+    if (sendResult && sendResult.status === 'success') {
+      await db.ref('users/' + userId + '/transactions/' + txKey).update({
+        status: 'completed',
+        note: `Withdrawal sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
+      });
+      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+    } else {
+      const userSnap = await db.ref('users/' + userId).get();
+      const user = userSnap.val();
+      const refundedMob = (user.mob || 0) + amount;
+      
+      await db.ref('users/' + userId).update({
+        mob: refundedMob,
+        [`transactions/${txKey}`]: {
+          type: 'Withdrawal',
+          amount: -amount,
+          note: 'Withdrawal Failed - Refunded to MOB',
+          date: dateStr(),
+          status: 'failed'
+        }
+      });
+      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+      sendAdminNotification('withdrawal_auto_failed', username, amount, 'Marz send failed: ' + (sendResult?.message || 'Unknown error'));
+    }
+  } catch (sendError) {
+    const userSnap = await db.ref('users/' + userId).get();
+    const user = userSnap.val();
+    const refundedMob = (user.mob || 0) + amount;
+    
+    await db.ref('users/' + userId).update({
+      mob: refundedMob,
+      [`transactions/${txKey}`]: {
+        type: 'Withdrawal',
+        amount: -amount,
+        note: 'Withdrawal Failed - Refunded to MOB',
+        date: dateStr(),
+        status: 'failed'
+      }
+    });
+    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+    sendAdminNotification('withdrawal_auto_failed', username, amount, 'Withdrawal error: ' + sendError.message);
+  }
 }
 
-function closeModal() { 
-  // Disabled
+// ============================================================
+// AUTH FUNCTIONS
+// ============================================================
+function showAuth(id) {
+  document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  const t = document.getElementById(id);
+  if (t) { t.style.display = 'flex'; t.classList.add('active'); }
 }
 
-function setErr(id, show, msg) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  if (show) { el.classList.add('show'); if (msg) el.textContent = msg; }
-  else { el.classList.remove('show'); }
+function showDashboard() {
+  document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  document.getElementById('dashboard-page').style.display = 'block';
+  document.getElementById('dashboard-page').classList.add('active');
 }
-
-function clearErrors(...ids) { ids.forEach(id => setErr(id, false)); }
 
 function toggleEye(inputId, btn) {
   const inp = document.getElementById(inputId);
@@ -943,192 +2253,214 @@ function updateRegPrefix() {
 function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
 function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
 
-function showAuth(id) {
-  document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-  const t = document.getElementById(id);
-  if (t) { t.style.display = 'flex'; t.classList.add('active'); }
+function setErr(id, show, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (show) { el.classList.add('show'); if (msg) el.textContent = msg; }
+  else { el.classList.remove('show'); }
 }
 
-function showDashboard() {
-  document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-  document.getElementById('dashboard-page').style.display = 'block';
-  document.getElementById('dashboard-page').classList.add('active');
-}
-
-function toggleTheme() {
-  const root = document.documentElement;
-  const isDark = localStorage.getItem('pp_theme') === 'dark';
-  const newTheme = isDark ? 'light' : 'dark';
-  localStorage.setItem('pp_theme', newTheme);
-  applyTheme(newTheme);
-}
-
-function applyTheme(theme) {
-  const root = document.documentElement;
-  const toggle = document.getElementById('theme-toggle');
-  if (theme === 'light') {
-    root.style.setProperty('--bg', '#14110F');
-    root.style.setProperty('--surface', '#211D18');
-    root.style.setProperty('--surface2', '#2A2520');
-    root.style.setProperty('--surface3', '#332C24');
-    root.style.setProperty('--border', '#3D362C');
-    root.style.setProperty('--text', '#F6F1E7');
-    root.style.setProperty('--muted', '#B8AF9E');
-    root.style.setProperty('--accent3', '#F2B84B');
-    if (toggle) toggle.textContent = '☀️';
-  } else {
-    root.style.setProperty('--bg', '#14110F');
-    root.style.setProperty('--surface', '#211D18');
-    root.style.setProperty('--surface2', '#2A2520');
-    root.style.setProperty('--surface3', '#332C24');
-    root.style.setProperty('--border', '#3D362C');
-    root.style.setProperty('--text', '#F6F1E7');
-    root.style.setProperty('--muted', '#B8AF9E');
-    root.style.setProperty('--accent3', '#F2B84B');
-    if (toggle) toggle.textContent = '🌙';
-  }
-}
-
-function initTheme() {
-  const savedTheme = localStorage.getItem('pp_theme') || 'dark';
-  applyTheme(savedTheme);
-}
-
-// ============================================================
-// TIERS — Watch & Earn videos
-// ============================================================
-let videosData = {};
-let currentPlayingVideo = null;
-let countdownTimer = null;
-let countdownValue = 5;
-
-function escapeHtml(s) {
-  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function startVideoListener() {
-  db.ref('videos').on('value', (snap) => {
-    videosData = snap.val() || {};
-    renderVideoGrid();
+function clearErrors(...ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('show');
   });
 }
 
-function renderVideoGrid() {
-  const grid = document.getElementById('video-grid');
-  if (!grid) return;
-  const ids = Object.keys(videosData);
-  if (!ids.length) {
-    grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
-    return;
-  }
-  grid.innerHTML = ids.map(id => {
-    const v = videosData[id];
-    return `<div class="video-card" onclick="openVideoPlayer('${id}')">
-      <div class="video-thumb-wrap">
-        <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
-        <div class="video-play-badge">
-          <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
-        </div>
-        <div class="video-reward-badge">${fmt(v.reward)}</div>
-      </div>
-      <div class="video-title">${escapeHtml(v.title)}</div>
-    </div>`;
-  }).join('');
+function sendAdminNotification(type, username, amount, message) {
+  try {
+    db.ref('adminNotifications/notif_' + Date.now()).set({
+      type, username, amount, message,
+      date: dateStr(),
+      read: false
+    });
+  } catch (e) { console.warn(e); }
 }
 
-function openVideoPlayer(id) {
-  const v = videosData[id];
-  if (!v) return;
-  currentPlayingVideo = { id, title: v.title, youtubeId: v.youtubeId, reward: Number(v.reward || 0) };
-  document.getElementById('video-overlay-title').textContent = v.title;
-  document.getElementById('video-player-embed').innerHTML =
-    `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-  document.getElementById('video-countdown-mask').style.display = 'flex';
-  document.getElementById('video-claim-wrap').style.display = 'none';
-  const claimBtn = document.getElementById('claim-salary-btn');
-  claimBtn.disabled = false;
-  document.getElementById('claim-amount-label').textContent = fmt(currentPlayingVideo.reward);
-  document.getElementById('video-overlay').classList.add('active');
-  startCountdown();
-}
-
-function startCountdown() {
-  countdownValue = 5;
-  const circumference = 282.6;
-  const numberEl = document.getElementById('reel-number');
-  const progressEl = document.getElementById('reel-progress');
-  numberEl.textContent = countdownValue;
-  progressEl.style.strokeDashoffset = 0;
-  if (countdownTimer) clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    countdownValue--;
-    if (countdownValue <= 0) {
-      clearInterval(countdownTimer);
-      document.getElementById('video-countdown-mask').style.display = 'none';
-      document.getElementById('video-claim-wrap').style.display = 'flex';
+// ============================================================
+// LOGIN
+// ============================================================
+async function doLogin() {
+  console.log('✅ Login button clicked');
+  clearErrors('login-user-err', 'login-pw-err');
+  setErr('login-general-err', false);
+  
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  
+  if (!username) { setErr('login-user-err', true); return; }
+  if (!password) { setErr('login-pw-err', true); return; }
+  
+  try {
+    console.log('🔍 Checking user:', username);
+    const userSnap = await db.ref('users/' + safeKey(username)).get();
+    
+    if (!userSnap.exists()) {
+      setErr('login-general-err', true, '❌ Invalid username or password');
       return;
     }
-    numberEl.textContent = countdownValue;
-    progressEl.style.strokeDashoffset = circumference * (countdownValue / 5);
-  }, 1000);
-}
-
-function closeVideoPlayer() {
-  if (countdownTimer) clearInterval(countdownTimer);
-  document.getElementById('video-overlay').classList.remove('active');
-  document.getElementById('video-player-embed').innerHTML = '';
-  currentPlayingVideo = null;
-}
-
-async function claimSalary() {
-  if (!currentPlayingVideo) return;
-  const btn = document.getElementById('claim-salary-btn');
-  btn.disabled = true;
-  btn.textContent = 'Adding...';
-  try {
-    const userRef = db.ref('users/' + safeKey(currentUsername));
-    const snap = await userRef.get();
-    const user = snap.val() || {};
-    const newBalance = (user.balance || 0) + currentPlayingVideo.reward;
-    const txKey = 'tx_salary_' + Date.now();
-    await userRef.update({
-      balance: newBalance,
-      [`transactions/${txKey}`]: {
-        type: 'Salary',
-        amount: currentPlayingVideo.reward,
-        note: 'Watched: ' + currentPlayingVideo.title,
-        date: dateStr(),
-        status: 'completed'
-      }
-    });
-    closeVideoPlayer();
-  } catch (e) {
-    btn.disabled = false;
-    btn.textContent = '💰 Get salary ' + fmt(currentPlayingVideo.reward);
+    
+    const userData = userSnap.val();
+    
+    if (userData.password !== password) {
+      setErr('login-general-err', true, '❌ Invalid username or password');
+      return;
+    }
+    
+    if (userData.locked) {
+      setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.');
+      return;
+    }
+    
+    console.log('✅ Login successful for:', username);
+    currentUser = userData;
+    currentUsername = username;
+    sessionStorage.setItem('pp_current_user', username);
+    
+    startUserListener(username);
+    startVideoListener();
+    
+    updateBalanceUI();
+    renderHistory();
+    updateProfileUI();
+    updateLevelProgress();
+    renderLevelsTable();
+    renderStages();
+    updateVideoDisplay();
+    
+    showDashboard();
+    switchTab('home');
+    
+  } catch (error) {
+    console.error('Login error:', error);
+    setErr('login-general-err', true, '❌ Login failed. Please try again.');
   }
 }
 
-function showTerms() { 
-  document.getElementById('terms-modal-overlay').classList.add('open');
-}
-function closeTermsModal(event) {
-  if (event && event.target.id !== 'terms-modal-overlay') return;
-  document.getElementById('terms-modal-overlay').classList.remove('open');
-}
-function showPrivacy() { 
-  document.getElementById('privacy-modal-overlay').classList.add('open');
-}
-function closePrivacyModal(event) {
-  if (event && event.target.id !== 'privacy-modal-overlay') return;
-  document.getElementById('privacy-modal-overlay').classList.remove('open');
+// ============================================================
+// REGISTER
+// ============================================================
+async function doRegister() {
+  console.log('✅ Register button clicked');
+  clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
+  
+  const username = document.getElementById('reg-username').value.trim();
+  const country = document.getElementById('reg-country').value;
+  const phoneDigits = document.getElementById('reg-phone').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  
+  let ok = true;
+  if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
+  if (!country) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('reg-phone-err', true, 'Enter 9 digits starting with 7'); ok = false; }
+  if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
+  if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
+  if (!ok) return;
+  
+  try {
+    const existing = await db.ref('users/' + safeKey(username)).get();
+    if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+    
+    const prefix = country === 'KE' ? '+254' : '+256';
+    const fullPhone = prefix + phoneDigits;
+    const now = dateStr();
+    const todayUTC = getUTCKey(new Date());
+    
+    const newUser = {
+      username: username,
+      password: password,
+      country: country,
+      phone: fullPhone,
+      stake: 0,
+      mob: 0,  // ✅ MOB account starts at 0
+      totalVideosWatched: 0,
+      streakDays: 0,
+      lastWatchDate: null,
+      joinedDate: new Date().getFullYear().toString(),
+      locked: false,
+      currentLevel: 'trainee',
+      purchasedLevels: {},
+      traineeStartDate: todayUTC,
+      traineeDayCount: 1,
+      traineeCompleted: false,
+      videoPosition: 0,
+      referrals: [],
+      referralBonus: 0,
+      watchHistory: {},
+      transactions: {
+        t0: {
+          type: 'Bonus',
+          amount: 4000,
+          note: 'Registration Bonus 🎁',
+          date: now,
+          status: 'completed'
+        }
+      }
+    };
+    
+    await db.ref('users/' + safeKey(username)).set(newUser);
+    console.log('✅ User registered:', username);
+    
+    currentUser = newUser;
+    currentUsername = username;
+    sessionStorage.setItem('pp_current_user', username);
+    
+    startUserListener(username);
+    startVideoListener();
+    updateBalanceUI();
+    renderHistory();
+    updateProfileUI();
+    updateLevelProgress();
+    renderLevelsTable();
+    renderStages();
+    updateVideoDisplay();
+    showDashboard();
+    switchTab('home');
+    
+    document.getElementById('reg-username').value = '';
+    document.getElementById('reg-phone').value = '';
+    document.getElementById('reg-password').value = '';
+    document.getElementById('reg-confirm').value = '';
+    document.getElementById('reg-country').value = '';
+    
+  } catch (error) {
+    console.error('Registration error:', error);
+    setErr('reg-general-err', true, '❌ Registration failed. Please try again.');
+  }
 }
 
-const tabMap = { home: 'sec-home', history: 'sec-history', team: 'sec-team', plan: 'sec-plan', profile: 'sec-profile', deposit: 'sec-deposit', withdraw: 'sec-withdraw', errands: 'sec-errands' };
+async function doLogout() {
+  if (userListener && currentUsername) db.ref('users/' + safeKey(currentUsername)).off('value', userListener);
+  sessionStorage.removeItem('pp_current_user');
+  currentUser = null;
+  currentUsername = null;
+  setTimeout(() => {
+    document.getElementById('dashboard-page').style.display = 'none';
+    document.getElementById('dashboard-page').classList.remove('active');
+    document.getElementById('login-username').value = '';
+    document.getElementById('login-password').value = '';
+    showAuth('login-page');
+  }, 800);
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+const tabMap = {
+  home: 'sec-home',
+  history: 'sec-history',
+  team: 'sec-team',
+  plan: 'sec-plan',
+  profile: 'sec-profile',
+  deposit: 'sec-deposit',
+  withdraw: 'sec-withdraw',
+  errands: 'sec-errands'
+};
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
 function switchTab(tab) {
   if (tab === 'withdraw' && settingsData.withdrawLocked) {
-    // Silent - no modal
     return;
   }
   Object.values(tabMap).forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
@@ -1137,49 +2469,6 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const idx = navOrder.indexOf(tab);
   if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
-}
-
-
-function startSettingsListener() {
-  db.ref('settings').on('value', (snap) => {
-    if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
-    updateUIWithSettings();
-    if (currentUser) { applyWithdrawLock(); }
-  });
-}
-
-function updateUIWithSettings() {
-  const minDep = settingsData.minDeposit || 10000;
-  const minWith = settingsData.minWithdraw || 10000;
-  const maxDep = settingsData.maxDeposit || 2350000;
-  const depNote = document.getElementById('dep-min-note');
-  if (depNote) depNote.innerHTML = `✅ Minimum deposit <strong>${fmt(minDep)}</strong> — Maximum <strong>${fmt(maxDep)}</strong>. Includes 4% URA tax added to amount you pay.`;
-  const withMinDisplay = document.getElementById('with-min-display');
-  if (withMinDisplay) withMinDisplay.textContent = fmt(minWith);
-  const withdrawLockedMsg = document.getElementById('withdraw-locked-msg');
-  if (withdrawLockedMsg) withdrawLockedMsg.style.display = settingsData.withdrawLocked ? 'block' : 'none';
-  const feePercent = document.getElementById('with-fee-percent');
-  if (feePercent) feePercent.textContent = settingsData.withdrawCharge || 10;
-  const receivePercent = document.getElementById('with-receive-percent');
-  if (receivePercent) receivePercent.textContent = 100 - (settingsData.withdrawCharge || 10);
-  const withInp = document.getElementById('with-amount');
-  if (withInp) withInp.min = minWith;
-  const depAmount = document.getElementById('dep-amount');
-  if (depAmount) updateTaxPreview();
-}
-
-function applyWithdrawLock() {
-  const locked = settingsData.withdrawLocked;
-  const wBtn = document.querySelector('.btn-withdraw');
-  if (wBtn) { wBtn.style.opacity = locked ? '0.35' : '1'; wBtn.style.pointerEvents = locked ? 'none' : 'auto'; }
-}
-
-function updateTaxPreview() {
-  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
-  const uraTax = (settingsData.uraTax || 4) / 100;
-  const totalAmount = Math.ceil(amount * (1 + uraTax));
-  const taxAmountSpan = document.getElementById('tax-amount');
-  if (taxAmountSpan) taxAmountSpan.textContent = fmt(totalAmount);
 }
 
 function updateWithdrawPreview() {
@@ -1199,38 +2488,6 @@ function updateWithdrawPreview() {
   }
 }
 
-function updateBalanceUI() {
-  if (!currentUser) return;
-  const stake = currentUser.stake || 0;
-  const balance = currentUser.balance || 0;
-  document.getElementById('stat-stake').textContent = fmt(stake);
-  document.getElementById('stat-balance').textContent = fmt(balance);
-  updateActiveInvestmentDisplay();
-}
-
-function updateActiveInvestmentDisplay() {
-  const section = document.getElementById('active-investment-section');
-  if (!currentUser || !currentUser.activeInvestment || (currentUser.stake || 0) === 0) {
-    if (section) section.style.display = 'none';
-    return;
-  }
-  const inv = currentUser.activeInvestment;
-  const stakeAmount = currentUser.stake || 0;
-  const daysRun = inv.daysRun || 0;
-  const totalDays = 56;
-  const progress = (daysRun / totalDays) * 100;
-  document.getElementById('active-stake-amount').textContent = fmt(stakeAmount);
-  document.getElementById('investment-progress-fill').style.width = progress + '%';
-  document.getElementById('days-completed').textContent = daysRun;
-  if (daysRun >= totalDays) {
-    document.getElementById('investment-status').textContent = '✅ Investment completed!';
-  } else {
-    const remaining = totalDays - daysRun;
-    document.getElementById('investment-status').textContent = `📈 Generating 10% daily profit — ${remaining} days remaining`;
-  }
-  if (section) section.style.display = 'block';
-}
-
 function startUserListener(username) {
   if (userListener) db.ref('users/' + safeKey(username)).off('value', userListener);
   userListener = db.ref('users/' + safeKey(username)).on('value', (snap) => {
@@ -1239,562 +2496,116 @@ function startUserListener(username) {
       updateBalanceUI();
       renderHistory();
       updateProfileUI();
+      updateLevelProgress();
+      renderLevelsTable();
+      renderStages();
+      updateVideoDisplay();
     }
   });
 }
 
-function updateProfileUI() {
-  if (!currentUser) return;
-  document.getElementById('profile-user-simple').textContent = currentUser.username || '—';
-  document.getElementById('profile-phone-simple').textContent = currentUser.phone || '—';
-  document.getElementById('profile-date-simple').textContent = currentUser.joinedDate || '2025';
-  document.getElementById('profile-status-simple').textContent = currentUser.activated ? '🟢 Active' : '⏳ Inactive';
-  document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
+// ============================================================
+// TERMS & PRIVACY
+// ============================================================
+function showTerms() {
+  document.getElementById('terms-modal-overlay').classList.add('open');
+}
+function closeTermsModal(event) {
+  if (event && event.target.id !== 'terms-modal-overlay') return;
+  document.getElementById('terms-modal-overlay').classList.remove('open');
+}
+function showPrivacy() {
+  document.getElementById('privacy-modal-overlay').classList.add('open');
+}
+function closePrivacyModal(event) {
+  if (event && event.target.id !== 'privacy-modal-overlay') return;
+  document.getElementById('privacy-modal-overlay').classList.remove('open');
 }
 
-let currentHistoryFilter = 'all';
-function setTxFilter(type, btnEl) {
-  currentHistoryFilter = type;
-  document.querySelectorAll('.tx-pill').forEach(b => b.classList.remove('active'));
-  if (btnEl) btnEl.classList.add('active');
-  renderHistory();
-}
+// ============================================================
+// MAKE FUNCTIONS GLOBALLY ACCESSIBLE
+// ============================================================
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.showAuth = showAuth;
+window.switchTab = switchTab;
+window.doLogout = doLogout;
+window.showTerms = showTerms;
+window.closeTermsModal = closeTermsModal;
+window.showPrivacy = showPrivacy;
+window.closePrivacyModal = closePrivacyModal;
+window.closeVideoPlayer = closeVideoPlayer;
+window.claimReward = claimReward;
+window.setTxFilter = setTxFilter;
+window.renderHistory = renderHistory;
+window.toggleEye = toggleEye;
+window.updateWithdrawPreview = updateWithdrawPreview;
+window.doDeposit = doDeposit;
+window.doWithdraw = doWithdraw;
+window.depPhoneInput = depPhoneInput;
+window.updateRegPrefix = updateRegPrefix;
+window.regPhoneInput = regPhoneInput;
+window.checkStrength = checkStrength;
+window.closeModal = closeModal;
+window.openVideoPlayer = openVideoPlayer;
+window.startVideoListener = startVideoListener;
+window.renderVideoGrid = renderVideoGrid;
+window.updateBalanceUI = updateBalanceUI;
+window.updateProfileUI = updateProfileUI;
+window.updateLevelProgress = updateLevelProgress;
+window.renderLevelsTable = renderLevelsTable;
+window.renderStages = renderStages;
+window.purchaseLevel = purchaseLevel;
+window.showReservedPopup = showReservedPopup;
+window.showInsufficientPopup = showInsufficientPopup;
+window.showNeedPreviousPopup = showNeedPreviousPopup;
+window.showPopup = showPopup;
+window.showConfirmPopup = showConfirmPopup;
 
-function renderHistory() {
-  const wrap = document.getElementById('history-list');
-  if (!currentUser) { if (wrap) wrap.innerHTML = ''; return; }
-  const allTxs = currentUser.transactions ? Object.values(currentUser.transactions).reverse() : [];
+console.log('✅ All functions exposed to window');
+
+// ============================================================
+// INIT APP
+// ============================================================
+async function initApp() {
+  console.log('🚀 Initializing app...');
+  startSettingsListener();
+  startLevelsListener();
+  startVideoListener();
   
-  // Get search query
-  const searchBox = document.getElementById('tx-search-box');
-  const searchQuery = (searchBox?.value || '').toLowerCase().trim();
-  
-  // Filter by type
-  let txs = allTxs;
-  if (currentHistoryFilter !== 'all') {
-    txs = allTxs.filter(tx => tx.type === currentHistoryFilter);
-  }
-  
-  // Filter by search
-  if (searchQuery) {
-    txs = txs.filter(tx => 
-      (tx.type || '').toLowerCase().includes(searchQuery) ||
-      (tx.note || '').toLowerCase().includes(searchQuery) ||
-      fmt(tx.amount).toLowerCase().includes(searchQuery)
-    );
-  }
-  
-  if (!txs.length) {
-    if (wrap) wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Found</div><div class="tx-empty-text">Try adjusting your filters or search.</div></div>';
-    return;
-  }
-  
-  const typeIcons = { Deposit: '💳', Withdrawal: '💸', Profit: '📈', Bonus: '🎁' };
-  const typeClasses = { Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Profit: 'tx-profit', Bonus: 'tx-bonus' };
-  
-  if (wrap) {
-    wrap.innerHTML = '<div class="tx-cards-grid">' + 
-      txs.map(tx => {
-        const isPending = tx.status === 'pending';
-        const isFailed = tx.status === 'failed';
-        const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
-        const statusText = isPending ? '⏳ Pending' : isFailed ? '❌ Failed' : '✅ Completed';
-        const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
-        const typeClass = typeClasses[tx.type] || 'tx-profit';
-        const icon = typeIcons[tx.type] || '💰';
-        const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
-        
-        return `<div class="tx-card ${typeClass}">
-          <div class="tx-card-header">
-            <div class="tx-card-icon">${icon}</div>
-            <div>
-              <div class="tx-card-type">${tx.type || 'Transaction'}</div>
-              <div class="tx-card-date">${tx.date || '—'}</div>
-            </div>
-          </div>
-          <div class="tx-card-amount ${amountClass}">${amountStr}</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="tx-card-status ${statusClass}">${statusText}</span>
-          </div>
-        </div>`;
-      }).join('') + '</div>';
-  }
-}
-
-function getMarzAuth() {
-  let key = (settingsData.marzApiKey || '').trim();
-  if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
-  return 'Basic ' + key;
-}
-
-async function marzCollect(phone, amount, reference, description) {
-  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
-  const formData = new FormData();
-  formData.append('phone_number', phone);
-  formData.append('amount', String(amount));
-  formData.append('country', 'UG');
-  formData.append('reference', reference);
-  formData.append('description', description);
-  const response = await fetch(MARZ_API + '/collect-money', { method: 'POST', headers: { 'Authorization': getMarzAuth() }, body: formData });
-  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
-  return await response.json();
-}
-
-async function marzSend(phone, amount, reference, description) {
-  if (!settingsData.marzApiKey) throw new Error('Payment API not configured');
-  const formData = new FormData();
-  formData.append('phone_number', phone);
-  formData.append('amount', String(amount));
-  formData.append('country', 'UG');
-  formData.append('reference', reference);
-  formData.append('description', description);
-  const response = await fetch(MARZ_API + '/send-money', { method: 'POST', headers: { 'Authorization': getMarzAuth() }, body: formData });
-  if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
-  return await response.json();
-}
-
-async function marzCheckStatus(uuid) {
-  const response = await fetch(MARZ_API + '/transactions/' + uuid, { headers: { 'Authorization': getMarzAuth() } });
-  if (!response.ok) return null;
-  return await response.json();
-}
-
-async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
-  for (let i = 0; i < maxAttempts; i++) {
-    await new Promise(r => setTimeout(r, intervalMs));
+  const savedUser = sessionStorage.getItem('pp_current_user');
+  if (savedUser) {
     try {
-      const result = await marzCheckStatus(uuid);
-      if (!result) continue;
-      const status = (result?.transaction?.status || result?.data?.transaction?.status || result?.status || '').toLowerCase();
-      if (status === 'completed' || status === 'successful' || status === 'success') return 'success';
-      if (status === 'failed' || status === 'cancelled') return 'failed';
-    } catch (e) { continue; }
-  }
-  return 'timeout';
-}
-
-// ============================================================
-// SILENT PENDING DEPOSITS CHECKER - auto-syncs deposits when user returns
-// ============================================================
-async function checkPendingDeposits(username) {
-  try {
-    const userRef = db.ref('users/' + safeKey(username));
-    const snap = await userRef.child('transactions').get();
-    if (!snap.exists()) return;
-    
-    const transactions = snap.val();
-    for (const [key, txn] of Object.entries(transactions)) {
-      // Only check pending deposits
-      if (txn.type !== 'Deposit' || txn.status !== 'pending') continue;
-      if (!txn.marzUUID) continue;
-      
-      try {
-        // Silently check Marz status (max 20 attempts = ~100 seconds)
-        const pollResult = await pollPaymentStatus(txn.marzUUID, 20, 5000);
-        
-        if (pollResult === 'success') {
-          // CREDIT THE DEPOSIT SILENTLY - no notification
-          const amount = txn.amount || 0;
-          
-          // Update transaction status
-          await userRef.child('transactions/' + key).update({ status: 'completed', completedDate: dateStr() });
-          
-          // Update user stake and balance
-          const userSnap = await userRef.get();
-          const user = userSnap.val();
-          const newStake = (user.stake || 0) + amount;
-          const newBalance = (user.balance || 0) + amount;
-          
-          await userRef.update({ 
-            stake: newStake, 
-            balance: newBalance,
-            activeInvestment: { amount: newStake, startDate: dateStr(), daysLeft: 56, dailyProfit: 0 }
-          });
-          
-          // Update UI silently if user is currently viewing
-          if (currentUsername === username) {
-            await new Promise(r => setTimeout(r, 500));
-            updateBalanceUI();
-            renderHistory();
-          }
-        } else if (pollResult === 'failed') {
-          // Mark as failed silently
-          await userRef.child('transactions/' + key).update({ status: 'failed', failedDate: dateStr() });
-        }
-      } catch (e) {
-        console.warn('Error checking pending deposit:', e);
-      }
-    }
-  } catch (e) {
-    console.warn('Error in checkPendingDeposits:', e);
-  }
-}
-
-async function sendAdminNotification(type, username, amount, message) {
-  try {
-    await db.ref('adminNotifications/notif_' + Date.now()).set({ type, username, amount, message, date: dateStr(), read: false });
-  } catch (e) { console.warn(e); }
-}
-
-// ============================================================
-// DEPOSIT - PIN popup only, auto-closes 1 sec, redirect to home
-// ============================================================
-async function doDeposit() {
-  clearErrors('dep-phone-err', 'dep-amount-err');
-  const phoneDigits = document.getElementById('dep-phone').value.trim();
-  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('dep-phone-err', true, 'Enter 9 digits starting with 7'); return; }
-  const minDep = settingsData.minDeposit || 10000;
-  const maxDep = settingsData.maxDeposit || 2350000;
-  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
-  if (amount < minDep) { setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep)); return; }
-  if (amount > maxDep) { setErr('dep-amount-err', true, 'Maximum deposit is ' + fmt(maxDep)); return; }
-  if (!settingsData.marzApiKey) { 
-    sendAdminNotification('deposit_error', currentUsername, amount, 'Payment API not configured');
-    return; 
-  }
-  const btn = document.getElementById('dep-submit-btn');
-  btn.disabled = true; btn.textContent = '⏳ Processing...';
-  const fullPhone = '+256' + phoneDigits;
-  const reference = genUUID();
-  const uraTax = (settingsData.uraTax || 4) / 100;
-  const totalAmount = Math.ceil(amount * (1 + uraTax));
-  const profit = Math.floor(amount * 0.10);
-  const oldStake = currentUser.stake || 0;
-  document.getElementById('dep-phone').value = '';
-  document.getElementById('dep-amount').value = '';
-  document.getElementById('tax-note').style.display = 'none';
-  
-  const popup = document.getElementById('popup-banner');
-  popup.textContent = '🔐 Confirm with mobile money PIN';
-  popup.classList.add('show');
-  setTimeout(() => popup.classList.remove('show'), 1000);
-  
-  // Create admin transaction record with PENDING status
-  const adminTxKey = 'adm_dep_' + Date.now();
-  const adminTxRecord = {
-    type: 'Deposit',
-    username: currentUsername,
-    phone: fullPhone,
-    amount: amount,
-    reference: reference,
-    date: dateStr(),
-    status: 'pending'
-  };
-  
-  try {
-    // First, create the admin transaction with pending status
-    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
-    
-    const result = await marzCollect(fullPhone, totalAmount, reference, 'WEA Deposit');
-    if (result.status !== 'success') {
-      // Update admin transaction to FAILED
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      await sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
-      btn.disabled = false; btn.textContent = '💳 INVEST NOW';
-      return;
-    }
-    const txUuid = result?.data?.transaction?.uuid;
-    const pollResult = await pollPaymentStatus(txUuid);
-    if (pollResult === 'success') {
-      const newStake = oldStake + amount;
-      const newBalance = (currentUser.balance || 0) + profit;
-      const todayKey = getDateKey(new Date());
-      let newActiveInvestment = currentUser.activeInvestment || null;
-      if (!newActiveInvestment || newActiveInvestment.daysRun >= 56) {
-        newActiveInvestment = { amount: newStake, startDate: new Date().toISOString(), daysRun: 0, lastPaidDate: todayKey };
+      const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
+      if (userSnap.exists() && !userSnap.val().locked) {
+        currentUser = userSnap.val();
+        currentUsername = savedUser;
+        startUserListener(savedUser);
+        updateBalanceUI();
+        renderHistory();
+        updateProfileUI();
+        updateLevelProgress();
+        renderLevelsTable();
+        renderStages();
+        updateVideoDisplay();
+        showDashboard();
+        switchTab('home');
+        console.log('✅ Auto-login successful for:', savedUser);
       } else {
-        newActiveInvestment.amount = newStake;
+        sessionStorage.removeItem('pp_current_user');
+        showAuth('login-page');
       }
-      const updates = {
-        stake: newStake, balance: newBalance, activated: true, activeInvestment: newActiveInvestment, lastProfitDate: todayKey,
-        [`deposits/dep_${Date.now()}`]: { amount: amount, taxPaid: totalAmount - amount, startDate: Date.now(), daysRun: 0, lastPaidDate: todayKey },
-        [`transactions/tx_dep_${Date.now()}`]: { type: 'Deposit', amount: amount, note: 'Deposit confirmed ✅ (URA Tax: ' + fmt(totalAmount - amount) + ')', date: dateStr(), status: 'completed' },
-        [`transactions/tx_profit_${Date.now()}`]: { type: 'Profit', amount: profit, note: '10% instant profit on deposit', date: dateStr(), status: 'completed' }
-      };
-      await db.ref('users/' + safeKey(currentUsername)).update(updates);
-      
-      // Update admin transaction to SUCCESSFUL
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
-      
-    } else if (pollResult === 'failed') {
-      // Update admin transaction to FAILED
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      await sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
-    } else {
-      // Update admin transaction to FAILED
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      await sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
+    } catch (err) {
+      console.warn('Login check error:', err);
+      sessionStorage.removeItem('pp_current_user');
+      showAuth('login-page');
     }
-  } catch (error) {
-    console.error('Deposit error:', error);
-    // Update admin transaction to FAILED
-    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    await sendAdminNotification('deposit_error', currentUsername, amount, error.message);
-  }
-  btn.disabled = false; btn.textContent = '💳 INVEST NOW';
-  switchTab('home');
-}
-
-// ============================================================
-// WITHDRAWAL - confirmation popup only, auto-closes 1 sec, redirect to home
-// ============================================================
-async function doWithdraw() {
-  clearErrors('with-amount-err');
-  if (settingsData.withdrawLocked) { 
-    sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
-    return; 
-  }
-  if (!currentUser.activated) { 
-    sendAdminNotification('withdrawal_not_activated', currentUsername, 0, 'Inactive account tried to withdraw');
-    return; 
-  }
-  const minWith = settingsData.minWithdraw || 10000;
-  const amount = parseInt(document.getElementById('with-amount').value) || 0;
-  if (amount < minWith) { setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith)); return; }
-  const balance = currentUser.balance || 0;
-  if (balance < amount) { setErr('with-amount-err', true, 'Insufficient BALANCE.'); return; }
-  const feePercent = (settingsData.withdrawCharge || 10) / 100;
-  const fee = Math.floor(amount * feePercent);
-  const sendAmount = amount - fee;
-  const userPhone = currentUser.phone;
-  const btn = document.getElementById('with-submit-btn');
-  btn.disabled = true; btn.textContent = '⏳ Processing...';
-  const newBalance = balance - amount;
-  const newWithdrawn = (currentUser.withdrawn || 0) + amount;
-  const txKey = 'tx_wd_' + Date.now();
-  const reqKey = 'wreq_' + Date.now();
-  const reference = genUUID();
-  
-  const popup = document.getElementById('popup-banner');
-  popup.textContent = '💸 You will receive your funds shortly';
-  popup.classList.add('show');
-  setTimeout(() => popup.classList.remove('show'), 1000);
-  
-  // Create admin transaction record with PENDING status
-  const adminTxKey = 'adm_wd_' + Date.now();
-  const adminTxRecord = {
-    type: 'Withdrawal',
-    username: currentUsername,
-    phone: userPhone,
-    amount: amount,
-    reference: reference,
-    date: dateStr(),
-    status: 'pending'
-  };
-  
-  try {
-    // Create admin transaction
-    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
-    
-    // Deduct from balance immediately (in both modes)
-    await db.ref('users/' + safeKey(currentUsername)).update({ 
-      balance: newBalance, 
-      withdrawn: newWithdrawn, 
-      [`transactions/${txKey}`]: { type: 'Withdrawal', amount: -amount, note: 'Withdrawal Pending', date: dateStr(), status: 'pending' } 
-    });
-    
-    // Create withdrawal request record
-    await db.ref('pendingWithdrawals/' + reqKey).set({ 
-      username: currentUsername, 
-      userId: safeKey(currentUsername), 
-      phone: userPhone, 
-      amount, 
-      fee, 
-      sendAmount, 
-      txKey, 
-      adminTxKey,
-      date: dateStr(), 
-      status: 'pending',
-      processed: false // Track if Marz was already attempted
-    });
-    
-    // Check if manual approval is enabled
-    if (settingsData.withdrawApproval === true) {
-      // MANUAL APPROVAL MODE - Wait for admin to approve/reject
-      // Admin will either approve (then doWithdrawalApprove is called) or reject (then rejectWithdrawal is called)
-      await sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
-    } else {
-      // AUTOMATIC MODE - Process withdrawal immediately
-      await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
-    }
-    
-    document.getElementById('with-amount').value = '';
-    document.getElementById('withdraw-preview').style.display = 'none';
-  } catch (error) {
-    console.error('Withdrawal error:', error);
-    // Critical error - REFUND user and revert
-    const refundedBalance = balance;
-    await db.ref('users/' + safeKey(currentUsername)).update({ 
-      balance: refundedBalance, 
-      withdrawn: currentUser.withdrawn || 0 
-    });
-    await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
-    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    await sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
-  }
-  btn.disabled = false; btn.textContent = '💸 WITHDRAW';
-  switchTab('home');
-}
-
-// Helper function to process withdrawal to Marz
-async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee) {
-  const username = currentUsername;
-  const userId = safeKey(username);
-  
-  try {
-    const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
-    if (sendResult && sendResult.status === 'success') {
-      // Success - update transaction and admin record
-      await db.ref('users/' + userId + '/transactions/' + txKey).update({ 
-        status: 'completed', 
-        note: `Withdrawal sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})` 
-      });
-      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
-    } else {
-      // Marz send failed - REFUND user instantly
-      const userSnap = await db.ref('users/' + userId).get();
-      const user = userSnap.val();
-      const refundedBalance = (user.balance || 0) + amount;
-      
-      await db.ref('users/' + userId).update({ 
-        balance: refundedBalance,
-        [`transactions/${txKey}`]: { type: 'Withdrawal', amount: -amount, note: 'Withdrawal Failed - Refunded', date: dateStr(), status: 'failed' }
-      });
-      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      await sendAdminNotification('withdrawal_auto_failed', username, amount, 'Marz send failed: ' + (sendResult?.message || 'Unknown error'));
-    }
-  } catch (sendError) {
-    // Exception during send - REFUND user instantly
-    const userSnap = await db.ref('users/' + userId).get();
-    const user = userSnap.val();
-    const refundedBalance = (user.balance || 0) + amount;
-    
-    await db.ref('users/' + userId).update({ 
-      balance: refundedBalance,
-      [`transactions/${txKey}`]: { type: 'Withdrawal', amount: -amount, note: 'Withdrawal Failed - Refunded', date: dateStr(), status: 'failed' }
-    });
-    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    await sendAdminNotification('withdrawal_auto_failed', username, amount, 'Withdrawal error: ' + sendError.message);
-  }
-}
-
-async function doLogin() {
-  clearErrors('login-user-err', 'login-pw-err');
-  setErr('login-general-err', false);
-  const username = document.getElementById('login-username').value.trim();
-  const password = document.getElementById('login-password').value;
-  if (!username) { setErr('login-user-err', true); return; }
-  if (!password) { setErr('login-pw-err', true); return; }
-  try {
-    const userSnap = await db.ref('users/' + safeKey(username)).get();
-    if (!userSnap.exists()) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
-    const userData = userSnap.val();
-    if (userData.password !== password) { setErr('login-general-err', true, '❌ Invalid username or password'); return; }
-    if (userData.locked) { setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.'); return; }
-    currentUser = userData;
-    currentUsername = username;
-    sessionStorage.setItem('pp_current_user', username);
-    
-    // PROFIT CALCULATION FIRST - before UI updates
-    // This ensures balance is updated with today's profit before UI renders
-    await calculateAndPayDailyProfits().catch(err => console.warn('Login profit error:', err));
-    
-    // Re-fetch user data after profit calculation to get updated balance
-    const updatedSnap = await db.ref('users/' + safeKey(username)).get();
-    if (updatedSnap.exists()) {
-      currentUser = updatedSnap.val();
-    }
-    
-    // Now show UI with updated balance
-    startUserListener(username); startVideoListener();
-    updateBalanceUI();
-    renderHistory();
-    updateProfileUI();
-    showDashboard();
-    switchTab('home');
-    startDailyProfitLoop();
-    startInactivityWatcher();
-    // Silent login - no toast
-  } catch (error) {
-    console.error('Login error:', error);
-    setErr('login-general-err', true, '❌ Login failed. Please try again.');
-  }
-}
-
-async function doRegister() {
-  clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
-  const username = document.getElementById('reg-username').value.trim();
-  const country = document.getElementById('reg-country').value;
-  const phoneDigits = document.getElementById('reg-phone').value.trim();
-  const password = document.getElementById('reg-password').value;
-  const confirm = document.getElementById('reg-confirm').value;
-  let ok = true;
-  if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
-  if (!country) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
-  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('reg-phone-err', true, 'Enter 9 digits starting with 7'); ok = false; }
-  if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
-  if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
-  if (!ok) return;
-  const existing = await db.ref('users/' + safeKey(username)).get();
-  if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
-  const prefix = country === 'KE' ? '+254' : '+256';
-  const fullPhone = prefix + phoneDigits;
-  const now = dateStr();
-  const todayKey = getDateKey(new Date());
-  const newUser = {
-    username, password, country, phone: fullPhone, stake: 0, balance: 4000, withdrawn: 0,
-    activated: false, locked: false, joinedDate: new Date().getFullYear().toString(),
-    lastProfitDate: todayKey,
-    transactions: { t0: { type: 'Bonus', amount: 4000, note: 'Registration Bonus 🎁', date: now, status: 'completed' } },
-    deposits: {}, activeInvestment: null
-  };
-  await db.ref('users/' + safeKey(username)).set(newUser);
-  currentUser = newUser;
-  currentUsername = username;
-  sessionStorage.setItem('pp_current_user', username);
-  startUserListener(username); startVideoListener();
-  updateBalanceUI();
-  renderHistory();
-  updateProfileUI();
-  showDashboard();
-  switchTab('home');
-  startDailyProfitLoop();
-  // Silent registration - no toast
-  document.getElementById('reg-username').value = '';
-  document.getElementById('reg-phone').value = '';
-  document.getElementById('reg-password').value = '';
-  document.getElementById('reg-confirm').value = '';
-  document.getElementById('reg-country').value = '';
-}
-
-async function doLogout() {
-  if (profitInterval) clearInterval(profitInterval);
-  if (userListener && currentUsername) db.ref('users/' + safeKey(currentUsername)).off('value', userListener);
-  sessionStorage.removeItem('pp_current_user');
-  currentUser = null;
-  currentUsername = null;
-  setTimeout(() => {
-    document.getElementById('dashboard-page').style.display = 'none';
-    document.getElementById('dashboard-page').classList.remove('active');
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
+  } else {
     showAuth('login-page');
-  }, 800);
-}
-
-let inactivityTimer = null;
-const INACTIVITY_LIMIT = 2 * 60 * 60 * 1000;
-function resetInactivityTimer() {
-  if (!currentUser) return;
-  if (inactivityTimer) clearTimeout(inactivityTimer);
-  inactivityTimer = setTimeout(() => { if (currentUser) doLogout(); }, INACTIVITY_LIMIT);
-}
-function startInactivityWatcher() {
-  ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => document.addEventListener(evt, resetInactivityTimer, { passive: true }));
-  resetInactivityTimer();
+  }
+  
+  document.getElementById('loading-screen').style.display = 'none';
+  console.log('✅ App initialized');
 }
 
 initApp();
