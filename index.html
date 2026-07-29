@@ -214,7 +214,7 @@ input[type="password"]{padding-right:46px;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* Forms */
-.action-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px 18px;}
+.action-card{}
 .green-btn{width:100%;background:#2d5016;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
 .green-btn:active{transform:scale(.98);}
 .green-btn:disabled{opacity:0.4;cursor:not-allowed;}
@@ -1626,9 +1626,18 @@ async function purchaseLevel(levelKey, cost, levelName) {
   }
   }
     
+  // Refund the previous level's cost to MOB account when upgrading to a new level
+  let refundAmount = 0;
+  if (previousKey) {
+  const previousLevel = levelsData[previousKey];
+  refundAmount = previousLevel?.collateral || 0;
+  }
+  const newMob = (currentUser.mob || 0) + refundAmount;
+    
   const txKey = 'tx_level_' + Date.now();
   const updates = {
   stake: newStake,
+  mob: newMob,
   currentLevel: newCurrentLevel,
   purchasedLevels: purchasedLevels,
   [`transactions/${txKey}`]: {
@@ -1639,6 +1648,16 @@ async function purchaseLevel(levelKey, cost, levelName) {
   status: 'completed'
   }
   };
+  if (refundAmount > 0) {
+  const refundTxKey = 'tx_refund_' + Date.now();
+  updates[`transactions/${refundTxKey}`] = {
+  type: 'Level Refund',
+  amount: refundAmount,
+  note: `Previous level (${levelsData[previousKey]?.name || previousKey}) stake refunded to MOB`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  }
     
   await userRef.update(updates);
     
@@ -1649,7 +1668,8 @@ async function purchaseLevel(levelKey, cost, levelName) {
   updateProfileUI();
   updateVideoDisplay();
     
-  showPopup('Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!`, 'success');
+  const refundNote = refundAmount > 0 ? ` ${fmt(refundAmount)} refunded from your previous level to MOB.` : '';
+  showPopup('Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!${refundNote}`, 'success');
     
   } catch (error) {
   console.error('Purchase error:', error);
