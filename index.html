@@ -2543,18 +2543,24 @@ window.showConfirmPopup = showConfirmPopup;
 console.log('✅ All functions exposed to window');
 
 // ============================================================
-// INIT APP - FIXED: LOADING SCREEN HIDES IMMEDIATELY
+// INIT APP - FIXED: LOADING SCREEN HIDES & LOGIN SHOWS IMMEDIATELY
 // ============================================================
 async function initApp() {
   console.log('🚀 Initializing app...');
   
-  // Hide loading screen IMMEDIATELY - do it first, then initialize
+  // STEP 1: Hide loading screen
   const loadingScreen = document.getElementById('loading-screen');
   if (loadingScreen) {
     loadingScreen.style.display = 'none';
-    console.log('✅ Loading screen hidden immediately');
+    console.log('✅ Loading screen hidden');
   }
   
+  // STEP 2: Show login page IMMEDIATELY - before any Firebase operations
+  // This ensures the user sees the login page even if Firebase is slow
+  showAuth('login-page');
+  console.log('✅ Login page shown');
+  
+  // STEP 3: Now do Firebase operations in the background
   try {
     startSettingsListener();
     startLevelsListener();
@@ -2580,20 +2586,18 @@ async function initApp() {
           console.log('✅ Auto-login successful for:', savedUser);
         } else {
           sessionStorage.removeItem('pp_current_user');
-          showAuth('login-page');
+          // Login page is already shown, no need to call showAuth again
         }
       } catch (err) {
         console.warn('Login check error:', err);
         sessionStorage.removeItem('pp_current_user');
-        showAuth('login-page');
+        // Login page is already shown
       }
-    } else {
-      showAuth('login-page');
     }
+    // If no saved user, login page is already shown
   } catch (error) {
     console.error('❌ Init error:', error);
-    // Show login page as fallback
-    showAuth('login-page');
+    // Login page is already shown
   }
   
   console.log('✅ App initialized');
