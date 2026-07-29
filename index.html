@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<meta name="viewport" content=" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta property="og:title" content="WEA — Watch Movies, Earn Money">
 <meta property="og:description" content="Watch movies, trailers, and clips. Earn real money. Deposit to boost your earnings.">
 <meta property="og:image" content="https://profit-pulse.site/logo.png">
@@ -334,425 +334,412 @@ input[type="password"]{padding-right:46px;}
 <body>
 
 <div class="loading-screen" id="loading-screen">
-  <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:10px;">WEA</div>
-  <div class="loading-spinner"></div>
-  <div class="loading-text">Loading...</div>
+<div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:10px;">WEA</div>
+<div class="loading-spinner"></div>
+<div class="loading-text">Loading...</div>
 </div>
 
 <!-- LOGIN -->
 <div class="auth-page" id="login-page">
-  <div class="auth-hero">
-    <div class="auth-logo">🎬</div>
-    <div class="auth-brand">WEA</div>
-    <div class="auth-tagline">Watch Movies, Earn Money</div>
-  </div>
-  <div class="auth-card">
-    <div class="auth-title">Welcome Back</div>
-    <div class="auth-subtitle">Sign in to your account</div>
-    <div class="field-group">
-      <label class="field-label">Username</label>
-      <div class="field-wrap"><span class="field-icon">👤</span><input type="text" id="login-username" placeholder="Enter your username"></div>
-      <div class="field-error" id="login-user-err">Please enter your username</div>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Password</label>
-      <div class="field-wrap"><span class="field-icon">🔒</span><input type="password" id="login-password" placeholder="Enter password"><button class="eye-btn" onclick="toggleEye('login-password',this)">👁️</button></div>
-      <div class="field-error" id="login-pw-err">Please enter your password</div>
-    </div>
-    <div class="field-error" id="login-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
-    <button class="submit-btn" onclick="doLogin()">Sign In →</button>
-    <div class="auth-switch">Don't have an account? <a onclick="showAuth('register-page')">Register Now</a></div>
-  </div>
+<div class="auth-hero">
+<div class="auth-logo"></div>
+<div class="auth-brand">WEA</div>
+<div class="auth-tagline">Watch Movies, Earn Money</div>
+</div>
+<div class="auth-card">
+<div class="auth-title">Welcome Back</div>
+<div class="auth-subtitle">Sign in to your account</div>
+<div class="field-group">
+  <label class="field-label">Username</label>
+<div class="field-wrap"><input type="text" id="login-username" placeholder="Enter your username"></div>
+<div class="field-error" id="login-user-err">Please enter your username</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Password</label>
+<div class="field-wrap"><input type="password" id="login-password" placeholder="Enter password"><button class="eye-btn" onclick="toggleEye('login-password',this)">Show</button></div>
+<div class="field-error" id="login-pw-err">Please enter your password</div>
+</div>
+<div class="field-error" id="login-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
+  <button class="submit-btn" onclick="doLogin()">Sign In →</button>
+<div class="auth-switch">Don't have an account? <a onclick="showAuth('register-page')">Register Now</a></div>
+</div>
 </div>
 
 <!-- REGISTER -->
 <div class="auth-page" id="register-page">
-  <div class="auth-hero">
-    <div class="auth-logo">🎬</div>
-    <div class="auth-brand">WEA</div>
-    <div class="auth-tagline">Watch Movies, Earn Money</div>
-  </div>
-  <div class="auth-card">
-    <div class="auth-title">Create Account</div>
-    <div class="auth-subtitle">Start earning by watching videos 🎁</div>
-    <div class="field-group">
-      <label class="field-label">Username</label>
-      <div class="field-wrap"><span class="field-icon">👤</span><input type="text" id="reg-username" placeholder="Choose a username"></div>
-      <div class="field-error" id="reg-user-err">Username is required</div>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Country</label>
-      <div class="field-wrap"><span class="field-icon">🌍</span>
-        <select id="reg-country" onchange="updateRegPrefix()">
-          <option value="">Select your country</option>
-          <option value="UG">🇺🇬 Uganda</option>
-          <option value="KE">🇰🇪 Kenya</option>
-        </select>
-      </div>
-      <div class="field-error" id="reg-country-err">Please select your country</div>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Phone Number</label>
-      <div class="phone-prefix-wrap" id="reg-phone-wrap">
-        <div class="phone-prefix-badge" id="reg-prefix">+256</div>
-        <input type="tel" id="reg-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="regPhoneInput(this)">
-      </div>
-      <div class="field-hint">9 digits starting with 7</div>
-      <div class="field-error" id="reg-phone-err">Enter 9 digits starting with 7</div>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Password</label>
-      <div class="field-wrap"><span class="field-icon">🔒</span><input type="password" id="reg-password" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"><button class="eye-btn" onclick="toggleEye('reg-password',this)">👁️</button></div>
-      <div class="pw-strength"><div class="pw-bar" id="pw-b1"></div><div class="pw-bar" id="pw-b2"></div><div class="pw-bar" id="pw-b3"></div></div>
-      <div class="field-error" id="reg-pw-err">Password must be at least 6 characters</div>
-    </div>
-    <div class="field-group">
-      <label class="field-label">Confirm Password</label>
-      <div class="field-wrap"><span class="field-icon">🔐</span><input type="password" id="reg-confirm" placeholder="Repeat password"><button class="eye-btn" onclick="toggleEye('reg-confirm',this)">👁️</button></div>
-      <div class="field-error" id="reg-confirm-err">Passwords do not match</div>
-    </div>
-    <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
-    <button class="submit-btn" onclick="doRegister()">Create Account & Start Earning 🎬</button>
-    <div class="auth-switch">Already have an account? <a onclick="showAuth('login-page')">Sign In</a></div>
-  </div>
+<div class="auth-hero">
+<div class="auth-logo"></div>
+<div class="auth-brand">WEA</div>
+<div class="auth-tagline">Watch Movies, Earn Money</div>
+</div>
+<div class="auth-card">
+<div class="auth-title">Create Account</div>
+<div class="auth-subtitle">Start earning by watching videos</div>
+<div class="field-group">
+  <label class="field-label">Username</label>
+<div class="field-wrap"><input type="text" id="reg-username" placeholder="Choose a username"></div>
+<div class="field-error" id="reg-user-err">Username is required</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Country</label>
+<div class="field-wrap">
+  <select id="reg-country" onchange="updateRegPrefix()">
+  <option value="">Select your country</option>
+  <option value="UG">Uganda</option>
+  <option value="KE">Kenya</option>
+</select>
+</div>
+<div class="field-error" id="reg-country-err">Please select your country</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Phone Number</label>
+<div class="phone-prefix-wrap" id="reg-phone-wrap">
+<div class="phone-prefix-badge" id="reg-prefix">+256</div>
+  <input type="tel" id="reg-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="regPhoneInput(this)">
+</div>
+<div class="field-hint">9 digits starting with 7</div>
+<div class="field-error" id="reg-phone-err">Enter 9 digits starting with 7</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Password</label>
+<div class="field-wrap"><input type="password" id="reg-password" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"><button class="eye-btn" onclick="toggleEye('reg-password',this)">Show</button></div>
+<div class="pw-strength"><div class="pw-bar" id="pw-b1"></div><div class="pw-bar" id="pw-b2"></div><div class="pw-bar" id="pw-b3"></div></div>
+<div class="field-error" id="reg-pw-err">Password must be at least 6 characters</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Confirm Password</label>
+<div class="field-wrap"><input type="password" id="reg-confirm" placeholder="Repeat password"><button class="eye-btn" onclick="toggleEye('reg-confirm',this)">Show</button></div>
+<div class="field-error" id="reg-confirm-err">Passwords do not match</div>
+</div>
+<div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
+  <button class="submit-btn" onclick="doRegister()">Create Account & Start Earning</button>
+<div class="auth-switch">Already have an account? <a onclick="showAuth('login-page')">Sign In</a></div>
+</div>
 </div>
 
 <!-- DASHBOARD -->
 <div class="dashboard-page" id="dashboard-page">
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="brand"><div class="brand-icon">🎬</div><div class="brand-name">WEA</div></div>
-    </div>
-    <div class="topbar-right">
-      <span class="username-top" id="top-username">User</span>
-    </div>
-  </div>
+<div class="topbar">
+<div class="topbar-left">
+<div class="brand"><div class="brand-icon"></div><div class="brand-name">WEA</div></div>
+</div>
+<div class="topbar-right">
+  <span class="username-top" id="top-username">User</span>
+</div>
+</div>
 
   <!-- HOME / DASHBOARD -->
-  <div class="dash-section active" id="sec-home">
-    <div class="section">
-      <div class="stats-card">
-        <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
-          <div class="stat-box">
-            <div class="stat-label">💰 STAKE</div>
-            <div class="stat-value stake" id="stat-stake">UGX 0</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-label">🎬 MOB ACCOUNT</div>
-            <div class="stat-value mob" id="stat-mob">UGX 0</div>
-          </div>
-        </div>
-        <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
-          <div class="stat-box">
-            <div class="stat-label">TODAY'S VIDEOS</div>
-            <div class="stat-value videos" id="stat-today-videos">0/3</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-label">📊 LEVEL</div>
-            <div class="stat-value" style="font-size:12px;font-weight:800;color:var(--accent);" id="stat-level">Trainee</div>
-          </div>
-        </div>
-      </div>
+<div class="dash-section active" id="sec-home">
+<div class="section">
+<div class="stats-card">
+<div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+<div class="stat-box">
+<div class="stat-label">STAKE</div>
+<div class="stat-value stake" id="stat-stake">UGX 0</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">MOB ACCOUNT</div>
+<div class="stat-value mob" id="stat-mob">UGX 0</div>
+</div>
+</div>
+<div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
+<div class="stat-box">
+<div class="stat-label">TODAY'S VIDEOS</div>
+<div class="stat-value videos" id="stat-today-videos">0/3</div>
+</div>
+<div class="stat-box">
+<div class="stat-label">LEVEL</div>
+<div class="stat-value" style="font-size:12px;font-weight:800;color:var(--accent);" id="stat-level">Trainee</div>
+</div>
+</div>
+</div>
 
-      <!-- Level Progress -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:12px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;">
-          <span style="color:var(--muted);">Progress to <span id="level-progress-next">WM1</span></span>
-          <span id="level-progress-text" style="color:var(--accent);">0/10 videos</span>
-        </div>
-        <div class="level-progress">
-          <div class="level-progress-fill" id="level-progress-fill" style="width:0%;"></div>
-        </div>
-      </div>
-    </div>
+  <!-- Level Progress -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-top:12px;">
+<div style="display:flex;justify-content:space-between;font-size:11px;">
+  <span style="color:var(--muted);">Progress to <span id="level-progress-next">WM1</span></span>
+  <span id="level-progress-text" style="color:var(--accent);">0/10 videos</span>
+</div>
+<div class="level-progress">
+<div class="level-progress-fill" id="level-progress-fill" style="width:0%;"></div>
+</div>
+</div>
+</div>
 
-    <div class="section">
-      <div class="action-grid">
-        <button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="switchTab('team')"><span class="btn-icon">🎬</span> Watch Videos</button>
-        <button class="action-btn" style="background:#14110F;border:1.5px solid #F2B84B;color:#F2B84B;" onclick="switchTab('deposit')"><span class="btn-icon">💳</span> Deposit</button>
-        <button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="switchTab('withdraw')"><span class="btn-icon">💰</span> Withdraw</button>
-      </div>
-    </div>
-  </div>
+<div class="section">
+<div class="action-grid">
+  <button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="switchTab('team')"><span class="btn-icon"></span>Watch Videos</button>
+  <button class="action-btn" style="background:#14110F;border:1.5px solid #F2B84B;color:#F2B84B;" onclick="switchTab('deposit')"><span class="btn-icon"></span>Deposit</button>
+  <button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="switchTab('withdraw')"><span class="btn-icon"></span>Withdraw</button>
+</div>
+</div>
+</div>
 
   <!-- History -->
-  <div class="dash-section" id="sec-history">
-    <div class="inner-header"><span style="font-size:22px">📋</span><div><div class="inner-title">Records</div><div class="inner-sub">All your transactions</div></div></div>
+<div class="dash-section" id="sec-history">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Records</div><div class="inner-sub">All your transactions</div></div></div>
     
-    <div style="margin-bottom:16px;padding:0 16px;">
-      <input type="text" id="tx-search-box" placeholder="🔍 Search transactions..." class="tx-search-input" oninput="renderHistory()">
-    </div>
+<div style="margin-bottom:16px;padding:0 16px;">
+  <input type="text" id="tx-search-box" placeholder="Search transactions..." class="tx-search-input" oninput="renderHistory()">
+</div>
     
-    <div style="padding:0 16px;">
-      <div class="tx-filter-pills">
-        <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
-        <button class="tx-pill" onclick="setTxFilter('Video Reward',this)">🎬 Rewards</button>
-        <button class="tx-pill" onclick="setTxFilter('Streak Bonus',this)">🔥 Streak</button>
-        <button class="tx-pill" onclick="setTxFilter('Deposit',this)">💳 Deposit</button>
-        <button class="tx-pill" onclick="setTxFilter('Withdrawal',this)">💰 Withdrawals</button>
-        <button class="tx-pill" onclick="setTxFilter('Level Purchase',this)">📊 Levels</button>
-      </div>
-    </div>
+<div style="padding:0 16px;">
+<div class="tx-filter-pills">
+  <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
+  <button class="tx-pill" onclick="setTxFilter('Video Reward',this)">Rewards</button>
+  <button class="tx-pill" onclick="setTxFilter('Streak Bonus',this)">Streak</button>
+  <button class="tx-pill" onclick="setTxFilter('Deposit',this)">Deposit</button>
+  <button class="tx-pill" onclick="setTxFilter('Withdrawal',this)">Withdrawals</button>
+  <button class="tx-pill" onclick="setTxFilter('Level Purchase',this)">Levels</button>
+</div>
+</div>
     
-    <div class="section">
-      <div id="history-list" class="tx-cards-grid"><div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Yet</div><div class="tx-empty-text">Your transaction history will appear here.</div></div></div>
-    </div>
-  </div>
+<div class="section">
+<div id="history-list" class="tx-cards-grid"><div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">No Records Yet</div><div class="tx-empty-text">Your transaction history will appear here.</div></div></div>
+</div>
+</div>
 
   <!-- WATCH & EARN -->
-  <div class="dash-section" id="sec-team">
-    <div class="inner-header"><span style="font-size:22px">🎬</span><div><div class="inner-title">WATCH & EARN</div><div class="inner-sub">Watch videos and earn money</div></div></div>
-    <div class="section">
-      <div id="video-grid" class="video-grid">
-        <div class="video-empty">No videos yet. Check back soon.</div>
-      </div>
-    </div>
-  </div>
+<div class="dash-section" id="sec-team">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">WATCH & EARN</div><div class="inner-sub">Watch videos and earn money</div></div></div>
+<div class="section">
+<div id="video-grid" class="video-grid">
+<div class="video-empty">No videos yet. Check back soon.</div>
+</div>
+</div>
+</div>
 
   <!-- Video Player Overlay - REDESIGNED -->
-  <div class="video-overlay" id="video-overlay">
-    <div class="video-overlay-header">
-      <span id="video-overlay-title">Movie Title</span>
-      <span class="video-overlay-close" onclick="closeVideoPlayer()">✕</span>
-    </div>
-    <div class="video-player-wrap">
-      <div id="video-player-embed"></div>
-    </div>
-    <div class="video-controls" id="video-controls">
-      <div class="countdown-display">
-        <span class="countdown-number" id="countdown-number">5</span>
-        <span class="countdown-label">seconds</span>
-      </div>
-      <div class="countdown-progress">
-        <div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
-      </div>
-      <button class="claim-btn" id="claim-btn" onclick="claimReward()" disabled>
-        ⏳ Watch for 5 seconds...
-      </button>
-    </div>
-  </div>
+<div class="video-overlay" id="video-overlay">
+<div class="video-overlay-header">
+  <span id="video-overlay-title">Movie Title</span>
+  <span class="video-overlay-close" onclick="closeVideoPlayer()"></span>
+</div>
+<div class="video-player-wrap">
+<div id="video-player-embed"></div>
+</div>
+<div class="video-controls" id="video-controls">
+<div class="countdown-display">
+  <span class="countdown-number" id="countdown-number">5</span>
+  <span class="countdown-label">seconds</span>
+</div>
+<div class="countdown-progress">
+<div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
+</div>
+  <button class="claim-btn" id="claim-btn" onclick="claimReward()"disabled>
+  ⏳ Watch for 5 seconds...
+</button>
+</div>
+</div>
 
   <!-- WAGES -->
-  <div class="dash-section" id="sec-plan">
-    <div class="inner-header">
-      <span style="font-size:22px">💰</span>
-      <div>
-        <div class="inner-title">WAGES</div>
-        <div class="inner-sub">Your earning levels</div>
-      </div>
-    </div>
+<div class="dash-section" id="sec-plan">
+<div class="inner-header">
+  <span style="font-size:22px"></span>
+<div>
+<div class="inner-title">WAGES</div>
+<div class="inner-sub">Your earning levels</div>
+</div>
+</div>
     
-    <div class="section">
-      <!-- User Level Display -->
-      <div id="user-level-display" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Your Level</div>
-            <div style="font-size:17px;font-weight:800;color:var(--accent);" id="user-current-level">Trainee</div>
-            <div style="font-size:9px;color:var(--muted);" id="user-trainee-status"></div>
-          </div>
-          <div style="text-align:right;">
-            <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Daily Earnings</div>
-            <div style="font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--success);" id="user-current-daily">UGX 1,500</div>
-          </div>
-        </div>
-        <div id="user-next-level" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
-      </div>
+<div class="section">
+  <!-- User Level Display -->
+<div id="user-level-display" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<div>
+<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Your Level</div>
+<div style="font-size:17px;font-weight:800;color:var(--accent);" id="user-current-level">Trainee</div>
+<div style="font-size:9px;color:var(--muted);" id="user-trainee-status"></div>
+</div>
+<div style="text-align:right;">
+<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">Daily Earnings</div>
+<div style="font-size:15px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--success);" id="user-current-daily">UGX 1,500</div>
+</div>
+</div>
+<div id="user-next-level" style="font-size:10px;color:var(--muted);margin-top:4px;"></div>
+</div>
 
-      <!-- Levels Table -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
-        <div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
-          <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid var(--border);">
-            <thead>
-              <tr style="background:var(--surface2);border-bottom:2px solid var(--accent);">
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">LvL</th>
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Col</th>
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Mov</th>
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Each</th>
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Daily</th>
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Monthly</th>
-                <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:24%;border-bottom:2px solid var(--accent);">Annual</th>
-              </tr>
-            </thead>
-            <tbody id="levels-table-body">
-              <tr><td colspan="7" style="padding:16px;text-align:center;color:var(--muted);font-size:9px;">Loading levels...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Levels Table -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+<div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
+  <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid var(--border);">
+  <thead>
+  <tr style="background:var(--surface2);border-bottom:2px solid var(--accent);">
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">LvL</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Col</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Mov</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Each</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Daily</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Monthly</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:24%;border-bottom:2px solid var(--accent);">Annual</th>
+</tr>
+</thead>
+  <tbody id="levels-table-body">
+  <tr><td colspan="7" style="padding:16px;text-align:center;color:var(--muted);font-size:9px;">Loading levels...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 
   <!-- STAGES (Level Purchase) - NO LOCK INDICATORS -->
-  <div class="dash-section" id="sec-errands">
-    <div class="inner-header">
-      <span style="font-size:22px">📍</span>
-      <div>
-        <div class="inner-title">STAGES</div>
-        <div class="inner-sub">Purchase levels to unlock higher earnings</div>
-      </div>
-    </div>
-    <div class="section">
-      <!-- STAKE & Level Summary -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-        <div>
-          <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your STAKE</div>
-          <div style="font-size:15px;font-weight:800;color:var(--accent);" id="stages-stake">UGX 0</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Current Level</div>
-          <div style="font-size:13px;font-weight:800;color:var(--success);" id="stages-current-level">Trainee</div>
-          <div style="font-size:8px;color:var(--muted);" id="stages-trainee-status"></div>
-        </div>
-      </div>
+<div class="dash-section" id="sec-errands">
+<div class="inner-header">
+  <span style="font-size:22px"></span>
+<div>
+<div class="inner-title">STAGES</div>
+<div class="inner-sub">Purchase levels to unlock higher earnings</div>
+</div>
+</div>
+<div class="section">
+  <!-- STAKE & Level Summary -->
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+<div>
+<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your STAKE</div>
+<div style="font-size:15px;font-weight:800;color:var(--accent);" id="stages-stake">UGX 0</div>
+</div>
+<div style="text-align:right;">
+<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Current Level</div>
+<div style="font-size:13px;font-weight:800;color:var(--success);" id="stages-current-level">Trainee</div>
+<div style="font-size:8px;color:var(--muted);" id="stages-trainee-status"></div>
+</div>
+</div>
 
-      <!-- Level Cards - NO LOCK INDICATORS -->
-      <div id="stages-grid" class="stages-grid">
-        <div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading levels...</div>
-      </div>
+  <!-- Level Cards - NO LOCK INDICATORS -->
+<div id="stages-grid" class="stages-grid">
+<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading levels...</div>
+</div>
 
-      <!-- Deposit Button -->
-      <button class="green-btn" onclick="switchTab('deposit')" style="margin-top:12px;width:100%;">💳 Deposit to STAKE</button>
-    </div>
-  </div>
+  <!-- Deposit Button -->
+  <button class="green-btn" onclick="switchTab('deposit')" style="margin-top:12px;width:100%;">Deposit to STAKE</button>
+</div>
+</div>
 
   <!-- Profile -->
-  <div class="dash-section" id="sec-profile">
-    <div class="inner-header"><span style="font-size:22px">👤</span><div><div class="inner-title">INFOR</div><div class="inner-sub">Your account details</div></div></div>
-    <div class="section">
-      <div class="profile-simple-info">
-        <div class="profile-simple-item"><span class="profile-simple-label">Username</span><span class="profile-simple-value" id="profile-user-simple">—</span></div>
-        <div class="profile-simple-item"><span class="profile-simple-label">Phone Number</span><span class="profile-simple-value" id="profile-phone-simple">—</span></div>
-        <div class="profile-simple-item"><span class="profile-simple-label">Registered Date</span><span class="profile-simple-value" id="profile-date-simple">—</span></div>
-        <div class="profile-simple-item"><span class="profile-simple-label">Videos Watched</span><span class="profile-simple-value" id="profile-videos-simple">0</span></div>
-        <div class="profile-simple-item"><span class="profile-simple-label">Streak</span><span class="profile-simple-value" id="profile-streak-simple">0 days</span></div>
-        <div class="profile-simple-item"><span class="profile-simple-label">Current Level</span><span class="profile-simple-value" id="profile-level-simple">Trainee</span></div>
-      </div>
-      <button class="logout-btn-new" onclick="doLogout()">🚪 Sign Out</button>
-    </div>
-  </div>
+<div class="dash-section" id="sec-profile">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">INFOR</div><div class="inner-sub">Your account details</div></div></div>
+<div class="section">
+<div class="profile-simple-info">
+<div class="profile-simple-item"><span class="profile-simple-label">Username</span><span class="profile-simple-value" id="profile-user-simple">—</span></div>
+<div class="profile-simple-item"><span class="profile-simple-label">Phone Number</span><span class="profile-simple-value" id="profile-phone-simple">—</span></div>
+<div class="profile-simple-item"><span class="profile-simple-label">Registered Date</span><span class="profile-simple-value" id="profile-date-simple">—</span></div>
+<div class="profile-simple-item"><span class="profile-simple-label">Videos Watched</span><span class="profile-simple-value" id="profile-videos-simple">0</span></div>
+<div class="profile-simple-item"><span class="profile-simple-label">Streak</span><span class="profile-simple-value" id="profile-streak-simple">0 days</span></div>
+<div class="profile-simple-item"><span class="profile-simple-label">Current Level</span><span class="profile-simple-value" id="profile-level-simple">Trainee</span></div>
+</div>
+  <button class="logout-btn-new" onclick="doLogout()">Sign Out</button>
+</div>
+</div>
 
   <!-- Deposit -->
-  <div class="dash-section" id="sec-deposit">
-    <div class="inner-header"><span style="font-size:22px">💳</span><div><div class="inner-title">Deposit</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
-    <div class="section">
-      <div class="action-card">
-        <div class="deposit-note">✅ Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your STAKE.</div>
-        <div class="field-group">
-          <label class="field-label">Mobile Money Phone Number</label>
-          <div class="phone-prefix-wrap" id="dep-phone-wrap">
-            <div class="phone-prefix-badge" id="dep-prefix">+256</div>
-            <input type="tel" id="dep-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
-          </div>
-          <div class="field-hint">9 digits starting with 7 (any MTN or Airtel number)</div>
-          <div class="field-error" id="dep-phone-err">Enter 9 digits starting with 7</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Amount to Deposit (UGX)</label>
-          <div class="field-wrap"><span class="field-icon">💰</span><input type="number" id="dep-amount" placeholder="Min 10,000" min="10000"></div>
-          <div class="field-error" id="dep-amount-err">Please check the amount</div>
-        </div>
-        <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">💳 DEPOSIT TO STAKE</button>
-      </div>
-    </div>
-  </div>
+<div class="dash-section" id="sec-deposit">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Deposit</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="deposit-note">Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your STAKE.</div>
+<div class="field-group">
+  <label class="field-label">Mobile Money Phone Number</label>
+<div class="phone-prefix-wrap" id="dep-phone-wrap">
+<div class="phone-prefix-badge" id="dep-prefix">+256</div>
+  <input type="tel" id="dep-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
+</div>
+<div class="field-hint">9 digits starting with 7 (any MTN or Airtel number)</div>
+<div class="field-error" id="dep-phone-err">Enter 9 digits starting with 7</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Amount to Deposit (UGX)</label>
+<div class="field-wrap"><input type="number" id="dep-amount" placeholder="Min 10,000" min="10000"></div>
+<div class="field-error" id="dep-amount-err">Please check the amount</div>
+</div>
+  <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">DEPOSIT TO STAKE</button>
+</div>
+</div>
+</div>
 
   <!-- Withdraw -->
-  <div class="dash-section" id="sec-withdraw">
-    <div class="inner-header"><span style="font-size:22px">💰</span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div></div>
-    <div class="section">
-      <div id="withdraw-locked-msg" class="locked-banner" style="display:none">🔒 Withdrawals are currently disabled. Please contact support.</div>
-      <div class="action-card">
-        <div class="deposit-note">📱 Your MOB balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
-        <div class="charge-note">⚠️ Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
-        <div class="deposit-note">📱 Funds will be sent to your registered mobile money number.</div>
-        <div class="field-group">
-          <label class="field-label">Sending To</label>
-          <div class="field-wrap"><span class="field-icon">📱</span><div class="readonly-field" id="with-phone-display">—</div></div>
-          <div class="field-hint">🔒 Locked to your registered number</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Amount (UGX)</label>
-          <div class="field-wrap"><span class="field-icon">💸</span><input type="number" id="with-amount" placeholder="Enter amount" min="5000" oninput="updateWithdrawPreview()"></div>
-          <div class="field-error" id="with-amount-err">Minimum withdrawal is <span id="with-min-display">UGX 10,000</span></div>
-        </div>
-        <div id="withdraw-preview" style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px;display:none;">
-          <span>💸 You receive: </span><strong id="withdraw-net-amount">UGX 0</strong><br>
-          <span>🔧 Fee: </span><strong id="withdraw-fee-amount">UGX 0</strong>
-        </div>
-        <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">💰 WITHDRAW FROM MOB</button>
-      </div>
-    </div>
-  </div>
+<div class="dash-section" id="sec-withdraw">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div></div>
+<div class="section">
+<div id="withdraw-locked-msg" class="locked-banner" style="display:none">Withdrawals are currently disabled. Please contact support.</div>
+<div class="action-card">
+<div class="deposit-note">Your MOB balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
+<div class="charge-note">Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
+<div class="deposit-note">Funds will be sent to your registered mobile money number.</div>
+<div class="field-group">
+  <label class="field-label">Sending To</label>
+<div class="field-wrap"><div class="readonly-field" id="with-phone-display">—</div></div>
+<div class="field-hint">Locked to your registered number</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Amount (UGX)</label>
+<div class="field-wrap"><input type="number" id="with-amount" placeholder="Enter amount" min="5000" oninput="updateWithdrawPreview()"></div>
+<div class="field-error" id="with-amount-err">Minimum withdrawal is <span id="with-min-display">UGX 10,000</span></div>
+</div>
+<div id="withdraw-preview" style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px;display:none;">
+  <span>You receive:</span><strong id="withdraw-net-amount">UGX 0</strong><br>
+  <span>Fee:</span><strong id="withdraw-fee-amount">UGX 0</strong>
+</div>
+  <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">WITHDRAW FROM MOB</button>
+</div>
+</div>
+</div>
 
   <nav class="bottom-nav">
-    <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
-    <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-4H3v4z"/><path d="M9 20h4v-9H9v9z"/><path d="M15 20h4V6h-4v14z"/></svg></span><span class="nav-label">STAGES</span></div>
-    <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">WATCH</span></div>
-    <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 12h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a2 2 0 0 1 0-4z"/></svg></span><span class="nav-label">WAGES</span></div>
-    <div class="nav-item" onclick="switchTab('profile')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span><span class="nav-label">ME</span></div>
-  </nav>
+<div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
+<div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-4H3v4z"/><path d="M9 20h4v-9H9v9z"/><path d="M15 20h4V6h-4v14z"/></svg></span><span class="nav-label">STAGES</span></div>
+<div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">WATCH</span></div>
+<div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 12h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a2 2 0 0 1 0-4z"/></svg></span><span class="nav-label">WAGES</span></div>
+<div class="nav-item" onclick="switchTab('profile')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span><span class="nav-label">ME</span></div>
+</nav>
 </div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay">
-  <div class="modal-box">
-    <div class="modal-icon" id="modal-icon">📱</div>
-    <div class="modal-title" id="modal-title">Notice</div>
-    <div class="modal-msg" id="modal-msg">Please wait...</div>
-    <button class="modal-close" onclick="closeModal()">OK, Got It</button>
-  </div>
+<div class="modal-box">
+<div class="modal-icon" id="modal-icon"></div>
+<div class="modal-title" id="modal-title">Notice</div>
+<div class="modal-msg" id="modal-msg">Please wait...</div>
+  <button class="modal-close" onclick="closeModal()">OK, Got It</button>
+</div>
 </div>
 
 <!-- Terms Modal -->
 <div class="modal-overlay" id="terms-modal-overlay" onclick="closeTermsModal(event)">
-  <div class="modal-box" style="position:relative;">
-    <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--accent);padding:4px 8px;" onclick="closeTermsModal()">✕</button>
-    <div class="modal-icon">📋</div>
-    <div class="modal-title">Terms of Service</div>
-    <div class="modal-msg" style="text-align:left;">
-      <strong>1. Introduction</strong><br>
-      Welcome to WEA. These Terms of Service govern your use of our platform.<br><br>
-      <strong>2. User Responsibilities</strong><br>
-      You are responsible for maintaining the confidentiality of your account and password.<br><br>
-      <strong>3. Earning Policy</strong><br>
-      You earn by watching videos. Rewards are credited to your MOB account.<br><br>
-      <strong>4. Prohibited Activities</strong><br>
-      You may not use WEA for any illegal activities, fraud, or unauthorized access.<br><br>
-      <strong>5. Limitation of Liability</strong><br>
-      WEA is provided "as is" without warranties.<br><br>
-      <strong>6. Modifications</strong><br>
-      We reserve the right to modify these terms at any time.<br><br>
-      <strong>7. Governing Law</strong><br>
-      These terms are governed by the laws of Uganda and Kenya as applicable.
-    </div>
-  </div>
+<div class="modal-box" style="position:relative;">
+  <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--accent);padding:4px 8px;" onclick="closeTermsModal()"></button>
+<div class="modal-icon"></div>
+<div class="modal-title">Terms of Service</div>
+<div class="modal-msg" style="text-align:left;">
+  <strong>1. Introduction</strong><br>Welcome to WEA. These Terms of Service govern your use of our platform.<br><br>
+  <strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password.<br><br>
+  <strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your MOB account.<br><br>
+  <strong>4. Prohibited Activities</strong><br>You may not use WEA for any illegal activities, fraud, or unauthorized access.<br><br>
+  <strong>5. Limitation of Liability</strong><br>WEA is provided "as is"without warranties.<br><br>
+  <strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time.<br><br>
+  <strong>7. Governing Law</strong><br>These terms are governed by the laws of Uganda and Kenya as applicable.
+</div>
+</div>
 </div>
 
 <!-- Privacy Modal -->
 <div class="modal-overlay" id="privacy-modal-overlay" onclick="closePrivacyModal(event)">
-  <div class="modal-box" style="position:relative;">
-    <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--accent);padding:4px 8px;" onclick="closePrivacyModal()">✕</button>
-    <div class="modal-icon">🔒</div>
-    <div class="modal-title">Privacy Policy</div>
-    <div class="modal-msg" style="text-align:left;">
-      <strong>1. Information We Collect</strong><br>
-      We collect personal information including name, phone number, and transaction history.<br><br>
-      <strong>2. How We Use Information</strong><br>
-      Your information is used to process transactions, prevent fraud, and improve our services.<br><br>
-      <strong>3. Data Protection</strong><br>
-      We implement industry-standard security measures to protect your data.<br><br>
-      <strong>4. Third-Party Sharing</strong><br>
-      We do not sell your personal information.<br><br>
-      <strong>5. Your Rights</strong><br>
-      You have the right to access, modify, or delete your personal information.<br><br>
-      <strong>6. Contact Us</strong><br>
-      For privacy concerns, contact our support team.
-    </div>
-  </div>
+<div class="modal-box" style="position:relative;">
+  <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:var(--accent);padding:4px 8px;" onclick="closePrivacyModal()"></button>
+<div class="modal-icon"></div>
+<div class="modal-title">Privacy Policy</div>
+<div class="modal-msg" style="text-align:left;">
+  <strong>1. Information We Collect</strong><br>We collect personal information including name, phone number, and transaction history.<br><br>
+  <strong>2. How We Use Information</strong><br>Your information is used to process transactions, prevent fraud, and improve our services.<br><br>
+  <strong>3. Data Protection</strong><br>We implement industry-standard security measures to protect your data.<br><br>
+  <strong>4. Third-Party Sharing</strong><br>We do not sell your personal information.<br><br>
+  <strong>5. Your Rights</strong><br>You have the right to access, modify, or delete your personal information.<br><br>
+  <strong>6. Contact Us</strong><br>For privacy concerns, contact our support team.
+</div>
+</div>
 </div>
 
-<div class="toast" id="toast">✓ Done!</div>
+<div class="toast" id="toast">Done!</div>
 <div class="popup-banner" id="popup-banner"></div>
 
 <!-- Firebase SDK -->
@@ -789,7 +776,7 @@ function getServerTime() {
   return new Date(Date.now() + serverTimeOffset);
 }
 
-console.log('✅ Firebase initialized');
+console.log('Firebase initialized');
 
 const MARZ_API = 'https://polished-truth-f9c5.vallazvallax.workers.dev';
 
@@ -877,25 +864,25 @@ const DEFAULT_TRAINEE = {
 // ============================================================
 function startLevelsListener() {
   db.ref('levels').on('value', (snap) => {
-    const firebaseLevels = snap.val() || {};
-    levelsData = { trainee: { ...DEFAULT_TRAINEE }, ...firebaseLevels };
-    if (firebaseLevels.trainee) {
-      levelsData.trainee = { ...DEFAULT_TRAINEE, ...firebaseLevels.trainee };
-    }
-    renderLevelsTable();
-    updateLevelProgress();
-    renderStages();
-    updateVideoDisplay();
+  const firebaseLevels = snap.val() || {};
+  levelsData = { trainee: { ...DEFAULT_TRAINEE }, ...firebaseLevels };
+  if (firebaseLevels.trainee) {
+  levelsData.trainee = { ...DEFAULT_TRAINEE, ...firebaseLevels.trainee };
+  }
+  renderLevelsTable();
+  updateLevelProgress();
+  renderStages();
+  updateVideoDisplay();
   });
 }
 
 function getLevelKeys() {
   return Object.keys(levelsData).sort((a, b) => {
-    if (a === 'trainee') return -1;
-    if (b === 'trainee') return 1;
-    const numA = parseInt(a.replace('wm', '')) || 0;
-    const numB = parseInt(b.replace('wm', '')) || 0;
-    return numA - numB;
+  if (a === 'trainee') return -1;
+  if (b === 'trainee') return 1;
+  const numA = parseInt(a.replace('wm', '')) || 0;
+  const numB = parseInt(b.replace('wm', '')) || 0;
+  return numA - numB;
   });
 }
 
@@ -918,11 +905,11 @@ function renderLevelsTable() {
   let currentLevelData = levelsData['trainee'] || DEFAULT_TRAINEE;
   
   for (const key of levelKeys) {
-    const level = levelsData[key];
-    if (level && userVideos >= (level.collateral || 0)) {
-      currentLevelKey = key;
-      currentLevelData = level;
-    }
+  const level = levelsData[key];
+  if (level && userVideos >= (level.collateral || 0)) {
+  currentLevelKey = key;
+  currentLevelData = level;
+  }
   }
   
   const levelNameEl = document.getElementById('user-current-level');
@@ -930,53 +917,53 @@ function renderLevelsTable() {
   const nextEl = document.getElementById('user-next-level');
   
   if (currentLevelData) {
-    levelNameEl.textContent = currentLevelData.name || 'Trainee';
-    dailyEl.textContent = fmt(currentLevelData.daily || 0);
+  levelNameEl.textContent = currentLevelData.name || 'Trainee';
+  dailyEl.textContent = fmt(currentLevelData.daily || 0);
     
-    let nextLevel = null;
-    for (const key of levelKeys) {
-      const level = levelsData[key];
-      if (level && (level.collateral || 0) > userVideos) {
-        nextLevel = level;
-        break;
-      }
-    }
+  let nextLevel = null;
+  for (const key of levelKeys) {
+  const level = levelsData[key];
+  if (level && (level.collateral || 0) >userVideos) {
+  nextLevel = level;
+  break;
+  }
+  }
     
-    if (nextLevel) {
-      const need = (nextLevel.collateral || 0) - userVideos;
-      nextEl.textContent = `Next: ${nextLevel.name} needs ${nextLevel.collateral || 0} videos (${need} more)`;
-    } else {
-      nextEl.textContent = '🎉 You are at the highest level!';
-    }
+  if (nextLevel) {
+  const need = (nextLevel.collateral || 0) - userVideos;
+  nextEl.textContent = `Next: ${nextLevel.name} needs ${nextLevel.collateral || 0} videos (${need} more)`;
+  } else {
+  nextEl.textContent = 'You are at the highest level!';
+  }
   }
   
   let html = '';
   let hasNonTrainee = false;
   
   for (const key of levelKeys) {
-    const level = levelsData[key];
-    if (!level) continue;
-    if (key !== 'trainee') hasNonTrainee = true;
+  const level = levelsData[key];
+  if (!level) continue;
+  if (key !== 'trainee') hasNonTrainee = true;
     
-    const isCurrent = (key === currentLevelKey);
-    const bgColor = isCurrent ? 'rgba(242,184,75,0.12)' : 'transparent';
-    const borderLeft = isCurrent ? '2px solid var(--accent)' : 'none';
+  const isCurrent = (key === currentLevelKey);
+  const bgColor = isCurrent ? 'rgba(242,184,75,0.12)' : 'transparent';
+  const borderLeft = isCurrent ? '2px solid var(--accent)' : 'none';
     
-    html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid var(--border);">
-      <td style="padding:5px 3px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.name || key}</td>
-      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.collateral || 0)}</td>
-      <td style="padding:5px 3px;text-align:center;font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.movies || 0}</td>
-      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.each || 0)}</td>
-      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.daily || 0)}</td>
-      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.monthly || 0)}</td>
-      <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;">${fmtShort(level.annual || 0)}</td>
-    </tr>`;
+  html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid var(--border);">
+  <td style="padding:5px 3px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.name || key}</td>
+  <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.collateral || 0)}</td>
+  <td style="padding:5px 3px;text-align:center;font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.movies || 0}</td>
+  <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.each || 0)}</td>
+  <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.daily || 0)}</td>
+  <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.monthly || 0)}</td>
+  <td style="padding:5px 3px;font-family:'JetBrains Mono',monospace;font-size:7px;white-space:nowrap;">${fmtShort(level.annual || 0)}</td>
+</tr>`;
   }
   
   if (!hasNonTrainee && levelKeys.length <= 1) {
-    tbody.innerHTML = html + `<tr><td colspan="7" style="padding:8px;text-align:center;color:var(--muted);font-size:8px;border-bottom:none;">No additional levels configured.</td></tr>`;
+  tbody.innerHTML = html + `<tr><td colspan="7" style="padding:8px;text-align:center;color:var(--muted);font-size:8px;border-bottom:none;">No additional levels configured.</td></tr>`;
   } else {
-    tbody.innerHTML = html;
+  tbody.innerHTML = html;
   }
 }
 
@@ -989,19 +976,19 @@ function updateLevelProgress() {
   let nextLevel = null;
   
   for (const key of levelKeys) {
-    const level = levelsData[key];
-    if (level && userVideos >= (level.collateral || 0)) {
-      currentLevelKey = key;
-      currentLevel = level;
-    }
+  const level = levelsData[key];
+  if (level && userVideos >= (level.collateral || 0)) {
+  currentLevelKey = key;
+  currentLevel = level;
+  }
   }
   
   for (const key of levelKeys) {
-    const level = levelsData[key];
-    if (level && (level.collateral || 0) > userVideos) {
-      nextLevel = level;
-      break;
-    }
+  const level = levelsData[key];
+  if (level && (level.collateral || 0) >userVideos) {
+  nextLevel = level;
+  break;
+  }
   }
   
   const progressEl = document.getElementById('level-progress-fill');
@@ -1009,16 +996,16 @@ function updateLevelProgress() {
   const progressNext = document.getElementById('level-progress-next');
   
   if (nextLevel) {
-    const current = userVideos - (currentLevel.collateral || 0);
-    const needed = (nextLevel.collateral || 0) - (currentLevel.collateral || 0);
-    const percent = Math.min((current / needed) * 100, 100);
-    progressEl.style.width = percent + '%';
-    progressText.textContent = `${current}/${needed} videos`;
-    progressNext.textContent = nextLevel.name || 'WM1';
+  const current = userVideos - (currentLevel.collateral || 0);
+  const needed = (nextLevel.collateral || 0) - (currentLevel.collateral || 0);
+  const percent = Math.min((current / needed) * 100, 100);
+  progressEl.style.width = percent + '%';
+  progressText.textContent = `${current}/${needed} videos`;
+  progressNext.textContent = nextLevel.name || 'WM1';
   } else {
-    progressEl.style.width = '100%';
-    progressText.textContent = '🎉 Max level reached!';
-    progressNext.textContent = 'MAX';
+  progressEl.style.width = '100%';
+  progressText.textContent = 'Max level reached!';
+  progressNext.textContent = 'MAX';
   }
 }
 
@@ -1027,8 +1014,8 @@ function updateLevelProgress() {
 // ============================================================
 function startVideoListener() {
   db.ref('videos').on('value', (snap) => {
-    videosData = snap.val() || {};
-    updateVideoDisplay();
+  videosData = snap.val() || {};
+  updateVideoDisplay();
   });
 }
 
@@ -1060,11 +1047,11 @@ function getRemainingVideos() {
   
   // Get the next videos based on position
   let videoIds = [];
-  if (allVideoIds.length > 0) {
-    for (let i = 0; i < remaining; i++) {
-      const idx = (position + i) % allVideoIds.length;
-      videoIds.push(allVideoIds[idx]);
-    }
+  if (allVideoIds.length >0) {
+  for (let i = 0; i < remaining; i++) {
+  const idx = (position + i) % allVideoIds.length;
+  videoIds.push(allVideoIds[idx]);
+  }
   }
   
   return { remaining, total: totalVideos, watched: watchedToday, reward, videoIds, position };
@@ -1097,61 +1084,61 @@ function renderVideoGrid() {
   const levelName = level.name || 'Trainee';
   
   // Check if user has completed all videos
-  if (remaining <= 0 && total > 0) {
-    grid.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);">
-        <div style="font-size:48px;margin-bottom:12px;">🎉</div>
-        <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">All videos completed for today!</div>
-        <div style="font-size:12px;color:var(--muted);">You watched ${watched}/${total} videos today.</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:8px;">⏰ Next reset at 00:00 UTC</div>
-      </div>
-    `;
-    return;
+  if (remaining <= 0 && total >0) {
+  grid.innerHTML = `
+<div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);">
+<div style="font-size:48px;margin-bottom:12px;"></div>
+<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">All videos completed for today!</div>
+<div style="font-size:12px;color:var(--muted);">You watched ${watched}/${total} videos today.</div>
+<div style="font-size:11px;color:var(--muted);margin-top:8px;">⏰ Next reset at 00:00 UTC</div>
+</div>
+  `;
+  return;
   }
   
   const allVideoIds = getVideoIds();
   if (!allVideoIds.length) {
-    grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
-    return;
+  grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
+  return;
   }
   
   // Show videos based on rotation
   const videosToShow = videoIds.slice(0, remaining);
   
-  if (videosToShow.length === 0 && remaining > 0) {
-    // Fallback
-    grid.innerHTML = allVideoIds.slice(0, remaining).map(id => {
-      const v = videosData[id];
-      if (!v) return '';
-      return `<div class="video-card" onclick="openVideoPlayer('${id}')">
-        <div class="video-thumb-wrap">
-          <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
-          <div class="video-play-badge">
-            <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
-          </div>
-          <div class="video-reward-badge">${fmt(reward)}</div>
-        </div>
-        <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
-      </div>`;
-    }).join('');
-    return;
+  if (videosToShow.length === 0 && remaining >0) {
+  // Fallback
+  grid.innerHTML = allVideoIds.slice(0, remaining).map(id => {
+  const v = videosData[id];
+  if (!v) return '';
+  return `<div class="video-card" onclick="openVideoPlayer('${id}')">
+<div class="video-thumb-wrap">
+  <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
+<div class="video-play-badge">
+  <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
+</div>
+<div class="video-reward-badge">${fmt(reward)}</div>
+</div>
+<div class="video-title">${escapeHtml(v.title || 'Video')}</div>
+</div>`;
+  }).join('');
+  return;
   }
   
   grid.innerHTML = videosToShow.map((id, index) => {
-    const v = videosData[id];
-    if (!v) return '';
-    const videoNumber = watched + index + 1;
-    return `<div class="video-card" onclick="openVideoPlayer('${id}')">
-      <div class="video-thumb-wrap">
-        <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
-        <div class="video-play-badge">
-          <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
-        </div>
-        <div class="video-reward-badge">${fmt(reward)}</div>
-        <div class="video-count-badge">${videoNumber}/${total}</div>
-      </div>
-      <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
-    </div>`;
+  const v = videosData[id];
+  if (!v) return '';
+  const videoNumber = watched + index + 1;
+  return `<div class="video-card" onclick="openVideoPlayer('${id}')">
+<div class="video-thumb-wrap">
+  <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
+<div class="video-play-badge">
+  <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
+</div>
+<div class="video-reward-badge">${fmt(reward)}</div>
+<div class="video-count-badge">${videoNumber}/${total}</div>
+</div>
+<div class="video-title">${escapeHtml(v.title || 'Video')}</div>
+</div>`;
   }).join('');
 }
 
@@ -1174,23 +1161,23 @@ function openVideoPlayer(id) {
   // Check remaining videos
   const { remaining } = getRemainingVideos();
   if (remaining <= 0) {
-    const popup = document.getElementById('popup-banner');
-    popup.textContent = '🎉 All videos completed for today!';
-    popup.classList.add('show');
-    setTimeout(() => popup.classList.remove('show'), 2500);
-    return;
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = 'All videos completed for today!';
+  popup.classList.add('show');
+  setTimeout(() =>popup.classList.remove('show'), 2500);
+  return;
   }
   
   // Check Trainee 3-day limit
   if (getUserLevel() === 'trainee') {
-    const traineeCompleted = currentUser?.traineeCompleted || false;
-    if (traineeCompleted) {
-      const popup = document.getElementById('popup-banner');
-      popup.textContent = '⚠️ Trainee period expired! Upgrade to continue earning.';
-      popup.classList.add('show');
-      setTimeout(() => popup.classList.remove('show'), 3000);
-      return;
-    }
+  const traineeCompleted = currentUser?.traineeCompleted || false;
+  if (traineeCompleted) {
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = 'Trainee period expired! Upgrade to continue earning.';
+  popup.classList.add('show');
+  setTimeout(() =>popup.classList.remove('show'), 3000);
+  return;
+  }
   }
   
   const levelKey = getUserLevel();
@@ -1201,7 +1188,7 @@ function openVideoPlayer(id) {
   
   document.getElementById('video-overlay-title').textContent = v.title || 'Movie';
   document.getElementById('video-player-embed').innerHTML =
-    `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media"allowfullscreen></iframe>`;
   
   // Reset controls
   const claimBtn = document.getElementById('claim-btn');
@@ -1238,20 +1225,20 @@ function startCountdown() {
   
   if (countdownTimer) clearInterval(countdownTimer);
   countdownTimer = setInterval(() => {
-    countdownValue--;
-    const progress = ((5 - countdownValue) / 5) * 100;
-    progressEl.style.width = progress + '%';
+  countdownValue--;
+  const progress = ((5 - countdownValue) / 5) * 100;
+  progressEl.style.width = progress + '%';
     
-    if (countdownValue <= 0) {
-      clearInterval(countdownTimer);
-      numberEl.textContent = '✓';
-      claimBtn.disabled = false;
-      claimBtn.className = 'claim-btn ready';
-      claimBtn.textContent = `💰 GET REWARD (${fmt(currentPlayingVideo.reward)})`;
-      isClaimReady = true;
-      return;
-    }
-    numberEl.textContent = countdownValue;
+  if (countdownValue <= 0) {
+  clearInterval(countdownTimer);
+  numberEl.textContent = '';
+  claimBtn.disabled = false;
+  claimBtn.className = 'claim-btn ready';
+  claimBtn.textContent = ` GET REWARD (${fmt(currentPlayingVideo.reward)})`;
+  isClaimReady = true;
+  return;
+  }
+  numberEl.textContent = countdownValue;
   }, 1000);
 }
 
@@ -1265,12 +1252,12 @@ function closeVideoPlayer() {
 
 async function claimReward() {
   if (!currentPlayingVideo || !currentUser) {
-    console.log('No video or user');
-    return;
+  console.log('No video or user');
+  return;
   }
   if (!isClaimReady) {
-    console.log('Not ready yet');
-    return;
+  console.log('Not ready yet');
+  return;
   }
   
   const btn = document.getElementById('claim-btn');
@@ -1278,135 +1265,135 @@ async function claimReward() {
   btn.textContent = 'Adding...';
   
   try {
-    const todayUTC = getUTCKey();
-    const userRef = db.ref('users/' + safeKey(currentUsername));
-    const snap = await userRef.get();
-    const user = snap.val() || {};
+  const todayUTC = getUTCKey();
+  const userRef = db.ref('users/' + safeKey(currentUsername));
+  const snap = await userRef.get();
+  const user = snap.val() || {};
     
-    const levelKey = getUserLevel();
-    const level = getLevelData(levelKey);
-    const reward = level.each || 0;
-    const totalVideos = level.movies || 0;
-    const watchedToday = user.watchHistory?.[todayUTC] || 0;
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const reward = level.each || 0;
+  const totalVideos = level.movies || 0;
+  const watchedToday = user.watchHistory?.[todayUTC] || 0;
     
-    if (watchedToday >= totalVideos) {
-      btn.disabled = false;
-      btn.className = 'claim-btn claimed';
-      btn.textContent = '✅ Already completed!';
-      return;
-    }
+  if (watchedToday >= totalVideos) {
+  btn.disabled = false;
+  btn.className = 'claim-btn claimed';
+  btn.textContent = 'Already completed!';
+  return;
+  }
     
-    // Update video position
-    const allVideoIds = getVideoIds();
-    let newPosition = (user.videoPosition || 0) + 1;
-    if (newPosition >= allVideoIds.length) {
-      newPosition = 0;
-    }
+  // Update video position
+  const allVideoIds = getVideoIds();
+  let newPosition = (user.videoPosition || 0) + 1;
+  if (newPosition >= allVideoIds.length) {
+  newPosition = 0;
+  }
     
-    // ✅ FIX: Reward goes to MOB account (not STAKE!)
-    const currentMob = user.mob || 0;
-    const newMob = currentMob + reward;
-    const newTotalVideos = (user.totalVideosWatched || 0) + 1;
-    const txKey = 'tx_video_' + Date.now();
+  // FIX: Reward goes to MOB account (not STAKE!)
+  const currentMob = user.mob || 0;
+  const newMob = currentMob + reward;
+  const newTotalVideos = (user.totalVideosWatched || 0) + 1;
+  const txKey = 'tx_video_' + Date.now();
     
-    const updates = {
-      mob: newMob,  // ← MOB gets the reward
-      totalVideosWatched: newTotalVideos,
-      videoPosition: newPosition,
-      [`watchHistory/${todayUTC}`]: watchedToday + 1,
-      [`transactions/${txKey}`]: {
-        type: 'Video Reward',
-        amount: reward,
-        note: `Watched: ${currentPlayingVideo.title}`,
-        date: dateStr(),
-        status: 'completed'
-      }
-    };
+  const updates = {
+  mob: newMob, // ← MOB gets the reward
+  totalVideosWatched: newTotalVideos,
+  videoPosition: newPosition,
+  [`watchHistory/${todayUTC}`]: watchedToday + 1,
+  [`transactions/${txKey}`]: {
+  type: 'Video Reward',
+  amount: reward,
+  note: `Watched: ${currentPlayingVideo.title}`,
+  date: dateStr(),
+  status: 'completed'
+  }
+  };
     
-    // Check streak (UTC-based)
-    const lastWatchDate = user.lastWatchDate || null;
-    const todayStr = getUTCKey();
-    let streakDays = user.streakDays || 0;
+  // Check streak (UTC-based)
+  const lastWatchDate = user.lastWatchDate || null;
+  const todayStr = getUTCKey();
+  let streakDays = user.streakDays || 0;
     
-    if (lastWatchDate === todayStr) {
-      // Already watched today - no streak change
-    } else {
-      const yesterday = getServerTime();
-      yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-      const yesterdayStr = getUTCKey(yesterday);
+  if (lastWatchDate === todayStr) {
+  // Already watched today - no streak change
+  } else {
+  const yesterday = getServerTime();
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const yesterdayStr = getUTCKey(yesterday);
       
-      if (lastWatchDate === yesterdayStr) {
-        streakDays = (user.streakDays || 0) + 1;
-        if (streakDays % 5 === 0) {
-          const bonus = settingsData.streakBonus || 1000;
-          // Streak bonus also goes to MOB
-          updates.mob = newMob + bonus;
-          updates[`transactions/streak_${Date.now()}`] = {
-            type: 'Streak Bonus',
-            amount: bonus,
-            note: `🔥 ${streakDays}-day streak bonus!`,
-            date: dateStr(),
-            status: 'completed'
-          };
-        }
-      } else {
-        streakDays = 1;
-      }
-    }
+  if (lastWatchDate === yesterdayStr) {
+  streakDays = (user.streakDays || 0) + 1;
+  if (streakDays % 5 === 0) {
+  const bonus = settingsData.streakBonus || 1000;
+  // Streak bonus also goes to MOB
+  updates.mob = newMob + bonus;
+  updates[`transactions/streak_${Date.now()}`] = {
+  type: 'Streak Bonus',
+  amount: bonus,
+  note: ` ${streakDays}-day streak bonus!`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  }
+  } else {
+  streakDays = 1;
+  }
+  }
     
-    updates.streakDays = streakDays;
-    updates.lastWatchDate = todayStr;
+  updates.streakDays = streakDays;
+  updates.lastWatchDate = todayStr;
     
-    // Check Trainee days
-    if (levelKey === 'trainee') {
-      const traineeStartDate = user.traineeStartDate || todayStr;
-      const startDate = new Date(traineeStartDate + 'T00:00:00Z');
-      const now = new Date();
-      const diffTime = now - startDate;
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-      const dayCount = Math.min(diffDays + 1, 3);
+  // Check Trainee days
+  if (levelKey === 'trainee') {
+  const traineeStartDate = user.traineeStartDate || todayStr;
+  const startDate = new Date(traineeStartDate + 'T00:00:00Z');
+  const now = new Date();
+  const diffTime = now - startDate;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const dayCount = Math.min(diffDays + 1, 3);
       
-      updates.traineeDayCount = dayCount;
-      if (dayCount >= 3) {
-        updates.traineeCompleted = true;
-      }
-    }
+  updates.traineeDayCount = dayCount;
+  if (dayCount >= 3) {
+  updates.traineeCompleted = true;
+  }
+  }
     
-    await userRef.update(updates);
+  await userRef.update(updates);
     
-    // Update currentUser
-    currentUser = await userRef.get().then(s => s.val());
-    updateBalanceUI();
-    renderHistory();
-    updateProfileUI();
-    updateLevelProgress();
-    renderStages();
-    updateVideoDisplay();
+  // Update currentUser
+  currentUser = await userRef.get().then(s =>s.val());
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderStages();
+  updateVideoDisplay();
     
-    // ✅ FIX: Show completed state and allow watching next
-    btn.className = 'claim-btn claimed';
-    btn.textContent = '✅ Completed! +' + fmt(reward) + ' to MOB';
-    btn.disabled = false;
+  // FIX: Show completed state and allow watching next
+  btn.className = 'claim-btn claimed';
+  btn.textContent = 'Completed! +' + fmt(reward) + 'to MOB';
+  btn.disabled = false;
     
-    // Auto-close after 2 seconds and allow next video
-    setTimeout(() => {
-      closeVideoPlayer();
-      const popup = document.getElementById('popup-banner');
-      popup.textContent = `✅ Earned ${fmt(reward)} to MOB! ${streakDays}-day streak! 🔥`;
-      popup.classList.add('show');
-      setTimeout(() => popup.classList.remove('show'), 2000);
-    }, 1500);
+  // Auto-close after 2 seconds and allow next video
+  setTimeout(() => {
+  closeVideoPlayer();
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = ` Earned ${fmt(reward)} to MOB! ${streakDays}-day streak! `;
+  popup.classList.add('show');
+  setTimeout(() =>popup.classList.remove('show'), 2000);
+  }, 1500);
     
   } catch (e) {
-    console.error('Claim error:', e);
-    btn.disabled = false;
-    btn.textContent = '❌ Error, try again';
-    setTimeout(() => {
-      btn.textContent = `💰 GET REWARD (${fmt(currentPlayingVideo?.reward || 0)})`;
-      btn.className = 'claim-btn ready';
-      btn.disabled = false;
-      isClaimReady = true;
-    }, 2000);
+  console.error('Claim error:', e);
+  btn.disabled = false;
+  btn.textContent = 'Error, try again';
+  setTimeout(() => {
+  btn.textContent = ` GET REWARD (${fmt(currentPlayingVideo?.reward || 0)})`;
+  btn.className = 'claim-btn ready';
+  btn.disabled = false;
+  isClaimReady = true;
+  }, 2000);
   }
 }
 
@@ -1418,7 +1405,7 @@ function updateBalanceUI() {
   
   let stake = currentUser.stake || 0;
   if (stake === 0 && currentUser.balance) {
-    stake = currentUser.balance;
+  stake = currentUser.balance;
   }
   
   let mob = currentUser.mob || 0;
@@ -1445,36 +1432,36 @@ function updateBalanceUI() {
   const traineeStatus = document.getElementById('stages-trainee-status');
   const traineeStatus2 = document.getElementById('user-trainee-status');
   if (levelKey === 'trainee') {
-    const dayCount = currentUser.traineeDayCount || 1;
-    const completed = currentUser.traineeCompleted || false;
-    if (completed) {
-      traineeStatus.textContent = '✅ Trainee Complete! Upgrade Now';
-      traineeStatus.style.color = 'var(--warn)';
-      if (traineeStatus2) {
-        traineeStatus2.textContent = '✅ Trainee Complete - Upgrade Now';
-        traineeStatus2.style.color = 'var(--warn)';
-      }
-    } else {
-      traineeStatus.textContent = `📅 Day ${dayCount}/3`;
-      traineeStatus.style.color = 'var(--accent)';
-      if (traineeStatus2) {
-        traineeStatus2.textContent = `📅 Day ${dayCount}/3`;
-        traineeStatus2.style.color = 'var(--accent)';
-      }
-    }
+  const dayCount = currentUser.traineeDayCount || 1;
+  const completed = currentUser.traineeCompleted || false;
+  if (completed) {
+  traineeStatus.textContent = 'Trainee Complete! Upgrade Now';
+  traineeStatus.style.color = 'var(--warn)';
+  if (traineeStatus2) {
+  traineeStatus2.textContent = 'Trainee Complete - Upgrade Now';
+  traineeStatus2.style.color = 'var(--warn)';
+  }
   } else {
-    traineeStatus.textContent = '';
-    if (traineeStatus2) traineeStatus2.textContent = '';
+  traineeStatus.textContent = ` Day ${dayCount}/3`;
+  traineeStatus.style.color = 'var(--accent)';
+  if (traineeStatus2) {
+  traineeStatus2.textContent = ` Day ${dayCount}/3`;
+  traineeStatus2.style.color = 'var(--accent)';
+  }
+  }
+  } else {
+  traineeStatus.textContent = '';
+  if (traineeStatus2) traineeStatus2.textContent = '';
   }
   
   const userVideos = currentUser.totalVideosWatched || 0;
   let userLevelName = 'Trainee';
   const levelKeys = getLevelKeys();
   for (const key of levelKeys) {
-    const lv = levelsData[key];
-    if (lv && userVideos >= (lv.collateral || 0)) {
-      userLevelName = lv.name || 'Trainee';
-    }
+  const lv = levelsData[key];
+  if (lv && userVideos >= (lv.collateral || 0)) {
+  userLevelName = lv.name || 'Trainee';
+  }
   }
   document.getElementById('stat-level').textContent = userLevelName;
   
@@ -1490,7 +1477,7 @@ function updateProfileUI() {
   document.getElementById('profile-phone-simple').textContent = currentUser.phone || '—';
   document.getElementById('profile-date-simple').textContent = currentUser.joinedDate || '2025';
   document.getElementById('profile-videos-simple').textContent = currentUser.totalVideosWatched || 0;
-  document.getElementById('profile-streak-simple').textContent = (currentUser.streakDays || 0) + ' days';
+  document.getElementById('profile-streak-simple').textContent = (currentUser.streakDays || 0) + 'days';
   
   const levelName = levelsData[currentUser?.currentLevel || 'trainee']?.name || 'Trainee';
   document.getElementById('profile-level-simple').textContent = levelName;
@@ -1526,78 +1513,78 @@ function renderStages() {
   document.getElementById('stages-current-level').textContent = levelName;
   
   if (!levelKeys.length || !levelsData) {
-    grid.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No levels configured.</div>';
-    return;
+  grid.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No levels configured.</div>';
+  return;
   }
   
   let html = '';
   let previousPurchased = true;
   
   for (const key of levelKeys) {
-    const level = levelsData[key];
-    if (!level) continue;
-    if (key === 'trainee') {
-      previousPurchased = true;
-      continue;
-    }
+  const level = levelsData[key];
+  if (!level) continue;
+  if (key === 'trainee') {
+  previousPurchased = true;
+  continue;
+  }
     
-    const isPurchased = purchased[key] === true;
-    const isLocked = level.locked === true;
-    const isCurrent = userLevel === key;
-    const cost = level.collateral || 0;
-    const hasEnough = userStake >= cost;
-    const canPurchase = previousPurchased && !isPurchased && !isLocked && hasEnough;
+  const isPurchased = purchased[key] === true;
+  const isLocked = level.locked === true;
+  const isCurrent = userLevel === key;
+  const cost = level.collateral || 0;
+  const hasEnough = userStake >= cost;
+  const canPurchase = previousPurchased && !isPurchased && !isLocked && hasEnough;
     
-    const color = LEVEL_COLORS[key] || '#666';
-    const name = level.name || key;
-    const movies = level.movies || 0;
-    const each = level.each || 0;
-    const daily = level.daily || 0;
+  const color = LEVEL_COLORS[key] || '#666';
+  const name = level.name || key;
+  const movies = level.movies || 0;
+  const each = level.each || 0;
+  const daily = level.daily || 0;
     
-    let btnHtml = '';
-    let cardClass = 'stage-card';
+  let btnHtml = '';
+  let cardClass = 'stage-card';
     
-    if (isPurchased) {
-      cardClass += ' purchased';
-      btnHtml = `<button class="stage-btn purchased-btn" disabled>✅ Active</button>`;
-    } else if (isLocked) {
-      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
-    } else if (!hasEnough) {
-      btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">💳 Need ${fmt(cost)}</button>`;
-    } else if (canPurchase) {
-      btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${name}')">🔓 Purchase Level</button>`;
-    } else if (!previousPurchased) {
-      btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" onclick="showNeedPreviousPopup('${name}')">🔓 Purchase Level</button>`;
-    } else {
-      btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">🔓 Purchase Level</button>`;
-    }
+  if (isPurchased) {
+  cardClass += 'purchased';
+  btnHtml = `<button class="stage-btn purchased-btn"disabled>Active</button>`;
+  } else if (isLocked) {
+  btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">Purchase Level</button>`;
+  } else if (!hasEnough) {
+  btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">Need ${fmt(cost)}</button>`;
+  } else if (canPurchase) {
+  btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${name}')">Purchase Level</button>`;
+  } else if (!previousPurchased) {
+  btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" onclick="showNeedPreviousPopup('${name}')">Purchase Level</button>`;
+  } else {
+  btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">Purchase Level</button>`;
+  }
     
-    html += `
-      <div class="${cardClass}" style="border-left:4px solid ${color};">
-        <div class="stage-color" style="background:${color};"></div>
-        <div class="stage-info">
-          <div class="stage-name">${name} ${isCurrent ? '⭐' : ''} ${isPurchased ? '✅' : ''}</div>
-          <div class="stage-details">
-            <span class="cost">Cost: ${fmt(cost)}</span>
-            <span>Movies: ${movies}/day</span>
-            <span>Each: ${fmt(each)}</span>
-            <span class="daily">Daily: ${fmt(daily)}</span>
-          </div>
-        </div>
-        <div class="stage-action">${btnHtml}</div>
-      </div>
-    `;
+  html += `
+<div class="${cardClass}" style="border-left:4px solid ${color};">
+<div class="stage-color" style="background:${color};"></div>
+<div class="stage-info">
+<div class="stage-name">${name} ${isCurrent ? '' : ''} ${isPurchased ? '' : ''}</div>
+<div class="stage-details">
+  <span class="cost">Cost: ${fmt(cost)}</span>
+  <span>Movies: ${movies}/day</span>
+  <span>Each: ${fmt(each)}</span>
+  <span class="daily">Daily: ${fmt(daily)}</span>
+</div>
+</div>
+<div class="stage-action">${btnHtml}</div>
+</div>
+  `;
     
-    if (isPurchased) {
-      previousPurchased = true;
-    }
+  if (isPurchased) {
+  previousPurchased = true;
+  }
   }
   
   grid.innerHTML = html;
 }
 
 function showReservedPopup() {
-  showPopup('🌟 Level Not Available', 'This level is currently reserved. Please check back later for availability.', 'info');
+  showPopup('Level Not Available', 'This level is currently reserved. Please check back later for availability.', 'info');
 }
 
 function showInsufficientPopup(needed) {
@@ -1612,78 +1599,78 @@ async function purchaseLevel(levelKey, cost, levelName) {
   if (!currentUser) return;
   
   if (currentUser.purchasedLevels && currentUser.purchasedLevels[levelKey]) {
-    showPopup('Already Purchased', `You already own ${levelName} ✅`, 'info');
-    return;
+  showPopup('Already Purchased', `You already own ${levelName} `, 'info');
+  return;
   }
   
   const level = levelsData[levelKey];
   if (level && level.locked === true) {
-    showReservedPopup();
-    return;
+  showReservedPopup();
+  return;
   }
   
   if ((currentUser.stake || 0) < cost) {
-    showInsufficientPopup(fmt(cost));
-    return;
+  showInsufficientPopup(fmt(cost));
+  return;
   }
   
   const levelKeys = getLevelKeys();
   let previousKey = null;
   for (const key of levelKeys) {
-    if (key === levelKey) break;
-    if (key !== 'trainee') {
-      previousKey = key;
-    }
+  if (key === levelKey) break;
+  if (key !== 'trainee') {
+  previousKey = key;
+  }
   }
   if (previousKey && !currentUser.purchasedLevels?.[previousKey]) {
-    showNeedPreviousPopup(levelName);
-    return;
+  showNeedPreviousPopup(levelName);
+  return;
   }
   
   const confirmed = await showConfirmPopup('Confirm Purchase', `Purchase ${levelName} for ${fmt(cost)}?`, levelKey);
   if (!confirmed) return;
   
   try {
-    const userRef = db.ref('users/' + safeKey(currentUsername));
-    const newStake = (currentUser.stake || 0) - cost;
-    const purchasedLevels = currentUser.purchasedLevels || {};
-    purchasedLevels[levelKey] = true;
+  const userRef = db.ref('users/' + safeKey(currentUsername));
+  const newStake = (currentUser.stake || 0) - cost;
+  const purchasedLevels = currentUser.purchasedLevels || {};
+  purchasedLevels[levelKey] = true;
     
-    let newCurrentLevel = 'trainee';
-    for (const key of levelKeys) {
-      if (purchasedLevels[key] === true) {
-        newCurrentLevel = key;
-      }
-    }
+  let newCurrentLevel = 'trainee';
+  for (const key of levelKeys) {
+  if (purchasedLevels[key] === true) {
+  newCurrentLevel = key;
+  }
+  }
     
-    const txKey = 'tx_level_' + Date.now();
-    const updates = {
-      stake: newStake,
-      currentLevel: newCurrentLevel,
-      purchasedLevels: purchasedLevels,
-      [`transactions/${txKey}`]: {
-        type: 'Level Purchase',
-        amount: -cost,
-        note: `Purchased ${levelName}`,
-        date: dateStr(),
-        status: 'completed'
-      }
-    };
+  const txKey = 'tx_level_' + Date.now();
+  const updates = {
+  stake: newStake,
+  currentLevel: newCurrentLevel,
+  purchasedLevels: purchasedLevels,
+  [`transactions/${txKey}`]: {
+  type: 'Level Purchase',
+  amount: -cost,
+  note: `Purchased ${levelName}`,
+  date: dateStr(),
+  status: 'completed'
+  }
+  };
     
-    await userRef.update(updates);
+  await userRef.update(updates);
     
-    currentUser = await userRef.get().then(s => s.val());
-    updateBalanceUI();
-    renderStages();
-    renderLevelsTable();
-    updateProfileUI();
-    updateVideoDisplay();
+  currentUser = await userRef.get().then(s =>s.val());
+  updateBalanceUI();
+  renderStages();
+  renderLevelsTable();
+  updateProfileUI();
+  updateVideoDisplay();
     
-    showPopup('🎉 Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!`, 'success');
+  showPopup('Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!`, 'success');
     
   } catch (error) {
-    console.error('Purchase error:', error);
-    showPopup('Error', 'Failed to purchase level. Please try again.', 'error');
+  console.error('Purchase error:', error);
+  showPopup('Error', 'Failed to purchase level. Please try again.', 'error');
   }
 }
 
@@ -1698,13 +1685,13 @@ function showPopup(title, message, type) {
   const closeBtn = document.querySelector('.modal-close');
   
   const icons = {
-    success: '✅',
-    error: '❌',
-    info: 'ℹ️',
-    warning: '⚠️'
+  success: '',
+  error: '',
+  info: 'ℹ',
+  warning: ''
   };
   
-  iconEl.textContent = icons[type] || '📱';
+  iconEl.textContent = icons[type] || '';
   titleEl.textContent = title;
   msgEl.textContent = message;
   closeBtn.textContent = 'OK, Got It';
@@ -1716,86 +1703,86 @@ function showPopup(title, message, type) {
 
 function showConfirmPopup(title, message, levelKey) {
   return new Promise((resolve) => {
-    const overlay = document.getElementById('modal-overlay');
-    const iconEl = document.getElementById('modal-icon');
-    const titleEl = document.getElementById('modal-title');
-    const msgEl = document.getElementById('modal-msg');
-    const closeBtn = document.querySelector('.modal-close');
+  const overlay = document.getElementById('modal-overlay');
+  const iconEl = document.getElementById('modal-icon');
+  const titleEl = document.getElementById('modal-title');
+  const msgEl = document.getElementById('modal-msg');
+  const closeBtn = document.querySelector('.modal-close');
     
-    iconEl.textContent = '❓';
-    titleEl.textContent = title;
-    msgEl.textContent = message;
+  iconEl.textContent = '';
+  titleEl.textContent = title;
+  msgEl.textContent = message;
     
-    const existingActions = document.querySelector('.modal-actions');
-    if (existingActions) existingActions.remove();
+  const existingActions = document.querySelector('.modal-actions');
+  if (existingActions) existingActions.remove();
     
-    const box = document.querySelector('.modal-box');
-    const actionsDiv = document.createElement('div');
-    actionsDiv.className = 'modal-actions';
-    actionsDiv.style.display = 'flex';
-    actionsDiv.style.gap = '10px';
-    actionsDiv.style.marginTop = '16px';
-    actionsDiv.style.justifyContent = 'center';
+  const box = document.querySelector('.modal-box');
+  const actionsDiv = document.createElement('div');
+  actionsDiv.className = 'modal-actions';
+  actionsDiv.style.display = 'flex';
+  actionsDiv.style.gap = '10px';
+  actionsDiv.style.marginTop = '16px';
+  actionsDiv.style.justifyContent = 'center';
     
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.style.background = 'var(--surface2)';
-    cancelBtn.style.border = '1px solid var(--border)';
-    cancelBtn.style.borderRadius = '12px';
-    cancelBtn.style.padding = '13px 20px';
-    cancelBtn.style.fontFamily = 'Inter, sans-serif';
-    cancelBtn.style.fontSize = '14px';
-    cancelBtn.style.fontWeight = '700';
-    cancelBtn.style.color = 'var(--muted)';
-    cancelBtn.style.cursor = 'pointer';
-    cancelBtn.style.width = '45%';
+  const cancelBtn = document.createElement('button');
+  cancelBtn.textContent = 'Cancel';
+  cancelBtn.style.background = 'var(--surface2)';
+  cancelBtn.style.border = '1px solid var(--border)';
+  cancelBtn.style.borderRadius = '12px';
+  cancelBtn.style.padding = '13px 20px';
+  cancelBtn.style.fontFamily = 'Inter, sans-serif';
+  cancelBtn.style.fontSize = '14px';
+  cancelBtn.style.fontWeight = '700';
+  cancelBtn.style.color = 'var(--muted)';
+  cancelBtn.style.cursor = 'pointer';
+  cancelBtn.style.width = '45%';
     
-    const confirmBtn = document.createElement('button');
-    confirmBtn.textContent = 'Confirm';
-    confirmBtn.style.background = 'var(--success)';
-    confirmBtn.style.border = 'none';
-    confirmBtn.style.borderRadius = '12px';
-    confirmBtn.style.padding = '13px 20px';
-    confirmBtn.style.fontFamily = 'Inter, sans-serif';
-    confirmBtn.style.fontSize = '14px';
-    confirmBtn.style.fontWeight = '700';
-    confirmBtn.style.color = '#fff';
-    confirmBtn.style.cursor = 'pointer';
-    confirmBtn.style.width = '45%';
+  const confirmBtn = document.createElement('button');
+  confirmBtn.textContent = 'Confirm';
+  confirmBtn.style.background = 'var(--success)';
+  confirmBtn.style.border = 'none';
+  confirmBtn.style.borderRadius = '12px';
+  confirmBtn.style.padding = '13px 20px';
+  confirmBtn.style.fontFamily = 'Inter, sans-serif';
+  confirmBtn.style.fontSize = '14px';
+  confirmBtn.style.fontWeight = '700';
+  confirmBtn.style.color = '#fff';
+  confirmBtn.style.cursor = 'pointer';
+  confirmBtn.style.width = '45%';
     
-    actionsDiv.appendChild(cancelBtn);
-    actionsDiv.appendChild(confirmBtn);
-    box.appendChild(actionsDiv);
+  actionsDiv.appendChild(cancelBtn);
+  actionsDiv.appendChild(confirmBtn);
+  box.appendChild(actionsDiv);
     
-    closeBtn.style.display = 'none';
+  closeBtn.style.display = 'none';
     
-    overlay.classList.add('open');
+  overlay.classList.add('open');
     
-    const cleanup = () => {
-      overlay.classList.remove('open');
-      closeBtn.style.display = 'block';
-      const actions = document.querySelector('.modal-actions');
-      if (actions) actions.remove();
-      cancelBtn.onclick = null;
-      confirmBtn.onclick = null;
-    };
+  const cleanup = () => {
+  overlay.classList.remove('open');
+  closeBtn.style.display = 'block';
+  const actions = document.querySelector('.modal-actions');
+  if (actions) actions.remove();
+  cancelBtn.onclick = null;
+  confirmBtn.onclick = null;
+  };
     
-    cancelBtn.onclick = () => {
-      cleanup();
-      resolve(false);
-    };
+  cancelBtn.onclick = () => {
+  cleanup();
+  resolve(false);
+  };
     
-    confirmBtn.onclick = () => {
-      cleanup();
-      resolve(true);
-    };
+  confirmBtn.onclick = () => {
+  cleanup();
+  resolve(true);
+  };
     
-    overlay.onclick = (e) => {
-      if (e.target === overlay) {
-        cleanup();
-        resolve(false);
-      }
-    };
+  overlay.onclick = (e) => {
+  if (e.target === overlay) {
+  cleanup();
+  resolve(false);
+  }
+  };
   });
 }
 
@@ -1814,7 +1801,7 @@ let currentHistoryFilter = 'all';
 
 function setTxFilter(type, btnEl) {
   currentHistoryFilter = type;
-  document.querySelectorAll('.tx-pill').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tx-pill').forEach(b =>b.classList.remove('active'));
   if (btnEl) btnEl.classList.add('active');
   renderHistory();
 }
@@ -1829,51 +1816,51 @@ function renderHistory() {
   
   let txs = allTxs;
   if (currentHistoryFilter !== 'all') {
-    txs = allTxs.filter(tx => tx.type === currentHistoryFilter);
+  txs = allTxs.filter(tx =>tx.type === currentHistoryFilter);
   }
   
   if (searchQuery) {
-    txs = txs.filter(tx => 
-      (tx.type || '').toLowerCase().includes(searchQuery) ||
-      (tx.note || '').toLowerCase().includes(searchQuery) ||
-      fmt(tx.amount).toLowerCase().includes(searchQuery)
-    );
+  txs = txs.filter(tx => 
+  (tx.type || '').toLowerCase().includes(searchQuery) ||
+  (tx.note || '').toLowerCase().includes(searchQuery) ||
+  fmt(tx.amount).toLowerCase().includes(searchQuery)
+  );
   }
   
   if (!txs.length) {
-    if (wrap) wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon">📭</div><div class="tx-empty-title">No Records Found</div><div class="tx-empty-text">Try adjusting your filters or search.</div></div>';
-    return;
+  if (wrap) wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">No Records Found</div><div class="tx-empty-text">Try adjusting your filters or search.</div></div>';
+  return;
   }
   
-  const typeIcons = { 'Video Reward': '🎬', 'Streak Bonus': '🔥', Deposit: '💳', Withdrawal: '💸', Bonus: '🎁', 'Level Purchase': '📊' };
+  const typeIcons = { 'Video Reward': '', 'Streak Bonus': '', Deposit: '', Withdrawal: '', Bonus: '', 'Level Purchase': '' };
   const typeClasses = { 'Video Reward': 'tx-reward', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus', 'Level Purchase': 'tx-deposit' };
   
   if (wrap) {
-    wrap.innerHTML = '<div class="tx-cards-grid">' + 
-      txs.map(tx => {
-        const isPending = tx.status === 'pending';
-        const isFailed = tx.status === 'failed';
-        const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
-        const statusText = isPending ? '⏳ Pending' : isFailed ? '❌ Failed' : '✅ Completed';
-        const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
-        const typeClass = typeClasses[tx.type] || 'tx-reward';
-        const icon = typeIcons[tx.type] || '💰';
-        const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
+  wrap.innerHTML = '<div class="tx-cards-grid">' + 
+  txs.map(tx => {
+  const isPending = tx.status === 'pending';
+  const isFailed = tx.status === 'failed';
+  const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
+  const statusText = isPending ? '⏳ Pending' : isFailed ? 'Failed' : 'Completed';
+  const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
+  const typeClass = typeClasses[tx.type] || 'tx-reward';
+  const icon = typeIcons[tx.type] || '';
+  const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
         
-        return `<div class="tx-card ${typeClass}">
-          <div class="tx-card-header">
-            <div class="tx-card-icon">${icon}</div>
-            <div>
-              <div class="tx-card-type">${tx.type || 'Transaction'}</div>
-              <div class="tx-card-date">${tx.date || '—'}</div>
-            </div>
-          </div>
-          <div class="tx-card-amount ${amountClass}">${amountStr}</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span class="tx-card-status ${statusClass}">${statusText}</span>
-          </div>
-        </div>`;
-      }).join('') + '</div>';
+  return `<div class="tx-card ${typeClass}">
+<div class="tx-card-header">
+<div class="tx-card-icon">${icon}</div>
+<div>
+<div class="tx-card-type">${tx.type || 'Transaction'}</div>
+<div class="tx-card-date">${tx.date || '—'}</div>
+</div>
+</div>
+<div class="tx-card-amount ${amountClass}">${amountStr}</div>
+<div style="display:flex;justify-content:space-between;align-items:center;">
+  <span class="tx-card-status ${statusClass}">${statusText}</span>
+</div>
+</div>`;
+  }).join('') + '</div>';
   }
 }
 
@@ -1882,9 +1869,9 @@ function renderHistory() {
 // ============================================================
 function startSettingsListener() {
   db.ref('settings').on('value', (snap) => {
-    if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
-    updateSettingsUI();
-    updateBalanceUI();
+  if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
+  updateSettingsUI();
+  updateBalanceUI();
   });
 }
 
@@ -1906,9 +1893,9 @@ async function marzCollect(phone, amount, reference, description) {
   formData.append('reference', reference);
   formData.append('description', description);
   const response = await fetch(MARZ_API + '/collect-money', {
-    method: 'POST',
-    headers: { 'Authorization': getMarzAuth() },
-    body: formData
+  method: 'POST',
+  headers: { 'Authorization': getMarzAuth() },
+  body: formData
   });
   if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
   return await response.json();
@@ -1923,9 +1910,9 @@ async function marzSend(phone, amount, reference, description) {
   formData.append('reference', reference);
   formData.append('description', description);
   const response = await fetch(MARZ_API + '/send-money', {
-    method: 'POST',
-    headers: { 'Authorization': getMarzAuth() },
-    body: formData
+  method: 'POST',
+  headers: { 'Authorization': getMarzAuth() },
+  body: formData
   });
   if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
   return await response.json();
@@ -1933,7 +1920,7 @@ async function marzSend(phone, amount, reference, description) {
 
 async function marzCheckStatus(uuid) {
   const response = await fetch(MARZ_API + '/transactions/' + uuid, {
-    headers: { 'Authorization': getMarzAuth() }
+  headers: { 'Authorization': getMarzAuth() }
   });
   if (!response.ok) return null;
   return await response.json();
@@ -1941,14 +1928,14 @@ async function marzCheckStatus(uuid) {
 
 async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
   for (let i = 0; i < maxAttempts; i++) {
-    await new Promise(r => setTimeout(r, intervalMs));
-    try {
-      const result = await marzCheckStatus(uuid);
-      if (!result) continue;
-      const status = (result?.transaction?.status || result?.data?.transaction?.status || result?.status || '').toLowerCase();
-      if (status === 'completed' || status === 'successful' || status === 'success') return 'success';
-      if (status === 'failed' || status === 'cancelled') return 'failed';
-    } catch (e) { continue; }
+  await new Promise(r =>setTimeout(r, intervalMs));
+  try {
+  const result = await marzCheckStatus(uuid);
+  if (!result) continue;
+  const status = (result?.transaction?.status || result?.data?.transaction?.status || result?.status || '').toLowerCase();
+  if (status === 'completed' || status === 'successful' || status === 'success') return 'success';
+  if (status === 'failed' || status === 'cancelled') return 'failed';
+  } catch (e) { continue; }
   }
   return 'timeout';
 }
@@ -1960,18 +1947,18 @@ async function doDeposit() {
   clearErrors('dep-phone-err', 'dep-amount-err');
   const phoneDigits = document.getElementById('dep-phone').value.trim();
   if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
-    setErr('dep-phone-err', true, 'Enter 9 digits starting with 7');
-    return;
+  setErr('dep-phone-err', true, 'Enter 9 digits starting with 7');
+  return;
   }
   const minDep = settingsData.minDeposit || 10000;
   const amount = parseInt(document.getElementById('dep-amount').value) || 0;
   if (amount < minDep) {
-    setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
-    return;
+  setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
+  return;
   }
   if (!settingsData.marzApiKey) {
-    sendAdminNotification('deposit_error', currentUsername, amount, 'Payment API not configured');
-    return;
+  sendAdminNotification('deposit_error', currentUsername, amount, 'Payment API not configured');
+  return;
   }
   
   const btn = document.getElementById('dep-submit-btn');
@@ -1986,74 +1973,74 @@ async function doDeposit() {
   document.getElementById('dep-amount').value = '';
   
   const popup = document.getElementById('popup-banner');
-  popup.textContent = '🔐 Confirm with mobile money PIN';
+  popup.textContent = 'Confirm with mobile money PIN';
   popup.classList.add('show');
-  setTimeout(() => popup.classList.remove('show'), 1000);
+  setTimeout(() =>popup.classList.remove('show'), 1000);
   
   const adminTxKey = 'adm_dep_' + Date.now();
   const adminTxRecord = {
-    type: 'Deposit',
-    username: currentUsername,
-    phone: fullPhone,
-    amount: amount,
-    reference: reference,
-    date: dateStr(),
-    status: 'pending'
+  type: 'Deposit',
+  username: currentUsername,
+  phone: fullPhone,
+  amount: amount,
+  reference: reference,
+  date: dateStr(),
+  status: 'pending'
   };
   
   try {
-    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+  await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
     
-    const result = await marzCollect(fullPhone, totalAmount, reference, 'WEA Deposit');
-    if (result.status !== 'success') {
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
-      btn.disabled = false;
-      btn.textContent = '💳 DEPOSIT TO STAKE';
-      return;
-    }
+  const result = await marzCollect(fullPhone, totalAmount, reference, 'WEA Deposit');
+  if (result.status !== 'success') {
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
+  btn.disabled = false;
+  btn.textContent = 'DEPOSIT TO STAKE';
+  return;
+  }
     
-    const txUuid = result?.data?.transaction?.uuid;
-    const pollResult = await pollPaymentStatus(txUuid);
+  const txUuid = result?.data?.transaction?.uuid;
+  const pollResult = await pollPaymentStatus(txUuid);
     
-    if (pollResult === 'success') {
-      const newStake = oldStake + amount;
-      const updates = {
-        stake: newStake,
-        [`transactions/tx_dep_${Date.now()}`]: {
-          type: 'Deposit',
-          amount: amount,
-          note: 'Deposit confirmed ✅',
-          date: dateStr(),
-          status: 'completed'
-        }
-      };
-      await db.ref('users/' + safeKey(currentUsername)).update(updates);
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+  if (pollResult === 'success') {
+  const newStake = oldStake + amount;
+  const updates = {
+  stake: newStake,
+  [`transactions/tx_dep_${Date.now()}`]: {
+  type: 'Deposit',
+  amount: amount,
+  note: 'Deposit confirmed ',
+  date: dateStr(),
+  status: 'completed'
+  }
+  };
+  await db.ref('users/' + safeKey(currentUsername)).update(updates);
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
       
-      popup.textContent = `✅ Deposit of ${fmt(amount)} added to STAKE!`;
-      popup.classList.add('show');
-      setTimeout(() => popup.classList.remove('show'), 2000);
+  popup.textContent = ` Deposit of ${fmt(amount)} added to STAKE!`;
+  popup.classList.add('show');
+  setTimeout(() =>popup.classList.remove('show'), 2000);
       
-      currentUser = await db.ref('users/' + safeKey(currentUsername)).get().then(s => s.val());
-      updateBalanceUI();
-      renderStages();
+  currentUser = await db.ref('users/' + safeKey(currentUsername)).get().then(s =>s.val());
+  updateBalanceUI();
+  renderStages();
       
-    } else if (pollResult === 'failed') {
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
-    } else {
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
-    }
+  } else if (pollResult === 'failed') {
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
+  } else {
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
+  }
   } catch (error) {
-    console.error('Deposit error:', error);
-    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    sendAdminNotification('deposit_error', currentUsername, amount, error.message);
+  console.error('Deposit error:', error);
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('deposit_error', currentUsername, amount, error.message);
   }
   
   btn.disabled = false;
-  btn.textContent = '💳 DEPOSIT TO STAKE';
+  btn.textContent = 'DEPOSIT TO STAKE';
   switchTab('home');
 }
 
@@ -2063,22 +2050,22 @@ async function doDeposit() {
 async function doWithdraw() {
   clearErrors('with-amount-err');
   if (settingsData.withdrawLocked) {
-    sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
-    return;
+  sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
+  return;
   }
   
   const minWith = settingsData.minWithdraw || 10000;
   const amount = parseInt(document.getElementById('with-amount').value) || 0;
   if (amount < minWith) {
-    setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith));
-    return;
+  setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith));
+  return;
   }
   
-  // ✅ FIX: Check MOB balance instead of STAKE
+  // FIX: Check MOB balance instead of STAKE
   const mob = currentUser.mob || 0;
   if (mob < amount) {
-    setErr('with-amount-err', true, 'Insufficient MOB balance.');
-    return;
+  setErr('with-amount-err', true, 'Insufficient MOB balance.');
+  return;
   }
   
   const feePercent = (settingsData.withdrawCharge || 10) / 100;
@@ -2094,70 +2081,70 @@ async function doWithdraw() {
   const reference = genUUID();
   
   const popup = document.getElementById('popup-banner');
-  popup.textContent = '💸 You will receive your funds shortly';
+  popup.textContent = 'You will receive your funds shortly';
   popup.classList.add('show');
-  setTimeout(() => popup.classList.remove('show'), 1000);
+  setTimeout(() =>popup.classList.remove('show'), 1000);
   
   const adminTxKey = 'adm_wd_' + Date.now();
   const adminTxRecord = {
-    type: 'Withdrawal',
-    username: currentUsername,
-    phone: userPhone,
-    amount: amount,
-    reference: reference,
-    date: dateStr(),
-    status: 'pending'
+  type: 'Withdrawal',
+  username: currentUsername,
+  phone: userPhone,
+  amount: amount,
+  reference: reference,
+  date: dateStr(),
+  status: 'pending'
   };
   
   try {
-    await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+  await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
     
-    // ✅ FIX: Withdraw from MOB
-    await db.ref('users/' + safeKey(currentUsername)).update({
-      mob: newMob,
-      [`transactions/${txKey}`]: {
-        type: 'Withdrawal',
-        amount: -amount,
-        note: 'Withdrawal Pending',
-        date: dateStr(),
-        status: 'pending'
-      }
-    });
+  // FIX: Withdraw from MOB
+  await db.ref('users/' + safeKey(currentUsername)).update({
+  mob: newMob,
+  [`transactions/${txKey}`]: {
+  type: 'Withdrawal',
+  amount: -amount,
+  note: 'Withdrawal Pending',
+  date: dateStr(),
+  status: 'pending'
+  }
+  });
     
-    await db.ref('pendingWithdrawals/' + reqKey).set({
-      username: currentUsername,
-      userId: safeKey(currentUsername),
-      phone: userPhone,
-      amount,
-      fee,
-      sendAmount,
-      txKey,
-      adminTxKey,
-      date: dateStr(),
-      status: 'pending',
-      processed: false
-    });
+  await db.ref('pendingWithdrawals/' + reqKey).set({
+  username: currentUsername,
+  userId: safeKey(currentUsername),
+  phone: userPhone,
+  amount,
+  fee,
+  sendAmount,
+  txKey,
+  adminTxKey,
+  date: dateStr(),
+  status: 'pending',
+  processed: false
+  });
     
-    if (settingsData.withdrawApproval === true) {
-      sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
-    } else {
-      await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
-    }
+  if (settingsData.withdrawApproval === true) {
+  sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
+  } else {
+  await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
+  }
     
-    document.getElementById('with-amount').value = '';
-    document.getElementById('withdraw-preview').style.display = 'none';
+  document.getElementById('with-amount').value = '';
+  document.getElementById('withdraw-preview').style.display = 'none';
   } catch (error) {
-    console.error('Withdrawal error:', error);
-    // Refund to MOB
-    const refundedMob = mob;
-    await db.ref('users/' + safeKey(currentUsername)).update({ mob: refundedMob });
-    await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
-    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
+  console.error('Withdrawal error:', error);
+  // Refund to MOB
+  const refundedMob = mob;
+  await db.ref('users/' + safeKey(currentUsername)).update({ mob: refundedMob });
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
   }
   
   btn.disabled = false;
-  btn.textContent = '💰 WITHDRAW FROM MOB';
+  btn.textContent = 'WITHDRAW FROM MOB';
   switchTab('home');
 }
 
@@ -2166,51 +2153,51 @@ async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference,
   const userId = safeKey(username);
   
   try {
-    const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
-    if (sendResult && sendResult.status === 'success') {
-      await db.ref('users/' + userId + '/transactions/' + txKey).update({
-        status: 'completed',
-        note: `Withdrawal sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
-      });
-      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
-    } else {
-      const userSnap = await db.ref('users/' + userId).get();
-      const user = userSnap.val();
-      const refundedMob = (user.mob || 0) + amount;
+  const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
+  if (sendResult && sendResult.status === 'success') {
+  await db.ref('users/' + userId + '/transactions/' + txKey).update({
+  status: 'completed',
+  note: `Withdrawal sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+  } else {
+  const userSnap = await db.ref('users/' + userId).get();
+  const user = userSnap.val();
+  const refundedMob = (user.mob || 0) + amount;
       
-      await db.ref('users/' + userId).update({
-        mob: refundedMob,
-        [`transactions/${txKey}`]: {
-          type: 'Withdrawal',
-          amount: -amount,
-          note: 'Withdrawal Failed - Refunded to MOB',
-          date: dateStr(),
-          status: 'failed'
-        }
-      });
-      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      sendAdminNotification('withdrawal_auto_failed', username, amount, 'Marz send failed: ' + (sendResult?.message || 'Unknown error'));
-    }
+  await db.ref('users/' + userId).update({
+  mob: refundedMob,
+  [`transactions/${txKey}`]: {
+  type: 'Withdrawal',
+  amount: -amount,
+  note: 'Withdrawal Failed - Refunded to MOB',
+  date: dateStr(),
+  status: 'failed'
+  }
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('withdrawal_auto_failed', username, amount, 'Marz send failed: ' + (sendResult?.message || 'Unknown error'));
+  }
   } catch (sendError) {
-    const userSnap = await db.ref('users/' + userId).get();
-    const user = userSnap.val();
-    const refundedMob = (user.mob || 0) + amount;
+  const userSnap = await db.ref('users/' + userId).get();
+  const user = userSnap.val();
+  const refundedMob = (user.mob || 0) + amount;
     
-    await db.ref('users/' + userId).update({
-      mob: refundedMob,
-      [`transactions/${txKey}`]: {
-        type: 'Withdrawal',
-        amount: -amount,
-        note: 'Withdrawal Failed - Refunded to MOB',
-        date: dateStr(),
-        status: 'failed'
-      }
-    });
-    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-    await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    sendAdminNotification('withdrawal_auto_failed', username, amount, 'Withdrawal error: ' + sendError.message);
+  await db.ref('users/' + userId).update({
+  mob: refundedMob,
+  [`transactions/${txKey}`]: {
+  type: 'Withdrawal',
+  amount: -amount,
+  note: 'Withdrawal Failed - Refunded to MOB',
+  date: dateStr(),
+  status: 'failed'
+  }
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  sendAdminNotification('withdrawal_auto_failed', username, amount, 'Withdrawal error: ' + sendError.message);
   }
 }
 
@@ -2231,8 +2218,8 @@ function showDashboard() {
 
 function toggleEye(inputId, btn) {
   const inp = document.getElementById(inputId);
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
+  else { inp.type = 'password'; btn.textContent = 'Show'; }
 }
 
 function checkStrength(pw) {
@@ -2262,18 +2249,18 @@ function setErr(id, show, msg) {
 
 function clearErrors(...ids) {
   ids.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('show');
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('show');
   });
 }
 
 function sendAdminNotification(type, username, amount, message) {
   try {
-    db.ref('adminNotifications/notif_' + Date.now()).set({
-      type, username, amount, message,
-      date: dateStr(),
-      read: false
-    });
+  db.ref('adminNotifications/notif_' + Date.now()).set({
+  type, username, amount, message,
+  date: dateStr(),
+  read: false
+  });
   } catch (e) { console.warn(e); }
 }
 
@@ -2281,7 +2268,7 @@ function sendAdminNotification(type, username, amount, message) {
 // LOGIN
 // ============================================================
 async function doLogin() {
-  console.log('✅ Login button clicked');
+  console.log('Login button clicked');
   clearErrors('login-user-err', 'login-pw-err');
   setErr('login-general-err', false);
   
@@ -2292,48 +2279,48 @@ async function doLogin() {
   if (!password) { setErr('login-pw-err', true); return; }
   
   try {
-    console.log('🔍 Checking user:', username);
-    const userSnap = await db.ref('users/' + safeKey(username)).get();
+  console.log('Checking user:', username);
+  const userSnap = await db.ref('users/' + safeKey(username)).get();
     
-    if (!userSnap.exists()) {
-      setErr('login-general-err', true, '❌ Invalid username or password');
-      return;
-    }
+  if (!userSnap.exists()) {
+  setErr('login-general-err', true, 'Invalid username or password');
+  return;
+  }
     
-    const userData = userSnap.val();
+  const userData = userSnap.val();
     
-    if (userData.password !== password) {
-      setErr('login-general-err', true, '❌ Invalid username or password');
-      return;
-    }
+  if (userData.password !== password) {
+  setErr('login-general-err', true, 'Invalid username or password');
+  return;
+  }
     
-    if (userData.locked) {
-      setErr('login-general-err', true, '🔒 Your account has been locked. Contact support.');
-      return;
-    }
+  if (userData.locked) {
+  setErr('login-general-err', true, 'Your account has been locked. Contact support.');
+  return;
+  }
     
-    console.log('✅ Login successful for:', username);
-    currentUser = userData;
-    currentUsername = username;
-    sessionStorage.setItem('pp_current_user', username);
+  console.log('Login successful for:', username);
+  currentUser = userData;
+  currentUsername = username;
+  sessionStorage.setItem('pp_current_user', username);
     
-    startUserListener(username);
-    startVideoListener();
+  startUserListener(username);
+  startVideoListener();
     
-    updateBalanceUI();
-    renderHistory();
-    updateProfileUI();
-    updateLevelProgress();
-    renderLevelsTable();
-    renderStages();
-    updateVideoDisplay();
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderLevelsTable();
+  renderStages();
+  updateVideoDisplay();
     
-    showDashboard();
-    switchTab('home');
+  showDashboard();
+  switchTab('home');
     
   } catch (error) {
-    console.error('Login error:', error);
-    setErr('login-general-err', true, '❌ Login failed. Please try again.');
+  console.error('Login error:', error);
+  setErr('login-general-err', true, 'Login failed. Please try again.');
   }
 }
 
@@ -2341,7 +2328,7 @@ async function doLogin() {
 // REGISTER
 // ============================================================
 async function doRegister() {
-  console.log('✅ Register button clicked');
+  console.log('Register button clicked');
   clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
   
   const username = document.getElementById('reg-username').value.trim();
@@ -2359,74 +2346,74 @@ async function doRegister() {
   if (!ok) return;
   
   try {
-    const existing = await db.ref('users/' + safeKey(username)).get();
-    if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+  const existing = await db.ref('users/' + safeKey(username)).get();
+  if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
     
-    const prefix = country === 'KE' ? '+254' : '+256';
-    const fullPhone = prefix + phoneDigits;
-    const now = dateStr();
-    const todayUTC = getUTCKey();
+  const prefix = country === 'KE' ? '+254' : '+256';
+  const fullPhone = prefix + phoneDigits;
+  const now = dateStr();
+  const todayUTC = getUTCKey();
     
-    const newUser = {
-      username: username,
-      password: password,
-      country: country,
-      phone: fullPhone,
-      stake: 0,
-      mob: 0,  // ✅ MOB account starts at 0
-      totalVideosWatched: 0,
-      streakDays: 0,
-      lastWatchDate: null,
-      joinedDate: new Date().getFullYear().toString(),
-      locked: false,
-      currentLevel: 'trainee',
-      purchasedLevels: {},
-      traineeStartDate: todayUTC,
-      traineeDayCount: 1,
-      traineeCompleted: false,
-      videoPosition: 0,
-      referrals: [],
-      referralBonus: 0,
-      watchHistory: {},
-      transactions: {
-        t0: {
-          type: 'Bonus',
-          amount: 4000,
-          note: 'Registration Bonus 🎁',
-          date: now,
-          status: 'completed'
-        }
-      }
-    };
+  const newUser = {
+  username: username,
+  password: password,
+  country: country,
+  phone: fullPhone,
+  stake: 0,
+  mob: 0, // MOB account starts at 0
+  totalVideosWatched: 0,
+  streakDays: 0,
+  lastWatchDate: null,
+  joinedDate: new Date().getFullYear().toString(),
+  locked: false,
+  currentLevel: 'trainee',
+  purchasedLevels: {},
+  traineeStartDate: todayUTC,
+  traineeDayCount: 1,
+  traineeCompleted: false,
+  videoPosition: 0,
+  referrals: [],
+  referralBonus: 0,
+  watchHistory: {},
+  transactions: {
+  t0: {
+  type: 'Bonus',
+  amount: 4000,
+  note: 'Registration Bonus ',
+  date: now,
+  status: 'completed'
+  }
+  }
+  };
     
-    await db.ref('users/' + safeKey(username)).set(newUser);
-    console.log('✅ User registered:', username);
+  await db.ref('users/' + safeKey(username)).set(newUser);
+  console.log('User registered:', username);
     
-    currentUser = newUser;
-    currentUsername = username;
-    sessionStorage.setItem('pp_current_user', username);
+  currentUser = newUser;
+  currentUsername = username;
+  sessionStorage.setItem('pp_current_user', username);
     
-    startUserListener(username);
-    startVideoListener();
-    updateBalanceUI();
-    renderHistory();
-    updateProfileUI();
-    updateLevelProgress();
-    renderLevelsTable();
-    renderStages();
-    updateVideoDisplay();
-    showDashboard();
-    switchTab('home');
+  startUserListener(username);
+  startVideoListener();
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderLevelsTable();
+  renderStages();
+  updateVideoDisplay();
+  showDashboard();
+  switchTab('home');
     
-    document.getElementById('reg-username').value = '';
-    document.getElementById('reg-phone').value = '';
-    document.getElementById('reg-password').value = '';
-    document.getElementById('reg-confirm').value = '';
-    document.getElementById('reg-country').value = '';
+  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-phone').value = '';
+  document.getElementById('reg-password').value = '';
+  document.getElementById('reg-confirm').value = '';
+  document.getElementById('reg-country').value = '';
     
   } catch (error) {
-    console.error('Registration error:', error);
-    setErr('reg-general-err', true, '❌ Registration failed. Please try again.');
+  console.error('Registration error:', error);
+  setErr('reg-general-err', true, 'Registration failed. Please try again.');
   }
 }
 
@@ -2436,11 +2423,11 @@ async function doLogout() {
   currentUser = null;
   currentUsername = null;
   setTimeout(() => {
-    document.getElementById('dashboard-page').style.display = 'none';
-    document.getElementById('dashboard-page').classList.remove('active');
-    document.getElementById('login-username').value = '';
-    document.getElementById('login-password').value = '';
-    showAuth('login-page');
+  document.getElementById('dashboard-page').style.display = 'none';
+  document.getElementById('dashboard-page').classList.remove('active');
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  showAuth('login-page');
   }, 800);
 }
 
@@ -2461,12 +2448,12 @@ const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
 function switchTab(tab) {
   if (tab === 'withdraw' && settingsData.withdrawLocked) {
-    return;
+  return;
   }
   Object.values(tabMap).forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
   const t = document.getElementById(tabMap[tab]);
   if (t) t.classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
   const idx = navOrder.indexOf(tab);
   if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
 }
@@ -2479,28 +2466,28 @@ function updateWithdrawPreview() {
   const preview = document.getElementById('withdraw-preview');
   const netEl = document.getElementById('withdraw-net-amount');
   const feeEl = document.getElementById('withdraw-fee-amount');
-  if (amount > 0) {
-    if (preview) preview.style.display = 'block';
-    if (netEl) netEl.textContent = fmt(net);
-    if (feeEl) feeEl.textContent = fmt(fee);
+  if (amount >0) {
+  if (preview) preview.style.display = 'block';
+  if (netEl) netEl.textContent = fmt(net);
+  if (feeEl) feeEl.textContent = fmt(fee);
   } else {
-    if (preview) preview.style.display = 'none';
+  if (preview) preview.style.display = 'none';
   }
 }
 
 function startUserListener(username) {
   if (userListener) db.ref('users/' + safeKey(username)).off('value', userListener);
   userListener = db.ref('users/' + safeKey(username)).on('value', (snap) => {
-    if (snap.exists()) {
-      currentUser = snap.val();
-      updateBalanceUI();
-      renderHistory();
-      updateProfileUI();
-      updateLevelProgress();
-      renderLevelsTable();
-      renderStages();
-      updateVideoDisplay();
-    }
+  if (snap.exists()) {
+  currentUser = snap.val();
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderLevelsTable();
+  renderStages();
+  updateVideoDisplay();
+  }
   });
 }
 
@@ -2562,50 +2549,50 @@ window.showNeedPreviousPopup = showNeedPreviousPopup;
 window.showPopup = showPopup;
 window.showConfirmPopup = showConfirmPopup;
 
-console.log('✅ All functions exposed to window');
+console.log('All functions exposed to window');
 
 // ============================================================
 // INIT APP
 // ============================================================
 async function initApp() {
-  console.log('🚀 Initializing app...');
+  console.log('Initializing app...');
   startSettingsListener();
   startLevelsListener();
   startVideoListener();
   
   const savedUser = sessionStorage.getItem('pp_current_user');
   if (savedUser) {
-    try {
-      const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
-      if (userSnap.exists() && !userSnap.val().locked) {
-        currentUser = userSnap.val();
-        currentUsername = savedUser;
-        startUserListener(savedUser);
-        updateBalanceUI();
-        renderHistory();
-        updateProfileUI();
-        updateLevelProgress();
-        renderLevelsTable();
-        renderStages();
-        updateVideoDisplay();
-        showDashboard();
-        switchTab('home');
-        console.log('✅ Auto-login successful for:', savedUser);
-      } else {
-        sessionStorage.removeItem('pp_current_user');
-        showAuth('login-page');
-      }
-    } catch (err) {
-      console.warn('Login check error:', err);
-      sessionStorage.removeItem('pp_current_user');
-      showAuth('login-page');
-    }
+  try {
+  const userSnap = await db.ref('users/' + safeKey(savedUser)).get();
+  if (userSnap.exists() && !userSnap.val().locked) {
+  currentUser = userSnap.val();
+  currentUsername = savedUser;
+  startUserListener(savedUser);
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderLevelsTable();
+  renderStages();
+  updateVideoDisplay();
+  showDashboard();
+  switchTab('home');
+  console.log('Auto-login successful for:', savedUser);
   } else {
-    showAuth('login-page');
+  sessionStorage.removeItem('pp_current_user');
+  showAuth('login-page');
+  }
+  } catch (err) {
+  console.warn('Login check error:', err);
+  sessionStorage.removeItem('pp_current_user');
+  showAuth('login-page');
+  }
+  } else {
+  showAuth('login-page');
   }
   
   document.getElementById('loading-screen').style.display = 'none';
-  console.log('✅ App initialized');
+  console.log('App initialized');
 }
 
 initApp();

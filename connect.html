@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content=" width=device-width, initial-scale=1.0">
 <meta property="og:title" content="WEA Command Center">
 <meta property="og:description" content="Watch Movies, Earn Money — Admin Panel">
 <meta property="og:image" content="https://profit-pulse.site/logo.png">
@@ -186,369 +186,369 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <body>
 
 <div class="loading-screen" id="loading-screen">
-  <div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:8px;">WEA</div>
-  <div class="loading-spinner"></div>
+<div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);margin-bottom:8px;">WEA</div>
+<div class="loading-spinner"></div>
 </div>
 
 <!-- AUTH CONTAINER (Login/Register) -->
 <div class="auth-wrap" id="auth-wrap">
   <!-- LOGIN FORM -->
-  <div class="auth-card" id="login-form" style="display:block;">
-    <div class="auth-logo">
-      <div class="auth-logo-icon">⚙️</div>
-      <div class="auth-title">WEA</div>
-      <div class="auth-sub">Command Center Login</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">Username</label>
-      <div class="f-wrap"><span class="f-icon">👤</span><input type="text" class="f-input" id="login-username" placeholder="Enter admin username"></div>
-      <div class="f-err" id="login-user-err">Please enter username</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">📱 Phone Number</label>
-      <div class="f-wrap" style="display:flex;">
-        <span class="f-icon">📱</span>
-        <div style="display:flex;align-items:center;flex:1;">
-          <span style="padding:0 10px;font-weight:700;color:var(--accent);">+256</span>
-          <input type="tel" class="f-input" id="login-phone" placeholder="7XXXXXXXX" maxlength="9" style="flex:1;padding-left:0;">
-        </div>
-      </div>
-      <div class="f-hint">9 digits starting with 7</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">Password</label>
-      <div class="f-wrap"><span class="f-icon">🔒</span><input type="password" class="f-input" id="login-password" placeholder="Enter password"><button class="eye-btn" onclick="toggleLoginPw()" id="login-eye">👁️</button></div>
-      <div class="f-err" id="login-pw-err">Please enter password</div>
-    </div>
-    <div class="f-err" id="login-general-err" style="text-align:center;margin-bottom:10px;"></div>
-    <button class="submit-btn" onclick="adminLogin()">Sign In →</button>
-    <div class="auth-switch">Don't have access? <a onclick="showRegisterForm()">Register New Admin</a></div>
-  </div>
+<div class="auth-card" id="login-form" style="display:block;">
+<div class="auth-logo">
+<div class="auth-logo-icon"></div>
+<div class="auth-title">WEA</div>
+<div class="auth-sub">Command Center Login</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Username</label>
+<div class="f-wrap"><input type="text" class="f-input" id="login-username" placeholder="Enter admin username"></div>
+<div class="f-err" id="login-user-err">Please enter username</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Phone Number</label>
+<div class="f-wrap" style="display:flex;">
+        
+<div style="display:flex;align-items:center;flex:1;">
+  <span style="padding:0 10px;font-weight:700;color:var(--accent);">+256</span>
+  <input type="tel" class="f-input" id="login-phone" placeholder="7XXXXXXXX" maxlength="9" style="flex:1;padding-left:0;">
+</div>
+</div>
+<div class="f-hint">9 digits starting with 7</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Password</label>
+<div class="f-wrap"><input type="password" class="f-input" id="login-password" placeholder="Enter password"><button class="eye-btn" onclick="toggleLoginPw()" id="login-eye">Show</button></div>
+<div class="f-err" id="login-pw-err">Please enter password</div>
+</div>
+<div class="f-err" id="login-general-err" style="text-align:center;margin-bottom:10px;"></div>
+  <button class="submit-btn" onclick="adminLogin()">Sign In →</button>
+<div class="auth-switch">Don't have access? <a onclick="showRegisterForm()">Register New Admin</a></div>
+</div>
 
   <!-- REGISTER FORM -->
-  <div class="auth-card" id="register-form" style="display:none;">
-    <div class="auth-logo">
-      <div class="auth-logo-icon">📝</div>
-      <div class="auth-title">Admin Registration</div>
-      <div class="auth-sub">Maximum 4 admin accounts</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">Username</label>
-      <div class="f-wrap"><span class="f-icon">👤</span><input type="text" class="f-input" id="reg-username" placeholder="Choose unique username"></div>
-      <div class="f-err" id="reg-username-err">Username required (min 3 characters)</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">📱 Phone Number</label>
-      <div class="f-wrap" style="display:flex;">
-        <span class="f-icon">📱</span>
-        <div style="display:flex;align-items:center;flex:1;">
-          <span style="padding:0 10px;font-weight:700;color:var(--accent);">+256</span>
-          <input type="tel" class="f-input" id="reg-phone" placeholder="7XXXXXXXX" maxlength="9" style="flex:1;padding-left:0;">
-        </div>
-      </div>
-      <div class="f-hint">9 digits starting with 7</div>
-      <div class="f-err" id="reg-phone-err">Enter valid phone number</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">🔢 PIN (4 digits)</label>
-      <div class="f-wrap"><span class="f-icon">🔢</span><input type="text" class="f-input" id="reg-pin" placeholder="0000" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
-      <div class="f-hint">4 digit PIN for security</div>
-      <div class="f-err" id="reg-pin-err">PIN must be exactly 4 digits</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">👔 Position</label>
-      <div class="f-wrap"><span class="f-icon">👔</span>
-        <select class="f-input" id="reg-position" style="appearance:none;cursor:pointer;">
-          <option value="Moderator">Moderator</option>
-          <option value="Manager">Manager</option>
-          <option value="Developer">Developer</option>
-          <option value="Head">Head</option>
-        </select>
-      </div>
-      <div class="f-err" id="reg-position-err">Please select position</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">🔒 Password (minimum 8 characters)</label>
-      <div class="f-wrap"><span class="f-icon">🔒</span><input type="password" class="f-input" id="reg-password" placeholder="Create secure password"><button class="eye-btn" onclick="toggleRegPw()" id="reg-eye">👁️</button></div>
-      <div class="f-hint">At least 8 characters for security</div>
-      <div class="f-err" id="reg-password-err">Password must be at least 8 characters</div>
-    </div>
-    <div class="f-group">
-      <label class="f-label">🔐 Confirm Password</label>
-      <div class="f-wrap"><span class="f-icon">🔐</span><input type="password" class="f-input" id="reg-confirm-password" placeholder="Confirm password"><button class="eye-btn" onclick="toggleRegConfirm()" id="reg-confirm-eye">👁️</button></div>
-      <div class="f-err" id="reg-confirm-error">Passwords do not match</div>
-    </div>
-    <div class="f-err" id="reg-general-err" style="text-align:center;margin-bottom:10px;"></div>
-    <button class="submit-btn" onclick="adminRegister()">Create Admin Account →</button>
-    <div class="auth-switch">Already have access? <a onclick="showLoginForm()">Sign In</a></div>
-  </div>
+<div class="auth-card" id="register-form" style="display:none;">
+<div class="auth-logo">
+<div class="auth-logo-icon"></div>
+<div class="auth-title">Admin Registration</div>
+<div class="auth-sub">Maximum 4 admin accounts</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Username</label>
+<div class="f-wrap"><input type="text" class="f-input" id="reg-username" placeholder="Choose unique username"></div>
+<div class="f-err" id="reg-username-err">Username required (min 3 characters)</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Phone Number</label>
+<div class="f-wrap" style="display:flex;">
+        
+<div style="display:flex;align-items:center;flex:1;">
+  <span style="padding:0 10px;font-weight:700;color:var(--accent);">+256</span>
+  <input type="tel" class="f-input" id="reg-phone" placeholder="7XXXXXXXX" maxlength="9" style="flex:1;padding-left:0;">
+</div>
+</div>
+<div class="f-hint">9 digits starting with 7</div>
+<div class="f-err" id="reg-phone-err">Enter valid phone number</div>
+</div>
+<div class="f-group">
+  <label class="f-label">PIN (4 digits)</label>
+<div class="f-wrap"><input type="text" class="f-input" id="reg-pin" placeholder="0000" maxlength="4" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+<div class="f-hint">4 digit PIN for security</div>
+<div class="f-err" id="reg-pin-err">PIN must be exactly 4 digits</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Position</label>
+<div class="f-wrap">
+  <select class="f-input" id="reg-position" style="appearance:none;cursor:pointer;">
+  <option value="Moderator">Moderator</option>
+  <option value="Manager">Manager</option>
+  <option value="Developer">Developer</option>
+  <option value="Head">Head</option>
+</select>
+</div>
+<div class="f-err" id="reg-position-err">Please select position</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Password (minimum 8 characters)</label>
+<div class="f-wrap"><input type="password" class="f-input" id="reg-password" placeholder="Create secure password"><button class="eye-btn" onclick="toggleRegPw()" id="reg-eye">Show</button></div>
+<div class="f-hint">At least 8 characters for security</div>
+<div class="f-err" id="reg-password-err">Password must be at least 8 characters</div>
+</div>
+<div class="f-group">
+  <label class="f-label">Confirm Password</label>
+<div class="f-wrap"><input type="password" class="f-input" id="reg-confirm-password" placeholder="Confirm password"><button class="eye-btn" onclick="toggleRegConfirm()" id="reg-confirm-eye">Show</button></div>
+<div class="f-err" id="reg-confirm-error">Passwords do not match</div>
+</div>
+<div class="f-err" id="reg-general-err" style="text-align:center;margin-bottom:10px;"></div>
+  <button class="submit-btn" onclick="adminRegister()">Create Admin Account →</button>
+<div class="auth-switch">Already have access? <a onclick="showLoginForm()">Sign In</a></div>
+</div>
 </div>
 
 <!-- ADMIN PANEL -->
 <div class="admin-wrap" id="admin-wrap">
-  <div class="sidebar">
-    <div class="sidebar-brand">
-      <div class="sidebar-brand-name">WEA</div>
-      <div class="sidebar-sub">Command Center</div>
-    </div>
-    <div class="sidebar-nav">
-      <div class="nav-item active" onclick="showPage('pg-dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
-      <div class="nav-item" onclick="showPage('pg-users')"><span class="nav-icon">👥</span><span>Users</span></div>
-      <div class="nav-item" onclick="showPage('pg-transactions')"><span class="nav-icon">💰</span><span>Transactions</span></div>
-      <div class="nav-item" onclick="showPage('pg-withdrawals')"><span class="nav-icon">💸</span><span>Withdrawals</span><span class="nav-badge" id="withdrawals-nav-badge">0</span></div>
-      <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
-      <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
-      <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
-    </div>
-    <div class="sidebar-footer">
-      <button class="logout-btn" onclick="adminLogout()">🚪 Logout</button>
-    </div>
-  </div>
-  <div class="main-content">
-    <!-- DASHBOARD -->
-    <div class="page active" id="pg-dashboard">
-      <div class="page-title">Dashboard</div>
-      <div class="page-sub">Real-time platform overview</div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-card-label">Total Users</div><div class="stat-card-val green" id="d-total-users">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total STAKE</div><div class="stat-card-val gold" id="d-total-stake">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total MOB</div><div class="stat-card-val purple" id="d-total-mob">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total Videos</div><div class="stat-card-val blue" id="d-total-videos">—</div></div>
-      </div>
-      <div class="pct-summary" id="pct-summary"></div>
-      <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
-        <div class="stat-card"><div class="stat-card-label">Locked Users</div><div class="stat-card-val red" id="d-locked">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Min Deposit</div><div class="stat-card-val gold" id="d-min-deposit">—</div></div>
-        <div class="stat-card"><div class="stat-card-label">Videos Today</div><div class="stat-card-val amber" id="d-videos-today">—</div></div>
-      </div>
-    </div>
+<div class="sidebar">
+<div class="sidebar-brand">
+<div class="sidebar-brand-name">WEA</div>
+<div class="sidebar-sub">Command Center</div>
+</div>
+<div class="sidebar-nav">
+<div class="nav-item active" onclick="showPage('pg-dashboard')"><span class="nav-icon">📊</span><span>Dashboard</span></div>
+<div class="nav-item" onclick="showPage('pg-users')"><span class="nav-icon">👥</span><span>Users</span></div>
+<div class="nav-item" onclick="showPage('pg-transactions')"><span class="nav-icon">💰</span><span>Transactions</span></div>
+<div class="nav-item" onclick="showPage('pg-withdrawals')"><span class="nav-icon">💸</span><span>Withdrawals</span><span class="nav-badge" id="withdrawals-nav-badge">0</span></div>
+<div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
+<div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
+<div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+</div>
+<div class="sidebar-footer">
+  <button class="logout-btn" onclick="adminLogout()">Logout</button>
+</div>
+</div>
+<div class="main-content">
+  <!-- DASHBOARD -->
+<div class="page active" id="pg-dashboard">
+<div class="page-title">Dashboard</div>
+<div class="page-sub">Real-time platform overview</div>
+<div class="stats-row">
+<div class="stat-card"><div class="stat-card-label">Total Users</div><div class="stat-card-val green" id="d-total-users">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Total STAKE</div><div class="stat-card-val gold" id="d-total-stake">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Total MOB</div><div class="stat-card-val purple" id="d-total-mob">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Total Videos</div><div class="stat-card-val blue" id="d-total-videos">—</div></div>
+</div>
+<div class="pct-summary" id="pct-summary"></div>
+<div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+<div class="stat-card"><div class="stat-card-label">Locked Users</div><div class="stat-card-val red" id="d-locked">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Min Deposit</div><div class="stat-card-val gold" id="d-min-deposit">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Videos Today</div><div class="stat-card-val amber" id="d-videos-today">—</div></div>
+</div>
+</div>
 
-    <!-- USERS -->
-    <div class="page" id="pg-users">
-      <div class="page-title">Users</div>
-      <div class="page-sub">Manage all registered users</div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">👥 All Users</div>
-          <input type="text" class="f-input" style="width:220px;padding:8px 14px;" placeholder="🔍 Search username..." oninput="filterUsers(this.value)">
-        </div>
-        <table>
-          <thead>
-            <tr><th>Username</th><th>Phone</th><th>Password</th><th>STAKE</th><th>MOB</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="users-table-body"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+  <!-- USERS -->
+<div class="page" id="pg-users">
+<div class="page-title">Users</div>
+<div class="page-sub">Manage all registered users</div>
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">All Users</div>
+  <input type="text" class="f-input" style="width:220px;padding:8px 14px;" placeholder="Search username..." oninput="filterUsers(this.value)">
+</div>
+  <table>
+  <thead>
+  <tr><th>Username</th><th>Phone</th><th>Password</th><th>STAKE</th><th>MOB</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
+</thead>
+  <tbody id="users-table-body"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
+</table>
+</div>
+</div>
 
-    <!-- TRANSACTIONS -->
-    <div class="page" id="pg-transactions">
-      <div class="page-title">Transactions</div>
-      <div class="page-sub">Real-time deposits and withdrawals</div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="btn btn-save" onclick="filterAdmTx('all')">All</button>
-        <button class="btn btn-edit" onclick="filterAdmTx('Deposit')">💳 Deposits</button>
-        <button class="btn btn-edit" onclick="filterAdmTx('Withdrawal')">💸 Withdrawals</button>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">💰 Deposits & Withdrawals</div>
-          <span id="adm-tx-count" style="font-size:12px;color:var(--muted);"></span>
-        </div>
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Username</th><th>Phone</th><th>Type</th><th>Amount</th><th>Reference</th><th>Status</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="adm-tx-table-body"><tr class="empty-row"><td colspan="8">Loading...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+  <!-- TRANSACTIONS -->
+<div class="page" id="pg-transactions">
+<div class="page-title">Transactions</div>
+<div class="page-sub">Real-time deposits and withdrawals</div>
+<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+  <button class="btn btn-save" onclick="filterAdmTx('all')">All</button>
+  <button class="btn btn-edit" onclick="filterAdmTx('Deposit')">Deposits</button>
+  <button class="btn btn-edit" onclick="filterAdmTx('Withdrawal')">Withdrawals</button>
+</div>
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">Deposits & Withdrawals</div>
+  <span id="adm-tx-count" style="font-size:12px;color:var(--muted);"></span>
+</div>
+  <table>
+  <thead>
+  <tr><th>Date</th><th>Username</th><th>Phone</th><th>Type</th><th>Amount</th><th>Reference</th><th>Status</th><th>Actions</th></tr>
+</thead>
+  <tbody id="adm-tx-table-body"><tr class="empty-row"><td colspan="8">Loading...</td></tr></tbody>
+</table>
+</div>
+</div>
 
-    <!-- WITHDRAWALS -->
-    <div class="page" id="pg-withdrawals">
-      <div class="page-title">💸 Withdrawals</div>
-      <div class="page-sub">Withdrawal requests — approve or reject</div>
-      <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
-        <div class="stat-card"><div class="stat-card-label">Pending</div><div class="stat-card-val gold" id="wd-stat-pending">0</div></div>
-        <div class="stat-card"><div class="stat-card-label">Approved</div><div class="stat-card-val emerald" id="wd-stat-approved">0</div></div>
-        <div class="stat-card"><div class="stat-card-label">Total Pending Amount</div><div class="stat-card-val red" id="wd-stat-amount">UGX 0</div></div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="btn btn-save" onclick="filterWithdrawals('pending')">⏳ Pending</button>
-        <button class="btn btn-approve" onclick="filterWithdrawals('approved')">✅ Approved</button>
-        <button class="btn btn-reject" onclick="filterWithdrawals('rejected')">❌ Rejected</button>
-        <button class="btn btn-edit" onclick="filterWithdrawals('all')">📋 All</button>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Withdrawal Requests</div>
-          <span id="wd-count" style="font-size:12px;color:var(--muted);">0 requests</span>
-        </div>
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Username</th><th>Phone</th><th>Amount</th><th>Fee</th><th>Net Amount</th><th>Status</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="wd-table-body"><tr class="empty-row"><td colspan="8">No withdrawal requests yet</tr></tbody>
-        </table>
-      </div>
-    </div>
+  <!-- WITHDRAWALS -->
+<div class="page" id="pg-withdrawals">
+<div class="page-title">Withdrawals</div>
+<div class="page-sub">Withdrawal requests — approve or reject</div>
+<div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+<div class="stat-card"><div class="stat-card-label">Pending</div><div class="stat-card-val gold" id="wd-stat-pending">0</div></div>
+<div class="stat-card"><div class="stat-card-label">Approved</div><div class="stat-card-val emerald" id="wd-stat-approved">0</div></div>
+<div class="stat-card"><div class="stat-card-label">Total Pending Amount</div><div class="stat-card-val red" id="wd-stat-amount">UGX 0</div></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+  <button class="btn btn-save" onclick="filterWithdrawals('pending')">⏳ Pending</button>
+  <button class="btn btn-approve" onclick="filterWithdrawals('approved')">Approved</button>
+  <button class="btn btn-reject" onclick="filterWithdrawals('rejected')">Rejected</button>
+  <button class="btn btn-edit" onclick="filterWithdrawals('all')">All</button>
+</div>
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">Withdrawal Requests</div>
+  <span id="wd-count" style="font-size:12px;color:var(--muted);">0 requests</span>
+</div>
+  <table>
+  <thead>
+  <tr><th>Date</th><th>Username</th><th>Phone</th><th>Amount</th><th>Fee</th><th>Net Amount</th><th>Status</th><th>Actions</th></tr>
+</thead>
+  <tbody id="wd-table-body"><tr class="empty-row"><td colspan="8">No withdrawal requests yet</tr></tbody>
+</table>
+</div>
+</div>
 
-    <!-- VIDEOS - NO REWARD FIELD -->
-    <div class="page" id="pg-videos">
-      <div class="page-title">🎬 Videos</div>
-      <div class="page-sub">Add YouTube videos. Reward is determined by user's level.</div>
-      <div class="table-wrap" style="padding:20px;margin-bottom:24px;">
-        <div class="table-title" style="margin-bottom:14px;">Add New Video</div>
-        <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
-          <div>
-            <label class="f-label">Movie / Video Title</label>
-            <input type="text" class="f-input" id="video-title-input" placeholder="e.g. Avatar 3 — Official Trailer" style="width:100%;padding:11px 14px;">
-            <div class="f-hint">Optional - system will try to fetch title from YouTube</div>
-          </div>
-          <div>
-            <label class="f-label">YouTube Link or Video ID</label>
-            <input type="text" class="f-input" id="video-url-input" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;padding:11px 14px;">
-            <div class="f-hint">Paste any YouTube video link or video ID</div>
-          </div>
-          <div id="video-add-err" style="display:none;color:var(--warn);font-size:12.5px;"></div>
-          <button class="btn btn-save" onclick="adminSaveVideo()" style="align-self:flex-start;">💾 Save Video</button>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Video Library</div>
-          <span id="video-count" style="font-size:12px;color:var(--muted);">0 videos</span>
-        </div>
-        <table>
-          <thead>
-            <tr><th>Thumbnail</th><th>Title</th><th>YouTube ID</th><th>Added</th><th>Actions</th></tr>
-          </thead>
-          <tbody id="video-table-body"><tr class="empty-row"><td colspan="5">No videos yet</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+  <!-- VIDEOS - NO REWARD FIELD -->
+<div class="page" id="pg-videos">
+<div class="page-title">Videos</div>
+<div class="page-sub">Add YouTube videos. Reward is determined by user's level.</div>
+<div class="table-wrap" style="padding:20px;margin-bottom:24px;">
+<div class="table-title" style="margin-bottom:14px;">Add New Video</div>
+<div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
+<div>
+  <label class="f-label">Movie / Video Title</label>
+  <input type="text" class="f-input" id="video-title-input" placeholder="e.g. Avatar 3 — Official Trailer" style="width:100%;padding:11px 14px;">
+<div class="f-hint">Optional - system will try to fetch title from YouTube</div>
+</div>
+<div>
+  <label class="f-label">YouTube Link or Video ID</label>
+  <input type="text" class="f-input" id="video-url-input" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;padding:11px 14px;">
+<div class="f-hint">Paste any YouTube video link or video ID</div>
+</div>
+<div id="video-add-err" style="display:none;color:var(--warn);font-size:12.5px;"></div>
+  <button class="btn btn-save" onclick="adminSaveVideo()" style="align-self:flex-start;">Save Video</button>
+</div>
+</div>
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">Video Library</div>
+  <span id="video-count" style="font-size:12px;color:var(--muted);">0 videos</span>
+</div>
+  <table>
+  <thead>
+  <tr><th>Thumbnail</th><th>Title</th><th>YouTube ID</th><th>Added</th><th>Actions</th></tr>
+</thead>
+  <tbody id="video-table-body"><tr class="empty-row"><td colspan="5">No videos yet</td></tr></tbody>
+</table>
+</div>
+</div>
 
-    <!-- LEVELS MANAGEMENT -->
-    <div class="page" id="pg-levels">
-      <div class="page-title">📊 Levels</div>
-      <div class="page-sub">Configure all earning levels. Toggle Lock to make level "Company Reserved"</div>
+  <!-- LEVELS MANAGEMENT -->
+<div class="page" id="pg-levels">
+<div class="page-title">Levels</div>
+<div class="page-sub">Configure all earning levels. Toggle Lock to make level "Company Reserved"</div>
       
-      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
-        <button class="btn btn-save" onclick="addLevelRow()">➕ Add Level</button>
-        <button class="btn btn-danger" onclick="resetDefaultLevels()">🔄 Reset Defaults</button>
-      </div>
+<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+  <button class="btn btn-save" onclick="addLevelRow()">Add Level</button>
+  <button class="btn btn-danger" onclick="resetDefaultLevels()">Reset Defaults</button>
+</div>
       
-      <div class="table-wrap">
-        <div class="table-header">
-          <div class="table-title">Levels Configuration</div>
-          <span id="level-count" style="font-size:12px;color:var(--muted);">0 levels</span>
-        </div>
-        <div style="overflow-x:auto;padding:0 4px;">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:750px;">
-            <thead>
-              <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Key</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Name</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Videos</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Cost</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Each</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Daily</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Monthly</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Annual</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Locked</th>
-                <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="levels-admin-body">
-              <tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">Levels Configuration</div>
+  <span id="level-count" style="font-size:12px;color:var(--muted);">0 levels</span>
+</div>
+<div style="overflow-x:auto;padding:0 4px;">
+  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:750px;">
+  <thead>
+  <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Key</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Name</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Videos</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Cost</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Each</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Daily</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Monthly</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Annual</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Locked</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
+</tr>
+</thead>
+  <tbody id="levels-admin-body">
+  <tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 
-    <!-- SETTINGS -->
-    <div class="page" id="pg-settings">
-      <div class="page-title">Settings</div>
-      <div class="page-sub">Configure platform settings</div>
+  <!-- SETTINGS -->
+<div class="page" id="pg-settings">
+<div class="page-title">Settings</div>
+<div class="page-sub">Configure platform settings</div>
 
-      <!-- MarzPay API -->
-      <div class="settings-section">
-        <div class="settings-title">🔑 MarzPay Payment API</div>
-        <div class="settings-sub">Paste your MarzPay <strong>Base64 Authorization Header</strong> here.</div>
-        <div class="settings-row">
-          <span class="settings-label">Base64 Auth Header</span>
-          <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
-            <input type="text" class="settings-input mono" id="marz-api-key-input" placeholder="Paste Base64 Authorization Header...">
-            <button class="btn btn-edit" onclick="toggleApiKeyVisibility('marz-api-key-input')" style="padding:6px 12px;">👁️</button>
-          </div>
-          <button class="btn btn-save" onclick="saveMarzApiKey()">Save</button>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Status</span>
-          <div id="api-status-badge" style="font-size:12px;color:var(--muted);">⚠️ Not Set</div>
-        </div>
-      </div>
+  <!-- MarzPay API -->
+<div class="settings-section">
+<div class="settings-title">MarzPay Payment API</div>
+<div class="settings-sub">Paste your MarzPay <strong>Base64 Authorization Header</strong>here.</div>
+<div class="settings-row">
+  <span class="settings-label">Base64 Auth Header</span>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="text" class="settings-input mono" id="marz-api-key-input" placeholder="Paste Base64 Authorization Header...">
+  <button class="btn btn-edit" onclick="toggleApiKeyVisibility('marz-api-key-input')" style="padding:6px 12px;">Show</button>
+</div>
+  <button class="btn btn-save" onclick="saveMarzApiKey()">Save</button>
+</div>
+<div class="settings-row">
+  <span class="settings-label">Status</span>
+<div id="api-status-badge" style="font-size:12px;color:var(--muted);">Not Set</div>
+</div>
+</div>
 
-      <!-- Deposit & Withdrawal Settings -->
-      <div class="settings-section">
-        <div class="settings-title">💰 Deposit & Withdrawal Settings</div>
-        <div class="settings-row"><span class="settings-label">Minimum Deposit (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-deposit-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinDeposit()">Save</button></div>
-        <div class="settings-row"><span class="settings-label">Minimum Withdrawal (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-withdraw-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinWithdraw()">Save</button></div>
-        <div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
-        <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
-      </div>
+  <!-- Deposit & Withdrawal Settings -->
+<div class="settings-section">
+<div class="settings-title">Deposit & Withdrawal Settings</div>
+<div class="settings-row"><span class="settings-label">Minimum Deposit (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-deposit-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinDeposit()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Minimum Withdrawal (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-withdraw-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinWithdraw()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
+</div>
 
-      <!-- Withdrawal Approval Toggle -->
-      <div class="settings-section">
-        <div class="settings-title">✅ Withdrawal Approval Mode</div>
-        <div class="settings-sub">When ON, admin must approve each withdrawal. When OFF, withdrawals are automatic.</div>
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-          <button class="btn btn-success" onclick="setWithdrawApproval(true)">✅ Manual Approval ON</button>
-          <button class="btn btn-danger" onclick="setWithdrawApproval(false)">⚡ Automatic OFF</button>
-          <span id="approval-status" style="font-size:13px;color:var(--muted);">Checking...</span>
-        </div>
-      </div>
+  <!-- Withdrawal Approval Toggle -->
+<div class="settings-section">
+<div class="settings-title">Withdrawal Approval Mode</div>
+<div class="settings-sub">When ON, admin must approve each withdrawal. When OFF, withdrawals are automatic.</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+  <button class="btn btn-success" onclick="setWithdrawApproval(true)">Manual Approval ON</button>
+  <button class="btn btn-danger" onclick="setWithdrawApproval(false)">Automatic OFF</button>
+  <span id="approval-status" style="font-size:13px;color:var(--muted);">Checking...</span>
+</div>
+</div>
 
-      <!-- Withdrawal Control -->
-      <div class="danger-zone">
-        <div class="danger-title">🔒 Withdrawal Control</div>
-        <div class="danger-sub">Lock or unlock withdrawals for ALL users globally</div>
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-          <button class="btn btn-danger" onclick="lockWithdrawals(true)">🔒 Lock All Withdrawals</button>
-          <button class="btn btn-success" onclick="lockWithdrawals(false)">🔓 Unlock Withdrawals</button>
-          <span id="lock-status" style="font-size:13px;color:var(--muted);">Checking...</span>
-        </div>
-      </div>
+  <!-- Withdrawal Control -->
+<div class="danger-zone">
+<div class="danger-title">Withdrawal Control</div>
+<div class="danger-sub">Lock or unlock withdrawals for ALL users globally</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+  <button class="btn btn-danger" onclick="lockWithdrawals(true)">Lock All Withdrawals</button>
+  <button class="btn btn-success" onclick="lockWithdrawals(false)">Unlock Withdrawals</button>
+  <span id="lock-status" style="font-size:13px;color:var(--muted);">Checking...</span>
+</div>
+</div>
 
-      <!-- Danger Zone -->
-      <div class="danger-zone" style="margin-top:20px;">
-        <div class="danger-title">⚠️ Danger Zone</div>
-        <div class="danger-sub">Permanently delete platform data. These actions cannot be undone.</div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="btn btn-danger" onclick="deleteAllUsers()">🗑️ Delete All Users</button>
-          <button class="btn btn-danger" style="background:var(--warn);" onclick="deleteAllData()">💥 Delete ALL Data</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Danger Zone -->
+<div class="danger-zone" style="margin-top:20px;">
+<div class="danger-title">Danger Zone</div>
+<div class="danger-sub">Permanently delete platform data. These actions cannot be undone.</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;">
+  <button class="btn btn-danger" onclick="deleteAllUsers()">Delete All Users</button>
+  <button class="btn btn-danger" style="background:var(--warn);" onclick="deleteAllData()">Delete ALL Data</button>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 <!-- MODALS -->
-<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">✏️ Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">MOB (UGX)</label><input type="number" class="modal-input" id="edit-mob" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
+<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">MOB (UGX)</label><input type="number" class="modal-input" id="edit-mob" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
 
 <div class="toast" id="toast" style="position:fixed;top:24px;right:24px;background:var(--accent3);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:12px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;transform:translateY(-10px);"></div>
 <div class="notif-overlay" id="notif-overlay" onclick="closeNotifDrawer()"></div>
-<div class="notif-bell" onclick="openNotifDrawer()">🔔<div class="notif-badge" id="notif-badge">0</div></div>
+<div class="notif-bell" onclick="openNotifDrawer()"><div class="notif-badge" id="notif-badge">0</div></div>
 <div class="notif-drawer" id="notif-drawer">
-  <div class="notif-drawer-header">
-    <div class="notif-drawer-title">🔔 Notifications</div>
-    <button class="notif-close" onclick="closeNotifDrawer()">✕ Close</button>
-  </div>
-  <div class="notif-list" id="notif-list">
-    <div class="notif-empty">No notifications yet</div>
-  </div>
-  <button class="notif-clear-btn" onclick="clearAllNotifications()">🗑️ Clear All</button>
+<div class="notif-drawer-header">
+<div class="notif-drawer-title">Notifications</div>
+  <button class="notif-close" onclick="closeNotifDrawer()">Close</button>
+</div>
+<div class="notif-list" id="notif-list">
+<div class="notif-empty">No notifications yet</div>
+</div>
+  <button class="notif-clear-btn" onclick="clearAllNotifications()">Clear All</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -582,7 +582,7 @@ function getMarzAuth() {
   let key = (window.MARZ_API_KEY || allSettings.marzApiKey || '').trim();
   if (key.toLowerCase().startsWith('basic ')) key = key.slice(6).trim();
   if (key.startsWith('vvvv')) {
-    throw new Error('MarzPay API key needs to be re-entered');
+  throw new Error('MarzPay API key needs to be re-entered');
   }
   return 'Basic ' + key;
 }
@@ -596,9 +596,9 @@ async function marzSend(phone, amount, reference, description) {
   formData.append('reference', reference);
   formData.append('description', description);
   const response = await fetch(MARZ_API + '/send-money', {
-    method: 'POST',
-    headers: { 'Authorization': getMarzAuth() },
-    body: formData
+  method: 'POST',
+  headers: { 'Authorization': getMarzAuth() },
+  body: formData
   });
   if (!response.ok) throw new Error('Payment gateway error: ' + response.status);
   return await response.json();
@@ -636,10 +636,10 @@ function dateStr() { const d = new Date(); return d.toLocaleDateString('en-UG', 
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
 function genUUID() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)); }
 
-function toast(msg, color) { const t = document.getElementById('toast'); t.textContent = msg; t.style.background = color || 'var(--accent3)'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2800); }
-function confirmAction(title, text) { return Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#22c55e', confirmButtonText: 'Yes, proceed!' }).then(result => result.isConfirmed); }
+function toast(msg, color) { const t = document.getElementById('toast'); t.textContent = msg; t.style.background = color || 'var(--accent3)'; t.classList.add('show'); setTimeout(() =>t.classList.remove('show'), 2800); }
+function confirmAction(title, text) { return Swal.fire({ title, text, icon: 'warning', showCancelButton: true, confirmButtonColor: '#22c55e', confirmButtonText: 'Yes, proceed!' }).then(result =>result.isConfirmed); }
 function setErr(id, show, msg) { const el = document.getElementById(id); if (!el) return; if (show) { el.classList.add('show'); if (msg) el.textContent = msg; } else { el.classList.remove('show'); } }
-function clearErrors(...ids) { ids.forEach(id => setErr(id, false)); }
+function clearErrors(...ids) { ids.forEach(id =>setErr(id, false)); }
 function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 // ============================================================
@@ -664,8 +664,8 @@ const DEFAULT_LEVELS = {
 
 function ensureTraineeExists(levels) {
   if (!levels || !levels.trainee) {
-    levels = levels || {};
-    levels.trainee = { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500, locked: false };
+  levels = levels || {};
+  levels.trainee = { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500, locked: false };
   }
   return levels;
 }
@@ -673,10 +673,10 @@ function ensureTraineeExists(levels) {
 function startLevelsListener() {
   if (levelsUnsubscribe) levelsUnsubscribe();
   levelsUnsubscribe = db.ref('levels').on('value', (snap) => {
-    let levels = snap.val() || {};
-    levels = ensureTraineeExists(levels);
-    allLevels = levels;
-    renderLevelsAdminTable();
+  let levels = snap.val() || {};
+  levels = ensureTraineeExists(levels);
+  allLevels = levels;
+  renderLevelsAdminTable();
   });
 }
 
@@ -687,71 +687,71 @@ function renderLevelsAdminTable() {
   
   const levels = ensureTraineeExists(allLevels);
   const keys = Object.keys(levels).sort((a, b) => {
-    if (a === 'trainee') return -1;
-    if (b === 'trainee') return 1;
-    const numA = parseInt(a.replace('wm', '')) || 0;
-    const numB = parseInt(b.replace('wm', '')) || 0;
-    return numA - numB;
+  if (a === 'trainee') return -1;
+  if (b === 'trainee') return 1;
+  const numA = parseInt(a.replace('wm', '')) || 0;
+  const numB = parseInt(b.replace('wm', '')) || 0;
+  return numA - numB;
   });
   
-  if (countEl) countEl.textContent = keys.length + ' levels';
+  if (countEl) countEl.textContent = keys.length + 'levels';
   
   if (!keys.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted);">No levels configured. Click "Reset Defaults" to load default levels.</td></tr>';
-    return;
+  tbody.innerHTML = '<tr><td colspan="10" style="padding:20px;text-align:center;color:var(--muted);">No levels configured. Click "Reset Defaults"to load default levels.</td></tr>';
+  return;
   }
   
   tbody.innerHTML = keys.map(key => {
-    const l = levels[key];
-    if (!l) return '';
-    const isTrainee = (key === 'trainee');
-    const isLocked = l.locked === true;
+  const l = levels[key];
+  if (!l) return '';
+  const isTrainee = (key === 'trainee');
+  const isLocked = l.locked === true;
     
-    return `<tr>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${key}</td>
-      <td style="padding:8px 10px;"><input type="text" class="level-input" data-key="${key}" data-field="name" value="${escapeHtml(l.name || '')}" style="width:65px;"></td>
-      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="movies" value="${l.movies || 0}" style="width:55px;"></td>
-      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="collateral" value="${l.collateral || 0}" style="width:80px;"></td>
-      <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="each" value="${l.each || 0}" style="width:80px;"></td>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);">${fmtShort(l.daily || 0)}</td>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.monthly || 0)}</td>
-      <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.annual || 0)}</td>
-      <td style="padding:8px 10px;">
-        <div class="lock-toggle">
-          <input type="checkbox" id="lock_${key}" ${isLocked ? 'checked' : ''} ${isTrainee ? 'disabled' : ''} onchange="toggleLevelLock('${key}')">
-          <span style="font-size:9px;color:${isLocked ? 'var(--warn)' : 'var(--success)'};">${isLocked ? '🔒' : '🔓'}</span>
-        </div>
-      </td>
-      <td style="padding:8px 10px;">
-        <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;">💾</button>
-        ${!isTrainee ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;">🗑️</button>` : '<span style="font-size:9px;color:var(--muted);">🔒</span>'}
-      </td>
-    </tr>`;
+  return `<tr>
+  <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${key}</td>
+  <td style="padding:8px 10px;"><input type="text" class="level-input" data-key="${key}" data-field="name" value="${escapeHtml(l.name || '')}" style="width:65px;"></td>
+  <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="movies" value="${l.movies || 0}" style="width:55px;"></td>
+  <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="collateral" value="${l.collateral || 0}" style="width:80px;"></td>
+  <td style="padding:8px 10px;"><input type="number" class="level-input mono" data-key="${key}" data-field="each" value="${l.each || 0}" style="width:80px;"></td>
+  <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);">${fmtShort(l.daily || 0)}</td>
+  <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.monthly || 0)}</td>
+  <td style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">${fmtShort(l.annual || 0)}</td>
+  <td style="padding:8px 10px;">
+<div class="lock-toggle">
+  <input type="checkbox" id="lock_${key}" ${isLocked ? 'checked' : ''} ${isTrainee ? 'disabled' : ''} onchange="toggleLevelLock('${key}')">
+  <span style="font-size:9px;color:${isLocked ? 'var(--warn)' : 'var(--success)'};">${isLocked ? '' : ''}</span>
+</div>
+</td>
+  <td style="padding:8px 10px;">
+  <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;"></button>
+  ${!isTrainee ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;"></button>` : '<span style="font-size:9px;color:var(--muted);"></span>'}
+</td>
+</tr>`;
   }).join('');
   
   document.querySelectorAll('.level-input').forEach(input => {
-    input.onchange = function() { saveLevel(this.dataset.key); };
-    input.oninput = function() {
-      const row = this.closest('tr');
-      const key = this.dataset.key;
-      const l = allLevels[key] || {};
-      const inputs = row.querySelectorAll('.level-input');
-      let movies = l.movies || 0;
-      let each = l.each || 0;
-      inputs.forEach(inp => {
-        if (inp.dataset.field === 'movies') movies = parseInt(inp.value) || 0;
-        if (inp.dataset.field === 'each') each = parseInt(inp.value) || 0;
-      });
-      const daily = movies * each;
-      const monthly = daily * 30;
-      const annual = monthly * 12;
-      const cells = row.querySelectorAll('td');
-      if (cells.length >= 10) {
-        cells[5].textContent = fmtShort(daily);
-        cells[6].textContent = fmtShort(monthly);
-        cells[7].textContent = fmtShort(annual);
-      }
-    };
+  input.onchange = function() { saveLevel(this.dataset.key); };
+  input.oninput = function() {
+  const row = this.closest('tr');
+  const key = this.dataset.key;
+  const l = allLevels[key] || {};
+  const inputs = row.querySelectorAll('.level-input');
+  let movies = l.movies || 0;
+  let each = l.each || 0;
+  inputs.forEach(inp => {
+  if (inp.dataset.field === 'movies') movies = parseInt(inp.value) || 0;
+  if (inp.dataset.field === 'each') each = parseInt(inp.value) || 0;
+  });
+  const daily = movies * each;
+  const monthly = daily * 30;
+  const annual = monthly * 12;
+  const cells = row.querySelectorAll('td');
+  if (cells.length >= 10) {
+  cells[5].textContent = fmtShort(daily);
+  cells[6].textContent = fmtShort(monthly);
+  cells[7].textContent = fmtShort(annual);
+  }
+  };
   });
 }
 
@@ -760,13 +760,13 @@ async function saveLevel(key) {
   const levelData = { name: '', collateral: 0, movies: 0, each: 0, daily: 0, monthly: 0, annual: 0 };
   
   inputs.forEach(input => {
-    const field = input.dataset.field;
-    const val = input.value.trim();
-    if (field === 'name') {
-      levelData.name = val;
-    } else {
-      levelData[field] = parseInt(val) || 0;
-    }
+  const field = input.dataset.field;
+  const val = input.value.trim();
+  if (field === 'name') {
+  levelData.name = val;
+  } else {
+  levelData[field] = parseInt(val) || 0;
+  }
   });
   
   levelData.daily = (levelData.movies || 0) * (levelData.each || 0);
@@ -777,66 +777,66 @@ async function saveLevel(key) {
   levelData.locked = current.locked === true;
   
   try {
-    await db.ref('levels/' + key).update(levelData);
-    toast('✅ Level ' + key + ' saved');
+  await db.ref('levels/' + key).update(levelData);
+  toast('Level ' + key + 'saved');
   } catch (e) {
-    toast('❌ Error saving level', '#f87171');
+  toast('Error saving level', '#f87171');
   }
 }
 
 async function toggleLevelLock(key) {
   if (key === 'trainee') {
-    toast('❌ Cannot lock Trainee', '#f87171');
-    return;
+  toast('Cannot lock Trainee', '#f87171');
+  return;
   }
   
   const current = allLevels[key] || {};
   const newLocked = !current.locked;
   
   try {
-    await db.ref('levels/' + key + '/locked').set(newLocked);
-    toast(newLocked ? '🔒 Level ' + key + ' locked (Company Reserved)' : '🔓 Level ' + key + ' unlocked');
+  await db.ref('levels/' + key + '/locked').set(newLocked);
+  toast(newLocked ? 'Level ' + key + 'locked (Company Reserved)' : 'Level ' + key + 'unlocked');
   } catch (e) {
-    toast('❌ Error toggling lock', '#f87171');
+  toast('Error toggling lock', '#f87171');
   }
 }
 
 async function addLevelRow() {
   const keys = Object.keys(allLevels);
-  const existingWMs = keys.filter(k => k.startsWith('wm')).map(k => parseInt(k.replace('wm', '')) || 0);
+  const existingWMs = keys.filter(k =>k.startsWith('wm')).map(k =>parseInt(k.replace('wm', '')) || 0);
   let nextNum = 1;
   while (existingWMs.includes(nextNum)) nextNum++;
   const newKey = 'wm' + nextNum;
   
   const defaultData = {
-    name: 'WM' + nextNum,
-    collateral: nextNum * 100000,
-    movies: nextNum * 10 + 5,
-    each: nextNum * 1000 + 500,
-    daily: (nextNum * 10 + 5) * (nextNum * 1000 + 500),
-    monthly: ((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30,
-    annual: (((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30) * 12,
-    locked: false
+  name: 'WM' + nextNum,
+  collateral: nextNum * 100000,
+  movies: nextNum * 10 + 5,
+  each: nextNum * 1000 + 500,
+  daily: (nextNum * 10 + 5) * (nextNum * 1000 + 500),
+  monthly: ((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30,
+  annual: (((nextNum * 10 + 5) * (nextNum * 1000 + 500)) * 30) * 12,
+  locked: false
   };
   
   await db.ref('levels/' + newKey).set(defaultData);
-  toast('✅ Added ' + newKey);
+  toast('Added ' + newKey);
 }
 
 async function deleteLevel(key) {
-  if (key === 'trainee') { toast('❌ Cannot delete Trainee - it is the default level', '#f87171'); return; }
+  if (key === 'trainee') { toast('Cannot delete Trainee - it is the default level', '#f87171'); return; }
   const confirmed = await confirmAction('Delete Level?', 'Delete ' + key + '? This cannot be undone.');
   if (confirmed) {
-    await db.ref('levels/' + key).remove();
-    toast('🗑️ Deleted ' + key);
+  await db.ref('levels/' + key).remove();
+  toast('Deleted ' + key);
   }
 }
 
 async function resetDefaultLevels() {
   const confirmed = await confirmAction('Reset Default Levels?', 'This will replace all current levels with default values. Trainee will always be included. This cannot be undone.');
   if (confirmed) {
-    await db.ref('levels').set(DEFAULT_LEVELS);
-    toast('🔄 Default levels restored');
+  await db.ref('levels').set(DEFAULT_LEVELS);
+  toast('Default levels restored');
   }
 }
 
@@ -849,11 +849,11 @@ function extractYouTubeId(input) {
   if (!s) return null;
   if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
   const patterns = [
-    /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+  /(?:youtube\.com\/watch\?v=|youtube\.com\/embed\/|youtube\.com\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/
   ];
   for (const p of patterns) {
-    const m = s.match(p);
-    if (m) return m[1];
+  const m = s.match(p);
+  if (m) return m[1];
   }
   return null;
 }
@@ -861,9 +861,9 @@ function extractYouTubeId(input) {
 function startVideosListener() {
   if (videosUnsubscribe) videosUnsubscribe();
   videosUnsubscribe = db.ref('videos').on('value', (snap) => {
-    allVideos = snap.val() || {};
-    renderAdminVideosTable();
-    renderDashboard();
+  allVideos = snap.val() || {};
+  renderAdminVideosTable();
+  renderDashboard();
   });
 }
 
@@ -874,24 +874,24 @@ async function adminSaveVideo() {
   const youtubeId = extractYouTubeId(urlInput);
 
   if (!youtubeId) { 
-    setErr('video-add-err', true, 'Could not read a YouTube video ID from that link. Please paste a valid YouTube URL or video ID.'); 
-    return; 
+  setErr('video-add-err', true, 'Could not read a YouTube video ID from that link. Please paste a valid YouTube URL or video ID.'); 
+  return; 
   }
 
   const videoTitle = title || 'Video';
 
   const videoKey = 'vid_' + Date.now();
   try {
-    await db.ref('videos/' + videoKey).set({
-      title: videoTitle,
-      youtubeId: youtubeId,
-      addedDate: dateStr()
-    });
-    document.getElementById('video-title-input').value = '';
-    document.getElementById('video-url-input').value = '';
-    toast('✅ Video saved');
+  await db.ref('videos/' + videoKey).set({
+  title: videoTitle,
+  youtubeId: youtubeId,
+  addedDate: dateStr()
+  });
+  document.getElementById('video-title-input').value = '';
+  document.getElementById('video-url-input').value = '';
+  toast('Video saved');
   } catch (e) {
-    setErr('video-add-err', true, 'Failed to save video. Try again.');
+  setErr('video-add-err', true, 'Failed to save video. Try again.');
   }
 }
 
@@ -899,28 +899,28 @@ async function adminDeleteVideo(key) {
   const ok = await confirmAction('Delete this video?', 'It will be removed from the user WATCH page immediately.');
   if (!ok) return;
   await db.ref('videos/' + key).remove();
-  toast('🗑️ Video deleted');
+  toast('Video deleted');
 }
 
 function renderAdminVideosTable() {
   const body = document.getElementById('video-table-body');
   const countEl = document.getElementById('video-count');
   if (!body) return;
-  const ids = Object.keys(allVideos).sort((a, b) => b.localeCompare(a));
-  if (countEl) countEl.textContent = ids.length + (ids.length === 1 ? ' video' : ' videos');
+  const ids = Object.keys(allVideos).sort((a, b) =>b.localeCompare(a));
+  if (countEl) countEl.textContent = ids.length + (ids.length === 1 ? 'video' : 'videos');
   if (!ids.length) {
-    body.innerHTML = '<tr class="empty-row"><td colspan="5">No videos yet</td></tr>';
-    return;
+  body.innerHTML = '<tr class="empty-row"><td colspan="5">No videos yet</td></tr>';
+  return;
   }
   body.innerHTML = ids.map(key => {
-    const v = allVideos[key];
-    return `<tr>
-      <td><img src="https://img.youtube.com/vi/${v.youtubeId}/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;" alt=""></td>
-      <td>${escapeHtml(v.title || 'Video')}</td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">${escapeHtml(v.youtubeId)}</td>
-      <td style="font-size:12px;color:var(--muted);">${escapeHtml(v.addedDate || '—')}</td>
-      <td><button class="btn btn-reject" onclick="adminDeleteVideo('${key}')">🗑️ Delete</button></td>
-    </tr>`;
+  const v = allVideos[key];
+  return `<tr>
+  <td><img src="https://img.youtube.com/vi/${v.youtubeId}/default.jpg" style="width:64px;height:36px;object-fit:cover;border-radius:6px;" alt=""></td>
+  <td>${escapeHtml(v.title || 'Video')}</td>
+  <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">${escapeHtml(v.youtubeId)}</td>
+  <td style="font-size:12px;color:var(--muted);">${escapeHtml(v.addedDate || '—')}</td>
+  <td><button class="btn btn-reject" onclick="adminDeleteVideo('${key}')">Delete</button></td>
+</tr>`;
   }).join('');
 }
 
@@ -933,30 +933,30 @@ function startRealtimeListeners() {
   
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
-    allUsers = snap.val() || {};
-    renderDashboard();
-    renderUsersTable();
+  allUsers = snap.val() || {};
+  renderDashboard();
+  renderUsersTable();
   });
   
   if (settingsUnsubscribe) settingsUnsubscribe();
   settingsUnsubscribe = db.ref('settings').on('value', (snap) => {
-    if (snap.exists()) allSettings = snap.val();
-    loadSettingsUI();
-    renderDashboard();
+  if (snap.exists()) allSettings = snap.val();
+  loadSettingsUI();
+  renderDashboard();
   });
   
   if (withdrawalsUnsubscribe) withdrawalsUnsubscribe();
   withdrawalsUnsubscribe = db.ref('pendingWithdrawals').on('value', (snap) => {
-    allWithdrawals = snap.val() || {};
-    renderWithdrawalsStats();
-    renderWithdrawalsTable();
-    updateWithdrawalsBadge();
+  allWithdrawals = snap.val() || {};
+  renderWithdrawalsStats();
+  renderWithdrawalsTable();
+  updateWithdrawalsBadge();
   });
   
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
-    allAdminTransactions = snap.val() || {};
-    renderAdminTransactions();
+  allAdminTransactions = snap.val() || {};
+  renderAdminTransactions();
   });
   
   startNotifListener();
@@ -972,11 +972,11 @@ function renderDashboard() {
   const totalVideos = Object.keys(allVideos).length;
   
   users.forEach(u => {
-    totalStake += u.stake || 0;
-    totalMob += u.mob || 0;
-    if (u.locked) locked++;
-    const watchedToday = u.watchHistory?.[today] || 0;
-    videosToday += watchedToday;
+  totalStake += u.stake || 0;
+  totalMob += u.mob || 0;
+  if (u.locked) locked++;
+  const watchedToday = u.watchHistory?.[today] || 0;
+  videosToday += watchedToday;
   });
   
   document.getElementById('d-total-users').textContent = users.length;
@@ -989,12 +989,12 @@ function renderDashboard() {
   
   const s = allSettings;
   document.getElementById('pct-summary').innerHTML = `
-    <div class="pct-pill">Min Deposit <span>${fmt(s.minDeposit || 10000)}</span></div>
-    <div class="pct-pill">Streak Bonus <span>${fmt(s.streakBonus || 1000)}</span></div>
-    <div class="pct-pill">Withdrawal Charge <span>${s.withdrawCharge || 10}%</span></div>
-    <div class="pct-pill">MarzPay API <span style="color:${s.marzApiKey ? 'var(--accent3)' : 'var(--warn)'};">${s.marzApiKey ? '✅ Set' : '⚠️ Not Set'}</span></div>
-    <div class="pct-pill">Withdrawals <span style="color:${s.withdrawLocked ? 'var(--warn)' : 'var(--success)'};">${s.withdrawLocked ? '🔒 LOCKED' : '🔓 OPEN'}</span></div>
-    <div class="pct-pill">Total Videos <span>${totalVideos}</span></div>
+<div class="pct-pill">Min Deposit <span>${fmt(s.minDeposit || 10000)}</span></div>
+<div class="pct-pill">Streak Bonus <span>${fmt(s.streakBonus || 1000)}</span></div>
+<div class="pct-pill">Withdrawal Charge <span>${s.withdrawCharge || 10}%</span></div>
+<div class="pct-pill">MarzPay API <span style="color:${s.marzApiKey ? 'var(--accent3)' : 'var(--warn)'};">${s.marzApiKey ? 'Set' : 'Not Set'}</span></div>
+<div class="pct-pill">Withdrawals <span style="color:${s.withdrawLocked ? 'var(--warn)' : 'var(--success)'};">${s.withdrawLocked ? 'LOCKED' : 'OPEN'}</span></div>
+<div class="pct-pill">Total Videos <span>${totalVideos}</span></div>
   `;
 }
 
@@ -1005,45 +1005,45 @@ function filterUsers(val) { searchFilter = val; renderUsersTable(); }
 
 function renderUsersTable() {
   const users = Object.values(allUsers);
-  const filtered = searchFilter ? users.filter(u => u.username && u.username.toLowerCase().includes(searchFilter.toLowerCase())) : users;
+  const filtered = searchFilter ? users.filter(u =>u.username && u.username.toLowerCase().includes(searchFilter.toLowerCase())) : users;
   const tbody = document.getElementById('users-table-body');
   if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No users found</tr>'; return; }
   
   const levelKeys = Object.keys(allLevels).sort((a, b) => {
-    if (a === 'trainee') return -1;
-    if (b === 'trainee') return 1;
-    const numA = parseInt(a.replace('wm', '')) || 0;
-    const numB = parseInt(b.replace('wm', '')) || 0;
-    return numA - numB;
+  if (a === 'trainee') return -1;
+  if (b === 'trainee') return 1;
+  const numA = parseInt(a.replace('wm', '')) || 0;
+  const numB = parseInt(b.replace('wm', '')) || 0;
+  return numA - numB;
   });
   
   tbody.innerHTML = filtered.map(u => {
-    const sk = safeKey(u.username || '');
-    let levelName = 'Trainee';
-    const userVideos = u.totalVideosWatched || 0;
-    for (const key of levelKeys) {
-      const level = allLevels[key];
-      if (level && userVideos >= (level.collateral || 0)) {
-        levelName = level.name || 'Trainee';
-      }
-    }
+  const sk = safeKey(u.username || '');
+  let levelName = 'Trainee';
+  const userVideos = u.totalVideosWatched || 0;
+  for (const key of levelKeys) {
+  const level = allLevels[key];
+  if (level && userVideos >= (level.collateral || 0)) {
+  levelName = level.name || 'Trainee';
+  }
+  }
     
-    return `<tr>
-      <td><strong>${u.username || '—'}</strong></td>
-      <td class="mono">${u.phone || '—'}</td>
-      <td><div class="pw-cell" id="pwcell_${sk}"><span class="pw-val" onclick="editPw('${sk}')">${u.password || '—'}</span></div></td>
-      <td class="mono" style="color:var(--gold)">${fmt(u.stake)}</td>
-      <td class="mono" style="color:var(--purple, #9B59B6)">${fmt(u.mob)}</td>
-      <td class="mono">${u.totalVideosWatched || 0}</td>
-      <td class="mono">${u.streakDays || 0}</td>
-      <td style="color:var(--accent);font-weight:700;">${levelName}</td>
-      <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button class="btn btn-edit" onclick="openEditModal('${u.username}')">✏️</button>
-        <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${u.username}', ${!u.locked})">${u.locked ? '🔓' : '🔒'}</button>
-        <button class="btn btn-delete" onclick="deleteUser('${u.username}')">🗑️</button>
-      </td>
-    </tr>`;
+  return `<tr>
+  <td><strong>${u.username || '—'}</strong></td>
+  <td class="mono">${u.phone || '—'}</td>
+  <td><div class="pw-cell" id="pwcell_${sk}"><span class="pw-val" onclick="editPw('${sk}')">${u.password || '—'}</span></div></td>
+  <td class="mono" style="color:var(--gold)">${fmt(u.stake)}</td>
+  <td class="mono" style="color:var(--purple, #9B59B6)">${fmt(u.mob)}</td>
+  <td class="mono">${u.totalVideosWatched || 0}</td>
+  <td class="mono">${u.streakDays || 0}</td>
+  <td style="color:var(--accent);font-weight:700;">${levelName}</td>
+  <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
+  <td style="display:flex;gap:6px;flex-wrap:wrap;">
+  <button class="btn btn-edit" onclick="openEditModal('${u.username}')"></button>
+  <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${u.username}', ${!u.locked})">${u.locked ? '' : ''}</button>
+  <button class="btn btn-delete" onclick="deleteUser('${u.username}')"></button>
+</td>
+</tr>`;
   }).join('');
 }
 
@@ -1052,7 +1052,7 @@ function editPw(sk) {
   if (!cell) return;
   const cur = cell.querySelector('.pw-val');
   const currentPw = cur ? cur.textContent : '';
-  cell.innerHTML = `<input class="pw-edit-input" id="pwinput_${sk}" value="${currentPw}" type="text"><button class="pw-save-btn" onclick="savePw('${sk}')">✓</button>`;
+  cell.innerHTML = `<input class="pw-edit-input" id="pwinput_${sk}" value="${currentPw}" type="text"><button class="pw-save-btn" onclick="savePw('${sk}')"></button>`;
   const inp = document.getElementById('pwinput_' + sk);
   if (inp) { inp.focus(); inp.onkeydown = e => { if (e.key === 'Enter') savePw(sk); if (e.key === 'Escape') renderUsersTable(); }; }
 }
@@ -1062,10 +1062,10 @@ async function savePw(sk) {
   if (!inp) return;
   const newPw = inp.value.trim();
   if (!newPw) { toast('Password cannot be empty', '#f87171'); return; }
-  const user = Object.values(allUsers).find(u => safeKey(u.username || '') === sk);
+  const user = Object.values(allUsers).find(u =>safeKey(u.username || '') === sk);
   if (!user) return;
   await db.ref('users/' + sk + '/password').set(newPw);
-  toast('✅ Password updated for ' + user.username);
+  toast('Password updated for ' + user.username);
   renderUsersTable();
 }
 
@@ -1098,29 +1098,29 @@ async function saveEditUser() {
   if (!user) return;
   
   const updates = {
-    password: newPassword,
-    phone: newPhone,
-    stake: newStake,
-    mob: newMob,
-    totalVideosWatched: newVideos,
-    streakDays: newStreak
+  password: newPassword,
+  phone: newPhone,
+  stake: newStake,
+  mob: newMob,
+  totalVideosWatched: newVideos,
+  streakDays: newStreak
   };
   
   await db.ref('users/' + sk).update(updates);
   closeEditModal();
-  toast('✅ User ' + username + ' updated');
+  toast('User ' + username + 'updated');
 }
 
 async function toggleLock(username, lock) {
   await db.ref('users/' + safeKey(username) + '/locked').set(lock);
-  toast(lock ? '🔒 User locked' : '🔓 User unlocked', lock ? '#f87171' : undefined);
+  toast(lock ? 'User locked' : 'User unlocked', lock ? '#f87171' : undefined);
 }
 
 async function deleteUser(username) {
   const confirmed = await confirmAction('Delete User?', 'Delete user "' + username + '"? This cannot be undone.');
   if (confirmed) {
-    await db.ref('users/' + safeKey(username)).remove();
-    toast('🗑️ User deleted', '#f87171');
+  await db.ref('users/' + safeKey(username)).remove();
+  toast('User deleted', '#f87171');
   }
 }
 
@@ -1137,29 +1137,29 @@ function renderAdminTransactions() {
   txs.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   
   if (admTxFilter !== 'all') {
-    txs = txs.filter(t => t.type === admTxFilter);
+  txs = txs.filter(t =>t.type === admTxFilter);
   }
   
-  if (countEl) countEl.textContent = txs.length + ' transactions';
+  if (countEl) countEl.textContent = txs.length + 'transactions';
   if (!txs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No transactions found</tr>'; return; }
   
   tbody.innerHTML = txs.map(tx => {
-    let statusColor = 'var(--gold)', statusText = '⏳ Pending';
-    if (tx.status === 'successful') { statusColor = 'var(--success)'; statusText = '✅ Successful'; }
-    else if (tx.status === 'failed') { statusColor = 'var(--warn)'; statusText = '❌ Failed'; }
-    const typeIcon = tx.type === 'Deposit' ? '💳' : '💸';
-    const amountStr = fmt(tx.amount || 0);
+  let statusColor = 'var(--gold)', statusText = '⏳ Pending';
+  if (tx.status === 'successful') { statusColor = 'var(--success)'; statusText = 'Successful'; }
+  else if (tx.status === 'failed') { statusColor = 'var(--warn)'; statusText = 'Failed'; }
+  const typeIcon = tx.type === 'Deposit' ? '' : '';
+  const amountStr = fmt(tx.amount || 0);
     
-    return `<tr>
-      <td class="mono" style="font-size:11px;">${tx.date || '—'}</td>
-      <td><strong>${tx.username || '—'}</strong></td>
-      <td class="mono" style="font-size:11px;">${tx.phone || '—'}</td>
-      <td><span class="badge ${tx.type === 'Deposit' ? 'badge-approved' : 'badge-pending'}">${typeIcon} ${tx.type}</span></td>
-      <td class="mono">${amountStr}</td>
-      <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
-      <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
-      <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">🗑️</button></td>
-    </tr>`;
+  return `<tr>
+  <td class="mono" style="font-size:11px;">${tx.date || '—'}</td>
+  <td><strong>${tx.username || '—'}</strong></td>
+  <td class="mono" style="font-size:11px;">${tx.phone || '—'}</td>
+  <td><span class="badge ${tx.type === 'Deposit' ? 'badge-approved' : 'badge-pending'}">${typeIcon} ${tx.type}</span></td>
+  <td class="mono">${amountStr}</td>
+  <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
+  <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
+  <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')"></button></td>
+</tr>`;
   }).join('');
 }
 
@@ -1167,10 +1167,10 @@ async function deleteAdmTx(key) {
   const confirmed = await confirmAction('Delete Transaction?', 'Delete this admin transaction? This cannot be undone.');
   if (!confirmed) return;
   try {
-    await db.ref('adminTransactions/' + key).remove();
-    toast('✅ Transaction deleted');
+  await db.ref('adminTransactions/' + key).remove();
+  toast('Transaction deleted');
   } catch (error) {
-    toast('Error deleting transaction', '#f87171');
+  toast('Error deleting transaction', '#f87171');
   }
 }
 
@@ -1178,17 +1178,17 @@ async function deleteAdmTx(key) {
 // WITHDRAWALS
 // ============================================================
 function updateWithdrawalsBadge() {
-  const count = Object.values(allWithdrawals).filter(v => v.status === 'pending').length;
+  const count = Object.values(allWithdrawals).filter(v =>v.status === 'pending').length;
   const badge = document.getElementById('withdrawals-nav-badge');
-  if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
+  if (count >0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
   else { badge.style.display = 'none'; }
 }
 
 function renderWithdrawalsStats() {
   const vals = Object.values(allWithdrawals);
-  const pending = vals.filter(v => v.status === 'pending');
-  const approved = vals.filter(v => v.status === 'approved');
-  const pendingAmt = pending.reduce((s, v) => s + (v.amount || 0), 0);
+  const pending = vals.filter(v =>v.status === 'pending');
+  const approved = vals.filter(v =>v.status === 'approved');
+  const pendingAmt = pending.reduce((s, v) =>s + (v.amount || 0), 0);
   document.getElementById('wd-stat-pending').textContent = pending.length;
   document.getElementById('wd-stat-approved').textContent = approved.length;
   document.getElementById('wd-stat-amount').textContent = fmt(pendingAmt);
@@ -1200,30 +1200,30 @@ function renderWithdrawalsTable() {
   const tbody = document.getElementById('wd-table-body');
   const countEl = document.getElementById('wd-count');
   let entries = Object.entries(allWithdrawals);
-  if (wdFilter !== 'all') entries = entries.filter(([k, v]) => v.status === wdFilter);
-  entries.sort((a, b) => b[0].localeCompare(a[0]));
-  if (countEl) countEl.textContent = entries.length + ' requests';
+  if (wdFilter !== 'all') entries = entries.filter(([k, v]) =>v.status === wdFilter);
+  entries.sort((a, b) =>b[0].localeCompare(a[0]));
+  if (countEl) countEl.textContent = entries.length + 'requests';
   if (!entries.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No withdrawal requests yet</tr>'; return; }
   
   tbody.innerHTML = entries.map(([k, v]) => {
-    const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : 'var(--gold)';
-    const si = v.status === 'approved' ? '✅ Approved' : v.status === 'rejected' ? '❌ Rejected' : '⏳ Pending';
-    const fee = Math.round((v.amount || 0) * 0.10);
-    const sendAmt = v.sendAmount || (v.amount - fee);
-    const actions = v.status === 'pending' ? `
-      <button class="btn btn-approve" onclick="approveWithdrawal('${k}', '${v.userId}', '${v.username}', ${v.amount}, ${sendAmt})">✅ Approve</button>
-      <button class="btn btn-reject" onclick="rejectWithdrawal('${k}', '${v.userId}', '${v.username}', ${v.amount})">❌ Reject</button>
-    ` : '—';
-    return `<tr>
-      <td class="mono" style="font-size:11px;">${v.date || '—'}</td>
-      <td><strong>${v.username || '—'}</strong></td>
-      <td class="mono">${v.phone || '—'}</td>
-      <td class="mono" style="color:var(--warn);font-weight:800;">${fmt(v.amount)}</td>
-      <td class="mono" style="color:var(--gold);">${fmt(fee)}</td>
-      <td class="mono" style="color:var(--success);font-weight:800;">${fmt(sendAmt)}</td>
-      <td><span style="font-size:11px;font-weight:700;color:${sc};">${si}</span></td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</td>
-    </tr>`;
+  const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : 'var(--gold)';
+  const si = v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : '⏳ Pending';
+  const fee = Math.round((v.amount || 0) * 0.10);
+  const sendAmt = v.sendAmount || (v.amount - fee);
+  const actions = v.status === 'pending' ? `
+  <button class="btn btn-approve" onclick="approveWithdrawal('${k}', '${v.userId}', '${v.username}', ${v.amount}, ${sendAmt})">Approve</button>
+  <button class="btn btn-reject" onclick="rejectWithdrawal('${k}', '${v.userId}', '${v.username}', ${v.amount})">Reject</button>
+  ` : '—';
+  return `<tr>
+  <td class="mono" style="font-size:11px;">${v.date || '—'}</td>
+  <td><strong>${v.username || '—'}</strong></td>
+  <td class="mono">${v.phone || '—'}</td>
+  <td class="mono" style="color:var(--warn);font-weight:800;">${fmt(v.amount)}</td>
+  <td class="mono" style="color:var(--gold);">${fmt(fee)}</td>
+  <td class="mono" style="color:var(--success);font-weight:800;">${fmt(sendAmt)}</td>
+  <td><span style="font-size:11px;font-weight:700;color:${sc};">${si}</span></td>
+  <td style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</td>
+</tr>`;
   }).join('');
 }
 
@@ -1232,106 +1232,106 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
   if (!confirmed) return;
   
   try {
-    const withdrawal = allWithdrawals[reqKey];
-    const txKey = withdrawal?.txKey;
-    const adminTxKey = withdrawal?.adminTxKey;
-    const userPhone = withdrawal?.phone;
-    const fee = withdrawal?.fee;
-    const reference = genUUID();
+  const withdrawal = allWithdrawals[reqKey];
+  const txKey = withdrawal?.txKey;
+  const adminTxKey = withdrawal?.adminTxKey;
+  const userPhone = withdrawal?.phone;
+  const fee = withdrawal?.fee;
+  const reference = genUUID();
     
-    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'processing' });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'processing' });
     
-    try {
-      const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
+  try {
+  const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
       
-      if (sendResult && sendResult.status === 'success') {
-        await db.ref('users/' + userId + '/transactions/' + txKey).update({
-          status: 'completed',
-          note: `Withdrawal approved and sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
-        });
-        await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
-        await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
-        toast('✅ Withdrawal approved and sent for ' + username);
-      } else {
-        const userSnap = await db.ref('users/' + userId).get();
-        const user = userSnap.val();
-        const refundedMob = (user.mob || 0) + amount;
-        await db.ref('users/' + userId).update({
-          mob: refundedMob,
-          ['transactions/' + txKey + '/status']: 'failed',
-          ['transactions/' + txKey + '/note']: 'Withdrawal Failed - Refunded to MOB'
-        });
-        await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-        await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-        await db.ref('adminNotifications/notif_' + Date.now()).set({
-          type: 'withdrawal_marz_failed',
-          username: username,
-          amount: amount,
-          message: `Withdrawal Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
-          date: dateStr(),
-          read: false
-        });
-        toast('❌ Marz failed - refund issued to ' + username, '#f87171');
-      }
-    } catch (marzError) {
-      const userSnap = await db.ref('users/' + userId).get();
-      const user = userSnap.val();
-      const refundedMob = (user.mob || 0) + amount;
-      await db.ref('users/' + userId).update({
-        mob: refundedMob,
-        ['transactions/' + txKey + '/status']: 'failed',
-        ['transactions/' + txKey + '/note']: 'Withdrawal Error - Refunded to MOB'
-      });
-      await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-      await db.ref('adminNotifications/notif_' + Date.now()).set({
-        type: 'withdrawal_marz_failed',
-        username: username,
-        amount: amount,
-        message: `Withdrawal Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
-        date: dateStr(),
-        read: false
-      });
-      toast('❌ Marz error - refund issued to ' + username, '#f87171');
-    }
+  if (sendResult && sendResult.status === 'success') {
+  await db.ref('users/' + userId + '/transactions/' + txKey).update({
+  status: 'completed',
+  note: `Withdrawal approved and sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
+  toast('Withdrawal approved and sent for ' + username);
+  } else {
+  const userSnap = await db.ref('users/' + userId).get();
+  const user = userSnap.val();
+  const refundedMob = (user.mob || 0) + amount;
+  await db.ref('users/' + userId).update({
+  mob: refundedMob,
+  ['transactions/' + txKey + '/status']: 'failed',
+  ['transactions/' + txKey + '/note']: 'Withdrawal Failed - Refunded to MOB'
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('adminNotifications/notif_' + Date.now()).set({
+  type: 'withdrawal_marz_failed',
+  username: username,
+  amount: amount,
+  message: `Withdrawal Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
+  date: dateStr(),
+  read: false
+  });
+  toast('Marz failed - refund issued to ' + username, '#f87171');
+  }
+  } catch (marzError) {
+  const userSnap = await db.ref('users/' + userId).get();
+  const user = userSnap.val();
+  const refundedMob = (user.mob || 0) + amount;
+  await db.ref('users/' + userId).update({
+  mob: refundedMob,
+  ['transactions/' + txKey + '/status']: 'failed',
+  ['transactions/' + txKey + '/note']: 'Withdrawal Error - Refunded to MOB'
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('adminNotifications/notif_' + Date.now()).set({
+  type: 'withdrawal_marz_failed',
+  username: username,
+  amount: amount,
+  message: `Withdrawal Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
+  date: dateStr(),
+  read: false
+  });
+  toast('Marz error - refund issued to ' + username, '#f87171');
+  }
   } catch (error) { 
-    console.error('Error approving withdrawal:', error);
-    toast('Error approving withdrawal', '#f87171'); 
+  console.error('Error approving withdrawal:', error);
+  toast('Error approving withdrawal', '#f87171'); 
   }
 }
 
 async function rejectWithdrawal(reqKey, userId, username, amount) {
-  const confirmed = await confirmAction('Reject Withdrawal?', 'Reject withdrawal of ' + fmt(amount) + ' for ' + username + '? Full amount will be refunded to MOB.');
+  const confirmed = await confirmAction('Reject Withdrawal?', 'Reject withdrawal of ' + fmt(amount) + 'for ' + username + '? Full amount will be refunded to MOB.');
   if (!confirmed) return;
   
   try {
-    const userSnap = await db.ref('users/' + userId).get();
-    const user = userSnap.val();
-    const newMob = (user.mob || 0) + amount;
-    const txKey = allWithdrawals[reqKey]?.txKey;
-    const adminTxKey = allWithdrawals[reqKey]?.adminTxKey;
+  const userSnap = await db.ref('users/' + userId).get();
+  const user = userSnap.val();
+  const newMob = (user.mob || 0) + amount;
+  const txKey = allWithdrawals[reqKey]?.txKey;
+  const adminTxKey = allWithdrawals[reqKey]?.adminTxKey;
     
-    await db.ref('users/' + userId).update({
-      mob: newMob,
-      ['transactions/' + txKey + '/status']: 'failed',
-      ['transactions/' + txKey + '/note']: 'Withdrawal Rejected ❌ - Amount refunded to MOB'
-    });
-    await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'rejected' });
-    if (adminTxKey) {
-      await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-    }
-    await db.ref('adminNotifications/notif_' + Date.now()).set({ 
-      type: 'withdrawal_rejected',
-      username: username,
-      amount: amount,
-      message: `Withdrawal Rejected: ${username} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
-      date: dateStr(),
-      read: false 
-    });
-    toast('✅ Rejected — amount refunded to MOB for ' + username);
+  await db.ref('users/' + userId).update({
+  mob: newMob,
+  ['transactions/' + txKey + '/status']: 'failed',
+  ['transactions/' + txKey + '/note']: 'Withdrawal Rejected - Amount refunded to MOB'
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'rejected' });
+  if (adminTxKey) {
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  }
+  await db.ref('adminNotifications/notif_' + Date.now()).set({ 
+  type: 'withdrawal_rejected',
+  username: username,
+  amount: amount,
+  message: `Withdrawal Rejected: ${username} | Amount: ${fmt(amount)} | Full refund issued to MOB`,
+  date: dateStr(),
+  read: false 
+  });
+  toast('Rejected — amount refunded to MOB for ' + username);
   } catch (error) { 
-    console.error('Error rejecting withdrawal:', error);
-    toast('Error rejecting withdrawal', '#f87171'); 
+  console.error('Error rejecting withdrawal:', error);
+  toast('Error rejecting withdrawal', '#f87171'); 
   }
 }
 
@@ -1349,24 +1349,24 @@ function loadSettingsUI() {
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
   
   const apiBadge = document.getElementById('api-status-badge');
-  if (s.marzApiKey && s.marzApiKey.length > 5) {
-    apiBadge.innerHTML = '✅ API Key Set';
-    apiBadge.style.color = 'var(--success)';
+  if (s.marzApiKey && s.marzApiKey.length >5) {
+  apiBadge.innerHTML = 'API Key Set';
+  apiBadge.style.color = 'var(--success)';
   } else {
-    apiBadge.innerHTML = '⚠️ Not Set — Payments Disabled';
-    apiBadge.style.color = 'var(--warn)';
+  apiBadge.innerHTML = 'Not Set — Payments Disabled';
+  apiBadge.style.color = 'var(--warn)';
   }
   
   const lockStatus = document.getElementById('lock-status');
   if (lockStatus) {
-    lockStatus.textContent = s.withdrawLocked ? '🔒 LOCKED' : '🔓 OPEN';
-    lockStatus.style.color = s.withdrawLocked ? 'var(--warn)' : 'var(--success)';
+  lockStatus.textContent = s.withdrawLocked ? 'LOCKED' : 'OPEN';
+  lockStatus.style.color = s.withdrawLocked ? 'var(--warn)' : 'var(--success)';
   }
   
   const approvalStatus = document.getElementById('approval-status');
   if (approvalStatus) {
-    approvalStatus.textContent = s.withdrawApproval ? '✅ Manual Approval ON' : '⚡ Automatic';
-    approvalStatus.style.color = s.withdrawApproval ? 'var(--gold)' : 'var(--success)';
+  approvalStatus.textContent = s.withdrawApproval ? 'Manual Approval ON' : 'Automatic';
+  approvalStatus.style.color = s.withdrawApproval ? 'var(--gold)' : 'var(--success)';
   }
 }
 
@@ -1377,66 +1377,66 @@ async function saveMarzApiKey() {
   window.MARZ_API_KEY = val;
   document.getElementById('marz-api-key-input').type = 'text';
   document.getElementById('marz-api-key-input').value = val;
-  toast('✅ MarzPay API key saved');
+  toast('MarzPay API key saved');
 }
 
 async function saveMinDeposit() {
   const v = parseInt(document.getElementById('min-deposit-input').value) || 10000;
   if (v < 500) { toast('Min deposit must be at least UGX 500', '#f87171'); return; }
   await db.ref('settings/minDeposit').set(v);
-  toast('✅ Minimum deposit set to ' + fmt(v));
+  toast('Minimum deposit set to ' + fmt(v));
 }
 
 async function saveMinWithdraw() {
   const v = parseInt(document.getElementById('min-withdraw-input').value) || 10000;
   if (v < 500) { toast('Min withdrawal must be at least UGX 500', '#f87171'); return; }
   await db.ref('settings/minWithdraw').set(v);
-  toast('✅ Minimum withdrawal set to ' + fmt(v));
+  toast('Minimum withdrawal set to ' + fmt(v));
 }
 
 async function saveWithCharge() {
   const v = parseFloat(document.getElementById('with-charge-input').value) || 10;
   await db.ref('settings/withdrawCharge').set(v);
-  toast('✅ Withdrawal charge updated to ' + v + '%');
+  toast('Withdrawal charge updated to ' + v + '%');
 }
 
 async function saveStreakBonus() {
   const v = parseInt(document.getElementById('streak-bonus-input').value) || 1000;
   if (v < 100) { toast('Streak bonus must be at least UGX 100', '#f87171'); return; }
   await db.ref('settings/streakBonus').set(v);
-  toast('✅ Streak bonus set to ' + fmt(v));
+  toast('Streak bonus set to ' + fmt(v));
 }
 
 async function lockWithdrawals(lock) {
   await db.ref('settings/withdrawLocked').set(lock);
-  toast(lock ? '🔒 Withdrawals LOCKED' : '🔓 Withdrawals UNLOCKED', lock ? '#f87171' : undefined);
+  toast(lock ? 'Withdrawals LOCKED' : 'Withdrawals UNLOCKED', lock ? '#f87171' : undefined);
 }
 
 async function setWithdrawApproval(val) {
   await db.ref('settings/withdrawApproval').set(val);
-  toast(val ? '✅ Manual approval ON' : '⚡ Automatic withdrawals ON', val ? undefined : '#38bdf8');
+  toast(val ? 'Manual approval ON' : 'Automatic withdrawals ON', val ? undefined : '#38bdf8');
 }
 
 async function deleteAllUsers() {
-  const confirmed = await confirmAction('⚠️ DELETE ALL USERS?', 'Are you absolutely sure? This cannot be undone.');
+  const confirmed = await confirmAction('DELETE ALL USERS?', 'Are you absolutely sure? This cannot be undone.');
   if (confirmed) {
-    const users = Object.values(allUsers);
-    for (const user of users) {
-      await db.ref('users/' + safeKey(user.username)).remove();
-    }
-    toast('🗑️ All users deleted', '#f87171');
+  const users = Object.values(allUsers);
+  for (const user of users) {
+  await db.ref('users/' + safeKey(user.username)).remove();
+  }
+  toast('All users deleted', '#f87171');
   }
 }
 
 async function deleteAllData() {
-  const confirmed = await confirmAction('💥 DELETE ALL DATA?', 'This will wipe everything! This cannot be undone. Are you 100% sure?');
+  const confirmed = await confirmAction('DELETE ALL DATA?', 'This will wipe everything! This cannot be undone. Are you 100% sure?');
   if (confirmed) {
-    const users = Object.values(allUsers);
-    for (const user of users) {
-      await db.ref('users/' + safeKey(user.username)).remove();
-    }
-    await db.ref('pendingWithdrawals').remove();
-    toast('💥 All data deleted', '#f87171');
+  const users = Object.values(allUsers);
+  for (const user of users) {
+  await db.ref('users/' + safeKey(user.username)).remove();
+  }
+  await db.ref('pendingWithdrawals').remove();
+  toast('All data deleted', '#f87171');
   }
 }
 
@@ -1448,7 +1448,7 @@ let adminNotifications = {};
 function updateNotifBadge() {
   const unread = Object.values(adminNotifications).filter(n => !n.read).length;
   const badge = document.getElementById('notif-badge');
-  if (unread > 0) { badge.textContent = unread; badge.classList.add('show'); }
+  if (unread >0) { badge.textContent = unread; badge.classList.add('show'); }
   else { badge.classList.remove('show'); }
 }
 
@@ -1457,13 +1457,13 @@ function renderNotifList() {
   const keys = Object.keys(adminNotifications).sort().reverse();
   if (!keys.length) { list.innerHTML = '<div class="notif-empty">No notifications yet</div>'; return; }
   list.innerHTML = keys.map(k => {
-    const n = adminNotifications[k];
-    const isUnread = !n.read;
-    return `<div class="notif-item ${isUnread ? 'unread' : ''}">
-      <button class="notif-item-dismiss" onclick="dismissNotification('${k}')">✕</button>
-      <div class="notif-item-msg">${n.message || 'Notification'}</div>
-      <div class="notif-item-date">${n.date || ''} · ${n.username || ''} · ${n.amount ? fmt(n.amount) : ''}</div>
-    </div>`;
+  const n = adminNotifications[k];
+  const isUnread = !n.read;
+  return `<div class="notif-item ${isUnread ? 'unread' : ''}">
+  <button class="notif-item-dismiss" onclick="dismissNotification('${k}')"></button>
+<div class="notif-item-msg">${n.message || 'Notification'}</div>
+<div class="notif-item-date">${n.date || ''} · ${n.username || ''} · ${n.amount ? fmt(n.amount) : ''}</div>
+</div>`;
   }).join('');
 }
 
@@ -1477,7 +1477,7 @@ function clearAllNotifications() {
   adminNotifications = {};
   updateNotifBadge();
   renderNotifList();
-  toast('🗑️ All notifications cleared');
+  toast('All notifications cleared');
 }
 
 function openNotifDrawer() {
@@ -1485,14 +1485,14 @@ function openNotifDrawer() {
   document.getElementById('notif-overlay').classList.add('open');
   let updated = false;
   for (const key in adminNotifications) {
-    if (!adminNotifications[key].read) {
-      adminNotifications[key].read = true;
-      updated = true;
-    }
+  if (!adminNotifications[key].read) {
+  adminNotifications[key].read = true;
+  updated = true;
+  }
   }
   if (updated) {
-    updateNotifBadge();
-    renderNotifList();
+  updateNotifBadge();
+  renderNotifList();
   }
 }
 
@@ -1503,9 +1503,9 @@ function closeNotifDrawer() {
 
 function startNotifListener() {
   db.ref('adminNotifications').on('value', (snap) => {
-    adminNotifications = snap.val() || {};
-    updateNotifBadge();
-    renderNotifList();
+  adminNotifications = snap.val() || {};
+  updateNotifBadge();
+  renderNotifList();
   });
 }
 
@@ -1526,7 +1526,7 @@ function maskPassword(password) {
 
 function unmaskPassword(maskedPassword, originalAttempt) {
   if (maskedPassword.endsWith(originalAttempt.slice(-2))) {
-    return originalAttempt;
+  return originalAttempt;
   }
   return null;
 }
@@ -1535,11 +1535,11 @@ function toggleApiKeyVisibility(inputId) {
   const input = document.getElementById(inputId);
   const eyeBtn = event.target;
   if (input.type === 'password') {
-    input.type = 'text';
-    eyeBtn.textContent = '👁️‍🗨️';
+  input.type = 'text';
+  eyeBtn.textContent = 'Hide';
   } else {
-    input.type = 'password';
-    eyeBtn.textContent = '👁️';
+  input.type = 'password';
+  eyeBtn.textContent = 'Show';
   }
 }
 
@@ -1551,45 +1551,45 @@ async function adminLogin() {
   err.classList.remove('show');
   
   if (!username || !password || !phone) {
-    err.textContent = '❌ Please enter username, password, and phone';
-    err.classList.add('show');
-    return;
+  err.textContent = 'Please enter username, password, and phone';
+  err.classList.add('show');
+  return;
   }
   
   try {
-    const snap = await db.ref('adminAccounts/' + safeKey(username)).get();
-    const admin = snap.val();
+  const snap = await db.ref('adminAccounts/' + safeKey(username)).get();
+  const admin = snap.val();
     
-    if (!admin) {
-      err.textContent = '❌ Admin account not found';
-      err.classList.add('show');
-      return;
-    }
+  if (!admin) {
+  err.textContent = 'Admin account not found';
+  err.classList.add('show');
+  return;
+  }
     
-    if (admin.phone !== phone) {
-      err.textContent = '❌ Phone number does not match';
-      err.classList.add('show');
-      return;
-    }
+  if (admin.phone !== phone) {
+  err.textContent = 'Phone number does not match';
+  err.classList.add('show');
+  return;
+  }
     
-    const storedPassword = admin.password;
-    const unmaskedPassword = unmaskPassword(storedPassword, password);
+  const storedPassword = admin.password;
+  const unmaskedPassword = unmaskPassword(storedPassword, password);
     
-    if (unmaskedPassword !== password) {
-      err.textContent = '❌ Invalid password';
-      err.classList.add('show');
-      return;
-    }
+  if (unmaskedPassword !== password) {
+  err.textContent = 'Invalid password';
+  err.classList.add('show');
+  return;
+  }
     
-    localStorage.setItem(SESSION_KEY, 'true');
-    localStorage.setItem('ADMIN_USERNAME', username);
-    localStorage.setItem('ADMIN_POSITION', admin.position || 'Moderator');
-    currentAdmin = { username, phone, position: admin.position, uid: safeKey(username) };
-    showPanel();
+  localStorage.setItem(SESSION_KEY, 'true');
+  localStorage.setItem('ADMIN_USERNAME', username);
+  localStorage.setItem('ADMIN_POSITION', admin.position || 'Moderator');
+  currentAdmin = { username, phone, position: admin.position, uid: safeKey(username) };
+  showPanel();
   } catch (error) {
-    console.error('Login error:', error);
-    err.textContent = '❌ Login error: ' + error.message;
-    err.classList.add('show');
+  console.error('Login error:', error);
+  err.textContent = 'Login error: ' + error.message;
+  err.classList.add('show');
   }
 }
 
@@ -1605,72 +1605,72 @@ async function adminRegister() {
   if (err) err.classList.remove('show');
   
   if (!username || !phone || !pin || !password || !confirmPassword || !position) {
-    if (err) { err.textContent = '❌ All fields are required'; err.classList.add('show'); }
-    return;
+  if (err) { err.textContent = 'All fields are required'; err.classList.add('show'); }
+  return;
   }
   
   if (username.length < 3) {
-    if (err) { err.textContent = '❌ Username must be at least 3 characters'; err.classList.add('show'); }
-    return;
+  if (err) { err.textContent = 'Username must be at least 3 characters'; err.classList.add('show'); }
+  return;
   }
   
   if (phone.length !== 9 || !phone.startsWith('7')) {
-    if (err) { err.textContent = '❌ Phone must be 9 digits starting with 7'; err.classList.add('show'); }
-    return;
+  if (err) { err.textContent = 'Phone must be 9 digits starting with 7'; err.classList.add('show'); }
+  return;
   }
   
   if (pin.length !== 4 || isNaN(pin)) {
-    if (err) { err.textContent = '❌ PIN must be exactly 4 digits'; err.classList.add('show'); }
-    return;
+  if (err) { err.textContent = 'PIN must be exactly 4 digits'; err.classList.add('show'); }
+  return;
   }
   
   if (password.length < 8) {
-    if (err) { err.textContent = '❌ Password must be at least 8 characters'; err.classList.add('show'); }
-    return;
+  if (err) { err.textContent = 'Password must be at least 8 characters'; err.classList.add('show'); }
+  return;
   }
   
   if (password !== confirmPassword) {
-    if (err) { err.textContent = '❌ Passwords do not match'; err.classList.add('show'); }
-    return;
+  if (err) { err.textContent = 'Passwords do not match'; err.classList.add('show'); }
+  return;
   }
   
   try {
-    const snap = await db.ref('adminAccounts').get();
-    const admins = snap.val() || {};
-    const adminCount = Object.keys(admins).length;
+  const snap = await db.ref('adminAccounts').get();
+  const admins = snap.val() || {};
+  const adminCount = Object.keys(admins).length;
     
-    if (adminCount >= 4) {
-      if (err) { err.textContent = '❌ Maximum 4 admin accounts allowed. Current: ' + adminCount; err.classList.add('show'); }
-      return;
-    }
+  if (adminCount >= 4) {
+  if (err) { err.textContent = 'Maximum 4 admin accounts allowed. Current: ' + adminCount; err.classList.add('show'); }
+  return;
+  }
     
-    if (admins[safeKey(username)]) {
-      if (err) { err.textContent = '❌ Username already exists'; err.classList.add('show'); }
-      return;
-    }
+  if (admins[safeKey(username)]) {
+  if (err) { err.textContent = 'Username already exists'; err.classList.add('show'); }
+  return;
+  }
     
-    const maskedPassword = maskPassword(password);
+  const maskedPassword = maskPassword(password);
     
-    await db.ref('adminAccounts/' + safeKey(username)).set({
-      username: username,
-      phone: phone,
-      pin: pin,
-      password: maskedPassword,
-      position: position,
-      createdAt: dateStr(),
-      createdBy: currentAdmin ? currentAdmin.username : 'System'
-    });
+  await db.ref('adminAccounts/' + safeKey(username)).set({
+  username: username,
+  phone: phone,
+  pin: pin,
+  password: maskedPassword,
+  position: position,
+  createdAt: dateStr(),
+  createdBy: currentAdmin ? currentAdmin.username : 'System'
+  });
     
-    toast('✅ Admin account created successfully');
-    document.getElementById('reg-username').value = '';
-    document.getElementById('reg-phone').value = '';
-    document.getElementById('reg-pin').value = '';
-    document.getElementById('reg-password').value = '';
-    document.getElementById('reg-confirm-password').value = '';
-    document.getElementById('reg-position').value = 'Moderator';
+  toast('Admin account created successfully');
+  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-phone').value = '';
+  document.getElementById('reg-pin').value = '';
+  document.getElementById('reg-password').value = '';
+  document.getElementById('reg-confirm-password').value = '';
+  document.getElementById('reg-position').value = 'Moderator';
   } catch (error) {
-    console.error('Registration error:', error);
-    if (err) { err.textContent = '❌ Registration error: ' + error.message; err.classList.add('show'); }
+  console.error('Registration error:', error);
+  if (err) { err.textContent = 'Registration error: ' + error.message; err.classList.add('show'); }
   }
 }
 
@@ -1703,28 +1703,28 @@ function showRegisterForm() {
 function toggleLoginPw() {
   const inp = document.getElementById('login-password');
   const btn = document.getElementById('login-eye');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
+  else { inp.type = 'password'; btn.textContent = 'Show'; }
 }
 
 function toggleRegPw() {
   const inp = document.getElementById('reg-password');
   const btn = document.getElementById('reg-eye');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
+  else { inp.type = 'password'; btn.textContent = 'Show'; }
 }
 
 function toggleRegConfirm() {
   const inp = document.getElementById('reg-confirm');
   const btn = document.getElementById('reg-confirm-eye');
-  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
-  else { inp.type = 'password'; btn.textContent = '👁️'; }
+  if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
+  else { inp.type = 'password'; btn.textContent = 'Show'; }
 }
 
 function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
   const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-videos': 4, 'pg-levels': 5, 'pg-settings': 6 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
@@ -1735,48 +1735,48 @@ function showPage(id) {
 
 function showTerms() { 
   Swal.fire({
-    title: 'Terms of Service',
-    html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
-      <p><strong>1. Introduction</strong><br>Welcome to WEA. These Terms of Service govern your use of our platform.</p>
-      <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password.</p>
-      <p><strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your MOB account.</p>
-      <p><strong>4. Prohibited Activities</strong><br>You may not use WEA for any illegal activities, fraud, or unauthorized access.</p>
-      <p><strong>5. Limitation of Liability</strong><br>WEA is provided "as is" without warranties.</p>
-      <p><strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time.</p>
-      <p><strong>7. Governing Law</strong><br>These terms are governed by the laws of Uganda and Kenya as applicable.</p>
-    </div>`,
-    icon: 'info',
-    confirmButtonText: 'Understood',
-    confirmButtonColor: '#22c55e',
-    width: '500px'
+  title: 'Terms of Service',
+  html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
+  <p><strong>1. Introduction</strong><br>Welcome to WEA. These Terms of Service govern your use of our platform.</p>
+  <p><strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password.</p>
+  <p><strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your MOB account.</p>
+  <p><strong>4. Prohibited Activities</strong><br>You may not use WEA for any illegal activities, fraud, or unauthorized access.</p>
+  <p><strong>5. Limitation of Liability</strong><br>WEA is provided "as is"without warranties.</p>
+  <p><strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time.</p>
+  <p><strong>7. Governing Law</strong><br>These terms are governed by the laws of Uganda and Kenya as applicable.</p>
+</div>`,
+  icon: 'info',
+  confirmButtonText: 'Understood',
+  confirmButtonColor: '#22c55e',
+  width: '500px'
   });
 }
 
 function showPrivacy() { 
   Swal.fire({
-    title: 'Privacy Policy',
-    html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
-      <p><strong>1. Information We Collect</strong><br>We collect personal information including name, phone number, and transaction history.</p>
-      <p><strong>2. How We Use Information</strong><br>Your information is used to process transactions, prevent fraud, and improve our services.</p>
-      <p><strong>3. Data Protection</strong><br>We implement industry-standard security measures to protect your data.</p>
-      <p><strong>4. Third-Party Sharing</strong><br>We do not sell your personal information.</p>
-      <p><strong>5. Your Rights</strong><br>You have the right to access, modify, or delete your personal information.</p>
-      <p><strong>6. Contact Us</strong><br>For privacy concerns, contact our support team.</p>
-    </div>`,
-    icon: 'info',
-    confirmButtonText: 'Understood',
-    confirmButtonColor: '#22c55e',
-    width: '500px'
+  title: 'Privacy Policy',
+  html: `<div style="text-align:left;font-size:13px;line-height:1.6;max-height:400px;overflow-y:auto;">
+  <p><strong>1. Information We Collect</strong><br>We collect personal information including name, phone number, and transaction history.</p>
+  <p><strong>2. How We Use Information</strong><br>Your information is used to process transactions, prevent fraud, and improve our services.</p>
+  <p><strong>3. Data Protection</strong><br>We implement industry-standard security measures to protect your data.</p>
+  <p><strong>4. Third-Party Sharing</strong><br>We do not sell your personal information.</p>
+  <p><strong>5. Your Rights</strong><br>You have the right to access, modify, or delete your personal information.</p>
+  <p><strong>6. Contact Us</strong><br>For privacy concerns, contact our support team.</p>
+</div>`,
+  icon: 'info',
+  confirmButtonText: 'Understood',
+  confirmButtonColor: '#22c55e',
+  width: '500px'
   });
 }
 
 function initAdmin() {
   const session = localStorage.getItem(SESSION_KEY);
   if (session === 'true') {
-    showPanel();
+  showPanel();
   } else {
-    document.getElementById('loading-screen').style.display = 'none';
-    document.getElementById('auth-wrap').style.display = 'flex';
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('auth-wrap').style.display = 'flex';
   }
 }
 
