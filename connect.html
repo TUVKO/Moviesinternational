@@ -374,7 +374,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="stat-card"><div class="stat-card-label">Total Pending Amount</div><div class="stat-card-val red" id="wd-stat-amount">UGX 0</div></div>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
-  <button class="btn btn-save" onclick="filterWithdrawals('pending')">⏳ Pending</button>
+  <button class="btn btn-save" onclick="filterWithdrawals('pending')">Pending</button>
   <button class="btn btn-approve" onclick="filterWithdrawals('approved')">Approved</button>
   <button class="btn btn-reject" onclick="filterWithdrawals('rejected')">Rejected</button>
   <button class="btn btn-edit" onclick="filterWithdrawals('all')">All</button>
@@ -497,6 +497,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Minimum Withdrawal (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="min-withdraw-input" min="500" step="500" placeholder="10000"></div><button class="btn btn-save" onclick="saveMinWithdraw()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Deposit Amount Presets (comma-separated UGX)</span><input type="text" class="f-input" id="dep-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000,200000,500000"><button class="btn btn-save" onclick="saveDepositPresets()">Save</button></div>
 </div>
 
   <!-- Withdrawal Approval Toggle -->
@@ -612,7 +613,8 @@ let allSettings = {
   minDeposit: 10000,
   minWithdraw: 10000,
   marzApiKey: '',
-  streakBonus: 1000
+  streakBonus: 1000,
+  depositPresets: [10000, 20000, 50000, 100000, 200000, 500000]
 };
 let allLevels = {};
 let allVideos = {};
@@ -1144,7 +1146,7 @@ function renderAdminTransactions() {
   if (!txs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No transactions found</tr>'; return; }
   
   tbody.innerHTML = txs.map(tx => {
-  let statusColor = 'var(--gold)', statusText = '⏳ Pending';
+  let statusColor = 'var(--gold)', statusText = 'Pending';
   if (tx.status === 'successful') { statusColor = 'var(--success)'; statusText = 'Successful'; }
   else if (tx.status === 'failed') { statusColor = 'var(--warn)'; statusText = 'Failed'; }
   const typeIcon = tx.type === 'Deposit' ? '' : '';
@@ -1207,7 +1209,7 @@ function renderWithdrawalsTable() {
   
   tbody.innerHTML = entries.map(([k, v]) => {
   const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : 'var(--gold)';
-  const si = v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : '⏳ Pending';
+  const si = v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : 'Pending';
   const fee = Math.round((v.amount || 0) * 0.10);
   const sendAmt = v.sendAmount || (v.amount - fee);
   const actions = v.status === 'pending' ? `
@@ -1344,6 +1346,8 @@ function loadSettingsUI() {
   document.getElementById('min-withdraw-input').value = s.minWithdraw || 10000;
   document.getElementById('with-charge-input').value = s.withdrawCharge || 10;
   document.getElementById('streak-bonus-input').value = s.streakBonus || 1000;
+  const presetsInp = document.getElementById('dep-presets-input');
+  if (presetsInp) presetsInp.value = (s.depositPresets || [10000, 20000, 50000, 100000, 200000, 500000]).join(',');
   
   const apiInp = document.getElementById('marz-api-key-input');
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
@@ -1405,6 +1409,14 @@ async function saveStreakBonus() {
   if (v < 100) { toast('Streak bonus must be at least UGX 100', '#f87171'); return; }
   await db.ref('settings/streakBonus').set(v);
   toast('Streak bonus set to ' + fmt(v));
+}
+
+async function saveDepositPresets() {
+  const raw = document.getElementById('dep-presets-input').value.trim();
+  const presets = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 0);
+  if (!presets.length) { toast('Enter at least one valid amount', '#f87171'); return; }
+  await db.ref('settings/depositPresets').set(presets);
+  toast('Deposit amount presets saved');
 }
 
 async function lockWithdrawals(lock) {

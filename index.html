@@ -215,6 +215,14 @@ input[type="password"]{padding-right:46px;}
 
 /* Forms */
 .action-card{}
+.deposit-method-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:18px 16px;margin-bottom:12px;cursor:pointer;}
+.deposit-method-card:active{transform:scale(.98);}
+.deposit-method-name{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.deposit-method-sub{font-size:12px;color:var(--muted);}
+.amount-preset-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.amount-preset-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 4px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;}
+.amount-preset-btn.selected{background:var(--accent);border-color:var(--accent);color:#14110F;}
+.link-back-btn{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;width:100%;text-align:center;padding:10px 0 0;}
 .green-btn{width:100%;background:#2d5016;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
 .green-btn:active{transform:scale(.98);}
 .green-btn:disabled{opacity:0.4;cursor:not-allowed;}
@@ -514,7 +522,7 @@ input[type="password"]{padding-right:46px;}
 <div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
 </div>
   <button class="claim-btn" id="claim-btn" onclick="claimReward()"disabled>
-  ⏳ Watch for 5 seconds...
+  Watch for 5 seconds...
 </button>
 </div>
 </div>
@@ -618,10 +626,50 @@ input[type="password"]{padding-right:46px;}
 
   <!-- Deposit -->
 <div class="dash-section" id="sec-deposit">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Deposit</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Deposit</div><div class="inner-sub">Choose a deposit method</div></div></div>
+<div class="section">
+<div class="deposit-method-card" onclick="selectDepositMethod('easypay')">
+<div class="deposit-method-name">Easy Pay</div>
+<div class="deposit-method-sub">Mobile Money — MTN / Airtel</div>
+</div>
+<div class="deposit-method-card" onclick="selectDepositMethod('superior')">
+<div class="deposit-method-name">Superior Recharge</div>
+<div class="deposit-method-sub">Alternative recharge method</div>
+</div>
+<div class="deposit-method-card" onclick="selectDepositMethod('bank')">
+<div class="deposit-method-name">Add through Bank</div>
+<div class="deposit-method-sub">Bank transfer deposit</div>
+</div>
+</div>
+</div>
+
+  <!-- Deposit: Amount Selection -->
+<div class="dash-section" id="sec-deposit-amount">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="dep-amount-title">Select Amount</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
 <div class="section">
 <div class="action-card">
 <div class="deposit-note">Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your STAKE.</div>
+<div class="field-group">
+  <label class="field-label">Quick Select</label>
+  <div class="amount-preset-grid" id="dep-preset-grid"></div>
+</div>
+<div class="field-group">
+  <label class="field-label">Or Enter Amount (UGX)</label>
+<div class="field-wrap"><input type="number" id="dep-amount" placeholder="Min 10,000" min="10000" oninput="clearDepositPresetSelection()"></div>
+<div class="field-error" id="dep-amount-err">Please check the amount</div>
+</div>
+  <button class="green-btn" id="dep-amount-continue-btn" onclick="confirmDepositAmount()">CONTINUE</button>
+  <button class="link-back-btn" onclick="switchTab('deposit')">Back</button>
+</div>
+</div>
+</div>
+
+  <!-- Deposit: Easy Pay Phone Entry -->
+<div class="dash-section" id="sec-deposit-phone">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Easy Pay</div><div class="inner-sub">Enter your mobile money number</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="deposit-note">Depositing <strong id="dep-phone-amount-display">UGX 0</strong> to your STAKE.</div>
 <div class="field-group">
   <label class="field-label">Mobile Money Phone Number</label>
 <div class="phone-prefix-wrap" id="dep-phone-wrap">
@@ -631,12 +679,19 @@ input[type="password"]{padding-right:46px;}
 <div class="field-hint">9 digits starting with 7 (any MTN or Airtel number)</div>
 <div class="field-error" id="dep-phone-err">Enter 9 digits starting with 7</div>
 </div>
-<div class="field-group">
-  <label class="field-label">Amount to Deposit (UGX)</label>
-<div class="field-wrap"><input type="number" id="dep-amount" placeholder="Min 10,000" min="10000"></div>
-<div class="field-error" id="dep-amount-err">Please check the amount</div>
+  <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">CONFIRM</button>
+  <button class="link-back-btn" onclick="switchTab('deposit-amount')">Back</button>
 </div>
-  <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">DEPOSIT TO STAKE</button>
+</div>
+</div>
+
+  <!-- Deposit: Coming Soon -->
+<div class="dash-section" id="sec-deposit-comingsoon">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="dep-comingsoon-title">Coming Soon</div><div class="inner-sub">This method isn't available yet</div></div></div>
+<div class="section">
+<div class="action-card" style="text-align:center;">
+<div style="font-size:15px;color:var(--muted);margin-bottom:16px;">This deposit method is coming soon. Please use Easy Pay for now.</div>
+  <button class="green-btn" onclick="switchTab('deposit')">Back to Methods</button>
 </div>
 </div>
 </div>
@@ -806,7 +861,8 @@ let settingsData = {
   minDeposit: 10000,
   minWithdraw: 10000,
   marzApiKey: '',
-  streakBonus: 1000
+  streakBonus: 1000,
+  depositPresets: [10000, 20000, 50000, 100000, 200000, 500000]
 };
 let levelsData = {};
 let videosData = {};
@@ -1179,7 +1235,7 @@ function openVideoPlayer(id) {
   const claimBtn = document.getElementById('claim-btn');
   claimBtn.disabled = true;
   claimBtn.className = 'claim-btn';
-  claimBtn.textContent = '⏳ Watch for 5 seconds...';
+  claimBtn.textContent = 'Watch for 5 seconds...';
   claimBtn.onclick = claimReward;
   
   const countdownNum = document.getElementById('countdown-number');
@@ -1205,7 +1261,7 @@ function startCountdown() {
   progressEl.style.width = '0%';
   claimBtn.disabled = true;
   claimBtn.className = 'claim-btn';
-  claimBtn.textContent = '⏳ Watch for 5 seconds...';
+  claimBtn.textContent = 'Watch for 5 seconds...';
   isClaimReady = false;
   
   if (countdownTimer) clearInterval(countdownTimer);
@@ -1844,7 +1900,7 @@ function renderHistory() {
   const isPending = tx.status === 'pending';
   const isFailed = tx.status === 'failed';
   const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
-  const statusText = isPending ? '⏳ Pending' : isFailed ? 'Failed' : 'Completed';
+  const statusText = isPending ? 'Pending' : isFailed ? 'Failed' : 'Completed';
   const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
   const typeClass = typeClasses[tx.type] || 'tx-reward';
   const icon = typeIcons[tx.type] || '';
@@ -1946,17 +2002,70 @@ async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
 // ============================================================
 // DEPOSIT
 // ============================================================
+let selectedDepositMethod = null;
+let selectedDepositAmount = 0;
+
+function selectDepositMethod(method) {
+  selectedDepositMethod = method;
+  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', bank: 'Add through Bank' };
+  const titleEl = document.getElementById('dep-amount-title');
+  if (titleEl) titleEl.textContent = names[method] || 'Select Amount';
+  const amtInput = document.getElementById('dep-amount');
+  if (amtInput) amtInput.value = '';
+  clearErrors('dep-amount-err');
+  renderDepositPresets();
+  switchTab('deposit-amount');
+}
+
+function renderDepositPresets() {
+  const grid = document.getElementById('dep-preset-grid');
+  if (!grid) return;
+  const presets = settingsData.depositPresets || [10000, 20000, 50000, 100000, 200000, 500000];
+  grid.innerHTML = presets.map(amt => `<button type="button" class="amount-preset-btn" onclick="pickDepositPreset(${amt}, this)">${fmt(amt)}</button>`).join('');
+}
+
+function pickDepositPreset(amount, btn) {
+  document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const amtInput = document.getElementById('dep-amount');
+  if (amtInput) amtInput.value = amount;
+}
+
+function clearDepositPresetSelection() {
+  document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
+}
+
+function confirmDepositAmount() {
+  clearErrors('dep-amount-err');
+  const minDep = settingsData.minDeposit || 10000;
+  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
+  if (amount < minDep) {
+  setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
+  return;
+  }
+  selectedDepositAmount = amount;
+  if (selectedDepositMethod === 'easypay') {
+  const displayEl = document.getElementById('dep-phone-amount-display');
+  if (displayEl) displayEl.textContent = fmt(amount);
+  switchTab('deposit-phone');
+  } else {
+  const names = { superior: 'Superior Recharge', bank: 'Add through Bank' };
+  const csTitle = document.getElementById('dep-comingsoon-title');
+  if (csTitle) csTitle.textContent = names[selectedDepositMethod] || 'Coming Soon';
+  switchTab('deposit-comingsoon');
+  }
+}
+
 async function doDeposit() {
-  clearErrors('dep-phone-err', 'dep-amount-err');
+  clearErrors('dep-phone-err');
   const phoneDigits = document.getElementById('dep-phone').value.trim();
   if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
   setErr('dep-phone-err', true, 'Enter 9 digits starting with 7');
   return;
   }
-  const minDep = settingsData.minDeposit || 10000;
-  const amount = parseInt(document.getElementById('dep-amount').value) || 0;
-  if (amount < minDep) {
-  setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
+  const amount = selectedDepositAmount;
+  if (!amount || amount < (settingsData.minDeposit || 10000)) {
+  switchTab('deposit-amount');
   return;
   }
   if (!settingsData.marzApiKey) {
@@ -1966,14 +2075,13 @@ async function doDeposit() {
   
   const btn = document.getElementById('dep-submit-btn');
   btn.disabled = true;
-  btn.textContent = '⏳ Processing...';
+  btn.textContent = 'Processing...';
   const fullPhone = '+256' + phoneDigits;
   const reference = genUUID();
   const totalAmount = amount;
   const oldStake = currentUser.stake || 0;
   
   document.getElementById('dep-phone').value = '';
-  document.getElementById('dep-amount').value = '';
   
   const popup = document.getElementById('popup-banner');
   popup.textContent = 'Confirm with mobile money PIN';
@@ -1999,7 +2107,7 @@ async function doDeposit() {
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
   sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
   btn.disabled = false;
-  btn.textContent = 'DEPOSIT TO STAKE';
+  btn.textContent = 'CONFIRM';
   return;
   }
     
@@ -2043,7 +2151,7 @@ async function doDeposit() {
   }
   
   btn.disabled = false;
-  btn.textContent = 'DEPOSIT TO STAKE';
+  btn.textContent = 'CONFIRM';
   switchTab('home');
 }
 
@@ -2077,7 +2185,7 @@ async function doWithdraw() {
   const userPhone = currentUser.phone;
   const btn = document.getElementById('with-submit-btn');
   btn.disabled = true;
-  btn.textContent = '⏳ Processing...';
+  btn.textContent = 'Processing...';
   const newMob = mob - amount;
   const txKey = 'tx_wd_' + Date.now();
   const reqKey = 'wreq_' + Date.now();
@@ -2444,6 +2552,9 @@ const tabMap = {
   plan: 'sec-plan',
   profile: 'sec-profile',
   deposit: 'sec-deposit',
+  'deposit-amount': 'sec-deposit-amount',
+  'deposit-phone': 'sec-deposit-phone',
+  'deposit-comingsoon': 'sec-deposit-comingsoon',
   withdraw: 'sec-withdraw',
   errands: 'sec-errands'
 };
