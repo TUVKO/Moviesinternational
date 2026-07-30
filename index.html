@@ -360,9 +360,13 @@ input[type="password"]{padding-right:46px;}
 <div class="auth-title">Welcome Back</div>
 <div class="auth-subtitle">Sign in to your account</div>
 <div class="field-group">
-  <label class="field-label">Username</label>
-<div class="field-wrap"><input type="text" id="login-username" placeholder="Enter your username"></div>
-<div class="field-error" id="login-user-err">Please enter your username</div>
+  <label class="field-label">Phone Number</label>
+<div class="phone-prefix-wrap" id="login-phone-wrap">
+<div class="phone-prefix-badge" id="login-prefix" onclick="toggleCountryPrefix('login-prefix')" style="cursor:pointer;">+256</div>
+  <input type="tel" id="login-phone" placeholder="0712345678" maxlength="10" oninput="loginPhoneInput(this)">
+</div>
+<div class="field-hint">Tap the code to switch country</div>
+<div class="field-error" id="login-user-err">Please enter your phone number</div>
 </div>
 <div class="field-group">
   <label class="field-label">Password</label>
@@ -386,29 +390,18 @@ input[type="password"]{padding-right:46px;}
 <div class="auth-title">Create Account</div>
 <div class="auth-subtitle">Start earning by watching videos</div>
 <div class="field-group">
-  <label class="field-label">Username</label>
-<div class="field-wrap"><input type="text" id="reg-username" placeholder="Choose a username"></div>
-<div class="field-error" id="reg-user-err">Username is required</div>
-</div>
-<div class="field-group">
-  <label class="field-label">Country</label>
-<div class="field-wrap">
-  <select id="reg-country" onchange="updateRegPrefix()">
-  <option value="">Select your country</option>
-  <option value="UG">Uganda</option>
-  <option value="KE">Kenya</option>
-</select>
-</div>
-<div class="field-error" id="reg-country-err">Please select your country</div>
+  <label class="field-label">Full Name</label>
+<div class="field-wrap"><input type="text" id="reg-fullname" placeholder="Enter your full name"></div>
+<div class="field-error" id="reg-user-err">Full name is required</div>
 </div>
 <div class="field-group">
   <label class="field-label">Phone Number</label>
 <div class="phone-prefix-wrap" id="reg-phone-wrap">
-<div class="phone-prefix-badge" id="reg-prefix">+256</div>
-  <input type="tel" id="reg-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="regPhoneInput(this)">
+<div class="phone-prefix-badge" id="reg-prefix" onclick="toggleCountryPrefix('reg-prefix')" style="cursor:pointer;">+256</div>
+  <input type="tel" id="reg-phone" placeholder="0712345678" maxlength="10" oninput="regPhoneInput(this)">
 </div>
-<div class="field-hint">9 digits starting with 7</div>
-<div class="field-error" id="reg-phone-err">Enter 9 digits starting with 7</div>
+<div class="field-hint">Tap the code to switch country · 10 digits starting with 0</div>
+<div class="field-error" id="reg-phone-err">Enter 10 digits starting with 0</div>
 </div>
 <div class="field-group">
   <label class="field-label">Password</label>
@@ -420,6 +413,10 @@ input[type="password"]{padding-right:46px;}
   <label class="field-label">Confirm Password</label>
 <div class="field-wrap"><input type="password" id="reg-confirm" placeholder="Repeat password"><button class="eye-btn" onclick="toggleEye('reg-confirm',this)">Show</button></div>
 <div class="field-error" id="reg-confirm-err">Passwords do not match</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Referral Code (Optional)</label>
+<div class="field-wrap"><input type="text" id="reg-referral" placeholder="Enter referral code (optional)"></div>
 </div>
 <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
   <button class="submit-btn" onclick="doRegister()">Create Account & Start Earning</button>
@@ -617,13 +614,20 @@ input[type="password"]{padding-right:46px;}
   <!-- Profile -->
 <div class="dash-section" id="sec-profile">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">INFOR</div><div class="inner-sub">Your account details</div></div></div>
-<div class="section">
-<div class="profile-simple-info">
-<div class="profile-simple-item"><span class="profile-simple-label">Registered Date</span><span class="profile-simple-value" id="profile-date-simple">—</span></div>
-<div class="profile-simple-item"><span class="profile-simple-label">Videos Watched</span><span class="profile-simple-value" id="profile-videos-simple">0</span></div>
-<div class="profile-simple-item"><span class="profile-simple-label">Streak</span><span class="profile-simple-value" id="profile-streak-simple">0 days</span></div>
-<div class="profile-simple-item"><span class="profile-simple-label">Current Level</span><span class="profile-simple-value" id="profile-level-simple">Trainee</span></div>
+<div class="section" style="margin-bottom:0;">
+<div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+<div class="stat-box">
+<div class="stat-label">STAKE</div>
+<div class="stat-value stake" id="profile-stat-stake">UGX 0</div>
 </div>
+<div class="stat-box">
+<div class="stat-label">MOB ACCOUNT</div>
+<div class="stat-value mob" id="profile-stat-mob">UGX 0</div>
+</div>
+</div>
+</div>
+<div class="section" style="text-align:center;padding:40px 20px;">
+<div style="font-size:15px;color:var(--muted);">Coming soon</div>
 </div>
 </div>
 
@@ -1481,6 +1485,10 @@ function updateBalanceUI() {
   document.getElementById('stat-stake').textContent = fmt(stake);
   document.getElementById('stat-mob').textContent = fmt(mob);
   document.getElementById('stages-stake').textContent = fmt(stake);
+  const profStake = document.getElementById('profile-stat-stake');
+  if (profStake) profStake.textContent = fmt(stake);
+  const profMob = document.getElementById('profile-stat-mob');
+  if (profMob) profMob.textContent = fmt(mob);
   
   const todayUTC = getUTCKey();
   const levelKey = getUserLevel();
@@ -1541,14 +1549,8 @@ function updateBalanceUI() {
 
 function updateProfileUI() {
   if (!currentUser) return;
-  document.getElementById('profile-date-simple').textContent = currentUser.joinedDate || '2025';
-  document.getElementById('profile-videos-simple').textContent = currentUser.totalVideosWatched || 0;
-  document.getElementById('profile-streak-simple').textContent = (currentUser.streakDays || 0) + 'days';
-  
-  const levelName = levelsData[currentUser?.currentLevel || 'trainee']?.name || 'Trainee';
-  document.getElementById('profile-level-simple').textContent = levelName;
   document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
-  document.getElementById('top-username').textContent = currentUser.username || 'User';
+  document.getElementById('top-username').textContent = currentUser.fullName || 'User';
 }
 
 function updateSettingsUI() {
@@ -2477,13 +2479,14 @@ function checkStrength(pw) {
   if (pw.length >= 10 && /[^A-Za-z0-9]/.test(pw)) { if (b[0]) b[0].classList.add('strong'); if (b[1]) b[1].classList.add('strong'); if (b[2]) b[2].classList.add('strong'); }
 }
 
-function updateRegPrefix() {
-  const c = document.getElementById('reg-country').value;
-  const pr = document.getElementById('reg-prefix');
-  if (pr) pr.textContent = c === 'KE' ? '+254' : '+256';
+function toggleCountryPrefix(badgeId) {
+  const badge = document.getElementById(badgeId);
+  if (!badge) return;
+  badge.textContent = badge.textContent.trim() === '+256' ? '+254' : '+256';
 }
 
-function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
+function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
+function loginPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
 function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
 
 function setErr(id, show, msg) {
@@ -2518,25 +2521,28 @@ async function doLogin() {
   clearErrors('login-user-err', 'login-pw-err');
   setErr('login-general-err', false);
   
-  const username = document.getElementById('login-username').value.trim();
+  const prefix = document.getElementById('login-prefix').textContent.trim();
+  const phoneDigits = document.getElementById('login-phone').value.trim();
   const password = document.getElementById('login-password').value;
   
-  if (!username) { setErr('login-user-err', true); return; }
+  if (!phoneDigits || phoneDigits.length !== 10 || !phoneDigits.startsWith('0')) { setErr('login-user-err', true, 'Enter 10 digits starting with 0'); return; }
   if (!password) { setErr('login-pw-err', true); return; }
   
+  const fullPhone = prefix + phoneDigits.substring(1);
+  
   try {
-  console.log('Checking user:', username);
-  const userSnap = await db.ref('users/' + safeKey(username)).get();
+  console.log('Checking user:', fullPhone);
+  const userSnap = await db.ref('users/' + safeKey(fullPhone)).get();
     
   if (!userSnap.exists()) {
-  setErr('login-general-err', true, 'Invalid username or password');
+  setErr('login-general-err', true, 'Invalid phone number or password');
   return;
   }
     
   const userData = userSnap.val();
     
   if (userData.password !== password) {
-  setErr('login-general-err', true, 'Invalid username or password');
+  setErr('login-general-err', true, 'Invalid phone number or password');
   return;
   }
     
@@ -2545,12 +2551,12 @@ async function doLogin() {
   return;
   }
     
-  console.log('Login successful for:', username);
+  console.log('Login successful for:', fullPhone);
   currentUser = userData;
-  currentUsername = username;
-  sessionStorage.setItem('pp_current_user', username);
+  currentUsername = fullPhone;
+  sessionStorage.setItem('pp_current_user', fullPhone);
     
-  startUserListener(username);
+  startUserListener(fullPhone);
   startVideoListener();
     
   updateBalanceUI();
@@ -2575,36 +2581,53 @@ async function doLogin() {
 // ============================================================
 async function doRegister() {
   console.log('Register button clicked');
-  clearErrors('reg-user-err', 'reg-country-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
+  clearErrors('reg-user-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
   
-  const username = document.getElementById('reg-username').value.trim();
-  const country = document.getElementById('reg-country').value;
+  const fullName = document.getElementById('reg-fullname').value.trim();
+  const prefix = document.getElementById('reg-prefix').textContent.trim();
   const phoneDigits = document.getElementById('reg-phone').value.trim();
   const password = document.getElementById('reg-password').value;
   const confirm = document.getElementById('reg-confirm').value;
+  const referralCodeRaw = document.getElementById('reg-referral').value.trim();
   
   let ok = true;
-  if (!username) { setErr('reg-user-err', true, 'Username is required'); ok = false; }
-  if (!country) { setErr('reg-country-err', true, 'Please select your country'); ok = false; }
-  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('reg-phone-err', true, 'Enter 9 digits starting with 7'); ok = false; }
+  if (!fullName) { setErr('reg-user-err', true, 'Full name is required'); ok = false; }
+  if (!phoneDigits || phoneDigits.length !== 10 || !phoneDigits.startsWith('0')) { setErr('reg-phone-err', true, 'Enter 10 digits starting with 0'); ok = false; }
   if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
   if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
   if (!ok) return;
   
+  const fullPhone = prefix + phoneDigits.substring(1);
+  const country = prefix === '+254' ? 'KE' : 'UG';
+  
   try {
-  const existing = await db.ref('users/' + safeKey(username)).get();
-  if (existing.exists()) { setErr('reg-user-err', true, 'Username already taken'); return; }
+  const existing = await db.ref('users/' + safeKey(fullPhone)).get();
+  if (existing.exists()) { setErr('reg-phone-err', true, 'Phone number already registered'); return; }
+  
+  // Optional referral code — looked up but never blocks registration if invalid/not found
+  let referredBy = null;
+  let referrerKey = null;
+  if (referralCodeRaw) {
+  const directSnap = await db.ref('users/' + safeKey(referralCodeRaw)).get();
+  if (directSnap.exists()) {
+  referrerKey = safeKey(referralCodeRaw);
+  referredBy = referralCodeRaw;
+  } else if (referralCodeRaw.startsWith('0') && referralCodeRaw.length === 10) {
+  const normalizedRef = prefix + referralCodeRaw.substring(1);
+  const normSnap = await db.ref('users/' + safeKey(normalizedRef)).get();
+  if (normSnap.exists()) { referrerKey = safeKey(normalizedRef); referredBy = normalizedRef; }
+  }
+  }
     
-  const prefix = country === 'KE' ? '+254' : '+256';
-  const fullPhone = prefix + phoneDigits;
   const now = dateStr();
   const todayUTC = getUTCKey();
     
   const newUser = {
-  username: username,
+  fullName: fullName,
   password: password,
   country: country,
   phone: fullPhone,
+  referredBy: referredBy,
   stake: 0,
   mob: 0, // MOB account starts at 0
   totalVideosWatched: 0,
@@ -2632,14 +2655,22 @@ async function doRegister() {
   }
   };
     
-  await db.ref('users/' + safeKey(username)).set(newUser);
-  console.log('User registered:', username);
+  await db.ref('users/' + safeKey(fullPhone)).set(newUser);
+  console.log('User registered:', fullPhone);
+  
+  if (referrerKey) {
+  db.ref('users/' + referrerKey + '/referrals').transaction(list => {
+  const arr = list || [];
+  arr.push(fullPhone);
+  return arr;
+  });
+  }
     
   currentUser = newUser;
-  currentUsername = username;
-  sessionStorage.setItem('pp_current_user', username);
+  currentUsername = fullPhone;
+  sessionStorage.setItem('pp_current_user', fullPhone);
     
-  startUserListener(username);
+  startUserListener(fullPhone);
   startVideoListener();
   updateBalanceUI();
   renderHistory();
@@ -2651,11 +2682,11 @@ async function doRegister() {
   showDashboard();
   switchTab('home');
     
-  document.getElementById('reg-username').value = '';
+  document.getElementById('reg-fullname').value = '';
   document.getElementById('reg-phone').value = '';
   document.getElementById('reg-password').value = '';
   document.getElementById('reg-confirm').value = '';
-  document.getElementById('reg-country').value = '';
+  document.getElementById('reg-referral').value = '';
     
   } catch (error) {
   console.error('Registration error:', error);
@@ -2671,7 +2702,7 @@ async function doLogout() {
   setTimeout(() => {
   document.getElementById('dashboard-page').style.display = 'none';
   document.getElementById('dashboard-page').classList.remove('active');
-  document.getElementById('login-username').value = '';
+  document.getElementById('login-phone').value = '';
   document.getElementById('login-password').value = '';
   showAuth('login-page');
   }, 800);

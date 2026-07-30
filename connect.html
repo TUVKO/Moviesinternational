@@ -331,11 +331,11 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="table-wrap">
 <div class="table-header">
 <div class="table-title">All Users</div>
-  <input type="text" class="f-input" style="width:220px;padding:8px 14px;" placeholder="Search username..." oninput="filterUsers(this.value)">
+  <input type="text" class="f-input" style="width:220px;padding:8px 14px;" placeholder="Search name or phone..." oninput="filterUsers(this.value)">
 </div>
   <table>
   <thead>
-  <tr><th>Username</th><th>Phone</th><th>Password</th><th>STAKE</th><th>MOB</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
+  <tr><th>Name</th><th>Phone</th><th>Password</th><th>STAKE</th><th>MOB</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
 </thead>
   <tbody id="users-table-body"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
 </table>
@@ -1055,8 +1055,11 @@ function renderDashboard() {
 function filterUsers(val) { searchFilter = val; renderUsersTable(); }
 
 function renderUsersTable() {
-  const users = Object.values(allUsers);
-  const filtered = searchFilter ? users.filter(u =>u.username && u.username.toLowerCase().includes(searchFilter.toLowerCase())) : users;
+  const entries = Object.entries(allUsers);
+  const filtered = searchFilter ? entries.filter(([k, u]) => {
+  const q = searchFilter.toLowerCase();
+  return (u.fullName && u.fullName.toLowerCase().includes(q)) || (u.username && u.username.toLowerCase().includes(q)) || (u.phone && u.phone.toLowerCase().includes(q));
+  }) : entries;
   const tbody = document.getElementById('users-table-body');
   if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No users found</tr>'; return; }
   
@@ -1068,19 +1071,20 @@ function renderUsersTable() {
   return numA - numB;
   });
   
-  tbody.innerHTML = filtered.map(u => {
-  const sk = safeKey(u.username || '');
+  tbody.innerHTML = filtered.map(([key, u]) => {
+  const sk = key;
+  const displayName = u.fullName || u.username || '—';
   let levelName = 'Trainee';
   const userVideos = u.totalVideosWatched || 0;
-  for (const key of levelKeys) {
-  const level = allLevels[key];
+  for (const lkey of levelKeys) {
+  const level = allLevels[lkey];
   if (level && userVideos >= (level.collateral || 0)) {
   levelName = level.name || 'Trainee';
   }
   }
     
   return `<tr>
-  <td><strong>${u.username || '—'}</strong></td>
+  <td><strong>${displayName}</strong></td>
   <td class="mono">${u.phone || '—'}</td>
   <td><div class="pw-cell" id="pwcell_${sk}"><span class="pw-val" onclick="editPw('${sk}')">${u.password || '—'}</span></div></td>
   <td class="mono" style="color:var(--gold)">${fmt(u.stake)}</td>
@@ -1090,9 +1094,9 @@ function renderUsersTable() {
   <td style="color:var(--accent);font-weight:700;">${levelName}</td>
   <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
   <td style="display:flex;gap:6px;flex-wrap:wrap;">
-  <button class="btn btn-edit" onclick="openEditModal('${u.username}')"></button>
-  <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${u.username}', ${!u.locked})">${u.locked ? '' : ''}</button>
-  <button class="btn btn-delete" onclick="deleteUser('${u.username}')"></button>
+  <button class="btn btn-edit" onclick="openEditModal('${sk}')">Edit</button>
+  <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${sk}', ${!u.locked})">${u.locked ? 'Unlock' : 'Lock'}</button>
+  <button class="btn btn-delete" onclick="deleteUser('${sk}')">Delete</button>
 </td>
 </tr>`;
   }).join('');
@@ -1103,7 +1107,7 @@ function editPw(sk) {
   if (!cell) return;
   const cur = cell.querySelector('.pw-val');
   const currentPw = cur ? cur.textContent : '';
-  cell.innerHTML = `<input class="pw-edit-input" id="pwinput_${sk}" value="${currentPw}" type="text"><button class="pw-save-btn" onclick="savePw('${sk}')"></button>`;
+  cell.innerHTML = `<input class="pw-edit-input" id="pwinput_${sk}" value="${currentPw}" type="text"><button class="pw-save-btn" onclick="savePw('${sk}')">Save</button>`;
   const inp = document.getElementById('pwinput_' + sk);
   if (inp) { inp.focus(); inp.onkeydown = e => { if (e.key === 'Enter') savePw(sk); if (e.key === 'Escape') renderUsersTable(); }; }
 }
@@ -1113,17 +1117,17 @@ async function savePw(sk) {
   if (!inp) return;
   const newPw = inp.value.trim();
   if (!newPw) { toast('Password cannot be empty', '#f87171'); return; }
-  const user = Object.values(allUsers).find(u =>safeKey(u.username || '') === sk);
+  const user = allUsers[sk];
   if (!user) return;
   await db.ref('users/' + sk + '/password').set(newPw);
-  toast('Password updated for ' + user.username);
+  toast('Password updated for ' + (user.fullName || user.username || sk));
   renderUsersTable();
 }
 
-function openEditModal(username) {
-  const u = allUsers[safeKey(username)];
+function openEditModal(key) {
+  const u = allUsers[key];
   if (!u) return;
-  document.getElementById('edit-username').value = username;
+  document.getElementById('edit-username').value = key;
   document.getElementById('edit-password').value = u.password || '';
   document.getElementById('edit-phone-modal').value = u.phone || '';
   document.getElementById('edit-stake').value = u.stake || 0;
@@ -1136,7 +1140,7 @@ function openEditModal(username) {
 function closeEditModal() { document.getElementById('edit-modal').style.display = 'none'; }
 
 async function saveEditUser() {
-  const username = document.getElementById('edit-username').value;
+  const key = document.getElementById('edit-username').value;
   const newPassword = document.getElementById('edit-password').value;
   const newPhone = document.getElementById('edit-phone-modal').value;
   const newStake = parseInt(document.getElementById('edit-stake').value) || 0;
@@ -1144,8 +1148,7 @@ async function saveEditUser() {
   const newVideos = parseInt(document.getElementById('edit-videos').value) || 0;
   const newStreak = parseInt(document.getElementById('edit-streak').value) || 0;
   
-  const sk = safeKey(username);
-  const user = allUsers[sk];
+  const user = allUsers[key];
   if (!user) return;
   
   const updates = {
@@ -1157,20 +1160,22 @@ async function saveEditUser() {
   streakDays: newStreak
   };
   
-  await db.ref('users/' + sk).update(updates);
+  await db.ref('users/' + key).update(updates);
   closeEditModal();
-  toast('User ' + username + 'updated');
+  toast('User ' + (user.fullName || user.username || key) + ' updated');
 }
 
-async function toggleLock(username, lock) {
-  await db.ref('users/' + safeKey(username) + '/locked').set(lock);
+async function toggleLock(key, lock) {
+  await db.ref('users/' + key + '/locked').set(lock);
   toast(lock ? 'User locked' : 'User unlocked', lock ? '#f87171' : undefined);
 }
 
-async function deleteUser(username) {
-  const confirmed = await confirmAction('Delete User?', 'Delete user "' + username + '"? This cannot be undone.');
+async function deleteUser(key) {
+  const user = allUsers[key];
+  const label = user ? (user.fullName || user.username || key) : key;
+  const confirmed = await confirmAction('Delete User?', 'Delete user "' + label + '"? This cannot be undone.');
   if (confirmed) {
-  await db.ref('users/' + safeKey(username)).remove();
+  await db.ref('users/' + key).remove();
   toast('User deleted', '#f87171');
   }
 }
