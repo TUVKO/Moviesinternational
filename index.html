@@ -101,6 +101,10 @@ input[type="password"]{padding-right:46px;}
 .dash-section.active{display:block;}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
+.plain-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.plain-stat-row:last-child{border-bottom:none;}
+.plain-stat-label{font-size:13px;color:var(--muted);}
+.plain-stat-value{font-size:13px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;}
 .stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
 .stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .stat-value.stake{color:var(--accent);}
@@ -623,6 +627,14 @@ input[type="password"]{padding-right:46px;}
 <button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="openHistoryFiltered('Withdrawal')">Debit</button>
 </div>
 </div>
+<div class="section" style="margin-top:8px;">
+<div class="plain-stat-row"><span class="plain-stat-label">Today's income</span><span class="plain-stat-value" id="stat-today-income">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">This month income</span><span class="plain-stat-value" id="stat-month-income">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Total earned</span><span class="plain-stat-value" id="stat-total-earned">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Affiliate Earnings</span><span class="plain-stat-value" id="stat-affiliate-earnings">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Total debited</span><span class="plain-stat-value" id="stat-total-debited">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Total credited</span><span class="plain-stat-value" id="stat-total-credited">UGX 0</span></div>
+</div>
 </div>
 
   <!-- Recruit: Referral Link + QR Code -->
@@ -912,6 +924,58 @@ function getUTCDateStr() {
 function dateStr() {
   const d = new Date();
   return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' });
+}
+
+const TX_MONTH_MAP = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+
+function parseTxDate(dateString) {
+  if (!dateString) return null;
+  const m = dateString.match(/^(\d{1,2}) (\w{3}) (\d{4})/);
+  if (!m) return null;
+  const month = TX_MONTH_MAP[m[2]];
+  if (month === undefined) return null;
+  return new Date(parseInt(m[3]), month, parseInt(m[1]));
+}
+
+function computeIncomeStats() {
+  const result = { today: 0, month: 0, total: 0, credited: 0, debited: 0 };
+  if (!currentUser || !currentUser.transactions) return result;
+  
+  const incomeTypes = new Set(['Bonus', 'Video Reward', 'Streak Bonus', 'Level Refund']);
+  const depositTypes = new Set(['Deposit', 'Manual Deposit']);
+  
+  const now = getServerTime();
+  const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate();
+  
+  Object.values(currentUser.transactions).forEach(tx => {
+  const amt = tx.amount || 0;
+  const txDate = parseTxDate(tx.date);
+  
+  if (incomeTypes.has(tx.type) && amt > 0) {
+  result.total += amt;
+  if (txDate && txDate.getFullYear() === todayY && txDate.getMonth() === todayM) {
+  result.month += amt;
+  if (txDate.getDate() === todayD) result.today += amt;
+  }
+  }
+  
+  if (depositTypes.has(tx.type)) result.credited += Math.abs(amt);
+  if (tx.type === 'Withdrawal') result.debited += Math.abs(amt);
+  });
+  
+  return result;
+}
+
+function updateIncomeStatsUI() {
+  const todayEl = document.getElementById('stat-today-income');
+  if (!todayEl) return;
+  const s = computeIncomeStats();
+  document.getElementById('stat-today-income').textContent = fmt(s.today);
+  document.getElementById('stat-month-income').textContent = fmt(s.month);
+  document.getElementById('stat-total-earned').textContent = fmt(s.total);
+  document.getElementById('stat-affiliate-earnings').textContent = fmt(0);
+  document.getElementById('stat-total-debited').textContent = fmt(s.debited);
+  document.getElementById('stat-total-credited').textContent = fmt(s.credited);
 }
 
 function getUTCNow() {
@@ -1581,6 +1645,7 @@ function updateProfileUI() {
   document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
   const profFullName = document.getElementById('profile-fullname-display');
   if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
+  updateIncomeStatsUI();
   
   const linkDisplay = document.getElementById('recruit-link-display');
   const qrImg = document.getElementById('recruit-qr-img');
