@@ -72,9 +72,6 @@ input[type="password"]{padding-right:46px;}
 .field-hint{font-size:10px;color:var(--muted);margin-top:5px;padding-left:4px;}
 .field-error{font-size:10px;color:var(--warn);margin-top:5px;padding-left:4px;display:none;}
 .field-error.show{display:block;}
-.pw-strength{display:flex;gap:4px;margin-top:8px;}
-.pw-bar{flex:1;height:3px;border-radius:3px;background:var(--surface2);}
-.pw-bar.weak{background:var(--warn)}.pw-bar.medium{background:var(--gold)}.pw-bar.strong{background:var(--accent3)}
 .submit-btn{width:100%;background:var(--accent);border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:6px;}
 .submit-btn:active{transform:scale(.98);}
 .auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted);}
@@ -405,14 +402,8 @@ input[type="password"]{padding-right:46px;}
 </div>
 <div class="field-group">
   <label class="field-label">Password</label>
-<div class="field-wrap"><input type="password" id="reg-password" placeholder="Min. 6 characters" oninput="checkStrength(this.value)"><button class="eye-btn" onclick="toggleEye('reg-password',this)">Show</button></div>
-<div class="pw-strength"><div class="pw-bar" id="pw-b1"></div><div class="pw-bar" id="pw-b2"></div><div class="pw-bar" id="pw-b3"></div></div>
+<div class="field-wrap"><input type="password" id="reg-password" placeholder="Min. 6 characters"><button class="eye-btn" onclick="toggleEye('reg-password',this)">Show</button></div>
 <div class="field-error" id="reg-pw-err">Password must be at least 6 characters</div>
-</div>
-<div class="field-group">
-  <label class="field-label">Confirm Password</label>
-<div class="field-wrap"><input type="password" id="reg-confirm" placeholder="Repeat password"><button class="eye-btn" onclick="toggleEye('reg-confirm',this)">Show</button></div>
-<div class="field-error" id="reg-confirm-err">Passwords do not match</div>
 </div>
 <div class="field-group">
   <label class="field-label">Referral Code (Optional)</label>
@@ -431,7 +422,6 @@ input[type="password"]{padding-right:46px;}
 <div class="brand"><div class="brand-icon"></div><div class="brand-name">WEA</div></div>
 </div>
 <div class="topbar-right">
-  <span class="username-top" id="top-username">User</span>
 </div>
 </div>
 
@@ -613,7 +603,7 @@ input[type="password"]{padding-right:46px;}
 
   <!-- Profile -->
 <div class="dash-section" id="sec-profile">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">INFOR</div><div class="inner-sub">Your account details</div></div></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="profile-fullname-display">User</div></div></div>
 <div class="section" style="margin-bottom:0;">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
@@ -626,8 +616,29 @@ input[type="password"]{padding-right:46px;}
 </div>
 </div>
 </div>
-<div class="section" style="text-align:center;padding:40px 20px;">
-<div style="font-size:15px;color:var(--muted);">Coming soon</div>
+<div class="section" style="margin-top:0;">
+<div class="action-grid">
+<button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="openHistoryFiltered('Deposit')">Credit</button>
+<button class="action-btn" style="background:#14110F;border:1.5px solid #F2B84B;color:#F2B84B;" onclick="switchTab('recruit')">Recruit</button>
+<button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="openHistoryFiltered('Withdrawal')">Debit</button>
+</div>
+</div>
+</div>
+
+  <!-- Recruit: Referral Link + QR Code -->
+<div class="dash-section" id="sec-recruit">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Recruit</div><div class="inner-sub">Invite friends and earn together</div></div></div>
+<div class="section">
+<div class="action-card" style="text-align:center;">
+<div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Share your QR code or referral link. Anyone who signs up using it will be linked to your account.</div>
+<img id="recruit-qr-img" src="" alt="Referral QR Code" style="width:180px;height:180px;border-radius:12px;background:#fff;padding:8px;margin-bottom:18px;">
+<div class="field-group" style="text-align:left;">
+  <label class="field-label">Your Referral Link</label>
+<div class="field-wrap"><input type="text" id="recruit-link-display" readonly style="font-size:12px;"></div>
+</div>
+  <button class="green-btn" onclick="copyReferralLink()">Copy Referral Link</button>
+  <button class="link-back-btn" onclick="switchTab('profile')">Back</button>
+</div>
 </div>
 </div>
 
@@ -908,6 +919,24 @@ function getUTCNow() {
 }
 
 function safeKey(u) { return (u || '').replace(/[.#$\[\]]/g, '_'); }
+
+function generateReferralCode() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 10; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  return code;
+}
+
+async function generateUniqueReferralCode() {
+  let code, exists = true, attempts = 0;
+  while (exists && attempts < 10) {
+  code = generateReferralCode();
+  const snap = await db.ref('referralCodes/' + code).get();
+  exists = snap.exists();
+  attempts++;
+  }
+  return code;
+}
 function genUUID() { return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,c=>(c^crypto.getRandomValues(new Uint8Array(1))[0]&15>>c/4).toString(16)); }
 
 let currentUser = null;
@@ -1550,7 +1579,33 @@ function updateBalanceUI() {
 function updateProfileUI() {
   if (!currentUser) return;
   document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
-  document.getElementById('top-username').textContent = currentUser.fullName || 'User';
+  const profFullName = document.getElementById('profile-fullname-display');
+  if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
+  
+  const linkDisplay = document.getElementById('recruit-link-display');
+  const qrImg = document.getElementById('recruit-qr-img');
+  if (linkDisplay && qrImg) {
+  if (currentUser.referralCode) {
+  renderReferralLink(currentUser.referralCode);
+  } else if (currentUsername) {
+  // Legacy account created before the referral-code system — generate one now
+  generateUniqueReferralCode().then(code => {
+  db.ref('users/' + safeKey(currentUsername) + '/referralCode').set(code);
+  db.ref('referralCodes/' + code).set(currentUsername);
+  if (currentUser) currentUser.referralCode = code;
+  renderReferralLink(code);
+  });
+  }
+  }
+}
+
+function renderReferralLink(code) {
+  const linkDisplay = document.getElementById('recruit-link-display');
+  const qrImg = document.getElementById('recruit-qr-img');
+  if (!linkDisplay || !qrImg) return;
+  const referralLink = window.location.origin + window.location.pathname + '?ref=' + encodeURIComponent(code);
+  linkDisplay.value = referralLink;
+  qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(referralLink);
 }
 
 function updateSettingsUI() {
@@ -1886,6 +1941,52 @@ function closeModal() {
 // TRANSACTION HISTORY
 // ============================================================
 let currentHistoryFilter = 'all';
+
+function openHistoryFiltered(type) {
+  switchTab('history');
+  currentHistoryFilter = type;
+  const pillLabel = type === 'Deposit' ? 'Deposit' : type === 'Withdrawal' ? 'Withdrawals' : 'All';
+  document.querySelectorAll('.tx-pill').forEach(b => {
+  b.classList.toggle('active', b.textContent.trim() === pillLabel);
+  });
+  renderHistory();
+}
+
+function copyReferralLink() {
+  const linkInput = document.getElementById('recruit-link-display');
+  if (!linkInput || !linkInput.value) return;
+  const text = linkInput.value;
+  
+  const showCopied = () => {
+  const popup = document.getElementById('popup-banner');
+  if (popup) {
+  popup.textContent = 'Referral link copied!';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 2500);
+  }
+  };
+  
+  if (navigator.clipboard && window.isSecureContext) {
+  navigator.clipboard.writeText(text).then(showCopied).catch(() => {
+  fallbackCopy(linkInput, showCopied);
+  });
+  } else {
+  fallbackCopy(linkInput, showCopied);
+  }
+}
+
+function fallbackCopy(inputEl, onSuccess) {
+  try {
+  inputEl.removeAttribute('readonly');
+  inputEl.select();
+  inputEl.setSelectionRange(0, 99999);
+  document.execCommand('copy');
+  inputEl.setAttribute('readonly', true);
+  onSuccess();
+  } catch (e) {
+  console.error('Copy failed:', e);
+  }
+}
 
 function setTxFilter(type, btnEl) {
   currentHistoryFilter = type;
@@ -2452,10 +2553,16 @@ async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference,
 // ============================================================
 // AUTH FUNCTIONS
 // ============================================================
+let pendingReferralCode = null;
+
 function showAuth(id) {
   document.querySelectorAll('.auth-page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   const t = document.getElementById(id);
   if (t) { t.style.display = 'flex'; t.classList.add('active'); }
+  if (id === 'register-page' && pendingReferralCode) {
+  const refInput = document.getElementById('reg-referral');
+  if (refInput && !refInput.value) refInput.value = pendingReferralCode;
+  }
 }
 
 function showDashboard() {
@@ -2468,15 +2575,6 @@ function toggleEye(inputId, btn) {
   const inp = document.getElementById(inputId);
   if (inp.type === 'password') { inp.type = 'text'; btn.textContent = 'Hide'; }
   else { inp.type = 'password'; btn.textContent = 'Show'; }
-}
-
-function checkStrength(pw) {
-  const b = [document.getElementById('pw-b1'), document.getElementById('pw-b2'), document.getElementById('pw-b3')];
-  b.forEach(x => { if (x) x.className = 'pw-bar'; });
-  if (!pw) return;
-  if (pw.length >= 6) { if (b[0]) b[0].classList.add('weak'); }
-  if (pw.length >= 8 && /[0-9]/.test(pw)) { if (b[0]) b[0].classList.add('strong'); if (b[1]) b[1].classList.add('medium'); }
-  if (pw.length >= 10 && /[^A-Za-z0-9]/.test(pw)) { if (b[0]) b[0].classList.add('strong'); if (b[1]) b[1].classList.add('strong'); if (b[2]) b[2].classList.add('strong'); }
 }
 
 function toggleCountryPrefix(badgeId) {
@@ -2581,20 +2679,18 @@ async function doLogin() {
 // ============================================================
 async function doRegister() {
   console.log('Register button clicked');
-  clearErrors('reg-user-err', 'reg-phone-err', 'reg-pw-err', 'reg-confirm-err', 'reg-general-err');
+  clearErrors('reg-user-err', 'reg-phone-err', 'reg-pw-err', 'reg-general-err');
   
   const fullName = document.getElementById('reg-fullname').value.trim();
   const prefix = document.getElementById('reg-prefix').textContent.trim();
   const phoneDigits = document.getElementById('reg-phone').value.trim();
   const password = document.getElementById('reg-password').value;
-  const confirm = document.getElementById('reg-confirm').value;
   const referralCodeRaw = document.getElementById('reg-referral').value.trim();
   
   let ok = true;
   if (!fullName) { setErr('reg-user-err', true, 'Full name is required'); ok = false; }
   if (!phoneDigits || phoneDigits.length !== 10 || !phoneDigits.startsWith('0')) { setErr('reg-phone-err', true, 'Enter 10 digits starting with 0'); ok = false; }
   if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
-  if (!confirm || confirm !== password) { setErr('reg-confirm-err', true, 'Passwords do not match'); ok = false; }
   if (!ok) return;
   
   const fullPhone = prefix + phoneDigits.substring(1);
@@ -2604,20 +2700,19 @@ async function doRegister() {
   const existing = await db.ref('users/' + safeKey(fullPhone)).get();
   if (existing.exists()) { setErr('reg-phone-err', true, 'Phone number already registered'); return; }
   
-  // Optional referral code — looked up but never blocks registration if invalid/not found
+  // Optional referral code — looked up via the referralCodes index, never blocks registration if invalid/not found
   let referredBy = null;
   let referrerKey = null;
   if (referralCodeRaw) {
-  const directSnap = await db.ref('users/' + safeKey(referralCodeRaw)).get();
-  if (directSnap.exists()) {
-  referrerKey = safeKey(referralCodeRaw);
-  referredBy = referralCodeRaw;
-  } else if (referralCodeRaw.startsWith('0') && referralCodeRaw.length === 10) {
-  const normalizedRef = prefix + referralCodeRaw.substring(1);
-  const normSnap = await db.ref('users/' + safeKey(normalizedRef)).get();
-  if (normSnap.exists()) { referrerKey = safeKey(normalizedRef); referredBy = normalizedRef; }
+  const codeSnap = await db.ref('referralCodes/' + referralCodeRaw.toUpperCase()).get();
+  if (codeSnap.exists()) {
+  const referrerPhone = codeSnap.val();
+  referrerKey = safeKey(referrerPhone);
+  referredBy = referralCodeRaw.toUpperCase();
   }
   }
+  
+  const myReferralCode = await generateUniqueReferralCode();
     
   const now = dateStr();
   const todayUTC = getUTCKey();
@@ -2627,6 +2722,7 @@ async function doRegister() {
   password: password,
   country: country,
   phone: fullPhone,
+  referralCode: myReferralCode,
   referredBy: referredBy,
   stake: 0,
   mob: 0, // MOB account starts at 0
@@ -2656,6 +2752,7 @@ async function doRegister() {
   };
     
   await db.ref('users/' + safeKey(fullPhone)).set(newUser);
+  await db.ref('referralCodes/' + myReferralCode).set(fullPhone);
   console.log('User registered:', fullPhone);
   
   if (referrerKey) {
@@ -2685,7 +2782,6 @@ async function doRegister() {
   document.getElementById('reg-fullname').value = '';
   document.getElementById('reg-phone').value = '';
   document.getElementById('reg-password').value = '';
-  document.getElementById('reg-confirm').value = '';
   document.getElementById('reg-referral').value = '';
     
   } catch (error) {
@@ -2717,6 +2813,7 @@ const tabMap = {
   team: 'sec-team',
   plan: 'sec-plan',
   profile: 'sec-profile',
+  recruit: 'sec-recruit',
   deposit: 'sec-deposit',
   'deposit-amount': 'sec-deposit-amount',
   'deposit-superior-phone': 'sec-deposit-superior-phone',
@@ -2806,6 +2903,8 @@ window.closePrivacyModal = closePrivacyModal;
 window.closeVideoPlayer = closeVideoPlayer;
 window.claimReward = claimReward;
 window.setTxFilter = setTxFilter;
+window.openHistoryFiltered = openHistoryFiltered;
+window.copyReferralLink = copyReferralLink;
 window.renderHistory = renderHistory;
 window.toggleEye = toggleEye;
 window.updateWithdrawPreview = updateWithdrawPreview;
@@ -2815,7 +2914,6 @@ window.depPhoneInput = depPhoneInput;
 window.toggleCountryPrefix = toggleCountryPrefix;
 window.regPhoneInput = regPhoneInput;
 window.loginPhoneInput = loginPhoneInput;
-window.checkStrength = checkStrength;
 window.closeModal = closeModal;
 window.openVideoPlayer = openVideoPlayer;
 window.startVideoListener = startVideoListener;
@@ -2839,6 +2937,11 @@ console.log('All functions exposed to window');
 // ============================================================
 async function initApp() {
   console.log('Initializing app...');
+  try {
+  const urlParams = new URLSearchParams(window.location.search);
+  const refParam = urlParams.get('ref');
+  if (refParam) pendingReferralCode = refParam;
+  } catch (e) {}
   startSettingsListener();
   startLevelsListener();
   startVideoListener();
