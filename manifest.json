@@ -1,0 +1,25 @@
+{
+  "name": "WEA - Watch Movies, Earn Money",
+  "short_name": "WEA",
+  "description": "Watch movies and earn money on WEA.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14110F",
+  "theme_color": "#F2B84B",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

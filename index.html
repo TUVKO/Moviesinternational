@@ -11,6 +11,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://profit-pulse.site/logo.png">
 <title>WEA — Watch Movies, Earn Money</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#F2B84B">
+<link rel="icon" type="image/png" sizes="192x192" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WEA">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -3218,6 +3226,12 @@ async function initApp() {
   
   document.getElementById('loading-screen').style.display = 'none';
   console.log('App initialized');
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+  navigator.serviceWorker.register('service-worker.js').catch(err => console.log('SW registration failed:', err));
+  });
 }
 
 initApp();
