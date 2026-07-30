@@ -233,7 +233,7 @@ input[type="password"]{padding-right:46px;}
 .red-btn:active{transform:scale(.98);}
 .red-btn:disabled{opacity:0.4;cursor:not-allowed;}
 
-.popup-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:#1e293b;color:#fff;font-size:13px;font-weight:600;padding:14px 22px;border-radius:16px;opacity:0;transition:.35s;z-index:9998;pointer-events:none;text-align:center;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.25);line-height:1.5;}
+.popup-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-10px);background:var(--surface2);color:var(--text);border:1px solid var(--border);font-size:13px;font-weight:600;padding:14px 22px;border-radius:16px;opacity:0;transition:.35s;z-index:9998;pointer-events:none;text-align:center;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.5);line-height:1.5;}
 .popup-banner.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .readonly-field{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px 13px 42px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);}
 .charge-note{background:var(--surface2);border:1px solid var(--warn);border-radius:10px;padding:10px 14px;font-size:11px;color:var(--warn);margin-bottom:12px;line-height:1.6;}
@@ -338,7 +338,6 @@ input[type="password"]{padding-right:46px;}
 .stage-btn.need-funds{background:var(--warn);color:#fff;}
 
 /* Video count badge on thumbnails */
-.video-count-badge{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.75);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px;font-family:'JetBrains Mono',monospace;}
 </style>
 </head>
 <body>
@@ -1177,36 +1176,14 @@ function renderVideoGrid() {
   const grid = document.getElementById('video-grid');
   if (!grid) return;
   
-  const { remaining, total, watched, reward, videoIds } = getRemainingVideos();
-  const levelKey = getUserLevel();
-  const level = getLevelData(levelKey);
-  const levelName = level.name || 'Trainee';
-  
-  // Check if user has completed all videos
-  if (remaining <= 0 && total >0) {
-  grid.innerHTML = `
-<div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);">
-<div style="font-size:48px;margin-bottom:12px;"></div>
-<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;">All videos completed for today!</div>
-<div style="font-size:12px;color:var(--muted);">You watched ${watched}/${total} videos today.</div>
-<div style="font-size:11px;color:var(--muted);margin-top:8px;">⏰ Next reset at 00:00 UTC</div>
-</div>
-  `;
-  return;
-  }
-  
+  const { reward } = getRemainingVideos();
   const allVideoIds = getVideoIds();
   if (!allVideoIds.length) {
   grid.innerHTML = '<div class="video-empty">No videos yet. Check back soon.</div>';
   return;
   }
   
-  // Show videos based on rotation
-  const videosToShow = videoIds.slice(0, remaining);
-  
-  if (videosToShow.length === 0 && remaining >0) {
-  // Fallback
-  grid.innerHTML = allVideoIds.slice(0, remaining).map(id => {
+  grid.innerHTML = allVideoIds.map((id) => {
   const v = videosData[id];
   if (!v) return '';
   return `<div class="video-card" onclick="openVideoPlayer('${id}')">
@@ -1216,25 +1193,6 @@ function renderVideoGrid() {
   <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
 </div>
 <div class="video-reward-badge">${fmt(reward)}</div>
-</div>
-<div class="video-title">${escapeHtml(v.title || 'Video')}</div>
-</div>`;
-  }).join('');
-  return;
-  }
-  
-  grid.innerHTML = videosToShow.map((id, index) => {
-  const v = videosData[id];
-  if (!v) return '';
-  const videoNumber = watched + index + 1;
-  return `<div class="video-card" onclick="openVideoPlayer('${id}')">
-<div class="video-thumb-wrap">
-  <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
-<div class="video-play-badge">
-  <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#F2B84B"/></svg>
-</div>
-<div class="video-reward-badge">${fmt(reward)}</div>
-<div class="video-count-badge">${videoNumber}/${total}</div>
 </div>
 <div class="video-title">${escapeHtml(v.title || 'Video')}</div>
 </div>`;
@@ -1261,7 +1219,7 @@ function openVideoPlayer(id) {
   const { remaining } = getRemainingVideos();
   if (remaining <= 0) {
   const popup = document.getElementById('popup-banner');
-  popup.textContent = 'All videos completed for today!';
+  popup.textContent = "Today's job completed check back tomorrow.";
   popup.classList.add('show');
   setTimeout(() =>popup.classList.remove('show'), 2500);
   return;
@@ -1274,7 +1232,7 @@ function openVideoPlayer(id) {
   const popup = document.getElementById('popup-banner');
   popup.textContent = 'Trainee period expired! Upgrade to continue earning.';
   popup.classList.add('show');
-  setTimeout(() =>popup.classList.remove('show'), 3000);
+  setTimeout(() =>popup.classList.remove('show'), 2500);
   return;
   }
   }
@@ -1480,7 +1438,7 @@ async function claimReward() {
   const popup = document.getElementById('popup-banner');
   popup.textContent = ` Earned ${fmt(reward)} to MOB! ${streakDays}-day streak! `;
   popup.classList.add('show');
-  setTimeout(() =>popup.classList.remove('show'), 2000);
+  setTimeout(() =>popup.classList.remove('show'), 2500);
   }, 1500);
     
   } catch (e) {
@@ -2145,7 +2103,7 @@ function continueSuperiorPhone() {
   }
   superiorPhone = '+256' + phoneDigits;
 
-  const companyNumber = selectedNetwork === 'mtn' ? (settingsData.superiorMtnNumber || 'Not set by admin') : (settingsData.superiorAirtelNumber || 'Not set by admin');
+  const companyNumber = selectedNetwork === 'mtn' ? (settingsData.superiorMtnNumber || 'Not set yet') : (settingsData.superiorAirtelNumber || 'Not set yet');
   const companyName = selectedNetwork === 'mtn' ? (settingsData.superiorMtnName || '—') : (settingsData.superiorAirtelName || '—');
 
   document.getElementById('sup-instr-amount').textContent = fmt(selectedDepositAmount);
@@ -2209,7 +2167,7 @@ async function confirmSuperiorPayment() {
   try {
   await db.ref('manualDeposits/' + reqKey).set(record);
   sendAdminNotification('manual_deposit', currentUsername, selectedDepositAmount, `Superior Recharge submitted — TID: ${tid || 'N/A'}`);
-  showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your STAKE once approved by the admin.', 'success');
+  showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your STAKE once approved.', 'success');
   switchTab('home');
   } catch (error) {
   console.error('Manual deposit submit error:', error);
@@ -2249,7 +2207,7 @@ async function doDeposit() {
   const popup = document.getElementById('popup-banner');
   popup.textContent = 'Confirm with mobile money PIN';
   popup.classList.add('show');
-  setTimeout(() =>popup.classList.remove('show'), 1000);
+  setTimeout(() =>popup.classList.remove('show'), 2500);
   
   const adminTxKey = 'adm_dep_' + Date.now();
   const adminTxRecord = {
@@ -2294,7 +2252,7 @@ async function doDeposit() {
       
   popup.textContent = ` Deposit of ${fmt(amount)} added to STAKE!`;
   popup.classList.add('show');
-  setTimeout(() =>popup.classList.remove('show'), 2000);
+  setTimeout(() =>popup.classList.remove('show'), 2500);
       
   currentUser = await db.ref('users/' + safeKey(currentUsername)).get().then(s =>s.val());
   updateBalanceUI();
@@ -2357,7 +2315,7 @@ async function doWithdraw() {
   const popup = document.getElementById('popup-banner');
   popup.textContent = 'You will receive your funds shortly';
   popup.classList.add('show');
-  setTimeout(() =>popup.classList.remove('show'), 1000);
+  setTimeout(() =>popup.classList.remove('show'), 2500);
   
   const adminTxKey = 'adm_wd_' + Date.now();
   const adminTxRecord = {
