@@ -296,6 +296,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="nav-item" onclick="showPage('pg-users')"><span class="nav-icon">👥</span><span>Users</span></div>
 <div class="nav-item" onclick="showPage('pg-transactions')"><span class="nav-icon">💰</span><span>Transactions</span></div>
 <div class="nav-item" onclick="showPage('pg-withdrawals')"><span class="nav-icon">💸</span><span>Withdrawals</span><span class="nav-badge" id="withdrawals-nav-badge">0</span></div>
+<div class="nav-item" onclick="showPage('pg-manual-deposits')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 3h6l2-3h4"/><path d="M5 12V5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v7"/><rect x="3" y="12" width="18" height="7" rx="1"/></svg></span><span>Manual Deposits</span><span class="nav-badge" id="manual-deposits-nav-badge">0</span></div>
 <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
 <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
 <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
@@ -389,6 +390,35 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <tr><th>Date</th><th>Username</th><th>Phone</th><th>Amount</th><th>Fee</th><th>Net Amount</th><th>Status</th><th>Actions</th></tr>
 </thead>
   <tbody id="wd-table-body"><tr class="empty-row"><td colspan="8">No withdrawal requests yet</tr></tbody>
+</table>
+</div>
+</div>
+
+  <!-- MANUAL DEPOSITS (Superior Recharge) -->
+<div class="page" id="pg-manual-deposits">
+<div class="page-title">Manual Deposits</div>
+<div class="page-sub">Superior Recharge submissions — verify and approve or reject</div>
+<div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+<div class="stat-card"><div class="stat-card-label">Pending</div><div class="stat-card-val gold" id="md-stat-pending">0</div></div>
+<div class="stat-card"><div class="stat-card-label">Approved</div><div class="stat-card-val emerald" id="md-stat-approved">0</div></div>
+<div class="stat-card"><div class="stat-card-label">Total Pending Amount</div><div class="stat-card-val red" id="md-stat-amount">UGX 0</div></div>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+  <button class="btn btn-save" onclick="filterManualDeposits('pending')">Pending</button>
+  <button class="btn btn-approve" onclick="filterManualDeposits('approved')">Approved</button>
+  <button class="btn btn-reject" onclick="filterManualDeposits('rejected')">Rejected</button>
+  <button class="btn btn-edit" onclick="filterManualDeposits('all')">All</button>
+</div>
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">Manual Deposit Requests</div>
+  <span id="md-count" style="font-size:12px;color:var(--muted);">0 requests</span>
+</div>
+  <table>
+  <thead>
+  <tr><th>Date</th><th>Username</th><th>Registered Phone</th><th>Sender Phone</th><th>Network</th><th>Sent To</th><th>Amount</th><th>TID</th><th>Message</th><th>Status</th><th>Actions</th></tr>
+</thead>
+  <tbody id="md-table-body"><tr class="empty-row"><td colspan="11">No manual deposit requests yet</tr></tbody>
 </table>
 </div>
 </div>
@@ -498,6 +528,8 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Amount Presets (comma-separated UGX)</span><input type="text" class="f-input" id="dep-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000,200000,500000"><button class="btn btn-save" onclick="saveDepositPresets()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Superior Recharge — MTN Number</span><input type="text" class="f-input" id="sup-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorMtn()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
 </div>
 
   <!-- Withdrawal Approval Toggle -->
@@ -614,7 +646,11 @@ let allSettings = {
   minWithdraw: 10000,
   marzApiKey: '',
   streakBonus: 1000,
-  depositPresets: [10000, 20000, 50000, 100000, 200000, 500000]
+  depositPresets: [10000, 20000, 50000, 100000, 200000, 500000],
+  superiorMtnNumber: '',
+  superiorMtnName: '',
+  superiorAirtelNumber: '',
+  superiorAirtelName: ''
 };
 let allLevels = {};
 let allVideos = {};
@@ -623,11 +659,14 @@ let searchFilter = '';
 let admTxFilter = 'all';
 let wdFilter = 'pending';
 let allWithdrawals = {};
+let mdFilter = 'pending';
+let allManualDeposits = {};
 let allAdminTransactions = {};
 
 let usersUnsubscribe = null;
 let settingsUnsubscribe = null;
 let withdrawalsUnsubscribe = null;
+let manualDepositsUnsubscribe = null;
 let adminTxUnsubscribe = null;
 let levelsUnsubscribe = null;
 let videosUnsubscribe = null;
@@ -954,6 +993,14 @@ function startRealtimeListeners() {
   renderWithdrawalsTable();
   updateWithdrawalsBadge();
   });
+
+  if (manualDepositsUnsubscribe) manualDepositsUnsubscribe();
+  manualDepositsUnsubscribe = db.ref('manualDeposits').on('value', (snap) => {
+  allManualDeposits = snap.val() || {};
+  renderManualDepositsStats();
+  renderManualDepositsTable();
+  updateManualDepositsBadge();
+  });
   
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
@@ -1186,6 +1233,109 @@ function updateWithdrawalsBadge() {
   else { badge.style.display = 'none'; }
 }
 
+function updateManualDepositsBadge() {
+  const count = Object.values(allManualDeposits).filter(v => v.status === 'pending').length;
+  const badge = document.getElementById('manual-deposits-nav-badge');
+  if (!badge) return;
+  if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
+  else { badge.style.display = 'none'; }
+}
+
+function renderManualDepositsStats() {
+  const vals = Object.values(allManualDeposits);
+  const pending = vals.filter(v => v.status === 'pending');
+  const approved = vals.filter(v => v.status === 'approved');
+  const pendingAmt = pending.reduce((s, v) => s + (v.amount || 0), 0);
+  const pendEl = document.getElementById('md-stat-pending');
+  const apprEl = document.getElementById('md-stat-approved');
+  const amtEl = document.getElementById('md-stat-amount');
+  if (pendEl) pendEl.textContent = pending.length;
+  if (apprEl) apprEl.textContent = approved.length;
+  if (amtEl) amtEl.textContent = fmt(pendingAmt);
+}
+
+function filterManualDeposits(f) { mdFilter = f; renderManualDepositsTable(); }
+
+function renderManualDepositsTable() {
+  const tbody = document.getElementById('md-table-body');
+  const countEl = document.getElementById('md-count');
+  if (!tbody) return;
+  let entries = Object.entries(allManualDeposits);
+  if (mdFilter !== 'all') entries = entries.filter(([k, v]) => v.status === mdFilter);
+  entries.sort((a, b) => b[0].localeCompare(a[0]));
+  if (countEl) countEl.textContent = entries.length + ' requests';
+  if (!entries.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="11">No manual deposit requests yet</tr>'; return; }
+
+  tbody.innerHTML = entries.map(([k, v]) => {
+  const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : 'var(--gold)';
+  const si = v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : 'Pending';
+  const networkLabel = v.network === 'mtn' ? 'MTN' : v.network === 'airtel' ? 'Airtel' : (v.network || '—');
+  const actions = v.status === 'pending' ? `
+  <button class="btn btn-approve" onclick="approveManualDeposit('${k}')">Approve</button>
+  <button class="btn btn-reject" onclick="rejectManualDeposit('${k}')">Reject</button>
+  ` : '—';
+  return `<tr>
+  <td class="mono" style="font-size:11px;">${v.date || '—'}</td>
+  <td><strong>${v.username || '—'}</strong></td>
+  <td class="mono">${v.registeredPhone || '—'}</td>
+  <td class="mono">${v.senderPhone || '—'}</td>
+  <td>${networkLabel}</td>
+  <td class="mono" style="font-size:11px;">${v.companyNumber || '—'}<br><span style="color:var(--muted);">${v.companyName || ''}</span></td>
+  <td class="mono" style="color:var(--success);font-weight:800;">${fmt(v.amount)}</td>
+  <td class="mono" style="font-size:11px;">${v.tid || '—'}</td>
+  <td style="max-width:180px;font-size:11px;color:var(--muted);word-break:break-word;">${v.rawMessage || '—'}</td>
+  <td><span style="font-size:11px;font-weight:700;color:${sc};">${si}</span></td>
+  <td style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</td>
+</tr>`;
+  }).join('');
+}
+
+async function approveManualDeposit(reqKey) {
+  const dep = allManualDeposits[reqKey];
+  if (!dep) return;
+  const confirmed = await confirmAction('Approve Deposit?', 'Approve ' + fmt(dep.amount) + ' deposit for ' + dep.username + '? This will be added to their STAKE.');
+  if (!confirmed) return;
+
+  try {
+  const userSnap = await db.ref('users/' + dep.userId).get();
+  const user = userSnap.val();
+  if (!user) { toast('User not found', '#f87171'); return; }
+  const newStake = (user.stake || 0) + (dep.amount || 0);
+  const txKey = 'tx_mdep_' + Date.now();
+
+  await db.ref('users/' + dep.userId).update({
+  stake: newStake,
+  ['transactions/' + txKey]: {
+  type: 'Manual Deposit',
+  amount: dep.amount,
+  note: `Superior Recharge approved (TID: ${dep.tid || 'N/A'})`,
+  date: dateStr(),
+  status: 'completed'
+  }
+  });
+  await db.ref('manualDeposits/' + reqKey).update({ status: 'approved', processed: true });
+  toast('Deposit approved for ' + dep.username);
+  } catch (error) {
+  console.error('Error approving manual deposit:', error);
+  toast('Error approving deposit', '#f87171');
+  }
+}
+
+async function rejectManualDeposit(reqKey) {
+  const dep = allManualDeposits[reqKey];
+  if (!dep) return;
+  const confirmed = await confirmAction('Reject Deposit?', 'Reject this ' + fmt(dep.amount) + ' deposit request from ' + dep.username + '?');
+  if (!confirmed) return;
+
+  try {
+  await db.ref('manualDeposits/' + reqKey).update({ status: 'rejected' });
+  toast('Deposit rejected for ' + dep.username);
+  } catch (error) {
+  console.error('Error rejecting manual deposit:', error);
+  toast('Error rejecting deposit', '#f87171');
+  }
+}
+
 function renderWithdrawalsStats() {
   const vals = Object.values(allWithdrawals);
   const pending = vals.filter(v =>v.status === 'pending');
@@ -1348,6 +1498,14 @@ function loadSettingsUI() {
   document.getElementById('streak-bonus-input').value = s.streakBonus || 1000;
   const presetsInp = document.getElementById('dep-presets-input');
   if (presetsInp) presetsInp.value = (s.depositPresets || [10000, 20000, 50000, 100000, 200000, 500000]).join(',');
+  const supMtnNum = document.getElementById('sup-mtn-number-input');
+  if (supMtnNum) supMtnNum.value = s.superiorMtnNumber || '';
+  const supMtnName = document.getElementById('sup-mtn-name-input');
+  if (supMtnName) supMtnName.value = s.superiorMtnName || '';
+  const supAirtelNum = document.getElementById('sup-airtel-number-input');
+  if (supAirtelNum) supAirtelNum.value = s.superiorAirtelNumber || '';
+  const supAirtelName = document.getElementById('sup-airtel-name-input');
+  if (supAirtelName) supAirtelName.value = s.superiorAirtelName || '';
   
   const apiInp = document.getElementById('marz-api-key-input');
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
@@ -1417,6 +1575,22 @@ async function saveDepositPresets() {
   if (!presets.length) { toast('Enter at least one valid amount', '#f87171'); return; }
   await db.ref('settings/depositPresets').set(presets);
   toast('Deposit amount presets saved');
+}
+
+async function saveSuperiorMtn() {
+  const number = document.getElementById('sup-mtn-number-input').value.trim();
+  const name = document.getElementById('sup-mtn-name-input').value.trim();
+  if (!number || !name) { toast('Enter both MTN number and name', '#f87171'); return; }
+  await db.ref('settings').update({ superiorMtnNumber: number, superiorMtnName: name });
+  toast('MTN details saved');
+}
+
+async function saveSuperiorAirtel() {
+  const number = document.getElementById('sup-airtel-number-input').value.trim();
+  const name = document.getElementById('sup-airtel-name-input').value.trim();
+  if (!number || !name) { toast('Enter both Airtel number and name', '#f87171'); return; }
+  await db.ref('settings').update({ superiorAirtelNumber: number, superiorAirtelName: name });
+  toast('Airtel details saved');
 }
 
 async function lockWithdrawals(lock) {
@@ -1691,6 +1865,7 @@ function adminLogout() {
   if (usersUnsubscribe) usersUnsubscribe();
   if (settingsUnsubscribe) settingsUnsubscribe();
   if (withdrawalsUnsubscribe) withdrawalsUnsubscribe();
+  if (manualDepositsUnsubscribe) manualDepositsUnsubscribe();
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   if (levelsUnsubscribe) levelsUnsubscribe();
   if (videosUnsubscribe) videosUnsubscribe();
@@ -1737,10 +1912,11 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-videos': 4, 'pg-levels': 5, 'pg-settings': 6 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-manual-deposits': 4, 'pg-videos': 5, 'pg-levels': 6, 'pg-settings': 7 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
+  if (id === 'pg-manual-deposits') renderManualDepositsTable();
   if (id === 'pg-videos') renderAdminVideosTable();
   if (id === 'pg-levels') renderLevelsAdminTable();
 }

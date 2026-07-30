@@ -223,6 +223,9 @@ input[type="password"]{padding-right:46px;}
 .amount-preset-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 4px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;}
 .amount-preset-btn.selected{background:var(--accent);border-color:var(--accent);color:#14110F;}
 .link-back-btn{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;width:100%;text-align:center;padding:10px 0 0;}
+.network-toggle{display:flex;gap:10px;}
+.network-btn{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:12px 8px;color:var(--text);font-size:14px;font-weight:700;cursor:pointer;}
+.network-btn.selected{background:var(--accent);border-color:var(--accent);color:#14110F;}
 .green-btn{width:100%;background:#2d5016;border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px;font-style:italic;text-shadow:2px 2px 4px rgba(0,0,0,0.5);}
 .green-btn:active{transform:scale(.98);}
 .green-btn:disabled{opacity:0.4;cursor:not-allowed;}
@@ -664,6 +667,57 @@ input[type="password"]{padding-right:46px;}
 </div>
 </div>
 
+  <!-- Deposit: Superior Recharge Phone + Network -->
+<div class="dash-section" id="sec-deposit-superior-phone">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Superior Recharge</div><div class="inner-sub">Enter your phone number and network</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="deposit-note">Depositing <strong id="sup-phone-amount-display">UGX 0</strong> to your STAKE.</div>
+<div class="field-group">
+  <label class="field-label">Your Mobile Money Phone Number</label>
+<div class="phone-prefix-wrap">
+<div class="phone-prefix-badge">+256</div>
+  <input type="tel" id="sup-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
+</div>
+<div class="field-hint">9 digits starting with 7</div>
+<div class="field-error" id="sup-phone-err">Enter 9 digits starting with 7</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Select Network</label>
+  <div class="network-toggle">
+  <button type="button" class="network-btn" id="net-btn-mtn" onclick="selectNetwork('mtn')">MTN</button>
+  <button type="button" class="network-btn" id="net-btn-airtel" onclick="selectNetwork('airtel')">Airtel</button>
+  </div>
+<div class="field-error" id="sup-network-err">Please select a network</div>
+</div>
+  <button class="green-btn" onclick="continueSuperiorPhone()">CONTINUE</button>
+  <button class="link-back-btn" onclick="switchTab('deposit-amount')">Back</button>
+</div>
+</div>
+</div>
+
+  <!-- Deposit: Superior Recharge Payment Instructions -->
+<div class="dash-section" id="sec-deposit-superior-instructions">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Send Payment</div><div class="inner-sub">Follow the steps below</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="deposit-note" style="margin-bottom:14px;">Open your phone's dial pad, dial <strong>*185*1#</strong> and follow the prompts to send <strong id="sup-instr-amount">UGX 0</strong> on <strong id="sup-instr-network">MTN</strong> to the number below.</div>
+<div class="stat-box" style="text-align:center;margin-bottom:14px;">
+<div class="stat-label">Send To</div>
+<div class="stat-value" id="sup-instr-number" style="color:var(--accent);">—</div>
+<div style="font-size:12px;color:var(--muted);margin-top:4px;">Registered Name: <strong id="sup-instr-name" style="color:var(--text);">—</strong></div>
+</div>
+<div class="field-group">
+  <label class="field-label">Paste the confirmation SMS you received</label>
+  <textarea id="sup-sms-paste" rows="4" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;color:var(--text);font-size:13px;resize:vertical;" placeholder="Paste the full transaction message here..."></textarea>
+<div class="field-error" id="sup-sms-err">Please paste the confirmation message</div>
+</div>
+  <button class="green-btn" id="sup-confirm-btn" onclick="confirmSuperiorPayment()">CONFIRM</button>
+  <button class="link-back-btn" onclick="switchTab('deposit-superior-phone')">Back</button>
+</div>
+</div>
+</div>
+
   <!-- Deposit: Easy Pay Phone Entry -->
 <div class="dash-section" id="sec-deposit-phone">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Easy Pay</div><div class="inner-sub">Enter your mobile money number</div></div></div>
@@ -862,7 +916,11 @@ let settingsData = {
   minWithdraw: 10000,
   marzApiKey: '',
   streakBonus: 1000,
-  depositPresets: [10000, 20000, 50000, 100000, 200000, 500000]
+  depositPresets: [10000, 20000, 50000, 100000, 200000, 500000],
+  superiorMtnNumber: '',
+  superiorMtnName: '',
+  superiorAirtelNumber: '',
+  superiorAirtelName: ''
 };
 let levelsData = {};
 let videosData = {};
@@ -2048,12 +2106,117 @@ function confirmDepositAmount() {
   const displayEl = document.getElementById('dep-phone-amount-display');
   if (displayEl) displayEl.textContent = fmt(amount);
   switchTab('deposit-phone');
+  } else if (selectedDepositMethod === 'superior') {
+  const supDisplayEl = document.getElementById('sup-phone-amount-display');
+  if (supDisplayEl) supDisplayEl.textContent = fmt(amount);
+  selectedNetwork = null;
+  document.getElementById('net-btn-mtn').classList.remove('selected');
+  document.getElementById('net-btn-airtel').classList.remove('selected');
+  document.getElementById('sup-phone').value = '';
+  switchTab('deposit-superior-phone');
   } else {
-  const names = { superior: 'Superior Recharge', bank: 'Add through Bank' };
+  const names = { bank: 'Add through Bank' };
   const csTitle = document.getElementById('dep-comingsoon-title');
   if (csTitle) csTitle.textContent = names[selectedDepositMethod] || 'Coming Soon';
   switchTab('deposit-comingsoon');
   }
+}
+
+let selectedNetwork = null;
+let superiorPhone = '';
+
+function selectNetwork(net) {
+  selectedNetwork = net;
+  document.getElementById('net-btn-mtn').classList.toggle('selected', net === 'mtn');
+  document.getElementById('net-btn-airtel').classList.toggle('selected', net === 'airtel');
+  clearErrors('sup-network-err');
+}
+
+function continueSuperiorPhone() {
+  clearErrors('sup-phone-err', 'sup-network-err');
+  const phoneDigits = document.getElementById('sup-phone').value.trim();
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
+  setErr('sup-phone-err', true, 'Enter 9 digits starting with 7');
+  return;
+  }
+  if (!selectedNetwork) {
+  setErr('sup-network-err', true, 'Please select a network');
+  return;
+  }
+  superiorPhone = '+256' + phoneDigits;
+
+  const companyNumber = selectedNetwork === 'mtn' ? (settingsData.superiorMtnNumber || 'Not set by admin') : (settingsData.superiorAirtelNumber || 'Not set by admin');
+  const companyName = selectedNetwork === 'mtn' ? (settingsData.superiorMtnName || '—') : (settingsData.superiorAirtelName || '—');
+
+  document.getElementById('sup-instr-amount').textContent = fmt(selectedDepositAmount);
+  document.getElementById('sup-instr-network').textContent = selectedNetwork === 'mtn' ? 'MTN' : 'Airtel';
+  document.getElementById('sup-instr-number').textContent = companyNumber;
+  document.getElementById('sup-instr-name').textContent = companyName;
+  document.getElementById('sup-sms-paste').value = '';
+  clearErrors('sup-sms-err');
+
+  switchTab('deposit-superior-instructions');
+}
+
+function extractTID(message) {
+  if (!message) return '';
+  const patterns = [
+  /(?:financial\s*transaction\s*id|transaction\s*id|txn\s*id|trans\s*id|TID|ref(?:erence)?(?:\s*no)?)\s*[:\-]?\s*([A-Za-z0-9]{5,})/i
+  ];
+  for (const p of patterns) {
+  const m = message.match(p);
+  if (m && m[1]) return m[1];
+  }
+  const tokens = message.match(/[A-Za-z0-9]{6,}/g) || [];
+  if (tokens.length) {
+  return tokens.reduce((a, b) => b.length > a.length ? b : a, tokens[0]);
+  }
+  return '';
+}
+
+async function confirmSuperiorPayment() {
+  clearErrors('sup-sms-err');
+  const rawMessage = document.getElementById('sup-sms-paste').value.trim();
+  if (!rawMessage) {
+  setErr('sup-sms-err', true, 'Please paste the confirmation message');
+  return;
+  }
+  const tid = extractTID(rawMessage);
+
+  const btn = document.getElementById('sup-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const companyNumber = selectedNetwork === 'mtn' ? (settingsData.superiorMtnNumber || '') : (settingsData.superiorAirtelNumber || '');
+  const companyName = selectedNetwork === 'mtn' ? (settingsData.superiorMtnName || '') : (settingsData.superiorAirtelName || '');
+
+  const reqKey = 'mdep_' + Date.now();
+  const record = {
+  username: currentUsername,
+  userId: safeKey(currentUsername),
+  registeredPhone: currentUser?.phone || '—',
+  senderPhone: superiorPhone,
+  network: selectedNetwork,
+  companyNumber: companyNumber,
+  companyName: companyName,
+  amount: selectedDepositAmount,
+  tid: tid,
+  rawMessage: rawMessage,
+  date: dateStr(),
+  status: 'pending'
+  };
+
+  try {
+  await db.ref('manualDeposits/' + reqKey).set(record);
+  sendAdminNotification('manual_deposit', currentUsername, selectedDepositAmount, `Superior Recharge submitted — TID: ${tid || 'N/A'}`);
+  showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your STAKE once approved by the admin.', 'success');
+  switchTab('home');
+  } catch (error) {
+  console.error('Manual deposit submit error:', error);
+  showPopup('Error', 'Failed to submit. Please try again.', 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = 'CONFIRM';
 }
 
 async function doDeposit() {
@@ -2553,6 +2716,8 @@ const tabMap = {
   profile: 'sec-profile',
   deposit: 'sec-deposit',
   'deposit-amount': 'sec-deposit-amount',
+  'deposit-superior-phone': 'sec-deposit-superior-phone',
+  'deposit-superior-instructions': 'sec-deposit-superior-instructions',
   'deposit-phone': 'sec-deposit-phone',
   'deposit-comingsoon': 'sec-deposit-comingsoon',
   withdraw: 'sec-withdraw',
