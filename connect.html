@@ -530,6 +530,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Deposit Amount Presets (comma-separated UGX)</span><input type="text" class="f-input" id="dep-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000,200000,500000"><button class="btn btn-save" onclick="saveDepositPresets()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — MTN Number</span><input type="text" class="f-input" id="sup-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorMtn()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
 </div>
 
   <!-- Withdrawal Approval Toggle -->
@@ -650,7 +651,8 @@ let allSettings = {
   superiorMtnNumber: '',
   superiorMtnName: '',
   superiorAirtelNumber: '',
-  superiorAirtelName: ''
+  superiorAirtelName: '',
+  depositTaxPercent: 3
 };
 let allLevels = {};
 let allVideos = {};
@@ -1506,6 +1508,8 @@ function loadSettingsUI() {
   if (supAirtelNum) supAirtelNum.value = s.superiorAirtelNumber || '';
   const supAirtelName = document.getElementById('sup-airtel-name-input');
   if (supAirtelName) supAirtelName.value = s.superiorAirtelName || '';
+  const depTaxInp = document.getElementById('dep-tax-input');
+  if (depTaxInp) depTaxInp.value = s.depositTaxPercent != null ? s.depositTaxPercent : 3;
   
   const apiInp = document.getElementById('marz-api-key-input');
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
@@ -1591,6 +1595,13 @@ async function saveSuperiorAirtel() {
   if (!number || !name) { toast('Enter both Airtel number and name', '#f87171'); return; }
   await db.ref('settings').update({ superiorAirtelNumber: number, superiorAirtelName: name });
   toast('Airtel details saved');
+}
+
+async function saveDepositTax() {
+  const v = parseFloat(document.getElementById('dep-tax-input').value);
+  if (isNaN(v) || v < 0 || v > 100) { toast('Enter a valid percentage (0-100)', '#f87171'); return; }
+  await db.ref('settings/depositTaxPercent').set(v);
+  toast('Deposit tax set to ' + v + '%');
 }
 
 async function lockWithdrawals(lock) {
