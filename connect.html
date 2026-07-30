@@ -531,6 +531,8 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Superior Recharge — MTN Number</span><input type="text" class="f-input" id="sup-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorMtn()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
+<div class="settings-row"><span class="settings-label">App Download Link</span><input type="text" class="f-input" id="app-download-input" style="width:280px;" placeholder="https://.../app.apk"><button class="btn btn-save" onclick="saveAppDownloadLink()">Save</button></div>
 </div>
 
   <!-- Withdrawal Approval Toggle -->
@@ -652,7 +654,9 @@ let allSettings = {
   superiorMtnName: '',
   superiorAirtelNumber: '',
   superiorAirtelName: '',
-  depositTaxPercent: 3
+  depositTaxPercent: 3,
+  supportWhatsappLink: '',
+  appDownloadLink: ''
 };
 let allLevels = {};
 let allVideos = {};
@@ -1515,6 +1519,10 @@ function loadSettingsUI() {
   if (supAirtelName) supAirtelName.value = s.superiorAirtelName || '';
   const depTaxInp = document.getElementById('dep-tax-input');
   if (depTaxInp) depTaxInp.value = s.depositTaxPercent != null ? s.depositTaxPercent : 3;
+  const supportWaInp = document.getElementById('support-whatsapp-input');
+  if (supportWaInp) supportWaInp.value = s.supportWhatsappLink || '';
+  const appDlInp = document.getElementById('app-download-input');
+  if (appDlInp) appDlInp.value = s.appDownloadLink || '';
   
   const apiInp = document.getElementById('marz-api-key-input');
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
@@ -1607,6 +1615,20 @@ async function saveDepositTax() {
   if (isNaN(v) || v < 0 || v > 100) { toast('Enter a valid percentage (0-100)', '#f87171'); return; }
   await db.ref('settings/depositTaxPercent').set(v);
   toast('Deposit tax set to ' + v + '%');
+}
+
+async function saveSupportWhatsapp() {
+  const link = document.getElementById('support-whatsapp-input').value.trim();
+  if (!link) { toast('Enter a WhatsApp link', '#f87171'); return; }
+  await db.ref('settings/supportWhatsappLink').set(link);
+  toast('Support WhatsApp link saved');
+}
+
+async function saveAppDownloadLink() {
+  const link = document.getElementById('app-download-input').value.trim();
+  if (!link) { toast('Enter a download link', '#f87171'); return; }
+  await db.ref('settings/appDownloadLink').set(link);
+  toast('App download link saved');
 }
 
 async function lockWithdrawals(lock) {

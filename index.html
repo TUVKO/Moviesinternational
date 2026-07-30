@@ -105,6 +105,22 @@ input[type="password"]{padding-right:46px;}
 .plain-stat-row:last-child{border-bottom:none;}
 .plain-stat-label{font-size:13px;color:var(--muted);}
 .plain-stat-value{font-size:13px;font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;}
+.profile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.profile-menu-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 8px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;}
+.profile-menu-btn:active{transform:scale(.97);}
+.chat-bubble-bot{background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:13px;color:var(--text);margin-bottom:14px;max-width:85%;}
+.chat-bubble-user{background:var(--accent);border-radius:14px 14px 4px 14px;padding:12px 16px;font-size:13px;color:#14110F;font-weight:600;margin-bottom:14px;max-width:85%;margin-left:auto;text-align:right;}
+.support-options-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.support-option-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--accent);font-size:13px;font-weight:600;cursor:pointer;text-align:left;}
+.support-option-btn:active{transform:scale(.98);}
+.team-member-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.team-status-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.team-member-name{flex:1;font-size:13px;font-weight:600;color:var(--text);}
+.team-member-level{font-size:12px;font-weight:700;color:var(--accent);}
+.job-item-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.job-item-title{font-size:13px;color:var(--text);}
+.job-item-time{font-size:11px;color:var(--muted);}
+.job-item-reward{font-size:13px;font-weight:700;color:var(--success);font-family:'JetBrains Mono',monospace;}
 .stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
 .stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .stat-value.stake{color:var(--accent);}
@@ -635,8 +651,76 @@ input[type="password"]{padding-right:46px;}
 <div class="plain-stat-row"><span class="plain-stat-label">Total debited</span><span class="plain-stat-value" id="stat-total-debited">UGX 0</span></div>
 <div class="plain-stat-row"><span class="plain-stat-label">Total credited</span><span class="plain-stat-value" id="stat-total-credited">UGX 0</span></div>
 </div>
+<div class="section" style="margin-top:8px;">
+<div class="profile-menu-grid">
+<button class="profile-menu-btn" onclick="switchTab('todaysjob')">Today's Job</button>
+<button class="profile-menu-btn" onclick="switchTab('myteam')">Team</button>
+<button class="profile-menu-btn" onclick="switchTab('about')">About</button>
+<button class="profile-menu-btn" onclick="switchTab('support')">Support</button>
+<button class="profile-menu-btn" onclick="switchTab('faq')">FAQ</button>
+<button class="profile-menu-btn" onclick="switchTab('app-download')">App Download</button>
+</div>
+</div>
 </div>
 
+  <!-- Today's Job: videos watched today -->
+<div class="dash-section" id="sec-todaysjob">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Today's Job</div><div class="inner-sub">Videos you've watched today</div></div></div>
+<div class="section" id="todaysjob-list"></div>
+</div>
+
+  <!-- Team: referral list -->
+<div class="dash-section" id="sec-teamlist">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Team</div><div class="inner-sub">People you've referred</div></div></div>
+<div class="section" id="team-list"></div>
+</div>
+
+  <!-- About -->
+<div class="dash-section" id="sec-about">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">About</div></div></div>
+<div class="section" style="text-align:center;padding:40px 20px;">
+<div style="font-size:15px;color:var(--muted);">Coming soon</div>
+</div>
+</div>
+
+  <!-- Support: quick-reply chat stub -> WhatsApp -->
+<div class="dash-section" id="sec-support">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Support</div><div class="inner-sub">We're here to help</div></div></div>
+<div class="section">
+<div class="chat-bubble-bot">Hi! What can we help you with?</div>
+<div id="support-options" class="support-options-wrap">
+<button class="support-option-btn" onclick="selectSupportTopic('Deposit issue')">Deposit issue</button>
+<button class="support-option-btn" onclick="selectSupportTopic('Withdrawal issue')">Withdrawal issue</button>
+<button class="support-option-btn" onclick="selectSupportTopic('Level / Stage question')">Level / Stage question</button>
+<button class="support-option-btn" onclick="selectSupportTopic('Account issue')">Account issue</button>
+<button class="support-option-btn" onclick="selectSupportTopic('Other')">Other</button>
+</div>
+<div id="support-followup" style="display:none;">
+<div class="chat-bubble-user" id="support-user-choice"></div>
+<div class="chat-bubble-bot">Got it! Tap below to continue this conversation on WhatsApp.</div>
+  <button class="green-btn" onclick="openSupportWhatsapp()">Chat us on WhatsApp</button>
+  <button class="link-back-btn" onclick="resetSupportChat()">Start over</button>
+</div>
+</div>
+</div>
+
+  <!-- FAQ -->
+<div class="dash-section" id="sec-faq">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">FAQ</div></div></div>
+<div class="section" style="text-align:center;padding:40px 20px;">
+<div style="font-size:15px;color:var(--muted);">Coming soon</div>
+</div>
+</div>
+
+  <!-- App Download -->
+<div class="dash-section" id="sec-app-download">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">App Download</div></div></div>
+<div class="section" style="text-align:center;padding:30px 20px;">
+<div class="brand-icon" style="margin:0 auto 20px;"></div>
+<div style="font-size:14px;color:var(--muted);margin-bottom:24px;">Download the WEA app for a faster, smoother experience.</div>
+  <button class="green-btn" id="app-download-btn" onclick="startAppDownload()">Download App</button>
+</div>
+</div>
   <!-- Recruit: Referral Link + QR Code -->
 <div class="dash-section" id="sec-recruit">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Recruit</div><div class="inner-sub">Invite friends and earn together</div></div></div>
@@ -978,6 +1062,86 @@ function updateIncomeStatsUI() {
   document.getElementById('stat-total-credited').textContent = fmt(s.credited);
 }
 
+function renderTodaysJob() {
+  const wrap = document.getElementById('todaysjob-list');
+  if (!wrap) return;
+  if (!currentUser || !currentUser.transactions) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No videos watched yet today.</div>'; return; }
+  
+  const now = getServerTime();
+  const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate();
+  
+  const todaysVideos = Object.values(currentUser.transactions).filter(tx => {
+  if (tx.type !== 'Video Reward') return false;
+  const txDate = parseTxDate(tx.date);
+  return txDate && txDate.getFullYear() === todayY && txDate.getMonth() === todayM && txDate.getDate() === todayD;
+  }).reverse();
+  
+  if (!todaysVideos.length) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No videos watched yet today.</div>'; return; }
+  
+  wrap.innerHTML = todaysVideos.map(tx => {
+  const title = (tx.note || '').replace(/^Watched:\s*/, '') || 'Video';
+  const time = (tx.date || '').split(' ').slice(-1)[0] || '';
+  return `<div class="job-item-row"><div><div class="job-item-title">${escapeHtml(title)}</div><div class="job-item-time">${time}</div></div><div class="job-item-reward">+${fmt(tx.amount)}</div></div>`;
+  }).join('');
+}
+
+async function renderTeamList() {
+  const wrap = document.getElementById('team-list');
+  if (!wrap) return;
+  const referrals = currentUser?.referrals || [];
+  if (!referrals.length) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">You haven\'t referred anyone yet. Share your referral link from the Recruit page!</div>'; return; }
+  
+  wrap.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;">Loading team...</div>';
+  
+  try {
+  const members = await Promise.all(referrals.map(async phone => {
+  const snap = await db.ref('users/' + safeKey(phone)).get();
+  return snap.exists() ? snap.val() : null;
+  }));
+    
+  const validMembers = members.filter(m => m);
+  if (!validMembers.length) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">You haven\'t referred anyone yet.</div>'; return; }
+    
+  wrap.innerHTML = validMembers.map(m => {
+  const levelName = levelsData[m.currentLevel || 'trainee']?.name || 'Trainee';
+  const dotColor = m.locked ? 'var(--warn)' : 'var(--success)';
+  return `<div class="team-member-row"><span class="team-status-dot" style="background:${dotColor};"></span><span class="team-member-name">${escapeHtml(m.fullName || 'User')}</span><span class="team-member-level">${escapeHtml(levelName)}</span></div>`;
+  }).join('');
+  } catch (error) {
+  console.error('Error loading team:', error);
+  wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Could not load team list.</div>';
+  }
+}
+
+function selectSupportTopic(topic) {
+  document.getElementById('support-options').style.display = 'none';
+  document.getElementById('support-followup').style.display = 'block';
+  document.getElementById('support-user-choice').textContent = topic;
+}
+
+function resetSupportChat() {
+  document.getElementById('support-options').style.display = 'flex';
+  document.getElementById('support-followup').style.display = 'none';
+}
+
+function openSupportWhatsapp() {
+  const link = settingsData.supportWhatsappLink;
+  if (!link) {
+  showPopup('Not available', 'Support chat is not set up yet. Please try again later.', 'error');
+  return;
+  }
+  window.open(link, '_blank');
+}
+
+function startAppDownload() {
+  const link = settingsData.appDownloadLink;
+  if (!link) {
+  showPopup('Coming soon', 'The app isn\'t available for download yet. Check back soon!', 'info');
+  return;
+  }
+  window.location.href = link;
+}
+
 function getUTCNow() {
   return new Date();
 }
@@ -1018,7 +1182,9 @@ let settingsData = {
   superiorMtnName: '',
   superiorAirtelNumber: '',
   superiorAirtelName: '',
-  depositTaxPercent: 3
+  depositTaxPercent: 3,
+  supportWhatsappLink: '',
+  appDownloadLink: ''
 };
 let levelsData = {};
 let videosData = {};
@@ -2879,6 +3045,12 @@ const tabMap = {
   plan: 'sec-plan',
   profile: 'sec-profile',
   recruit: 'sec-recruit',
+  todaysjob: 'sec-todaysjob',
+  myteam: 'sec-teamlist',
+  about: 'sec-about',
+  support: 'sec-support',
+  faq: 'sec-faq',
+  'app-download': 'sec-app-download',
   deposit: 'sec-deposit',
   'deposit-amount': 'sec-deposit-amount',
   'deposit-superior-phone': 'sec-deposit-superior-phone',
@@ -2900,6 +3072,8 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
   const idx = navOrder.indexOf(tab);
   if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  if (tab === 'todaysjob') renderTodaysJob();
+  if (tab === 'myteam') renderTeamList();
 }
 
 function updateWithdrawPreview() {
