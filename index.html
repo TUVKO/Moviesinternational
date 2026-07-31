@@ -750,9 +750,15 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 <div id="support-followup" style="display:none;">
 <div class="chat-bubble-user" id="support-user-choice"></div>
-<div class="chat-bubble-bot">Got it! Tap below to continue this conversation on WhatsApp.</div>
+<div class="chat-bubble-bot">Got it! You can keep chatting with us right here, or jump to WhatsApp.</div>
   <button class="green-btn" onclick="openSupportWhatsapp()">Chat us on WhatsApp</button>
   <button class="link-back-btn" onclick="resetSupportChat()">Start over</button>
+
+  <div id="support-chat-thread" style="margin-top:16px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+<div style="display:flex;gap:8px;margin-top:10px;">
+  <input type="text" id="support-msg-input" placeholder="Type a message..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;" onkeydown="if(event.key==='Enter')sendSupportMessage()">
+  <button class="green-btn" style="width:auto;padding:10px 18px;margin:0;" onclick="sendSupportMessage()">Send</button>
+</div>
 </div>
 </div>
 </div>
@@ -1174,15 +1180,19 @@ async function renderTeamList() {
   }
 }
 
+let supportChatUnsubscribe = null;
+
 function selectSupportTopic(topic) {
   document.getElementById('support-options').style.display = 'none';
   document.getElementById('support-followup').style.display = 'block';
   document.getElementById('support-user-choice').textContent = topic;
+  startSupportChatListener();
 }
 
 function resetSupportChat() {
   document.getElementById('support-options').style.display = 'flex';
   document.getElementById('support-followup').style.display = 'none';
+  if (supportChatUnsubscribe) { supportChatUnsubscribe(); supportChatUnsubscribe = null; }
 }
 
 function openSupportWhatsapp() {
@@ -1192,6 +1202,79 @@ function openSupportWhatsapp() {
   return;
   }
   window.open(link, '_blank');
+}
+
+async function cleanupOldSupportMessages(userKey) {
+  try {
+  const snap = await db.ref('supportChats/' + userKey + '/messages').get();
+  if (!snap.exists()) return;
+  const messages = snap.val();
+  const cutoff = Date.now() - (6 * 60 * 60 * 1000);
+  const updates = {};
+  Object.entries(messages).forEach(([msgId, msg]) => {
+  if ((msg.timestamp || 0) < cutoff) updates[msgId] = null;
+  });
+  if (Object.keys(updates).length) {
+  await db.ref('supportChats/' + userKey + '/messages').update(updates);
+  }
+  } catch (error) {
+  console.error('Error cleaning up support messages:', error);
+  }
+}
+
+function startSupportChatListener() {
+  if (!currentUsername) return;
+  const userKey = safeKey(currentUsername);
+  cleanupOldSupportMessages(userKey);
+  if (supportChatUnsubscribe) supportChatUnsubscribe();
+  const ref = db.ref('supportChats/' + userKey + '/messages');
+  const callback = (snap) => renderSupportThread(snap.val() || {});
+  ref.on('value', callback);
+  supportChatUnsubscribe = () => ref.off('value', callback);
+}
+
+function renderSupportThread(messages) {
+  const thread = document.getElementById('support-chat-thread');
+  if (!thread) return;
+  const entries = Object.values(messages).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+  if (!entries.length) {
+  thread.innerHTML = '';
+  return;
+  }
+  thread.innerHTML = entries.map(m => {
+  const bubbleClass = m.sender === 'admin' ? 'chat-bubble-bot' : 'chat-bubble-user';
+  return `<div class="${bubbleClass}" style="margin-bottom:0;max-width:85%;">${escapeHtml(m.text)}</div>`;
+  }).join('');
+  thread.scrollTop = thread.scrollHeight;
+}
+
+async function sendSupportMessage() {
+  const input = document.getElementById('support-msg-input');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text || !currentUsername) return;
+  const userKey = safeKey(currentUsername);
+  const msgId = 'msg_' + Date.now();
+  
+  try {
+  await db.ref('supportChats/' + userKey).update({
+  userFullName: currentUser?.fullName || 'User',
+  userPhone: currentUser?.phone || currentUsername,
+  lastMessageAt: Date.now(),
+  lastSender: 'user',
+  unreadForAdmin: true,
+  [`messages/${msgId}`]: {
+  sender: 'user',
+  text: text,
+  timestamp: Date.now(),
+  date: dateStr()
+  }
+  });
+  input.value = '';
+  cleanupOldSupportMessages(userKey);
+  } catch (error) {
+  console.error('Error sending support message:', error);
+  }
 }
 
 function startAppDownload() {
