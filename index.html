@@ -732,7 +732,14 @@ input[type="password"]{padding-right:46px;}
   <!-- Recruit: Referral Link + QR Code -->
 <div class="dash-section" id="sec-recruit">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Recruit</div><div class="inner-sub">Invite friends and earn together</div></div></div>
-<div class="section">
+<div class="section" id="recruit-locked-view" style="display:none;text-align:center;padding:20px 16px;">
+<div class="action-card" style="text-align:center;">
+<div style="font-size:14px;color:var(--muted);margin-bottom:16px;">Purchase a level to unlock referrals. Trainee accounts can't refer others yet.</div>
+  <button class="green-btn" onclick="switchTab('errands')">View Levels</button>
+  <button class="link-back-btn" onclick="switchTab('profile')">Back</button>
+</div>
+</div>
+<div class="section" id="recruit-unlocked-view">
 <div class="action-card" style="text-align:center;">
 <div style="font-size:13px;color:var(--muted);margin-bottom:16px;">Share your QR code or referral link. Anyone who signs up using it will be linked to your account.</div>
 <img id="recruit-qr-img" src="" alt="Referral QR Code" style="width:180px;height:180px;border-radius:12px;background:#fff;padding:8px;margin-bottom:18px;">
@@ -1030,10 +1037,10 @@ function parseTxDate(dateString) {
 }
 
 function computeIncomeStats() {
-  const result = { today: 0, month: 0, total: 0, credited: 0, debited: 0 };
+  const result = { today: 0, month: 0, total: 0, credited: 0, debited: 0, affiliate: 0 };
   if (!currentUser || !currentUser.transactions) return result;
   
-  const incomeTypes = new Set(['Bonus', 'Video Reward', 'Streak Bonus', 'Level Refund']);
+  const incomeTypes = new Set(['Bonus', 'Video Reward', 'Streak Bonus', 'Level Refund', 'Affiliate Earning']);
   const depositTypes = new Set(['Deposit', 'Manual Deposit']);
   
   const now = getServerTime();
@@ -1051,6 +1058,7 @@ function computeIncomeStats() {
   }
   }
   
+  if (tx.type === 'Affiliate Earning' && amt > 0) result.affiliate += amt;
   if (depositTypes.has(tx.type)) result.credited += Math.abs(amt);
   if (tx.type === 'Withdrawal') result.debited += Math.abs(amt);
   });
@@ -1065,7 +1073,7 @@ function updateIncomeStatsUI() {
   document.getElementById('stat-today-income').textContent = fmt(s.today);
   document.getElementById('stat-month-income').textContent = fmt(s.month);
   document.getElementById('stat-total-earned').textContent = fmt(s.total);
-  document.getElementById('stat-affiliate-earnings').textContent = fmt(0);
+  document.getElementById('stat-affiliate-earnings').textContent = fmt(s.affiliate);
   document.getElementById('stat-total-debited').textContent = fmt(s.debited);
   document.getElementById('stat-total-credited').textContent = fmt(s.credited);
 }
@@ -1204,7 +1212,10 @@ let settingsData = {
   superiorAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
-  appDownloadLink: ''
+  appDownloadLink: '',
+  affiliateLevel1Percent: 10,
+  affiliateLevel2Percent: 5,
+  affiliateLevel3Percent: 1
 };
 let levelsData = {};
 let videosData = {};
@@ -1833,6 +1844,16 @@ function updateProfileUI() {
   if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
   updateIncomeStatsUI();
   
+  const isTrainee = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
+  const lockedView = document.getElementById('recruit-locked-view');
+  const unlockedView = document.getElementById('recruit-unlocked-view');
+  if (lockedView && unlockedView) {
+  lockedView.style.display = isTrainee ? 'block' : 'none';
+  unlockedView.style.display = isTrainee ? 'none' : 'block';
+  }
+  
+  if (isTrainee) return;
+  
   const linkDisplay = document.getElementById('recruit-link-display');
   const qrImg = document.getElementById('recruit-qr-img');
   if (linkDisplay && qrImg) {
@@ -1969,6 +1990,53 @@ function showNeedPreviousPopup(levelName) {
   showPopup('Level Required', `You need to purchase previous levels before ${levelName}`, 'info');
 }
 
+async function payReferralBonusChain(directReferralCode, purchaseCost, levelName, buyerName) {
+  if (!directReferralCode) return;
+  
+  const tierPercents = [
+  settingsData.affiliateLevel1Percent != null ? settingsData.affiliateLevel1Percent : 10,
+  settingsData.affiliateLevel2Percent != null ? settingsData.affiliateLevel2Percent : 5,
+  settingsData.affiliateLevel3Percent != null ? settingsData.affiliateLevel3Percent : 1
+  ];
+  
+  let currentCode = directReferralCode;
+  
+  for (let tier = 0; tier < 3; tier++) {
+  if (!currentCode) break;
+  const codeSnap = await db.ref('referralCodes/' + currentCode).get();
+  if (!codeSnap.exists()) break;
+  const uplinePhone = codeSnap.val();
+  const uplineKey = safeKey(uplinePhone);
+  const uplineSnap = await db.ref('users/' + uplineKey).get();
+  if (!uplineSnap.exists()) break;
+  const uplineUser = uplineSnap.val();
+  
+  const percent = tierPercents[tier];
+  if (percent > 0) {
+  const uplineLevelKey = uplineUser.currentLevel || 'trainee';
+  const uplineLevelCost = levelsData[uplineLevelKey]?.collateral || 0;
+  const cappedCost = Math.min(purchaseCost, uplineLevelCost);
+  const bonus = Math.round(cappedCost * (percent / 100));
+  if (bonus > 0) {
+  const newStake = (uplineUser.stake || 0) + bonus;
+  const affTxKey = 'tx_aff_' + Date.now() + '_' + tier;
+  await db.ref('users/' + uplineKey).update({
+  stake: newStake,
+  [`transactions/${affTxKey}`]: {
+  type: 'Affiliate Earning',
+  amount: bonus,
+  note: `Tier ${tier + 1}: ${buyerName || 'Referral'} purchased ${levelName}`,
+  date: dateStr(),
+  status: 'completed'
+  }
+  });
+  }
+  }
+  
+  currentCode = uplineUser.referredBy;
+  }
+}
+
 async function purchaseLevel(levelKey, cost, levelName) {
   if (!currentUser) return;
   
@@ -2051,6 +2119,9 @@ async function purchaseLevel(levelKey, cost, levelName) {
   }
     
   await userRef.update(updates);
+    
+  // Pay up to 3 tiers of upline, each capped by their own level, credited to STAKE
+  await payReferralBonusChain(currentUser.referredBy, cost, levelName, currentUser.fullName);
     
   currentUser = await userRef.get().then(s =>s.val());
   updateBalanceUI();
