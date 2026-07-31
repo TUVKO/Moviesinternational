@@ -1147,7 +1147,19 @@ function startAppDownload() {
   showPopup('Coming soon', 'The app isn\'t available for download yet. Check back soon!', 'info');
   return;
   }
-  window.location.href = link;
+  const a = document.createElement('a');
+  a.href = link;
+  a.download = 'WEA.apk';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  const popup = document.getElementById('popup-banner');
+  if (popup) {
+  popup.textContent = 'Download started...';
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.remove('show'), 2500);
+  }
 }
 
 function getUTCNow() {
