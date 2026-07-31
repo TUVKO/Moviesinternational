@@ -593,6 +593,22 @@ input[type="password"]{padding-right:46px;}
 </table>
 </div>
 </div>
+
+  <!-- Referral Program Explainer -->
+<div class="action-card" style="margin-top:12px;">
+<div style="font-family:'Fraunces',serif;font-size:16px;font-weight:800;color:var(--accent);margin-bottom:8px;">Referral Program</div>
+<div style="font-size:12.5px;color:var(--text);line-height:1.6;margin-bottom:10px;">
+Earn instant bonuses to your <strong>STAKE</strong> whenever people in your referral chain purchase a level — up to 3 levels deep.
+</div>
+<div id="referral-program-tiers" style="margin-bottom:10px;"></div>
+<div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">
+Your bonus on each purchase is based on whichever is <strong>smaller</strong>: what your referral actually spent, or the cost of your own current level. So the higher your own level, the more you can earn from your team's upgrades.
+</div>
+<div style="font-size:12px;color:var(--warn);line-height:1.6;margin-bottom:14px;">
+Note: Trainee accounts can't refer others yet — purchase any level to unlock your referral link.
+</div>
+  <button class="green-btn" onclick="switchTab('recruit')">Get My Referral Link</button>
+</div>
 </div>
 </div>
 
@@ -686,8 +702,37 @@ input[type="password"]{padding-right:46px;}
   <!-- About -->
 <div class="dash-section" id="sec-about">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">About</div></div></div>
-<div class="section" style="text-align:center;padding:40px 20px;">
-<div style="font-size:15px;color:var(--muted);">Coming soon</div>
+<div class="section">
+<div class="action-card" style="font-size:9px;color:var(--success);line-height:1.7;">
+<div style="font-family:'Fraunces',serif;font-size:14px;font-weight:800;color:var(--success);margin-bottom:2px;">WEA</div>
+<div style="font-style:italic;margin-bottom:14px;">Watch. Earn. Grow.</div>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">What is WEA?</div>
+<div style="margin-bottom:14px;">WEA (Watch Movies, Earn Money) is a platform built around a simple idea: the time you already spend watching videos can earn you real money. Instead of scrolling passively, WEA turns your attention into an income stream — one video at a time. Every video you watch contributes toward your daily earnings, which accumulate in your account and can be withdrawn to mobile money whenever you're ready.</div>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">How It Works</div>
+<div style="margin-bottom:10px;">Every new account begins as a Trainee, with a modest daily video allowance and starter-level rewards — enough to get a feel for the platform without any upfront cost. From there, you can choose to invest in higher levels, each one unlocking a larger daily video quota and a higher payout per video watched. The further you progress through the levels, the greater your daily, monthly, and annual earning potential becomes.</div>
+<div style="margin-bottom:14px;">Beyond watching videos, WEA also rewards you for growing the community. Every user gets a personal referral link and QR code (once they've purchased their first level) to share with friends and family. When someone in your referral network — up to three levels deep — purchases a level of their own, you earn an instant bonus credited straight to your account.</div>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Our Mission</div>
+<div style="margin-bottom:14px;">WEA is a movies advertising company that partners with movie studios and sponsors around the world to promote content to real, engaged viewers. Rather than relying on passive ad impressions, we connect entertainment brands with an audience that actively chooses to watch — and we make sure that audience is compensated fairly for their time and attention. Every video watched on WEA supports a real promotional campaign, creating value for studios, sponsors, and our users all at once.</div>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Terms & Rules Summary</div>
+<ul style="margin:0 0 14px;padding-left:14px;">
+<li style="margin-bottom:6px;">Daily video limits are determined by your current level; once you reach your limit, you'll need to wait for the next daily reset to continue earning</li>
+<li style="margin-bottom:6px;">Deposits are added to your STAKE balance and used to purchase or upgrade levels; your MOB balance holds earnings that are available for withdrawal</li>
+<li style="margin-bottom:6px;">Withdrawal requests are reviewed and processed within 72 hours. If a withdrawal takes longer than that, please contact support immediately</li>
+<li style="margin-bottom:6px;">Referral bonuses are paid instantly, across up to three levels of your referral network, at rates set out on the Wages page — these rates may be adjusted from time to time</li>
+<li style="margin-bottom:6px;">Trainee accounts cannot refer others; purchasing your first level unlocks your referral link and QR code</li>
+<li style="margin-bottom:6px;">Accounts found to be in violation of platform rules — including fraudulent activity or abuse of the referral system — may be locked pending review</li>
+<li>WEA reserves the right to update these terms, level structures, and reward rates as the platform evolves</li>
+</ul>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Contact Us</div>
+<div style="margin-bottom:14px;">Email: wea.movies@gmail.com</div>
+
+  <button class="green-btn" onclick="openSupportWhatsapp()" style="font-size:12px;">Chat with us on WhatsApp</button>
+</div>
 </div>
 </div>
 
@@ -2383,7 +2428,21 @@ function startSettingsListener() {
   if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
   updateSettingsUI();
   updateBalanceUI();
+  renderReferralProgramTiers();
   });
+}
+
+function renderReferralProgramTiers() {
+  const wrap = document.getElementById('referral-program-tiers');
+  if (!wrap) return;
+  const l1 = settingsData.affiliateLevel1Percent != null ? settingsData.affiliateLevel1Percent : 10;
+  const l2 = settingsData.affiliateLevel2Percent != null ? settingsData.affiliateLevel2Percent : 5;
+  const l3 = settingsData.affiliateLevel3Percent != null ? settingsData.affiliateLevel3Percent : 1;
+  wrap.innerHTML = `
+<div class="plain-stat-row"><span class="plain-stat-label">Level 1 (your direct referral)</span><span class="plain-stat-value">${l1}%</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Level 2 (their referral)</span><span class="plain-stat-value">${l2}%</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Level 3 (their referral's referral)</span><span class="plain-stat-value">${l3}%</span></div>
+  `;
 }
 
 // ============================================================
