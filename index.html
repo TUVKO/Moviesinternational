@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content=" width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <meta property="og:title" content="WEA — Watch Movies, Earn Money">
-<meta property="og:description" content="Watch movies, trailers, and clips. Earn real money. Deposit to boost your earnings.">
+<meta property="og:description" content="Turn your screen time into real income. Watch trailers, clips, and movies — earn money instantly.">
 <meta property="og:image" content="https://tuvko.github.io/Moviesinternational/logo.png">
 <meta property="og:url" content="https://tuvko.github.io/Moviesinternational/">
 <meta property="og:type" content="website">
@@ -379,7 +379,7 @@ input[type="password"]{padding-right:46px;}
 <div class="auth-hero">
 <div class="auth-logo"></div>
 <div class="auth-brand">WEA</div>
-<div class="auth-tagline">Watch Movies, Earn Money</div>
+<div class="auth-tagline">Your Screen. Your Earnings.</div>
 </div>
 <div class="auth-card">
 <div class="auth-title">Welcome Back</div>
@@ -409,7 +409,7 @@ input[type="password"]{padding-right:46px;}
 <div class="auth-hero">
 <div class="auth-logo"></div>
 <div class="auth-brand">WEA</div>
-<div class="auth-tagline">Watch Movies, Earn Money</div>
+<div class="auth-tagline">Your Screen. Your Earnings.</div>
 </div>
 <div class="auth-card">
 <div class="auth-title">Create Account</div>
@@ -674,11 +674,13 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="plain-stat-row"><span class="plain-stat-label">Affiliate Earnings</span><span class="plain-stat-value" id="stat-affiliate-earnings">UGX 0</span></div>
 <div class="plain-stat-row"><span class="plain-stat-label">Total debited</span><span class="plain-stat-value" id="stat-total-debited">UGX 0</span></div>
 <div class="plain-stat-row"><span class="plain-stat-label">Total credited</span><span class="plain-stat-value" id="stat-total-credited">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Slipped Commission</span><span class="plain-stat-value" id="stat-slipped-commission">UGX 0</span></div>
 </div>
 <div class="section" style="margin-top:8px;">
 <div class="profile-menu-grid">
 <button class="profile-menu-btn" onclick="switchTab('todaysjob')">Today's Job</button>
 <button class="profile-menu-btn" onclick="switchTab('myteam')">Team</button>
+<button class="profile-menu-btn" onclick="switchTab('missed-commission')">Missed Commission</button>
 <button class="profile-menu-btn" onclick="switchTab('about')">About</button>
 <button class="profile-menu-btn" onclick="switchTab('support')">Support</button>
 <button class="profile-menu-btn" onclick="switchTab('faq')">FAQ</button>
@@ -699,13 +701,19 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="section" id="team-list"></div>
 </div>
 
+  <!-- Missed Commission -->
+<div class="dash-section" id="sec-missed-commission">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Missed Commission</div><div class="inner-sub">Upgrade your level to recover these before they expire</div></div></div>
+<div class="section" id="missed-commission-list"></div>
+</div>
+
   <!-- About -->
 <div class="dash-section" id="sec-about">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">About</div></div></div>
 <div class="section">
 <div class="action-card" style="font-size:9px;color:var(--success);line-height:1.7;">
 <div style="font-family:'Fraunces',serif;font-size:14px;font-weight:800;color:var(--success);margin-bottom:2px;">WEA</div>
-<div style="font-style:italic;margin-bottom:14px;">Watch. Earn. Grow.</div>
+<div style="font-style:italic;margin-bottom:14px;">Your Screen. Your Earnings.</div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">What is WEA?</div>
 <div style="margin-bottom:14px;">WEA (Watch Movies, Earn Money) is a platform built around a simple idea: the time you already spend watching videos can earn you real money. Instead of scrolling passively, WEA turns your attention into an income stream — one video at a time. Every video you watch contributes toward your daily earnings, which accumulate in your account and can be withdrawn to mobile money whenever you're ready.</div>
@@ -1127,6 +1135,32 @@ function updateIncomeStatsUI() {
   document.getElementById('stat-affiliate-earnings').textContent = fmt(s.affiliate);
   document.getElementById('stat-total-debited').textContent = fmt(s.debited);
   document.getElementById('stat-total-credited').textContent = fmt(s.credited);
+  
+  const slippedEl = document.getElementById('stat-slipped-commission');
+  if (slippedEl) {
+  const now = Date.now();
+  const entries = Object.values(currentUser?.missedCommissions || {});
+  const pendingTotal = entries.filter(e => (e.expiresAt || 0) > now).reduce((sum, e) => sum + (e.amount || 0), 0);
+  slippedEl.textContent = fmt(pendingTotal);
+  }
+}
+
+function renderMissedCommissionList() {
+  const wrap = document.getElementById('missed-commission-list');
+  if (!wrap) return;
+  const now = Date.now();
+  const entries = Object.values(currentUser?.missedCommissions || {}).filter(e => (e.expiresAt || 0) > now);
+  entries.sort((a, b) => (a.expiresAt || 0) - (b.expiresAt || 0));
+  
+  if (!entries.length) {
+  wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No missed commissions right now.</div>';
+  return;
+  }
+  
+  wrap.innerHTML = entries.map(e => {
+  const daysLeft = Math.max(0, Math.ceil((e.expiresAt - now) / (24 * 60 * 60 * 1000)));
+  return `<div class="job-item-row"><div><div class="job-item-title">${escapeHtml(e.note || 'Missed bonus')}</div><div class="job-item-time">Needs ${escapeHtml(e.neededLevelName || '')} · expires in ${daysLeft} day${daysLeft === 1 ? '' : 's'}</div></div><div class="job-item-reward" style="color:var(--warn);">${fmt(e.amount)}</div></div>`;
+  }).join('');
 }
 
 function renderTodaysJob() {
@@ -1653,9 +1687,13 @@ function openVideoPlayer(id) {
   return;
   }
   
-  // Check Trainee 3-day limit
+  // Check Trainee 3-day limit — computed live so it can't be stale
   if (getUserLevel() === 'trainee') {
-  const traineeCompleted = currentUser?.traineeCompleted || false;
+  const traineeStartKey = currentUser?.traineeStartDate || getUTCKey();
+  const startDateMs = Date.parse(traineeStartKey + 'T00:00:00Z');
+  const todayDateMs = Date.parse(getUTCKey() + 'T00:00:00Z');
+  const calendarDaysDiff = Math.floor((todayDateMs - startDateMs) / (1000 * 60 * 60 * 24));
+  const traineeCompleted = calendarDaysDiff >= 3;
   if (traineeCompleted) {
   const popup = document.getElementById('popup-banner');
   popup.textContent = 'Trainee period expired! Upgrade to continue earning.';
@@ -1829,17 +1867,16 @@ async function claimReward() {
   updates.streakDays = streakDays;
   updates.lastWatchDate = todayStr;
     
-  // Check Trainee days
+  // Check Trainee days — based on calendar days (server-synced EAT), not raw 24-hour periods
   if (levelKey === 'trainee') {
-  const traineeStartDate = user.traineeStartDate || todayStr;
-  const startDate = new Date(traineeStartDate + 'T00:00:00Z');
-  const now = new Date();
-  const diffTime = now - startDate;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const dayCount = Math.min(diffDays + 1, 3);
+  const traineeStartKey = user.traineeStartDate || todayStr;
+  const startDateMs = Date.parse(traineeStartKey + 'T00:00:00Z');
+  const todayDateMs = Date.parse(todayStr + 'T00:00:00Z');
+  const calendarDaysDiff = Math.floor((todayDateMs - startDateMs) / (1000 * 60 * 60 * 24));
+  const dayCount = Math.min(calendarDaysDiff + 1, 3);
       
   updates.traineeDayCount = dayCount;
-  if (dayCount >= 3) {
+  if (calendarDaysDiff >= 3) {
   updates.traineeCompleted = true;
   }
   }
@@ -1926,8 +1963,12 @@ function updateBalanceUI() {
   const traineeStatus = document.getElementById('stages-trainee-status');
   const traineeStatus2 = document.getElementById('user-trainee-status');
   if (levelKey === 'trainee') {
-  const dayCount = currentUser.traineeDayCount || 1;
-  const completed = currentUser.traineeCompleted || false;
+  const traineeStartKey = currentUser.traineeStartDate || todayUTC;
+  const startDateMs = Date.parse(traineeStartKey + 'T00:00:00Z');
+  const todayDateMs = Date.parse(todayUTC + 'T00:00:00Z');
+  const calendarDaysDiff = Math.floor((todayDateMs - startDateMs) / (1000 * 60 * 60 * 24));
+  const dayCount = Math.min(calendarDaysDiff + 1, 3);
+  const completed = calendarDaysDiff >= 3;
   if (completed) {
   traineeStatus.textContent = 'Trainee Complete! Upgrade Now';
   traineeStatus.style.color = 'var(--warn)';
@@ -1971,6 +2012,7 @@ function updateProfileUI() {
   const profFullName = document.getElementById('profile-fullname-display');
   if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
   updateIncomeStatsUI();
+  if (currentUsername) cleanupExpiredMissedCommissions(safeKey(currentUsername));
   
   const isTrainee = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
   const lockedView = document.getElementById('recruit-locked-view');
@@ -2118,7 +2160,66 @@ function showNeedPreviousPopup(levelName) {
   showPopup('Level Required', `You need to purchase previous levels before ${levelName}`, 'info');
 }
 
-async function payReferralBonusChain(directReferralCode, purchaseCost, levelName, buyerName) {
+async function cleanupExpiredMissedCommissions(userKey) {
+  try {
+  const snap = await db.ref('users/' + userKey + '/missedCommissions').get();
+  if (!snap.exists()) return;
+  const entries = snap.val();
+  const now = Date.now();
+  const updates = {};
+  Object.entries(entries).forEach(([id, entry]) => {
+  if ((entry.expiresAt || 0) < now) updates[id] = null;
+  });
+  if (Object.keys(updates).length) {
+  await db.ref('users/' + userKey + '/missedCommissions').update(updates);
+  }
+  } catch (error) {
+  console.error('Error cleaning up missed commissions:', error);
+  }
+}
+
+async function recoverMissedCommissions(userKey, newLevelKey) {
+  try {
+  await cleanupExpiredMissedCommissions(userKey);
+  const snap = await db.ref('users/' + userKey + '/missedCommissions').get();
+  if (!snap.exists()) return;
+  const entries = snap.val();
+  const newLevelCost = levelsData[newLevelKey]?.collateral || 0;
+  
+  const userSnap = await db.ref('users/' + userKey).get();
+  if (!userSnap.exists()) return;
+  const user = userSnap.val();
+  let stake = user.stake || 0;
+  const combinedUpdates = {};
+  let recoveredAny = false;
+  
+  Object.entries(entries).forEach(([id, entry]) => {
+  const neededCost = levelsData[entry.neededLevelKey]?.collateral || 0;
+  if (newLevelCost >= neededCost) {
+  stake += entry.amount;
+  recoveredAny = true;
+  combinedUpdates[`missedCommissions/${id}`] = null;
+  const txKey = 'tx_mcrecover_' + Date.now() + '_' + id;
+  combinedUpdates[`transactions/${txKey}`] = {
+  type: 'Affiliate Earning',
+  amount: entry.amount,
+  note: `Recovered missed commission — ${entry.note || ''}`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  }
+  });
+  
+  if (recoveredAny) {
+  combinedUpdates.stake = stake;
+  await db.ref('users/' + userKey).update(combinedUpdates);
+  }
+  } catch (error) {
+  console.error('Error recovering missed commissions:', error);
+  }
+}
+
+async function payReferralBonusChain(directReferralCode, purchaseCost, levelName, purchaseLevelKey, buyerName) {
   if (!directReferralCode) return;
   
   const tierPercents = [
@@ -2158,6 +2259,23 @@ async function payReferralBonusChain(directReferralCode, purchaseCost, levelName
   status: 'completed'
   }
   });
+  }
+  
+  // Record a missed-commission entry if the bonus was capped below the purchase's actual value
+  if (cappedCost < purchaseCost) {
+  const missedAmount = Math.round((purchaseCost - cappedCost) * (percent / 100));
+  if (missedAmount > 0) {
+  const missedId = 'mc_' + Date.now() + '_' + tier;
+  const now = Date.now();
+  await db.ref('users/' + uplineKey + '/missedCommissions/' + missedId).set({
+  amount: missedAmount,
+  neededLevelKey: purchaseLevelKey,
+  neededLevelName: levelName,
+  note: `Tier ${tier + 1}: ${buyerName || 'Referral'} purchased ${levelName}`,
+  createdAt: now,
+  expiresAt: now + (8 * 24 * 60 * 60 * 1000)
+  });
+  }
   }
   }
   
@@ -2248,8 +2366,11 @@ async function purchaseLevel(levelKey, cost, levelName) {
     
   await userRef.update(updates);
     
+  // Recover any of this user's own pending missed commissions now that they've upgraded
+  await recoverMissedCommissions(safeKey(currentUsername), levelKey);
+    
   // Pay up to 3 tiers of upline, each capped by their own level, credited to STAKE
-  await payReferralBonusChain(currentUser.referredBy, cost, levelName, currentUser.fullName);
+  await payReferralBonusChain(currentUser.referredBy, cost, levelName, levelKey, currentUser.fullName);
     
   currentUser = await userRef.get().then(s =>s.val());
   updateBalanceUI();
@@ -3280,6 +3401,7 @@ const tabMap = {
   recruit: 'sec-recruit',
   todaysjob: 'sec-todaysjob',
   myteam: 'sec-teamlist',
+  'missed-commission': 'sec-missed-commission',
   about: 'sec-about',
   support: 'sec-support',
   faq: 'sec-faq',
@@ -3307,6 +3429,7 @@ function switchTab(tab) {
   if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
   if (tab === 'todaysjob') renderTodaysJob();
   if (tab === 'myteam') renderTeamList();
+  if (tab === 'missed-commission') renderMissedCommissionList();
 }
 
 function updateWithdrawPreview() {
