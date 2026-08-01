@@ -129,6 +129,14 @@ input[type="password"]{padding-right:46px;}
 .job-item-title{font-size:13px;color:var(--text);}
 .job-item-time{font-size:11px;color:var(--muted);}
 .job-item-reward{font-size:13px;font-weight:700;color:var(--success);font-family:'JetBrains Mono',monospace;}
+.faq-category{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--accent);margin:18px 0 4px;}
+.faq-category:first-child{margin-top:0;}
+.faq-item{border-bottom:1px solid var(--border);}
+.faq-question{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 0;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;}
+.faq-chevron{color:var(--accent);font-size:18px;flex-shrink:0;transition:transform 0.2s;}
+.faq-item.open .faq-chevron{transform:rotate(90deg);}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.3s ease;font-size:12px;color:var(--muted);line-height:1.6;}
+.faq-item.open .faq-answer{max-height:300px;padding-bottom:14px;}
 .stat-label{font-size:8px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
 .stat-value{font-size:14px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .stat-value.stake{color:var(--accent);}
@@ -729,7 +737,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <ul style="margin:0 0 14px;padding-left:14px;">
 <li style="margin-bottom:6px;">Daily video limits are determined by your current level; once you reach your limit, you'll need to wait for the next daily reset to continue earning</li>
 <li style="margin-bottom:6px;">Deposits are added to your STAKE balance and used to purchase or upgrade levels; your MOB balance holds earnings that are available for withdrawal</li>
-<li style="margin-bottom:6px;">Withdrawal requests are reviewed and processed within 72 hours. If a withdrawal takes longer than that, please contact support immediately</li>
+<li style="margin-bottom:6px;">Withdrawal requests are reviewed and processed within 48 hours. If a withdrawal takes longer than that, please contact support immediately</li>
 <li style="margin-bottom:6px;">Referral bonuses are paid instantly, across up to three levels of your referral network, at rates set out on the Wages page — these rates may be adjusted from time to time</li>
 <li style="margin-bottom:6px;">Trainee accounts cannot refer others; purchasing your first level unlocks your referral link and QR code</li>
 <li style="margin-bottom:6px;">Accounts found to be in violation of platform rules — including fraudulent activity or abuse of the referral system — may be locked pending review</li>
@@ -774,8 +782,74 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
   <!-- FAQ -->
 <div class="dash-section" id="sec-faq">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">FAQ</div></div></div>
-<div class="section" style="text-align:center;padding:40px 20px;">
-<div style="font-size:15px;color:var(--muted);">Coming soon</div>
+<div class="section">
+
+<div class="faq-category">Getting Started</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>What is WEA?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">WEA (Watch Movies, Earn Money) is a platform that pays you for watching movies, trailers, and clips. Every video you watch earns you a small reward, and you can grow your earnings by purchasing higher levels.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>How do I start earning?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Just register with your phone number, watch your first video, and your reward is added automatically. No deposit is required to begin as a Trainee.</div>
+</div>
+
+<div class="faq-category">Account &amp; Levels</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>What is a Trainee account?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Every new user starts as a Trainee — a free 3-day trial period with a small daily video limit and modest rewards. Once the 3 days end, you'll need to purchase a level to keep earning.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>How do I upgrade my level?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Go to the Stages page and purchase any level using your STAKE balance. Higher levels unlock more videos per day and a higher payout per video.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>What happens to my STAKE when I upgrade again?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">When you upgrade from one level to a higher one, the cost of your previous level is automatically refunded back to your MOB account.</div>
+</div>
+
+<div class="faq-category">Videos &amp; Earnings</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>How many videos can I watch per day?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">This depends on your current level — shown on the Stages page next to each level.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>When does my daily video count reset?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Every day at 00:00 East Africa Time, based on our server clock — not your phone's clock.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>Where do my earnings go?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Video rewards go to your MOB balance, which is withdrawable. Deposits go to your STAKE, used to purchase levels.</div>
+</div>
+
+<div class="faq-category">Deposits &amp; Withdrawals</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>What deposit methods are available?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Easy Pay (MTN/Airtel Mobile Money) is fully automated. Superior Recharge and Bank transfer are available as alternative methods.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>How long do withdrawals take?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Withdrawal requests are reviewed and processed within 48 hours. If yours takes longer, please contact support.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>Is there a withdrawal fee?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Yes — a service charge applies to every withdrawal, shown clearly before you confirm.</div>
+</div>
+
+<div class="faq-category">Referral Program</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>How do referral bonuses work?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">You earn a percentage of what your referrals spend when they purchase a level — across up to 3 levels of your network.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>Why did I earn less than expected on a referral's purchase?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Your bonus is capped by your own current level. If your referral outspends your own level, the difference becomes a "Missed Commission" — recoverable if you upgrade within 8 days.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>Can Trainee accounts refer others?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">No — you need to purchase at least one level before your referral link becomes active.</div>
+</div>
+
 </div>
 </div>
 
@@ -1659,6 +1733,11 @@ function renderVideoGrid() {
 <div class="video-views">Today's Views ${displayViews}</div>
 </div>`;
   }).join('');
+}
+
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  if (item) item.classList.toggle('open');
 }
 
 function escapeHtml(s) {
