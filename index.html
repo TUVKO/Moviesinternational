@@ -662,9 +662,9 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 <div class="section" style="margin-top:0;">
 <div class="action-grid">
-<button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="openHistoryFiltered('Deposit')">Credit</button>
+<button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="switchTab('deposit')">Credit</button>
 <button class="action-btn" style="background:#14110F;border:1.5px solid #F2B84B;color:#F2B84B;" onclick="switchTab('recruit')">Recruit</button>
-<button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="openHistoryFiltered('Withdrawal')">Debit</button>
+<button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="switchTab('withdraw')">Debit</button>
 </div>
 </div>
 <div class="section" style="margin-top:8px;">
@@ -814,7 +814,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 
   <!-- Deposit -->
 <div class="dash-section" id="sec-deposit">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Deposit</div><div class="inner-sub">Choose a deposit method</div></div></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Deposit</div><div class="inner-sub">Choose a deposit method</div></div><button class="link-back-btn" style="margin-left:auto;padding:6px 12px;border:1px solid var(--border);border-radius:8px;width:auto;" onclick="openHistoryFiltered('Deposit')">Records</button></div>
 <div class="section">
 <div class="deposit-method-card" onclick="selectDepositMethod('easypay')">
 <div class="deposit-method-name">Easy Pay</div>
@@ -937,7 +937,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 
   <!-- Withdraw -->
 <div class="dash-section" id="sec-withdraw">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div><button class="link-back-btn" style="margin-left:auto;padding:6px 12px;border:1px solid var(--border);border-radius:8px;width:auto;" onclick="openHistoryFiltered('Withdrawal')">Records</button></div>
 <div class="section">
 <div id="withdraw-locked-msg" class="locked-banner" style="display:none">Withdrawals are currently disabled. Please contact support.</div>
 <div class="action-card">
