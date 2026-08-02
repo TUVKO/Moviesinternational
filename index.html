@@ -683,6 +683,8 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="plain-stat-row"><span class="plain-stat-label">Total debited</span><span class="plain-stat-value" id="stat-total-debited">UGX 0</span></div>
 <div class="plain-stat-row"><span class="plain-stat-label">Total credited</span><span class="plain-stat-value" id="stat-total-credited">UGX 0</span></div>
 <div class="plain-stat-row"><span class="plain-stat-label">Slipped Commission</span><span class="plain-stat-value" id="stat-slipped-commission">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Sub-affiliate Revenue</span><span class="plain-stat-value" id="stat-subaffiliate-revenue">UGX 0</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Today's subordinate revenue</span><span class="plain-stat-value" id="stat-subaffiliate-today">UGX 0</span></div>
 </div>
 <div class="section" style="margin-top:8px;">
 <div class="profile-menu-grid">
@@ -1170,10 +1172,10 @@ function parseTxDate(dateString) {
 }
 
 function computeIncomeStats() {
-  const result = { today: 0, month: 0, total: 0, credited: 0, debited: 0, affiliate: 0 };
+  const result = { today: 0, month: 0, total: 0, credited: 0, debited: 0, affiliate: 0, subAffiliateTotal: 0, subAffiliateToday: 0 };
   if (!currentUser || !currentUser.transactions) return result;
   
-  const incomeTypes = new Set(['Bonus', 'Video Reward', 'Streak Bonus', 'Level Refund', 'Affiliate Earning']);
+  const incomeTypes = new Set(['Bonus', 'Video Reward', 'Streak Bonus', 'Level Refund', 'Affiliate Earning', 'Sub-affiliate Revenue']);
   const depositTypes = new Set(['Deposit', 'Manual Deposit']);
   
   const now = getServerTime();
@@ -1182,6 +1184,7 @@ function computeIncomeStats() {
   Object.values(currentUser.transactions).forEach(tx => {
   const amt = tx.amount || 0;
   const txDate = parseTxDate(tx.date);
+  const isToday = txDate && txDate.getFullYear() === todayY && txDate.getMonth() === todayM && txDate.getDate() === todayD;
   
   if (incomeTypes.has(tx.type) && amt > 0) {
   result.total += amt;
@@ -1192,6 +1195,10 @@ function computeIncomeStats() {
   }
   
   if (tx.type === 'Affiliate Earning' && amt > 0) result.affiliate += amt;
+  if (tx.type === 'Sub-affiliate Revenue' && amt > 0) {
+  result.subAffiliateTotal += amt;
+  if (isToday) result.subAffiliateToday += amt;
+  }
   if (depositTypes.has(tx.type)) result.credited += Math.abs(amt);
   if (tx.type === 'Withdrawal') result.debited += Math.abs(amt);
   });
@@ -1209,6 +1216,11 @@ function updateIncomeStatsUI() {
   document.getElementById('stat-affiliate-earnings').textContent = fmt(s.affiliate);
   document.getElementById('stat-total-debited').textContent = fmt(s.debited);
   document.getElementById('stat-total-credited').textContent = fmt(s.credited);
+  
+  const subAffTotalEl = document.getElementById('stat-subaffiliate-revenue');
+  if (subAffTotalEl) subAffTotalEl.textContent = fmt(s.subAffiliateTotal);
+  const subAffTodayEl = document.getElementById('stat-subaffiliate-today');
+  if (subAffTodayEl) subAffTodayEl.textContent = fmt(s.subAffiliateToday);
   
   const slippedEl = document.getElementById('stat-slipped-commission');
   if (slippedEl) {
@@ -1451,7 +1463,9 @@ let settingsData = {
   appDownloadLink: '',
   affiliateLevel1Percent: 10,
   affiliateLevel2Percent: 5,
-  affiliateLevel3Percent: 1
+  affiliateLevel3Percent: 1,
+  subAffiliateLevel1Percent: 4.9,
+  subAffiliateLevel2Percent: 1
 };
 let levelsData = {};
 let videosData = {};
@@ -1966,6 +1980,11 @@ async function claimReward() {
     
   await userRef.update(updates);
 
+  // Sub-affiliate Revenue: pay uplines when this user completes their full daily quota (Trainees excluded)
+  if (levelKey !== 'trainee' && (watchedToday + 1) >= totalVideos) {
+  await paySubAffiliateRevenue(user.referredBy, level.daily || 0, levelKey);
+  }
+
   // Increment shared daily view counter for this video (resets daily via date-keyed path)
   if (currentPlayingVideo?.id) {
   db.ref(`videos/${currentPlayingVideo.id}/dailyViews/${todayUTC}`).transaction(v => (v || 0) + 1);
@@ -2299,6 +2318,52 @@ async function recoverMissedCommissions(userKey, newLevelKey) {
   }
   } catch (error) {
   console.error('Error recovering missed commissions:', error);
+  }
+}
+
+async function paySubAffiliateRevenue(directReferralCode, referralDailyRate, referralLevelKey) {
+  if (!directReferralCode || referralDailyRate <= 0) return;
+  
+  const tierPercents = [
+  settingsData.subAffiliateLevel1Percent != null ? settingsData.subAffiliateLevel1Percent : 4.9,
+  settingsData.subAffiliateLevel2Percent != null ? settingsData.subAffiliateLevel2Percent : 1
+  ];
+  
+  let currentCode = directReferralCode;
+  
+  for (let tier = 0; tier < 2; tier++) {
+  if (!currentCode) break;
+  const codeSnap = await db.ref('referralCodes/' + currentCode).get();
+  if (!codeSnap.exists()) break;
+  const uplinePhone = codeSnap.val();
+  const uplineKey = safeKey(uplinePhone);
+  const uplineSnap = await db.ref('users/' + uplineKey).get();
+  if (!uplineSnap.exists()) break;
+  const uplineUser = uplineSnap.val();
+  
+  const percent = tierPercents[tier];
+  if (percent > 0) {
+  const uplineLevelKey = uplineUser.currentLevel || 'trainee';
+  const uplineDailyRate = levelsData[uplineLevelKey]?.daily || 0;
+  const cappedDaily = Math.min(referralDailyRate, uplineDailyRate);
+  const bonus = Math.round(cappedDaily * (percent / 100));
+  if (bonus > 0) {
+  const newMob = (uplineUser.mob || 0) + bonus;
+  const subTxKey = 'tx_subaff_' + Date.now() + '_' + tier;
+  await db.ref('users/' + uplineKey).update({
+  mob: newMob,
+  [`transactions/${subTxKey}`]: {
+  type: 'Sub-affiliate Revenue',
+  amount: bonus,
+  note: `Tier ${tier + 1}: referral completed daily quota`,
+  date: dateStr(),
+  status: 'completed'
+  }
+  });
+  }
+  }
+  
+  currentCode = uplineUser.referredBy;
   }
 }
 

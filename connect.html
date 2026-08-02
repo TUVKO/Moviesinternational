@@ -569,6 +569,8 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 1 (direct referrer, capped by their own level)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level1-input" min="0" max="100" step="0.1" placeholder="10"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel1()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 2 (upline's referrer)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level2-input" min="0" max="100" step="0.1" placeholder="5"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel2()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 3 (top upline)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level3-input" min="0" max="100" step="0.1" placeholder="1"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel3()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Sub-affiliate Revenue — Level 1 (daily, paid on referral's daily quota completion)</span><div class="ugx-group"><input type="number" class="ugx-input" id="subaffiliate-level1-input" min="0" max="100" step="0.1" placeholder="4.9"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveSubAffiliateLevel1()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Sub-affiliate Revenue — Level 2 (daily)</span><div class="ugx-group"><input type="number" class="ugx-input" id="subaffiliate-level2-input" min="0" max="100" step="0.1" placeholder="1"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveSubAffiliateLevel2()">Save</button></div>
 </div>
 
   <!-- Withdrawal Approval Toggle -->
@@ -695,7 +697,9 @@ let allSettings = {
   appDownloadLink: '',
   affiliateLevel1Percent: 10,
   affiliateLevel2Percent: 5,
-  affiliateLevel3Percent: 1
+  affiliateLevel3Percent: 1,
+  subAffiliateLevel1Percent: 4.9,
+  subAffiliateLevel2Percent: 1
 };
 let allLevels = {};
 let allVideos = {};
@@ -1693,6 +1697,10 @@ function loadSettingsUI() {
   if (affCommInp2) affCommInp2.value = s.affiliateLevel2Percent != null ? s.affiliateLevel2Percent : 5;
   const affCommInp3 = document.getElementById('affiliate-level3-input');
   if (affCommInp3) affCommInp3.value = s.affiliateLevel3Percent != null ? s.affiliateLevel3Percent : 1;
+  const subAffInp1 = document.getElementById('subaffiliate-level1-input');
+  if (subAffInp1) subAffInp1.value = s.subAffiliateLevel1Percent != null ? s.subAffiliateLevel1Percent : 4.9;
+  const subAffInp2 = document.getElementById('subaffiliate-level2-input');
+  if (subAffInp2) subAffInp2.value = s.subAffiliateLevel2Percent != null ? s.subAffiliateLevel2Percent : 1;
   
   const apiInp = document.getElementById('marz-api-key-input');
   if (s.marzApiKey && !apiInp.value) apiInp.value = s.marzApiKey;
@@ -1820,6 +1828,20 @@ async function saveAffiliateLevel3() {
   if (isNaN(v) || v < 0 || v > 100) { toast('Enter a valid percentage (0-100)', '#f87171'); return; }
   await db.ref('settings/affiliateLevel3Percent').set(v);
   toast('Level 3 referral bonus set to ' + v + '%');
+}
+
+async function saveSubAffiliateLevel1() {
+  const v = parseFloat(document.getElementById('subaffiliate-level1-input').value);
+  if (isNaN(v) || v < 0 || v > 100) { toast('Enter a valid percentage (0-100)', '#f87171'); return; }
+  await db.ref('settings/subAffiliateLevel1Percent').set(v);
+  toast('Sub-affiliate Level 1 rate set to ' + v + '%');
+}
+
+async function saveSubAffiliateLevel2() {
+  const v = parseFloat(document.getElementById('subaffiliate-level2-input').value);
+  if (isNaN(v) || v < 0 || v > 100) { toast('Enter a valid percentage (0-100)', '#f87171'); return; }
+  await db.ref('settings/subAffiliateLevel2Percent').set(v);
+  toast('Sub-affiliate Level 2 rate set to ' + v + '%');
 }
 
 async function lockWithdrawals(lock) {
