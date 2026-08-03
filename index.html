@@ -108,6 +108,8 @@ input[type="password"]{padding-right:46px;}
 .dash-section{display:none;}
 .dash-section.active{display:block;}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
+.home-banner-box{position:relative;width:100%;padding-top:40%;border-radius:14px;overflow:hidden;background:#000;}
+.home-banner-box iframe{position:absolute;top:50%;left:50%;width:150%;height:150%;transform:translate(-50%,-50%);border:none;pointer-events:none;}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
 .plain-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
 .plain-stat-row:last-child{border-bottom:none;}
@@ -461,6 +463,11 @@ input[type="password"]{padding-right:46px;}
 
   <!-- HOME / DASHBOARD -->
 <div class="dash-section active" id="sec-home">
+<div class="section" id="home-banner-wrap" style="display:none;">
+<div class="home-banner-box">
+<div id="home-banner-video"></div>
+</div>
+</div>
 <div class="section">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
@@ -2779,7 +2786,29 @@ function startSettingsListener() {
   updateSettingsUI();
   updateBalanceUI();
   renderReferralProgramTiers();
+  renderHomeBannerVideo();
   });
+}
+
+function renderHomeBannerVideo() {
+  const wrap = document.getElementById('home-banner-wrap');
+  const container = document.getElementById('home-banner-video');
+  if (!wrap || !container) return;
+  
+  const videoId = settingsData.homeBannerVideoId;
+  if (!videoId) {
+  wrap.style.display = 'none';
+  container.innerHTML = '';
+  return;
+  }
+  
+  // Only rebuild if the video actually changed, to avoid restarting playback on every settings tick
+  if (container.dataset.currentId === videoId) return;
+  container.dataset.currentId = videoId;
+  
+  wrap.style.display = 'block';
+  const src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1`;
+  container.innerHTML = `<iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen="false" title=""></iframe>`;
 }
 
 function renderReferralProgramTiers() {

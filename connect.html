@@ -566,6 +566,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
 <div class="settings-row"><span class="settings-label">App Download Link</span><input type="text" class="f-input" id="app-download-input" style="width:280px;" placeholder="https://.../app.apk"><button class="btn btn-save" onclick="saveAppDownloadLink()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Home Banner Video (YouTube link or ID — silent looping animation)</span><input type="text" class="f-input" id="home-banner-video-input" style="width:280px;" placeholder="https://www.youtube.com/watch?v=..."><button class="btn btn-save" onclick="saveHomeBannerVideo()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 1 (direct referrer, capped by their own level)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level1-input" min="0" max="100" step="0.1" placeholder="10"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel1()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 2 (upline's referrer)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level2-input" min="0" max="100" step="0.1" placeholder="5"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel2()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 3 (top upline)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level3-input" min="0" max="100" step="0.1" placeholder="1"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel3()">Save</button></div>
@@ -695,6 +696,7 @@ let allSettings = {
   depositTaxPercent: 3,
   supportWhatsappLink: '',
   appDownloadLink: '',
+  homeBannerVideoId: '',
   affiliateLevel1Percent: 10,
   affiliateLevel2Percent: 5,
   affiliateLevel3Percent: 1,
@@ -1691,6 +1693,8 @@ function loadSettingsUI() {
   if (supportWaInp) supportWaInp.value = s.supportWhatsappLink || '';
   const appDlInp = document.getElementById('app-download-input');
   if (appDlInp) appDlInp.value = s.appDownloadLink || '';
+  const bannerVidInp = document.getElementById('home-banner-video-input');
+  if (bannerVidInp) bannerVidInp.value = s.homeBannerVideoId || '';
   const affCommInp1 = document.getElementById('affiliate-level1-input');
   if (affCommInp1) affCommInp1.value = s.affiliateLevel1Percent != null ? s.affiliateLevel1Percent : 10;
   const affCommInp2 = document.getElementById('affiliate-level2-input');
@@ -1807,6 +1811,19 @@ async function saveAppDownloadLink() {
   if (!link) { toast('Enter a download link', '#f87171'); return; }
   await db.ref('settings/appDownloadLink').set(link);
   toast('App download link saved');
+}
+
+async function saveHomeBannerVideo() {
+  const input = document.getElementById('home-banner-video-input').value.trim();
+  if (!input) {
+  await db.ref('settings/homeBannerVideoId').set('');
+  toast('Home banner video cleared');
+  return;
+  }
+  const youtubeId = extractYouTubeId(input);
+  if (!youtubeId) { toast('Could not read a YouTube link from that', '#f87171'); return; }
+  await db.ref('settings/homeBannerVideoId').set(youtubeId);
+  toast('Home banner video saved');
 }
 
 async function saveAffiliateLevel1() {
