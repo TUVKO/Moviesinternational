@@ -338,6 +338,15 @@ input[type="password"]{padding-right:46px;}
 .tx-status-completed{background:rgba(16, 185, 129, 0.2);color:#10b981;border:1px solid #10b981;}
 .tx-status-pending{background:rgba(245, 158, 11, 0.2);color:#f59e0b;border:1px solid #f59e0b;}
 .tx-status-failed{background:rgba(239, 68, 68, 0.2);color:#ef4444;border:1px solid #ef4444;}
+.tx-row-list{display:flex;flex-direction:column;gap:8px;}
+.tx-row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;overflow-x:auto;scrollbar-width:none;}
+.tx-row::-webkit-scrollbar{display:none;}
+.tx-row-date{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10.5px;flex-shrink:0;white-space:nowrap;}
+.tx-row-type{color:var(--text);font-weight:700;font-size:12.5px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:70px;}
+.tx-row-amount{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:13px;flex-shrink:0;white-space:nowrap;}
+.tx-row-amount.positive{color:#10b981;}
+.tx-row-amount.negative{color:#ef4444;}
+.tx-row-status{flex-shrink:0;font-size:9px;font-weight:800;padding:4px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap;}
 
 .tx-empty-state{text-align:center;padding:60px 20px;}
 .tx-empty-icon{font-size:48px;margin-bottom:12px;}
@@ -515,12 +524,8 @@ input[type="password"]{padding-right:46px;}
     
 <div style="padding:0 16px;">
 <div class="tx-filter-pills">
-  <button class="tx-pill active" onclick="setTxFilter('all',this)">All</button>
-  <button class="tx-pill" onclick="setTxFilter('Video Reward',this)">Rewards</button>
-  <button class="tx-pill" onclick="setTxFilter('Streak Bonus',this)">Streak</button>
   <button class="tx-pill" onclick="setTxFilter('Deposit',this)">Deposit</button>
   <button class="tx-pill" onclick="setTxFilter('Withdrawal',this)">Withdrawals</button>
-  <button class="tx-pill" onclick="setTxFilter('Level Purchase',this)">Levels</button>
 </div>
 </div>
     
@@ -2878,6 +2883,12 @@ function fallbackCopy(inputEl, onSuccess) {
 }
 
 function setTxFilter(type, btnEl) {
+  if (currentHistoryFilter === type) {
+  currentHistoryFilter = 'all';
+  document.querySelectorAll('.tx-pill').forEach(b =>b.classList.remove('active'));
+  renderHistory();
+  return;
+  }
   currentHistoryFilter = type;
   document.querySelectorAll('.tx-pill').forEach(b =>b.classList.remove('active'));
   if (btnEl) btnEl.classList.add('active');
@@ -2887,7 +2898,11 @@ function setTxFilter(type, btnEl) {
 function renderHistory() {
   const wrap = document.getElementById('history-list');
   if (!currentUser) { if (wrap) wrap.innerHTML = ''; return; }
-  const allTxs = currentUser.transactions ? Object.values(currentUser.transactions).reverse() : [];
+  // Records only ever displays Deposit and Withdrawal entries. Video Rewards, Streak Bonuses,
+  // Affiliate Earnings, Sub-affiliate Revenue, and Level Purchases/Refunds still get recorded
+  // silently in the database (so dashboard income stats keep working) but never shown here.
+  const visibleTypes = new Set(['Deposit', 'Withdrawal']);
+  const allTxs = currentUser.transactions ? Object.values(currentUser.transactions).filter(tx => visibleTypes.has(tx.type)).reverse() : [];
   
   const searchBox = document.getElementById('tx-search-box');
   const searchQuery = (searchBox?.value || '').toLowerCase().trim();
@@ -2910,33 +2925,43 @@ function renderHistory() {
   return;
   }
   
-  const typeIcons = { 'Video Reward': '', 'Streak Bonus': '', Deposit: '', Withdrawal: '', Bonus: '', 'Level Purchase': '' };
-  const typeClasses = { 'Video Reward': 'tx-reward', 'Streak Bonus': 'tx-bonus', Deposit: 'tx-deposit', Withdrawal: 'tx-withdrawal', Bonus: 'tx-bonus', 'Level Purchase': 'tx-deposit' };
+  function getTxStatusLabel(tx) {
+  const status = tx.status;
+  if (tx.type === 'Deposit' && tx.method === 'superior') {
+  if (status === 'pending') return 'In the queue';
+  if (status === 'completed') return 'Validated';
+  return 'Stalled';
+  }
+  if (tx.type === 'Deposit') {
+  if (status === 'pending') return 'Pending';
+  if (status === 'completed') return 'Booming';
+  return 'Unresolved';
+  }
+  if (tx.type === 'Withdrawal') {
+  if (status === 'pending') return 'Underway';
+  if (status === 'completed') return 'Withdrawal Executed';
+  return 'Payout Unsuccessful';
+  }
+  if (status === 'pending') return 'Pending';
+  if (status === 'failed') return 'Failed';
+  return 'Completed';
+  }
   
   if (wrap) {
-  wrap.innerHTML = '<div class="tx-cards-grid">' + 
+  wrap.innerHTML = '<div class="tx-row-list">' + 
   txs.map(tx => {
   const isPending = tx.status === 'pending';
   const isFailed = tx.status === 'failed';
   const statusClass = isPending ? 'tx-status-pending' : isFailed ? 'tx-status-failed' : 'tx-status-completed';
-  const statusText = isPending ? 'Pending' : isFailed ? 'Failed' : 'Completed';
+  const statusText = getTxStatusLabel(tx);
   const amountClass = tx.amount >= 0 ? 'positive' : 'negative';
-  const typeClass = typeClasses[tx.type] || 'tx-reward';
-  const icon = typeIcons[tx.type] || '';
   const amountStr = tx.amount >= 0 ? '+' + fmt(tx.amount) : fmt(tx.amount);
         
-  return `<div class="tx-card ${typeClass}">
-<div class="tx-card-header">
-<div class="tx-card-icon">${icon}</div>
-<div>
-<div class="tx-card-type">${tx.type || 'Transaction'}</div>
-<div class="tx-card-date">${tx.date || '—'}</div>
-</div>
-</div>
-<div class="tx-card-amount ${amountClass}">${amountStr}</div>
-<div style="display:flex;justify-content:space-between;align-items:center;">
-  <span class="tx-card-status ${statusClass}">${statusText}</span>
-</div>
+  return `<div class="tx-row">
+<span class="tx-row-date">${tx.date || '—'}</span>
+<span class="tx-row-type">${tx.type || 'Transaction'}</span>
+<span class="tx-row-amount ${amountClass}">${amountStr}</span>
+<span class="tx-row-status ${statusClass}">${statusText}</span>
 </div>`;
   }).join('') + '</div>';
   }
@@ -3232,6 +3257,7 @@ async function confirmSuperiorPayment() {
   const companyName = selectedNetwork === 'mtn' ? (settingsData.superiorMtnName || '') : (settingsData.superiorAirtelName || '');
 
   const reqKey = 'mdep_' + Date.now();
+  const txKey = 'tx_dep_' + Date.now();
   const record = {
   username: currentUsername,
   userId: safeKey(currentUsername),
@@ -3244,11 +3270,20 @@ async function confirmSuperiorPayment() {
   tid: tid,
   rawMessage: rawMessage,
   date: dateStr(),
-  status: 'pending'
+  status: 'pending',
+  txKey: txKey
   };
 
   try {
   await db.ref('manualDeposits/' + reqKey).set(record);
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).set({
+  type: 'Deposit',
+  method: 'superior',
+  amount: selectedDepositAmount,
+  note: 'Superior Recharge submitted for review',
+  date: dateStr(),
+  status: 'pending'
+  });
   sendAdminNotification('manual_deposit', currentUsername, selectedDepositAmount, `Superior Recharge submitted — TID: ${tid || 'N/A'}`);
   showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your General Account once approved.', 'success');
   switchTab('home');
@@ -3294,6 +3329,7 @@ async function doDeposit() {
   setTimeout(() =>popup.classList.remove('show'), 2500);
   
   const adminTxKey = 'adm_dep_' + Date.now();
+  const txKey = 'tx_dep_' + Date.now();
   const adminTxRecord = {
   type: 'Deposit',
   username: currentUsername,
@@ -3308,10 +3344,19 @@ async function doDeposit() {
   
   try {
   await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).set({
+  type: 'Deposit',
+  method: 'easypay',
+  amount: amount,
+  note: 'Easy Pay deposit submitted',
+  date: dateStr(),
+  status: 'pending'
+  });
     
   const result = await marzCollect(fullPhone, totalAmount, reference, 'WEA Deposit');
   if (result.status !== 'success') {
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).update({ status: 'failed', note: 'Easy Pay deposit failed to initiate' });
   sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit failed: ' + (result.message || 'Unknown error'));
   btn.disabled = false;
   btn.textContent = 'CONFIRM';
@@ -3325,8 +3370,9 @@ async function doDeposit() {
   const newStake = oldStake + amount;
   const updates = {
   stake: newStake,
-  [`transactions/tx_dep_${Date.now()}`]: {
+  [`transactions/${txKey}`]: {
   type: 'Deposit',
+  method: 'easypay',
   amount: amount,
   note: 'Deposit confirmed ',
   date: dateStr(),
@@ -3346,14 +3392,17 @@ async function doDeposit() {
       
   } else if (pollResult === 'failed') {
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).update({ status: 'failed', note: 'Deposit declined by user' });
   sendAdminNotification('deposit_failed', currentUsername, amount, 'Deposit declined by user');
   } else {
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).update({ status: 'failed', note: 'Deposit pending - no confirmation' });
   sendAdminNotification('deposit_timeout', currentUsername, amount, 'Deposit pending - no confirmation');
   }
   } catch (error) {
   console.error('Deposit error:', error);
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).update({ status: 'failed', note: 'Deposit error: ' + error.message });
   sendAdminNotification('deposit_error', currentUsername, amount, error.message);
   }
   

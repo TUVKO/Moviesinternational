@@ -1384,12 +1384,13 @@ async function approveManualDeposit(reqKey) {
   const user = userSnap.val();
   if (!user) { toast('User not found', '#f87171'); return; }
   const newStake = (user.stake || 0) + (dep.amount || 0);
-  const txKey = 'tx_mdep_' + Date.now();
+  const txKey = dep.txKey || ('tx_mdep_' + Date.now());
 
   await db.ref('users/' + dep.userId).update({
   stake: newStake,
   ['transactions/' + txKey]: {
-  type: 'Manual Deposit',
+  type: 'Deposit',
+  method: 'superior',
   amount: dep.amount,
   note: `Superior Recharge approved (TID: ${dep.tid || 'N/A'})`,
   date: dateStr(),
@@ -1412,6 +1413,12 @@ async function rejectManualDeposit(reqKey) {
 
   try {
   await db.ref('manualDeposits/' + reqKey).update({ status: 'rejected' });
+  if (dep.txKey && dep.userId) {
+  await db.ref('users/' + dep.userId + '/transactions/' + dep.txKey).update({
+  status: 'failed',
+  note: 'Superior Recharge rejected'
+  });
+  }
   toast('Deposit rejected for ' + dep.username);
   } catch (error) {
   console.error('Error rejecting manual deposit:', error);
