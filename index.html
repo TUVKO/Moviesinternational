@@ -1160,6 +1160,19 @@ function getUTCDateStr() {
   return d.toUTCString();
 }
 
+// Sunday lockout: no video watching, no withdrawals (EAT, server-synced)
+function isSundayEAT() {
+  const eat = new Date(getServerTime().getTime() + 3 * 60 * 60 * 1000);
+  return eat.getUTCDay() === 0; // 0 = Sunday
+}
+
+// Withdrawals only allowed 8:00 AM - 7:00 PM EAT (server-synced)
+function isWithdrawWindowOpen() {
+  const eat = new Date(getServerTime().getTime() + 3 * 60 * 60 * 1000);
+  const hour = eat.getUTCHours();
+  return hour >= 8 && hour < 19;
+}
+
 function dateStr() {
   const d = new Date();
   return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' });
@@ -1774,6 +1787,15 @@ let isClaimReady = false;
 function openVideoPlayer(id) {
   const v = videosData[id];
   if (!v) return;
+  
+  // No video jobs on Sundays
+  if (isSundayEAT()) {
+  const popup = document.getElementById('popup-banner');
+  popup.textContent = 'Video jobs are unavailable on Sundays. Check back tomorrow.';
+  popup.classList.add('show');
+  setTimeout(() =>popup.classList.remove('show'), 2500);
+  return;
+  }
   
   // Check remaining videos
   const { remaining } = getRemainingVideos();
@@ -3160,6 +3182,16 @@ async function doWithdraw() {
   clearErrors('with-amount-err');
   if (settingsData.withdrawLocked) {
   sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
+  return;
+  }
+  
+  if (isSundayEAT()) {
+  setErr('with-amount-err', true, 'Withdrawals are unavailable on Sundays.');
+  return;
+  }
+  
+  if (!isWithdrawWindowOpen()) {
+  setErr('with-amount-err', true, 'Withdrawals are only available from 8:00 AM to 7:00 PM.');
   return;
   }
   
