@@ -256,6 +256,9 @@ input[type="password"]{padding-right:46px;}
 .deposit-method-name{font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--accent);margin-bottom:4px;}
 .deposit-method-sub{font-size:12px;color:var(--muted);}
 .amount-preset-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.withdraw-account-tabs{display:flex;gap:6px;background:rgba(92,163,120,0.12);border:1px solid rgba(92,163,120,0.35);border-radius:14px;padding:6px;margin-bottom:14px;}
+.withdraw-account-tab{flex:1;background:transparent;border:none;border-radius:10px;padding:12px 8px;color:var(--muted);font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;}
+.withdraw-account-tab.selected{background:var(--success);color:#0c2415;}
 .amount-preset-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 4px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;}
 .amount-preset-btn.selected{background:var(--accent);border-color:var(--accent);color:#14110F;}
 .link-back-btn{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;width:100%;text-align:center;padding:10px 0 0;}
@@ -471,11 +474,11 @@ input[type="password"]{padding-right:46px;}
 <div class="section">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
-<div class="stat-label">STAKE</div>
+<div class="stat-label">GENERAL ACCOUNT</div>
 <div class="stat-value stake" id="stat-stake">UGX 0</div>
 </div>
 <div class="stat-box">
-<div class="stat-label">MOB ACCOUNT</div>
+<div class="stat-label">RETAINED WALLET</div>
 <div class="stat-value mob" id="stat-mob">UGX 0</div>
 </div>
 </div>
@@ -611,7 +614,7 @@ input[type="password"]{padding-right:46px;}
 <div class="action-card" style="margin-top:12px;">
 <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:800;color:var(--accent);margin-bottom:8px;">Referral Program</div>
 <div style="font-size:12.5px;color:var(--text);line-height:1.6;margin-bottom:10px;">
-Earn instant bonuses to your <strong>STAKE</strong> whenever people in your referral chain purchase a level — up to 3 levels deep.
+Earn instant bonuses to your <strong>General Account</strong> whenever people in your referral chain purchase a level — up to 3 levels deep.
 </div>
 <div id="referral-program-tiers" style="margin-bottom:10px;"></div>
 <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">
@@ -638,7 +641,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
   <!-- STAKE & Level Summary -->
 <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
 <div>
-<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your STAKE</div>
+<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your General Account</div>
 <div style="font-size:15px;font-weight:800;color:var(--accent);" id="stages-stake">UGX 0</div>
 </div>
 <div style="text-align:right;">
@@ -654,7 +657,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 
   <!-- Deposit Button -->
-  <button class="green-btn" onclick="switchTab('deposit')" style="margin-top:12px;width:100%;">Deposit to STAKE</button>
+  <button class="green-btn" onclick="switchTab('deposit')" style="margin-top:12px;width:100%;">Deposit to General Account</button>
 </div>
 </div>
 
@@ -664,11 +667,11 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="section" style="margin-bottom:0;">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
-<div class="stat-label">STAKE</div>
+<div class="stat-label">GENERAL ACCOUNT</div>
 <div class="stat-value stake" id="profile-stat-stake">UGX 0</div>
 </div>
 <div class="stat-box">
-<div class="stat-label">MOB ACCOUNT</div>
+<div class="stat-label">RETAINED WALLET</div>
 <div class="stat-value mob" id="profile-stat-mob">UGX 0</div>
 </div>
 </div>
@@ -761,7 +764,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Terms & Rules Summary</div>
 <ul style="margin:0 0 14px;padding-left:14px;">
 <li style="margin-bottom:6px;">Daily video limits are determined by your current level; once you reach your limit, you'll need to wait for the next daily reset to continue earning</li>
-<li style="margin-bottom:6px;">Deposits are added to your STAKE balance and used to purchase or upgrade levels; your MOB balance holds earnings that are available for withdrawal</li>
+<li style="margin-bottom:6px;">Deposits are added to your General Account balance and used to purchase or upgrade levels; your Retained Wallet balance holds earnings that are available for withdrawal</li>
 <li style="margin-bottom:6px;">Withdrawal requests are reviewed and processed within 48 hours. If a withdrawal takes longer than that, please contact support immediately</li>
 <li style="margin-bottom:6px;">Referral bonuses are paid instantly, across up to three levels of your referral network, at rates set out on the Wages page — these rates may be adjusted from time to time</li>
 <li style="margin-bottom:6px;">Trainee accounts cannot refer others; purchasing your first level unlocks your referral link and QR code</li>
@@ -826,11 +829,11 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>How do I upgrade my level?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">Go to the Stages page and purchase any level using your STAKE balance. Higher levels unlock more videos per day and a higher payout per video.</div>
+<div class="faq-answer">Go to the Stages page and purchase any level using your General Account balance. Higher levels unlock more videos per day and a higher payout per video.</div>
 </div>
 <div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)"><span>What happens to my STAKE when I upgrade again?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">When you upgrade from one level to a higher one, the cost of your previous level is automatically refunded back to your MOB account.</div>
+<div class="faq-question" onclick="toggleFaq(this)"><span>What happens to my General Account when I upgrade again?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">When you upgrade from one level to a higher one, the cost of your previous level is automatically refunded back to your Retained Wallet.</div>
 </div>
 
 <div class="faq-category">Videos &amp; Earnings</div>
@@ -844,7 +847,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>Where do my earnings go?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">Video rewards go to your MOB balance, which is withdrawable. Deposits go to your STAKE, used to purchase levels.</div>
+<div class="faq-answer">Video rewards go to your Retained Wallet, which is withdrawable. Deposits go to your General Account, used to purchase levels.</div>
 </div>
 
 <div class="faq-category">Deposits &amp; Withdrawals</div>
@@ -932,10 +935,10 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 
   <!-- Deposit: Amount Selection -->
 <div class="dash-section" id="sec-deposit-amount">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="dep-amount-title">Select Amount</div><div class="inner-sub">Add funds to your STAKE</div></div></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="dep-amount-title">Select Amount</div><div class="inner-sub">Add funds to your General Account</div></div></div>
 <div class="section">
 <div class="action-card">
-<div class="deposit-note">Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your STAKE.</div>
+<div class="deposit-note">Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your General Account.</div>
 <div class="field-group">
   <label class="field-label">Quick Select</label>
   <div class="amount-preset-grid" id="dep-preset-grid"></div>
@@ -956,7 +959,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Superior Recharge</div><div class="inner-sub">Enter your phone number and network</div></div></div>
 <div class="section">
 <div class="action-card">
-<div class="deposit-note">Depositing <strong id="sup-phone-amount-display">UGX 0</strong> to your STAKE.</div>
+<div class="deposit-note">Depositing <strong id="sup-phone-amount-display">UGX 0</strong> to your General Account.</div>
 <div class="field-group">
   <label class="field-label">Your Mobile Money Phone Number</label>
 <div class="phone-prefix-wrap">
@@ -1007,7 +1010,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Easy Pay</div><div class="inner-sub">Enter your mobile money number</div></div></div>
 <div class="section">
 <div class="action-card">
-<div class="deposit-note">Depositing <strong id="dep-phone-amount-display">UGX 0</strong> to your STAKE.</div>
+<div class="deposit-note">Depositing <strong id="dep-phone-amount-display">UGX 0</strong> to your General Account.</div>
 <div class="field-group">
   <label class="field-label">Mobile Money Phone Number</label>
 <div class="phone-prefix-wrap" id="dep-phone-wrap">
@@ -1036,13 +1039,15 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 
   <!-- Withdraw -->
 <div class="dash-section" id="sec-withdraw">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your MOB earnings</div></div><button class="link-back-btn" style="margin-left:auto;padding:6px 12px;border:1px solid var(--border);border-radius:8px;width:auto;" onclick="openHistoryFiltered('Withdrawal')">Records</button></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Withdraw</div><div class="inner-sub">Cash out your earnings</div></div><button class="link-back-btn" style="margin-left:auto;padding:6px 12px;border:1px solid var(--border);border-radius:8px;width:auto;" onclick="openHistoryFiltered('Withdrawal')">Records</button></div>
 <div class="section">
 <div id="withdraw-locked-msg" class="locked-banner" style="display:none">Withdrawals are currently disabled. Please contact support.</div>
+<div class="withdraw-account-tabs" id="withdraw-account-tabs">
+  <button type="button" class="withdraw-account-tab selected" id="wtab-mob" onclick="selectWithdrawSource('mob')">Retained Wallet</button>
+  <button type="button" class="withdraw-account-tab" id="wtab-stake" onclick="selectWithdrawSource('stake')">General Account</button>
+</div>
 <div class="action-card">
-<div class="deposit-note">Your MOB balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
-<div class="charge-note">Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
-<div class="deposit-note">Funds will be sent to your saved withdrawal account.</div>
+<div class="deposit-note">Your <span id="with-source-label">Retained Wallet</span> balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
 <div class="field-group">
   <label class="field-label">Select Amount</label>
   <div class="amount-preset-grid" id="with-preset-grid"></div>
@@ -1057,7 +1062,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
   <span>You receive:</span><strong id="withdraw-net-amount">UGX 0</strong><br>
   <span>Fee:</span><strong id="withdraw-fee-amount">UGX 0</strong>
 </div>
-  <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">WITHDRAW FROM MOB</button>
+  <button class="red-btn" id="with-submit-btn" onclick="doWithdraw()">WITHDRAW</button>
 </div>
 </div>
 </div>
@@ -1090,7 +1095,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="modal-msg" style="text-align:left;">
   <strong>1. Introduction</strong><br>Welcome to WEA. These Terms of Service govern your use of our platform.<br><br>
   <strong>2. User Responsibilities</strong><br>You are responsible for maintaining the confidentiality of your account and password.<br><br>
-  <strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your MOB account.<br><br>
+  <strong>3. Earning Policy</strong><br>You earn by watching videos. Rewards are credited to your Retained Wallet.<br><br>
   <strong>4. Prohibited Activities</strong><br>You may not use WEA for any illegal activities, fraud, or unauthorized access.<br><br>
   <strong>5. Limitation of Liability</strong><br>WEA is provided "as is"without warranties.<br><br>
   <strong>6. Modifications</strong><br>We reserve the right to modify these terms at any time.<br><br>
@@ -1120,7 +1125,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="modal-overlay" id="withdraw-account-modal-overlay">
 <div class="modal-box" style="position:relative;text-align:left;">
 <div class="modal-title" style="margin-bottom:14px;">Withdrawal Account</div>
-<div id="wacc-locked-note" style="display:none;font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Your withdrawal account is locked and can no longer be edited here. Contact support or an admin if you need to change it.</div>
+<div id="wacc-locked-note" style="display:none;font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Your withdrawal account is locked and can no longer be edited here. Contact support if you need to change it.</div>
 <div id="wacc-form-fields">
 <div class="field-group">
   <label class="field-label">Withdrawal Phone Number</label>
@@ -1416,7 +1421,7 @@ function resetSupportChat() {
 function openSupportWhatsapp() {
   const link = settingsData.supportWhatsappLink;
   if (!link) {
-  showPopup('Not available', 'Support chat is not set up yet. Please try again later.', 'error');
+  showBanner('Support chat is not set up yet. Please try again later.');
   return;
   }
   window.open(link, '_blank');
@@ -2109,14 +2114,14 @@ async function claimReward() {
     
   // FIX: Show completed state and allow watching next
   btn.className = 'claim-btn claimed';
-  btn.textContent = 'Completed! +' + fmt(reward) + 'to MOB';
+  btn.textContent = 'Completed! +' + fmt(reward) + 'to Retained Wallet';
   btn.disabled = false;
     
   // Auto-close after 2 seconds and allow next video
   setTimeout(() => {
   closeVideoPlayer();
   const popup = document.getElementById('popup-banner');
-  popup.textContent = ` Earned ${fmt(reward)} to MOB! ${streakDays}-day streak! `;
+  popup.textContent = ` Earned ${fmt(reward)} to Retained Wallet! ${streakDays}-day streak! `;
   popup.classList.add('show');
   setTimeout(() =>popup.classList.remove('show'), 2500);
   }, 1500);
@@ -2166,8 +2171,8 @@ function updateBalanceUI() {
   document.getElementById('stat-level').textContent = levelName;
   document.getElementById('stages-current-level').textContent = levelName;
   
-  // Update withdraw MOB balance display
-  document.getElementById('withdraw-mob-balance').textContent = fmt(mob);
+  // Update withdraw balance display (account-aware)
+  updateWithdrawBalanceDisplay();
   
   // Trainee status
   const traineeStatus = document.getElementById('stages-trainee-status');
@@ -2374,7 +2379,7 @@ function showReservedPopup() {
 }
 
 function showInsufficientPopup(needed) {
-  showPopup('Insufficient Funds', `You need ${needed} to purchase this level. Please deposit to STAKE.`, 'error');
+  showBanner(`You need ${needed} to purchase this level. Please deposit to your General Account.`);
 }
 
 function showNeedPreviousPopup(levelName) {
@@ -2625,7 +2630,7 @@ async function purchaseLevel(levelKey, cost, levelName) {
   updates[`transactions/${refundTxKey}`] = {
   type: 'Level Refund',
   amount: refundAmount,
-  note: `Previous level (${levelsData[previousKey]?.name || previousKey}) stake refunded to MOB`,
+  note: `Previous level (${levelsData[previousKey]?.name || previousKey}) cost refunded to Retained Wallet`,
   date: dateStr(),
   status: 'completed'
   };
@@ -2646,12 +2651,12 @@ async function purchaseLevel(levelKey, cost, levelName) {
   updateProfileUI();
   updateVideoDisplay();
     
-  const refundNote = refundAmount > 0 ? ` ${fmt(refundAmount)} refunded from your previous level to MOB.` : '';
+  const refundNote = refundAmount > 0 ? ` ${fmt(refundAmount)} refunded from your previous level to Retained Wallet.` : '';
   showPopup('Level Purchased!', `${levelName} activated! You can now watch ${level?.movies || 0} movies/day earning ${fmt(level?.each || 0)} each!${refundNote}`, 'success');
     
   } catch (error) {
   console.error('Purchase error:', error);
-  showPopup('Error', 'Failed to purchase level. Please try again.', 'error');
+  showBanner('Failed to purchase level. Please try again.');
   }
 }
 
@@ -2680,6 +2685,16 @@ function showPopup(title, message, type) {
   closeBtn.style.width = '100%';
   closeBtn.style.display = 'block';
   overlay.classList.add('open');
+}
+
+let bannerTimeout = null;
+function showBanner(message) {
+  const popup = document.getElementById('popup-banner');
+  if (!popup) return;
+  if (bannerTimeout) clearTimeout(bannerTimeout);
+  popup.textContent = message;
+  popup.classList.add('show');
+  bannerTimeout = setTimeout(() => popup.classList.remove('show'), 2500);
 }
 
 function showConfirmPopup(title, message, levelKey) {
@@ -3043,6 +3058,26 @@ function clearDepositPresetSelection() {
 // WITHDRAW AMOUNT PRESETS
 // ============================================================
 let selectedWithdrawAmount = 0;
+let selectedWithdrawSource = 'mob';
+
+function selectWithdrawSource(source) {
+  selectedWithdrawSource = source;
+  document.getElementById('wtab-mob').classList.toggle('selected', source === 'mob');
+  document.getElementById('wtab-stake').classList.toggle('selected', source === 'stake');
+  document.getElementById('with-source-label').textContent = source === 'mob' ? 'Retained Wallet' : 'General Account';
+  selectedWithdrawAmount = 0;
+  document.querySelectorAll('#with-preset-grid .amount-preset-btn').forEach(b => b.classList.remove('selected'));
+  const preview = document.getElementById('withdraw-preview');
+  if (preview) preview.style.display = 'none';
+  updateWithdrawBalanceDisplay();
+}
+
+function updateWithdrawBalanceDisplay() {
+  if (!currentUser) return;
+  const bal = selectedWithdrawSource === 'mob' ? (currentUser.mob || 0) : (currentUser.stake || 0);
+  const el = document.getElementById('withdraw-mob-balance');
+  if (el) el.textContent = fmt(bal);
+}
 
 function renderWithdrawPresets() {
   const grid = document.getElementById('with-preset-grid');
@@ -3052,6 +3087,7 @@ function renderWithdrawPresets() {
   selectedWithdrawAmount = 0;
   const preview = document.getElementById('withdraw-preview');
   if (preview) preview.style.display = 'none';
+  selectWithdrawSource('mob');
 }
 
 function pickWithdrawPreset(amount, btn) {
@@ -3178,11 +3214,11 @@ async function confirmSuperiorPayment() {
   try {
   await db.ref('manualDeposits/' + reqKey).set(record);
   sendAdminNotification('manual_deposit', currentUsername, selectedDepositAmount, `Superior Recharge submitted — TID: ${tid || 'N/A'}`);
-  showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your STAKE once approved.', 'success');
+  showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your General Account once approved.', 'success');
   switchTab('home');
   } catch (error) {
   console.error('Manual deposit submit error:', error);
-  showPopup('Error', 'Failed to submit. Please try again.', 'error');
+  showBanner('Failed to submit. Please try again.');
   }
   btn.disabled = false;
   btn.textContent = 'CONFIRM';
@@ -3264,7 +3300,7 @@ async function doDeposit() {
   await db.ref('users/' + safeKey(currentUsername)).update(updates);
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
       
-  popup.textContent = ` Deposit of ${fmt(amount)} added to STAKE!`;
+  popup.textContent = ` Deposit of ${fmt(amount)} added to your General Account!`;
   popup.classList.add('show');
   setTimeout(() =>popup.classList.remove('show'), 2500);
       
@@ -3310,6 +3346,12 @@ async function doWithdraw() {
   return;
   }
   
+  const todayKey = getUTCKey();
+  if (currentUser.lastWithdrawDate === todayKey) {
+  setErr('with-amount-err', true, "You've already made a withdrawal today. Try again tomorrow.");
+  return;
+  }
+  
   if (!currentUser.withdrawAccountLocked || !currentUser.withdrawPhone) {
   setErr('with-amount-err', true, 'Please set up your withdrawal account in Settings first.');
   return;
@@ -3326,10 +3368,11 @@ async function doWithdraw() {
   return;
   }
   
-  // FIX: Check MOB balance instead of STAKE
-  const mob = currentUser.mob || 0;
-  if (mob < amount) {
-  setErr('with-amount-err', true, 'Insufficient MOB balance.');
+  const source = selectedWithdrawSource === 'stake' ? 'stake' : 'mob';
+  const sourceLabel = source === 'mob' ? 'Retained Wallet' : 'General Account';
+  const sourceBalance = currentUser[source] || 0;
+  if (sourceBalance < amount) {
+  setErr('with-amount-err', true, `Insufficient ${sourceLabel} balance.`);
   return;
   }
   
@@ -3350,7 +3393,7 @@ async function doWithdraw() {
   const btn = document.getElementById('with-submit-btn');
   btn.disabled = true;
   btn.textContent = 'Processing...';
-  const newMob = mob - amount;
+  const newSourceBalance = sourceBalance - amount;
   const txKey = 'tx_wd_' + Date.now();
   const reqKey = 'wreq_' + Date.now();
   const reference = genUUID();
@@ -3366,6 +3409,7 @@ async function doWithdraw() {
   username: currentUsername,
   phone: userPhone,
   amount: amount,
+  sourceAccount: sourceLabel,
   reference: reference,
   date: dateStr(),
   status: 'pending'
@@ -3374,13 +3418,13 @@ async function doWithdraw() {
   try {
   await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
     
-  // FIX: Withdraw from MOB
   await db.ref('users/' + safeKey(currentUsername)).update({
-  mob: newMob,
+  [source]: newSourceBalance,
+  lastWithdrawDate: todayKey,
   [`transactions/${txKey}`]: {
   type: 'Withdrawal',
   amount: -amount,
-  note: 'Withdrawal Pending',
+  note: `Withdrawal Pending (${sourceLabel})`,
   date: dateStr(),
   status: 'pending'
   }
@@ -3393,6 +3437,7 @@ async function doWithdraw() {
   amount,
   fee,
   sendAmount,
+  sourceAccount: sourceLabel,
   txKey,
   adminTxKey,
   date: dateStr(),
@@ -3403,7 +3448,7 @@ async function doWithdraw() {
   if (settingsData.withdrawApproval === true) {
   sendAdminNotification('withdrawal_pending', currentUsername, amount, 'Withdrawal request pending approval');
   } else {
-  await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
+  await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee, source);
   }
     
   document.getElementById('with-pin').value = '';
@@ -3412,22 +3457,23 @@ async function doWithdraw() {
   document.getElementById('withdraw-preview').style.display = 'none';
   } catch (error) {
   console.error('Withdrawal error:', error);
-  // Refund to MOB
-  const refundedMob = mob;
-  await db.ref('users/' + safeKey(currentUsername)).update({ mob: refundedMob });
+  // Refund to the source account
+  await db.ref('users/' + safeKey(currentUsername)).update({ [source]: sourceBalance, lastWithdrawDate: currentUser.lastWithdrawDate || null });
   await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).remove();
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
   sendAdminNotification('withdrawal_error', currentUsername, amount, 'Critical error: ' + error.message);
   }
   
   btn.disabled = false;
-  btn.textContent = 'WITHDRAW FROM MOB';
+  btn.textContent = 'WITHDRAW';
   switchTab('home');
 }
 
-async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee) {
+async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee, source) {
   const username = currentUsername;
   const userId = safeKey(username);
+  const acctField = source === 'stake' ? 'stake' : 'mob';
+  const acctLabel = acctField === 'mob' ? 'Retained Wallet' : 'General Account';
   
   try {
   const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
@@ -3441,14 +3487,14 @@ async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference,
   } else {
   const userSnap = await db.ref('users/' + userId).get();
   const user = userSnap.val();
-  const refundedMob = (user.mob || 0) + amount;
+  const refundedBalance = (user[acctField] || 0) + amount;
       
   await db.ref('users/' + userId).update({
-  mob: refundedMob,
+  [acctField]: refundedBalance,
   [`transactions/${txKey}`]: {
   type: 'Withdrawal',
   amount: -amount,
-  note: 'Withdrawal Failed - Refunded to MOB',
+  note: `Withdrawal Failed - Refunded to ${acctLabel}`,
   date: dateStr(),
   status: 'failed'
   }
@@ -3460,14 +3506,14 @@ async function processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference,
   } catch (sendError) {
   const userSnap = await db.ref('users/' + userId).get();
   const user = userSnap.val();
-  const refundedMob = (user.mob || 0) + amount;
+  const refundedBalance = (user[acctField] || 0) + amount;
     
   await db.ref('users/' + userId).update({
-  mob: refundedMob,
+  [acctField]: refundedBalance,
   [`transactions/${txKey}`]: {
   type: 'Withdrawal',
   amount: -amount,
-  note: 'Withdrawal Failed - Refunded to MOB',
+  note: `Withdrawal Failed - Refunded to ${acctLabel}`,
   date: dateStr(),
   status: 'failed'
   }
@@ -3897,7 +3943,7 @@ async function saveWithdrawAccount() {
   await db.ref('users/' + safeKey(currentUsername)).update(updates);
   if (currentUser) currentUser = { ...currentUser, ...updates };
   closeWithdrawAccountModal();
-  showPopup('Account Saved', 'Your withdrawal account has been saved. Contact support or an admin if you ever need to change it.', 'success');
+  showPopup('Account Saved', 'Your withdrawal account has been saved. Contact support if you ever need to change it.', 'success');
   } catch (error) {
   console.error('Save withdrawal account error:', error);
   setErr('wacc-pin-err', true, 'Something went wrong. Please try again.');
@@ -4021,6 +4067,8 @@ window.closeChangePasswordModal = closeChangePasswordModal;
 window.saveChangePassword = saveChangePassword;
 window.pickWithdrawPreset = pickWithdrawPreset;
 window.renderWithdrawPresets = renderWithdrawPresets;
+window.selectWithdrawSource = selectWithdrawSource;
+window.updateWithdrawBalanceDisplay = updateWithdrawBalanceDisplay;
 
 console.log('All functions exposed to window');
 
