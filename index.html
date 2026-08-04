@@ -445,8 +445,9 @@ input[type="password"]{padding-right:46px;}
 <div class="field-error" id="reg-pw-err">Password must be at least 6 characters</div>
 </div>
 <div class="field-group">
-  <label class="field-label">Referral Code (Optional)</label>
-<div class="field-wrap"><input type="text" id="reg-referral" placeholder="Enter referral code (optional)"></div>
+  <label class="field-label">Referral Code</label>
+<div class="field-wrap"><input type="text" id="reg-referral" placeholder="Enter referral code"></div>
+<div class="field-error" id="reg-referral-err">Please enter a valid referral code</div>
 </div>
 <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
   <button class="submit-btn" onclick="doRegister()">Create Account & Start Earning</button>
@@ -649,6 +650,15 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="font-size:13px;font-weight:800;color:var(--success);" id="stages-current-level">Trainee</div>
 <div style="font-size:8px;color:var(--muted);" id="stages-trainee-status"></div>
 </div>
+</div>
+
+  <!-- Level Progress Bar -->
+<div style="margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:4px;">
+<span id="level-progress-text">0/0 videos</span>
+<span>Next: <strong id="level-progress-next" style="color:var(--accent);">—</strong></span>
+</div>
+<div class="level-progress"><div class="level-progress-fill" id="level-progress-fill" style="width:0%;"></div></div>
 </div>
 
   <!-- Level Cards - NO LOCK INDICATORS -->
@@ -1258,6 +1268,19 @@ function isWithdrawWindowOpen() {
   return hour >= 8 && hour < 19;
 }
 
+// Public holiday lockout: no video watching, no withdrawals (EAT, server-synced)
+// Hardcoded 2026 dates. Movable holidays (Eid al-Fitr, Eid al-Adha, Good Friday, Easter Monday,
+// Chinese New Year, Maundy Thursday, Black Saturday, PH "last Monday of August") shift each year —
+// update this list directly in code for 2027 onward.
+const HOLIDAYS_INTERNATIONAL = ['2026-01-01','2026-03-08','2026-05-01','2026-09-21','2026-10-24','2026-12-01','2026-12-25'];
+const HOLIDAYS_UGANDA = ['2026-01-01','2026-01-26','2026-02-16','2026-03-08','2026-03-20','2026-04-03','2026-04-06','2026-05-01','2026-05-27','2026-06-03','2026-06-09','2026-10-09','2026-12-25','2026-12-26'];
+const HOLIDAYS_PHILIPPINES = ['2026-01-01','2026-02-17','2026-03-20','2026-04-02','2026-04-03','2026-04-04','2026-04-09','2026-05-01','2026-05-27','2026-06-12','2026-08-21','2026-08-31','2026-11-01','2026-11-02','2026-11-30','2026-12-08','2026-12-24','2026-12-25','2026-12-30','2026-12-31'];
+
+function isHolidayEAT() {
+  const todayKey = getUTCKey();
+  return HOLIDAYS_INTERNATIONAL.includes(todayKey) || HOLIDAYS_UGANDA.includes(todayKey) || HOLIDAYS_PHILIPPINES.includes(todayKey);
+}
+
 function dateStr() {
   const d = new Date();
   return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' });
@@ -1826,6 +1849,16 @@ function renderVideoGrid() {
   const grid = document.getElementById('video-grid');
   if (!grid) return;
   
+  if (isSundayEAT()) {
+  grid.innerHTML = '<div class="video-empty">No video jobs today — Sundays are a rest day. Check back tomorrow.</div>';
+  return;
+  }
+  
+  if (isHolidayEAT()) {
+  grid.innerHTML = '<div class="video-empty">No video jobs today due to a public holiday. Check back tomorrow.</div>';
+  return;
+  }
+  
   const { reward } = getRemainingVideos();
   const allVideoIds = getVideoIds();
   const todayKey = getUTCKey();
@@ -1876,10 +1909,13 @@ function openVideoPlayer(id) {
   
   // No video jobs on Sundays
   if (isSundayEAT()) {
-  const popup = document.getElementById('popup-banner');
-  popup.textContent = 'Video jobs are unavailable on Sundays. Check back tomorrow.';
-  popup.classList.add('show');
-  setTimeout(() =>popup.classList.remove('show'), 2500);
+  showBanner('Video jobs are unavailable on Sundays. Check back tomorrow.');
+  return;
+  }
+  
+  // No video jobs on public holidays
+  if (isHolidayEAT()) {
+  showBanner('Video jobs are unavailable today due to a public holiday.');
   return;
   }
   
@@ -3337,34 +3373,39 @@ async function doWithdraw() {
   }
   
   if (isSundayEAT()) {
-  setErr('with-amount-err', true, 'Withdrawals are unavailable on Sundays.');
+  showBanner('Withdrawals are unavailable on Sundays.');
+  return;
+  }
+  
+  if (isHolidayEAT()) {
+  showBanner('Withdrawals are unavailable today due to a public holiday.');
   return;
   }
   
   if (!isWithdrawWindowOpen()) {
-  setErr('with-amount-err', true, 'Withdrawals are only available from 8:00 AM to 7:00 PM.');
+  showBanner('Withdrawals are only available from 8:00 AM to 7:00 PM.');
   return;
   }
   
   const todayKey = getUTCKey();
   if (currentUser.lastWithdrawDate === todayKey) {
-  setErr('with-amount-err', true, "You've already made a withdrawal today. Try again tomorrow.");
+  showBanner("You've already made a withdrawal today. Try again tomorrow.");
   return;
   }
   
   if (!currentUser.withdrawAccountLocked || !currentUser.withdrawPhone) {
-  setErr('with-amount-err', true, 'Please set up your withdrawal account in Settings first.');
+  showBanner('Please set up your withdrawal account in Settings first.');
   return;
   }
   
   const minWith = settingsData.minWithdraw || 10000;
   const amount = selectedWithdrawAmount || 0;
   if (amount <= 0) {
-  setErr('with-amount-err', true, 'Please select an amount');
+  showBanner('Please select an amount');
   return;
   }
   if (amount < minWith) {
-  setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith));
+  showBanner('Minimum withdrawal is ' + fmt(minWith));
   return;
   }
   
@@ -3372,17 +3413,17 @@ async function doWithdraw() {
   const sourceLabel = source === 'mob' ? 'Retained Wallet' : 'General Account';
   const sourceBalance = currentUser[source] || 0;
   if (sourceBalance < amount) {
-  setErr('with-amount-err', true, `Insufficient ${sourceLabel} balance.`);
+  showBanner(`Insufficient ${sourceLabel} balance.`);
   return;
   }
   
   const enteredPin = document.getElementById('with-pin').value.trim();
   if (!enteredPin || enteredPin.length !== 4) {
-  setErr('with-pin-err', true, 'Enter your 4-digit withdrawal PIN');
+  showBanner('Enter your 4-digit withdrawal PIN');
   return;
   }
   if (enteredPin !== currentUser.withdrawPin) {
-  setErr('with-pin-err', true, 'Incorrect withdrawal PIN');
+  showBanner('Incorrect withdrawal PIN');
   return;
   }
   
@@ -3653,7 +3694,7 @@ async function doLogin() {
 // ============================================================
 async function doRegister() {
   console.log('Register button clicked');
-  clearErrors('reg-user-err', 'reg-phone-err', 'reg-pw-err', 'reg-general-err');
+  clearErrors('reg-user-err', 'reg-phone-err', 'reg-pw-err', 'reg-referral-err', 'reg-general-err');
   
   const fullName = document.getElementById('reg-fullname').value.trim();
   const prefix = document.getElementById('reg-prefix').textContent.trim();
@@ -3665,6 +3706,7 @@ async function doRegister() {
   if (!fullName) { setErr('reg-user-err', true, 'Full name is required'); ok = false; }
   if (!phoneDigits || phoneDigits.length !== 10 || !phoneDigits.startsWith('0')) { setErr('reg-phone-err', true, 'Enter 10 digits starting with 0'); ok = false; }
   if (!password || password.length < 6) { setErr('reg-pw-err', true, 'Password must be at least 6 characters'); ok = false; }
+  if (!referralCodeRaw) { setErr('reg-referral-err', true, 'A referral code is required to register'); ok = false; }
   if (!ok) return;
   
   const fullPhone = prefix + phoneDigits.substring(1);
@@ -3674,17 +3716,15 @@ async function doRegister() {
   const existing = await db.ref('users/' + safeKey(fullPhone)).get();
   if (existing.exists()) { setErr('reg-phone-err', true, 'Phone number already registered'); return; }
   
-  // Optional referral code — looked up via the referralCodes index, never blocks registration if invalid/not found
-  let referredBy = null;
-  let referrerKey = null;
-  if (referralCodeRaw) {
+  // Referral code is required — registration is blocked if the code doesn't exist
   const codeSnap = await db.ref('referralCodes/' + referralCodeRaw.toUpperCase()).get();
-  if (codeSnap.exists()) {
+  if (!codeSnap.exists()) {
+  setErr('reg-referral-err', true, 'Please enter a valid referral code');
+  return;
+  }
   const referrerPhone = codeSnap.val();
-  referrerKey = safeKey(referrerPhone);
-  referredBy = referralCodeRaw.toUpperCase();
-  }
-  }
+  const referrerKey = safeKey(referrerPhone);
+  const referredBy = referralCodeRaw.toUpperCase();
   
   const myReferralCode = await generateUniqueReferralCode();
     
