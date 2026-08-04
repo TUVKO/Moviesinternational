@@ -660,7 +660,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 
   <!-- Profile -->
 <div class="dash-section" id="sec-profile">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="profile-fullname-display">User</div></div></div>
+<div class="inner-header"><span style="font-size:22px;cursor:pointer;" onclick="switchTab('settings')">⚙️</span><div><div class="inner-title" id="profile-fullname-display">User</div></div></div>
 <div class="section" style="margin-bottom:0;">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
@@ -700,6 +700,24 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <button class="profile-menu-btn" onclick="switchTab('support')">Support</button>
 <button class="profile-menu-btn" onclick="switchTab('faq')">FAQ</button>
 <button class="profile-menu-btn" onclick="startAppDownload()">App Download</button>
+</div>
+</div>
+</div>
+
+  <!-- Settings -->
+<div class="dash-section" id="sec-settings">
+<div class="inner-header"><span style="font-size:22px;cursor:pointer;" onclick="switchTab('profile')">←</span><div><div class="inner-title">Settings</div><div class="inner-sub">Account details & security</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="plain-stat-row"><span class="plain-stat-label">Registered Name</span><span class="plain-stat-value" id="settings-fullname">—</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Phone Number</span><span class="plain-stat-value" id="settings-phone">—</span></div>
+<div class="plain-stat-row"><span class="plain-stat-label">Location</span><span class="plain-stat-value" id="settings-location">—</span></div>
+</div>
+</div>
+<div class="section">
+<div class="profile-menu-grid">
+<button class="profile-menu-btn" onclick="openWithdrawAccountModal()">Set Withdrawal Phone Number</button>
+<button class="profile-menu-btn" onclick="openChangePasswordModal()">Change Password</button>
 </div>
 </div>
 </div>
@@ -1024,16 +1042,16 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="action-card">
 <div class="deposit-note">Your MOB balance: <strong id="withdraw-mob-balance">UGX 0</strong></div>
 <div class="charge-note">Withdrawal fee: <span id="with-fee-percent">10</span>% of amount. You receive <span id="with-receive-percent">90</span>% of requested amount.</div>
-<div class="deposit-note">Funds will be sent to your registered mobile money number.</div>
+<div class="deposit-note">Funds will be sent to your saved withdrawal account.</div>
 <div class="field-group">
-  <label class="field-label">Sending To</label>
-<div class="field-wrap"><div class="readonly-field" id="with-phone-display">—</div></div>
-<div class="field-hint">Locked to your registered number</div>
+  <label class="field-label">Select Amount</label>
+  <div class="amount-preset-grid" id="with-preset-grid"></div>
+<div class="field-error" id="with-amount-err">Please select an amount</div>
 </div>
 <div class="field-group">
-  <label class="field-label">Amount (UGX)</label>
-<div class="field-wrap"><input type="number" id="with-amount" placeholder="Enter amount" min="5000" oninput="updateWithdrawPreview()"></div>
-<div class="field-error" id="with-amount-err">Minimum withdrawal is <span id="with-min-display">UGX 10,000</span></div>
+  <label class="field-label">Withdrawal PIN</label>
+<div class="field-wrap"><input type="password" id="with-pin" placeholder="Enter your 4-digit PIN" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"></div>
+<div class="field-error" id="with-pin-err">Enter your withdrawal PIN</div>
 </div>
 <div id="withdraw-preview" style="background:var(--surface2);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px;display:none;">
   <span>You receive:</span><strong id="withdraw-net-amount">UGX 0</strong><br>
@@ -1095,6 +1113,68 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
   <strong>5. Your Rights</strong><br>You have the right to access, modify, or delete your personal information.<br><br>
   <strong>6. Contact Us</strong><br>For privacy concerns, contact our support team.
 </div>
+</div>
+</div>
+
+<!-- Withdrawal Account Modal -->
+<div class="modal-overlay" id="withdraw-account-modal-overlay">
+<div class="modal-box" style="position:relative;text-align:left;">
+<div class="modal-title" style="margin-bottom:14px;">Withdrawal Account</div>
+<div id="wacc-locked-note" style="display:none;font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Your withdrawal account is locked and can no longer be edited here. Contact support or an admin if you need to change it.</div>
+<div id="wacc-form-fields">
+<div class="field-group">
+  <label class="field-label">Withdrawal Phone Number</label>
+<div class="phone-prefix-wrap">
+<div class="phone-prefix-badge" id="wacc-prefix">+256</div>
+  <input type="tel" id="wacc-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
+</div>
+<div class="field-error" id="wacc-phone-err">Enter 9 digits starting with 7</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Name (as indicated on ID)</label>
+<div class="field-wrap"><input type="text" id="wacc-idname" placeholder="Full name on ID"></div>
+<div class="field-error" id="wacc-idname-err">ID name is required</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Select Network</label>
+  <div class="network-toggle">
+  <button type="button" class="network-btn" id="wacc-net-mtn" onclick="selectWithdrawNetwork('mtn')">MTN</button>
+  <button type="button" class="network-btn" id="wacc-net-airtel" onclick="selectWithdrawNetwork('airtel')">Airtel</button>
+  </div>
+<div class="field-error" id="wacc-network-err">Please select a network</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Withdrawal PIN (4 digits)</label>
+<div class="field-wrap"><input type="password" id="wacc-pin" placeholder="••••" maxlength="4" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4)"></div>
+<div class="field-error" id="wacc-pin-err">Enter a 4-digit PIN</div>
+</div>
+  <button class="submit-btn" id="wacc-save-btn" onclick="saveWithdrawAccount()">SAVE ACCOUNT</button>
+</div>
+  <button class="link-back-btn" onclick="closeWithdrawAccountModal()">Close</button>
+</div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal-overlay" id="change-password-modal-overlay">
+<div class="modal-box" style="position:relative;text-align:left;">
+<div class="modal-title" style="margin-bottom:14px;">Change Password</div>
+<div class="field-group">
+  <label class="field-label">Current Password</label>
+<div class="field-wrap"><input type="password" id="cpw-current" placeholder="Current password"><button type="button" class="eye-btn" onclick="toggleEye('cpw-current', this)">Show</button></div>
+<div class="field-error" id="cpw-current-err">Current password is incorrect</div>
+</div>
+<div class="field-group">
+  <label class="field-label">New Password</label>
+<div class="field-wrap"><input type="password" id="cpw-new" placeholder="New password"><button type="button" class="eye-btn" onclick="toggleEye('cpw-new', this)">Show</button></div>
+<div class="field-error" id="cpw-new-err">Password must be at least 6 characters</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Re-enter New Password</label>
+<div class="field-wrap"><input type="password" id="cpw-confirm" placeholder="Re-enter new password"><button type="button" class="eye-btn" onclick="toggleEye('cpw-confirm', this)">Show</button></div>
+<div class="field-error" id="cpw-confirm-err">Passwords do not match</div>
+</div>
+  <button class="submit-btn" id="cpw-save-btn" onclick="saveChangePassword()">CONFIRM & SAVE</button>
+  <button class="link-back-btn" onclick="closeChangePasswordModal()">Cancel</button>
 </div>
 </div>
 
@@ -1472,6 +1552,7 @@ let settingsData = {
   marzApiKey: '',
   streakBonus: 1000,
   depositPresets: [10000, 20000, 50000, 100000, 200000, 500000],
+  withdrawAmounts: [10000, 20000, 50000, 100000],
   superiorMtnNumber: '',
   superiorMtnName: '',
   superiorAirtelNumber: '',
@@ -2137,9 +2218,9 @@ function updateBalanceUI() {
 
 function updateProfileUI() {
   if (!currentUser) return;
-  document.getElementById('with-phone-display').textContent = currentUser.phone || '—';
   const profFullName = document.getElementById('profile-fullname-display');
   if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
+  updateSettingsInfo();
   updateIncomeStatsUI();
   if (currentUsername) cleanupExpiredMissedCommissions(safeKey(currentUsername));
   
@@ -2170,6 +2251,16 @@ function updateProfileUI() {
   }
 }
 
+function updateSettingsInfo() {
+  if (!currentUser) return;
+  const nameEl = document.getElementById('settings-fullname');
+  const phoneEl = document.getElementById('settings-phone');
+  const locEl = document.getElementById('settings-location');
+  if (nameEl) nameEl.textContent = currentUser.fullName || '—';
+  if (phoneEl) phoneEl.textContent = currentUser.phone || '—';
+  if (locEl) locEl.textContent = currentUser.country === 'KE' ? 'Kenya' : 'Uganda';
+}
+
 function renderReferralLink(code) {
   const linkDisplay = document.getElementById('recruit-link-display');
   const qrImg = document.getElementById('recruit-qr-img');
@@ -2181,7 +2272,8 @@ function renderReferralLink(code) {
 
 function updateSettingsUI() {
   const minWith = settingsData.minWithdraw || 10000;
-  document.getElementById('with-min-display').textContent = fmt(minWith);
+  const minWithDisplay = document.getElementById('with-min-display');
+  if (minWithDisplay) minWithDisplay.textContent = fmt(minWith);
   const withdrawLockedMsg = document.getElementById('withdraw-locked-msg');
   if (withdrawLockedMsg) withdrawLockedMsg.style.display = settingsData.withdrawLocked ? 'block' : 'none';
   const feePercent = document.getElementById('with-fee-percent');
@@ -2947,6 +3039,29 @@ function clearDepositPresetSelection() {
   document.querySelectorAll('.amount-preset-btn').forEach(b => b.classList.remove('selected'));
 }
 
+// ============================================================
+// WITHDRAW AMOUNT PRESETS
+// ============================================================
+let selectedWithdrawAmount = 0;
+
+function renderWithdrawPresets() {
+  const grid = document.getElementById('with-preset-grid');
+  if (!grid) return;
+  const presets = settingsData.withdrawAmounts || [10000, 20000, 50000, 100000];
+  grid.innerHTML = presets.map(amt => `<button type="button" class="amount-preset-btn" onclick="pickWithdrawPreset(${amt}, this)">${fmt(amt)}</button>`).join('');
+  selectedWithdrawAmount = 0;
+  const preview = document.getElementById('withdraw-preview');
+  if (preview) preview.style.display = 'none';
+}
+
+function pickWithdrawPreset(amount, btn) {
+  document.querySelectorAll('#with-preset-grid .amount-preset-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedWithdrawAmount = amount;
+  clearErrors('with-amount-err');
+  updateWithdrawPreview();
+}
+
 function confirmDepositAmount() {
   clearErrors('dep-amount-err');
   const minDep = settingsData.minDeposit || 10000;
@@ -3179,7 +3294,7 @@ async function doDeposit() {
 // WITHDRAWAL - NOW USES MOB ACCOUNT
 // ============================================================
 async function doWithdraw() {
-  clearErrors('with-amount-err');
+  clearErrors('with-amount-err', 'with-pin-err');
   if (settingsData.withdrawLocked) {
   sendAdminNotification('withdrawal_blocked', currentUsername, 0, 'Withdrawal attempted while locked');
   return;
@@ -3195,8 +3310,17 @@ async function doWithdraw() {
   return;
   }
   
+  if (!currentUser.withdrawAccountLocked || !currentUser.withdrawPhone) {
+  setErr('with-amount-err', true, 'Please set up your withdrawal account in Settings first.');
+  return;
+  }
+  
   const minWith = settingsData.minWithdraw || 10000;
-  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  const amount = selectedWithdrawAmount || 0;
+  if (amount <= 0) {
+  setErr('with-amount-err', true, 'Please select an amount');
+  return;
+  }
   if (amount < minWith) {
   setErr('with-amount-err', true, 'Minimum withdrawal is ' + fmt(minWith));
   return;
@@ -3209,10 +3333,20 @@ async function doWithdraw() {
   return;
   }
   
+  const enteredPin = document.getElementById('with-pin').value.trim();
+  if (!enteredPin || enteredPin.length !== 4) {
+  setErr('with-pin-err', true, 'Enter your 4-digit withdrawal PIN');
+  return;
+  }
+  if (enteredPin !== currentUser.withdrawPin) {
+  setErr('with-pin-err', true, 'Incorrect withdrawal PIN');
+  return;
+  }
+  
   const feePercent = (settingsData.withdrawCharge || 10) / 100;
   const fee = Math.floor(amount * feePercent);
   const sendAmount = amount - fee;
-  const userPhone = currentUser.phone;
+  const userPhone = currentUser.withdrawPhone;
   const btn = document.getElementById('with-submit-btn');
   btn.disabled = true;
   btn.textContent = 'Processing...';
@@ -3272,7 +3406,9 @@ async function doWithdraw() {
   await processWithdrawalToMarz(reqKey, userPhone, sendAmount, reference, txKey, adminTxKey, amount, fee);
   }
     
-  document.getElementById('with-amount').value = '';
+  document.getElementById('with-pin').value = '';
+  selectedWithdrawAmount = 0;
+  document.querySelectorAll('#with-preset-grid .amount-preset-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('withdraw-preview').style.display = 'none';
   } catch (error) {
   console.error('Withdrawal error:', error);
@@ -3605,6 +3741,7 @@ const tabMap = {
   team: 'sec-team',
   plan: 'sec-plan',
   profile: 'sec-profile',
+  settings: 'sec-settings',
   recruit: 'sec-recruit',
   todaysjob: 'sec-todaysjob',
   myteam: 'sec-teamlist',
@@ -3637,6 +3774,7 @@ function switchTab(tab, fromPopState) {
   if (tab === 'todaysjob') renderTodaysJob();
   if (tab === 'myteam') renderTeamList();
   if (tab === 'missed-commission') renderMissedCommissionList();
+  if (tab === 'withdraw') renderWithdrawPresets();
   
   if (!fromPopState) {
   history.pushState({ appTab: tab }, '', '#' + tab);
@@ -3656,7 +3794,7 @@ window.addEventListener('popstate', (event) => {
 });
 
 function updateWithdrawPreview() {
-  const amount = parseInt(document.getElementById('with-amount').value) || 0;
+  const amount = selectedWithdrawAmount || 0;
   const feePercent = (settingsData.withdrawCharge || 10) / 100;
   const fee = Math.floor(amount * feePercent);
   const net = amount - fee;
@@ -3686,6 +3824,133 @@ function startUserListener(username) {
   updateVideoDisplay();
   }
   });
+}
+
+// ============================================================
+// SETTINGS: WITHDRAWAL ACCOUNT
+// ============================================================
+let selectedWithdrawNetwork = null;
+
+function openWithdrawAccountModal() {
+  if (!currentUser) return;
+  clearErrors('wacc-phone-err', 'wacc-idname-err', 'wacc-network-err', 'wacc-pin-err');
+  const lockedNote = document.getElementById('wacc-locked-note');
+  const formFields = document.getElementById('wacc-form-fields');
+  
+  if (currentUser.withdrawAccountLocked) {
+  lockedNote.style.display = 'block';
+  formFields.style.display = 'none';
+  } else {
+  lockedNote.style.display = 'none';
+  formFields.style.display = 'block';
+  document.getElementById('wacc-prefix').textContent = currentUser.country === 'KE' ? '+254' : '+256';
+  document.getElementById('wacc-phone').value = '';
+  document.getElementById('wacc-idname').value = currentUser.fullName || '';
+  document.getElementById('wacc-pin').value = '';
+  selectedWithdrawNetwork = null;
+  document.getElementById('wacc-net-mtn').classList.remove('selected');
+  document.getElementById('wacc-net-airtel').classList.remove('selected');
+  }
+  
+  document.getElementById('withdraw-account-modal-overlay').classList.add('open');
+}
+
+function closeWithdrawAccountModal() {
+  document.getElementById('withdraw-account-modal-overlay').classList.remove('open');
+}
+
+function selectWithdrawNetwork(net) {
+  selectedWithdrawNetwork = net;
+  document.getElementById('wacc-net-mtn').classList.toggle('selected', net === 'mtn');
+  document.getElementById('wacc-net-airtel').classList.toggle('selected', net === 'airtel');
+  clearErrors('wacc-network-err');
+}
+
+async function saveWithdrawAccount() {
+  clearErrors('wacc-phone-err', 'wacc-idname-err', 'wacc-network-err', 'wacc-pin-err');
+  
+  const prefix = document.getElementById('wacc-prefix').textContent.trim();
+  const phoneDigits = document.getElementById('wacc-phone').value.trim();
+  const idName = document.getElementById('wacc-idname').value.trim();
+  const pin = document.getElementById('wacc-pin').value.trim();
+  
+  let ok = true;
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) { setErr('wacc-phone-err', true, 'Enter 9 digits starting with 7'); ok = false; }
+  if (!idName) { setErr('wacc-idname-err', true, 'ID name is required'); ok = false; }
+  if (!selectedWithdrawNetwork) { setErr('wacc-network-err', true, 'Please select a network'); ok = false; }
+  if (!pin || pin.length !== 4) { setErr('wacc-pin-err', true, 'Enter a 4-digit PIN'); ok = false; }
+  if (!ok) return;
+  
+  const fullPhone = prefix + phoneDigits;
+  const btn = document.getElementById('wacc-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  
+  try {
+  const updates = {
+  withdrawPhone: fullPhone,
+  withdrawIdName: idName,
+  withdrawNetwork: selectedWithdrawNetwork,
+  withdrawPin: pin,
+  withdrawAccountLocked: true
+  };
+  await db.ref('users/' + safeKey(currentUsername)).update(updates);
+  if (currentUser) currentUser = { ...currentUser, ...updates };
+  closeWithdrawAccountModal();
+  showPopup('Account Saved', 'Your withdrawal account has been saved. Contact support or an admin if you ever need to change it.', 'success');
+  } catch (error) {
+  console.error('Save withdrawal account error:', error);
+  setErr('wacc-pin-err', true, 'Something went wrong. Please try again.');
+  }
+  
+  btn.disabled = false;
+  btn.textContent = 'SAVE ACCOUNT';
+}
+
+// ============================================================
+// SETTINGS: CHANGE PASSWORD
+// ============================================================
+function openChangePasswordModal() {
+  clearErrors('cpw-current-err', 'cpw-new-err', 'cpw-confirm-err');
+  document.getElementById('cpw-current').value = '';
+  document.getElementById('cpw-new').value = '';
+  document.getElementById('cpw-confirm').value = '';
+  document.getElementById('change-password-modal-overlay').classList.add('open');
+}
+
+function closeChangePasswordModal() {
+  document.getElementById('change-password-modal-overlay').classList.remove('open');
+}
+
+async function saveChangePassword() {
+  clearErrors('cpw-current-err', 'cpw-new-err', 'cpw-confirm-err');
+  
+  const current = document.getElementById('cpw-current').value;
+  const newPw = document.getElementById('cpw-new').value;
+  const confirmPw = document.getElementById('cpw-confirm').value;
+  
+  let ok = true;
+  if (current !== currentUser.password) { setErr('cpw-current-err', true, 'Current password is incorrect'); ok = false; }
+  if (!newPw || newPw.length < 6) { setErr('cpw-new-err', true, 'Password must be at least 6 characters'); ok = false; }
+  if (newPw !== confirmPw) { setErr('cpw-confirm-err', true, 'Passwords do not match'); ok = false; }
+  if (!ok) return;
+  
+  const btn = document.getElementById('cpw-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  
+  try {
+  await db.ref('users/' + safeKey(currentUsername) + '/password').set(newPw);
+  if (currentUser) currentUser.password = newPw;
+  closeChangePasswordModal();
+  showPopup('Password Changed', 'Your password has been updated successfully.', 'success');
+  } catch (error) {
+  console.error('Change password error:', error);
+  setErr('cpw-confirm-err', true, 'Something went wrong. Please try again.');
+  }
+  
+  btn.disabled = false;
+  btn.textContent = 'CONFIRM & SAVE';
 }
 
 // ============================================================
@@ -3747,6 +4012,15 @@ window.showInsufficientPopup = showInsufficientPopup;
 window.showNeedPreviousPopup = showNeedPreviousPopup;
 window.showPopup = showPopup;
 window.showConfirmPopup = showConfirmPopup;
+window.openWithdrawAccountModal = openWithdrawAccountModal;
+window.closeWithdrawAccountModal = closeWithdrawAccountModal;
+window.selectWithdrawNetwork = selectWithdrawNetwork;
+window.saveWithdrawAccount = saveWithdrawAccount;
+window.openChangePasswordModal = openChangePasswordModal;
+window.closeChangePasswordModal = closeChangePasswordModal;
+window.saveChangePassword = saveChangePassword;
+window.pickWithdrawPreset = pickWithdrawPreset;
+window.renderWithdrawPresets = renderWithdrawPresets;
 
 console.log('All functions exposed to window');
 

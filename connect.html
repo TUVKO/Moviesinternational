@@ -561,6 +561,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Withdrawal Service Charge (%)</span><div style="display:flex;align-items:center;gap:8px;"><input type="number" class="pct-input" id="with-charge-input" min="0" max="50" step="0.5" placeholder="10"><span class="pct-label">%</span></div><button class="btn btn-save" onclick="saveWithCharge()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Amount Presets (comma-separated UGX)</span><input type="text" class="f-input" id="dep-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000,200000,500000"><button class="btn btn-save" onclick="saveDepositPresets()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Withdrawal Amount Options (comma-separated UGX)</span><input type="text" class="f-input" id="with-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000"><button class="btn btn-save" onclick="saveWithdrawPresets()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — MTN Number</span><input type="text" class="f-input" id="sup-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorMtn()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
@@ -610,7 +611,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 
 <!-- MODALS -->
-<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">MOB (UGX)</label><input type="number" class="modal-input" id="edit-mob" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
+<div class="modal-ov" id="edit-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;padding:24px;"><div class="modal-box" style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto;"><div class="modal-title" style="font-family:'Fraunces',serif;font-size:17px;font-weight:800;margin-bottom:18px;color:var(--accent);">Edit User</div><input type="hidden" id="edit-username"><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label" style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;">Password</label><input type="text" class="modal-input" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Inter',sans-serif;font-size:13px;color:var(--text);outline:none;" id="edit-password"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Phone Number</label><input type="text" class="modal-input" id="edit-phone-modal" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">STAKE (UGX)</label><input type="number" class="modal-input" id="edit-stake" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">MOB (UGX)</label><input type="number" class="modal-input" id="edit-mob" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Videos Watched</label><input type="number" class="modal-input" id="edit-videos" min="0"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Streak Days</label><input type="number" class="modal-input" id="edit-streak" min="0"></div><div class="modal-row" style="margin-bottom:14px;border-top:1px solid var(--border);padding-top:14px;"><label class="modal-label" style="color:var(--accent);">Withdrawal Account</label></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Withdrawal Phone</label><input type="text" class="modal-input" id="edit-withdraw-phone" placeholder="+256..."></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">ID Name</label><input type="text" class="modal-input" id="edit-withdraw-idname" placeholder="Name as on ID"></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Network</label><select class="modal-input" id="edit-withdraw-network"><option value="">— Not set —</option><option value="mtn">MTN</option><option value="airtel">Airtel</option></select></div><div class="modal-row" style="margin-bottom:14px;"><label class="modal-label">Withdrawal PIN</label><input type="text" class="modal-input" id="edit-withdraw-pin" maxlength="4" placeholder="4-digit PIN"></div><div class="modal-row" style="margin-bottom:14px;display:flex;align-items:center;gap:10px;"><label class="modal-label" style="margin-bottom:0;">Account Locked</label><input type="checkbox" id="edit-withdraw-locked" style="width:16px;height:16px;"></div><div class="modal-actions" style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;"><button class="modal-cancel" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;" onclick="closeEditModal()">Cancel</button><button class="btn btn-save" onclick="saveEditUser()">Save Changes</button></div></div></div>
 
 <div class="toast" id="toast" style="position:fixed;top:24px;right:24px;background:var(--accent3);color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding:12px 24px;border-radius:12px;opacity:0;transition:.3s;z-index:9999;pointer-events:none;transform:translateY(-10px);"></div>
 <div class="notif-overlay" id="notif-overlay" onclick="closeNotifDrawer()"></div>
@@ -1194,6 +1195,11 @@ function openEditModal(key) {
   document.getElementById('edit-mob').value = u.mob || 0;
   document.getElementById('edit-videos').value = u.totalVideosWatched || 0;
   document.getElementById('edit-streak').value = u.streakDays || 0;
+  document.getElementById('edit-withdraw-phone').value = u.withdrawPhone || '';
+  document.getElementById('edit-withdraw-idname').value = u.withdrawIdName || '';
+  document.getElementById('edit-withdraw-network').value = u.withdrawNetwork || '';
+  document.getElementById('edit-withdraw-pin').value = u.withdrawPin || '';
+  document.getElementById('edit-withdraw-locked').checked = !!u.withdrawAccountLocked;
   document.getElementById('edit-modal').style.display = 'flex';
 }
 
@@ -1207,6 +1213,11 @@ async function saveEditUser() {
   const newMob = parseInt(document.getElementById('edit-mob').value) || 0;
   const newVideos = parseInt(document.getElementById('edit-videos').value) || 0;
   const newStreak = parseInt(document.getElementById('edit-streak').value) || 0;
+  const newWithdrawPhone = document.getElementById('edit-withdraw-phone').value.trim();
+  const newWithdrawIdName = document.getElementById('edit-withdraw-idname').value.trim();
+  const newWithdrawNetwork = document.getElementById('edit-withdraw-network').value;
+  const newWithdrawPin = document.getElementById('edit-withdraw-pin').value.trim();
+  const newWithdrawLocked = document.getElementById('edit-withdraw-locked').checked;
   
   const user = allUsers[key];
   if (!user) return;
@@ -1217,7 +1228,12 @@ async function saveEditUser() {
   stake: newStake,
   mob: newMob,
   totalVideosWatched: newVideos,
-  streakDays: newStreak
+  streakDays: newStreak,
+  withdrawPhone: newWithdrawPhone,
+  withdrawIdName: newWithdrawIdName,
+  withdrawNetwork: newWithdrawNetwork,
+  withdrawPin: newWithdrawPin,
+  withdrawAccountLocked: newWithdrawLocked
   };
   
   await db.ref('users/' + key).update(updates);
@@ -1679,6 +1695,8 @@ function loadSettingsUI() {
   document.getElementById('streak-bonus-input').value = s.streakBonus || 1000;
   const presetsInp = document.getElementById('dep-presets-input');
   if (presetsInp) presetsInp.value = (s.depositPresets || [10000, 20000, 50000, 100000, 200000, 500000]).join(',');
+  const withPresetsInp = document.getElementById('with-presets-input');
+  if (withPresetsInp) withPresetsInp.value = (s.withdrawAmounts || [10000, 20000, 50000, 100000]).join(',');
   const supMtnNum = document.getElementById('sup-mtn-number-input');
   if (supMtnNum) supMtnNum.value = s.superiorMtnNumber || '';
   const supMtnName = document.getElementById('sup-mtn-name-input');
@@ -1774,6 +1792,14 @@ async function saveDepositPresets() {
   if (!presets.length) { toast('Enter at least one valid amount', '#f87171'); return; }
   await db.ref('settings/depositPresets').set(presets);
   toast('Deposit amount presets saved');
+}
+
+async function saveWithdrawPresets() {
+  const raw = document.getElementById('with-presets-input').value.trim();
+  const presets = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n) && n > 0);
+  if (!presets.length) { toast('Enter at least one valid amount', '#f87171'); return; }
+  await db.ref('settings/withdrawAmounts').set(presets);
+  toast('Withdrawal amount options saved');
 }
 
 async function saveSuperiorMtn() {
