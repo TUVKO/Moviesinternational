@@ -2923,7 +2923,6 @@ async function purchaseLevel(levelKey, cost, levelName) {
   stake: newStake,
   mob: newMob,
   currentLevel: newCurrentLevel,
-  currentLevelActivatedDate: getUTCKey(),
   purchasedLevels: purchasedLevels,
   [`transactions/${txKey}`]: {
   type: 'Level Purchase',
@@ -3952,18 +3951,6 @@ function sendAdminNotification(type, username, amount, message) {
   } catch (e) { console.warn(e); }
 }
 
-// Returns the number of full days between a YYYY-MM-DD EAT date-key and today's EAT date-key
-function daysSinceEAT(dateKeyStr) {
-  if (!dateKeyStr) return Infinity;
-  const parts = dateKeyStr.split('-').map(Number);
-  if (parts.length !== 3 || parts.some(isNaN)) return Infinity;
-  const past = Date.UTC(parts[0], parts[1] - 1, parts[2]);
-  const todayKey = getUTCKey();
-  const tParts = todayKey.split('-').map(Number);
-  const today = Date.UTC(tParts[0], tParts[1] - 1, tParts[2]);
-  return Math.floor((today - past) / (1000 * 60 * 60 * 24));
-}
-
 // ============================================================
 // LOGIN
 // ============================================================
@@ -3997,24 +3984,8 @@ async function doLogin() {
   return;
   }
     
-  const INACTIVITY_MESSAGE = 'This account was cancelled — no video activity was recorded in the last 4 days. Contact support to reactivate your account.';
-    
-  // Auto-lock Level Users (Trainee exempt) after 4+ days with no video activity.
-  // Reference point is whichever is more recent: last video watched, or last level upgrade —
-  // so upgrading always resets the clock, even if the user was idle as a Trainee beforehand.
-  if (!userData.locked && userData.currentLevel && userData.currentLevel !== 'trainee') {
-  const lastActivityKey = [userData.lastWatchDate, userData.currentLevelActivatedDate].filter(Boolean).sort().pop() || userData.traineeStartDate;
-  const daysInactive = daysSinceEAT(lastActivityKey);
-  if (daysInactive >= 4) {
-  await db.ref('users/' + safeKey(fullPhone)).update({ locked: true, lockReason: 'inactivity' });
-  setErr('login-general-err', true, INACTIVITY_MESSAGE);
-  return;
-  }
-  }
-    
   if (userData.locked) {
-  const lockedMsg = userData.lockReason === 'inactivity' ? INACTIVITY_MESSAGE : 'Your account has been locked. Contact support.';
-  setErr('login-general-err', true, lockedMsg);
+  setErr('login-general-err', true, 'Your account has been locked. Contact support.');
   return;
   }
     
