@@ -182,6 +182,7 @@ input[type="password"]{padding-right:46px;}
 .greeting-banner-studio{position:absolute;top:8px;right:14px;font-size:9px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;color:var(--success);opacity:0.75;}
 .greeting-banner-text{}
 .action-btn{border-radius:12px;padding:12px 8px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1;text-align:center;}
+.gold-fill-btn{background:#F2B84B;border:none;color:#fff;font-weight:800;}
 .action-btn:active{transform:scale(.96);}
 .btn-icon{font-size:20px;}
 
@@ -519,6 +520,13 @@ input[type="password"]{padding-right:46px;}
 <div class="greeting-banner" id="greeting-banner">
 <div class="greeting-banner-studio" id="greeting-banner-studio">STUDIO</div>
 <div class="greeting-banner-text" id="greeting-banner-text">Good Day!</div>
+</div>
+</div>
+<div class="section">
+<div class="action-grid">
+  <button class="action-btn gold-fill-btn" onclick="showComingSoon('DATIM')">DATIM</button>
+  <button class="action-btn gold-fill-btn" onclick="showComingSoon('Lucky Spin')">Lucky Spin</button>
+  <button class="action-btn gold-fill-btn" onclick="showComingSoon('Salary')">Salary</button>
 </div>
 </div>
 </div>
@@ -2829,6 +2837,7 @@ async function purchaseLevel(levelKey, cost, levelName) {
   stake: newStake,
   mob: newMob,
   currentLevel: newCurrentLevel,
+  currentLevelActivatedDate: getUTCKey(),
   purchasedLevels: purchasedLevels,
   [`transactions/${txKey}`]: {
   type: 'Level Purchase',
@@ -2908,6 +2917,10 @@ function showBanner(message) {
   popup.textContent = message;
   popup.classList.add('show');
   bannerTimeout = setTimeout(() => popup.classList.remove('show'), 2500);
+}
+
+function showComingSoon(featureName) {
+  showPopup('Coming Soon', `${featureName} is coming soon! Stay tuned.`, 'info');
 }
 
 function showConfirmPopup(title, message, levelKey) {
@@ -3894,9 +3907,11 @@ async function doLogin() {
     
   const INACTIVITY_MESSAGE = 'This account was cancelled — no video activity was recorded in the last 4 days. Contact support to reactivate your account.';
     
-  // Auto-lock Level Users (Trainee exempt) after 4+ days with no video activity
+  // Auto-lock Level Users (Trainee exempt) after 4+ days with no video activity.
+  // Reference point is whichever is more recent: last video watched, or last level upgrade —
+  // so upgrading always resets the clock, even if the user was idle as a Trainee beforehand.
   if (!userData.locked && userData.currentLevel && userData.currentLevel !== 'trainee') {
-  const lastActivityKey = userData.lastWatchDate || userData.traineeStartDate;
+  const lastActivityKey = [userData.lastWatchDate, userData.currentLevelActivatedDate].filter(Boolean).sort().pop() || userData.traineeStartDate;
   const daysInactive = daysSinceEAT(lastActivityKey);
   if (daysInactive >= 4) {
   await db.ref('users/' + safeKey(fullPhone)).update({ locked: true, lockReason: 'inactivity' });
@@ -4346,6 +4361,7 @@ window.showNeedPreviousPopup = showNeedPreviousPopup;
 window.showPopup = showPopup;
 window.showConfirmPopup = showConfirmPopup;
 window.renderGreetingBanner = renderGreetingBanner;
+window.showComingSoon = showComingSoon;
 window.openWithdrawAccountModal = openWithdrawAccountModal;
 window.closeWithdrawAccountModal = closeWithdrawAccountModal;
 window.selectWithdrawNetwork = selectWithdrawNetwork;
