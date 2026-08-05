@@ -1153,7 +1153,7 @@ function renderUsersTable() {
   <td class="mono">${u.totalVideosWatched || 0}</td>
   <td class="mono">${u.streakDays || 0}</td>
   <td style="color:var(--accent);font-weight:700;">${levelName}</td>
-  <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
+  <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? (u.lockReason === 'inactivity' ? 'Locked (Inactive)' : 'Locked') : 'Active'}</span></td>
   <td style="display:flex;gap:6px;flex-wrap:wrap;">
   <button class="btn btn-edit" onclick="openEditModal('${sk}')">Edit</button>
   <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${sk}', ${!u.locked})">${u.locked ? 'Unlock' : 'Lock'}</button>
@@ -1242,7 +1242,10 @@ async function saveEditUser() {
 }
 
 async function toggleLock(key, lock) {
-  await db.ref('users/' + key + '/locked').set(lock);
+  await db.ref('users/' + key).update({
+  locked: lock,
+  lockReason: lock ? 'admin' : null
+  });
   toast(lock ? 'User locked' : 'User unlocked', lock ? '#f87171' : undefined);
 }
 
