@@ -305,6 +305,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="nav-item" onclick="showPage('pg-support-chat')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span><span>Support Chat</span><span class="nav-badge" id="support-chat-nav-badge">0</span></div>
 <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
 <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
+<div class="nav-item" onclick="showPage('pg-datim')"><span class="nav-icon">🎬</span><span>DATIM Plans</span></div>
 <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
 </div>
 <div class="sidebar-footer">
@@ -530,6 +531,40 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 </div>
 
+  <!-- DATIM PLANS -->
+<div class="page" id="pg-datim">
+<div class="page-title">DATIM Plans</div>
+<div class="page-sub">Configure movie company stake plans. Deleting a plan does not affect users already staked in it.</div>
+      
+<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+  <button class="btn btn-save" onclick="addDatimPlanRow()">Add Plan</button>
+</div>
+      
+<div class="table-wrap">
+<div class="table-header">
+<div class="table-title">Stake Plans</div>
+  <span id="datim-plan-count" style="font-size:12px;color:var(--muted);">0 plans</span>
+</div>
+<div style="overflow-x:auto;padding:0 4px;">
+  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px;">
+  <thead>
+  <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Movie Company</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Min Amount (UGX)</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Percentage</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Days</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Active</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
+</tr>
+</thead>
+  <tbody id="datim-plans-admin-body">
+  <tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
   <!-- SETTINGS -->
 <div class="page" id="pg-settings">
 <div class="page-title">Settings</div>
@@ -705,6 +740,7 @@ let allSettings = {
   subAffiliateLevel2Percent: 1
 };
 let allLevels = {};
+let allDatimPlans = {};
 let allVideos = {};
 let currentAdmin = null;
 let searchFilter = '';
@@ -724,6 +760,7 @@ let manualDepositsUnsubscribe = null;
 let supportChatsUnsubscribe = null;
 let adminTxUnsubscribe = null;
 let levelsUnsubscribe = null;
+let datimPlansUnsubscribe = null;
 let videosUnsubscribe = null;
 
 function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
@@ -937,6 +974,141 @@ async function resetDefaultLevels() {
 }
 
 // ============================================================
+// DATIM PLANS MANAGEMENT (ADMIN)
+// ============================================================
+const DATIM_STUDIO_NAMES = [
+  "Walt Disney Studios", "Marvel Studios", "Lucasfilm", "Pixar Animation Studios", "20th Century Studios",
+  "Universal Pictures", "Blumhouse Productions", "Illumination Entertainment", "Focus Features", "DreamWorks Animation",
+  "Warner Bros. Pictures", "DC Studios", "New Line Cinema", "Sony Pictures Entertainment", "Columbia Pictures",
+  "TriStar Pictures", "Screen Gems", "Sony Pictures Classics", "Paramount Pictures", "Nickelodeon Movies",
+  "Lionsgate Films", "Millennium Media", "A24", "Neon", "Skydance Media",
+  "Legendary Entertainment", "Amazon MGM Studios", "Netflix Studios", "Apple Original Films", "Amblin Entertainment",
+  "Bad Robot Productions", "Plan B Entertainment", "Working Title Films", "StudioCanal", "STX Entertainment",
+  "Participant", "Imagine Entertainment", "Toho Company", "Shochiku", "Toei Company",
+  "Kadokawa Pictures", "CJ ENM Entertainment", "Showbox", "Lotte Entertainment", "Constantin Film",
+  "Gaumont Film Company", "Pathé", "EuropaCorp", "BFI Film Fund", "Film4 Productions"
+];
+
+function startDatimPlansListener() {
+  if (datimPlansUnsubscribe) datimPlansUnsubscribe();
+  datimPlansUnsubscribe = db.ref('datimPlans').on('value', (snap) => {
+  allDatimPlans = snap.val() || {};
+  renderDatimPlansAdminTable();
+  });
+}
+
+function renderDatimPlansAdminTable() {
+  const tbody = document.getElementById('datim-plans-admin-body');
+  const countEl = document.getElementById('datim-plan-count');
+  if (!tbody) return;
+  
+  const keys = Object.keys(allDatimPlans);
+  if (countEl) countEl.textContent = keys.length + ' plans';
+  
+  if (!keys.length) {
+  tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">No plans configured. Click "Add Plan" to create one.</td></tr>';
+  return;
+  }
+  
+  const studioOptions = DATIM_STUDIO_NAMES.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  
+  tbody.innerHTML = keys.map(key => {
+  const p = allDatimPlans[key];
+  if (!p) return '';
+  const isActive = p.active !== false;
+  
+  return `<tr>
+  <td style="padding:8px 10px;">
+  <select class="datim-input" data-key="${key}" data-field="company" style="width:160px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px;">
+  ${studioOptions}
+  </select>
+</td>
+  <td style="padding:8px 10px;"><input type="number" class="datim-input mono" data-key="${key}" data-field="minAmount" value="${p.minAmount || 0}" style="width:100px;"></td>
+  <td style="padding:8px 10px;"><input type="number" class="datim-input mono" data-key="${key}" data-field="percentage" value="${p.percentage || 0}" style="width:70px;"></td>
+  <td style="padding:8px 10px;"><input type="number" class="datim-input mono" data-key="${key}" data-field="days" value="${p.days || 0}" style="width:70px;"></td>
+  <td style="padding:8px 10px;">
+<div class="lock-toggle">
+  <input type="checkbox" id="datim_active_${key}" ${isActive ? 'checked' : ''} onchange="toggleDatimPlanActive('${key}')">
+  <span style="font-size:9px;color:${isActive ? 'var(--success)' : 'var(--warn)'};">${isActive ? 'Active' : 'Hidden'}</span>
+</div>
+</td>
+  <td style="padding:8px 10px;">
+  <button class="btn btn-edit" onclick="saveDatimPlan('${key}')" style="padding:4px 8px;font-size:9px;">Save</button>
+  <button class="btn btn-delete" onclick="deleteDatimPlan('${key}')" style="padding:4px 8px;font-size:9px;">Delete</button>
+</td>
+</tr>`;
+  }).join('');
+  
+  // Set the select's current value after innerHTML (can't set via HTML value attribute cleanly for select)
+  keys.forEach(key => {
+  const p = allDatimPlans[key];
+  const sel = tbody.querySelector(`select[data-key="${key}"]`);
+  if (sel && p) sel.value = p.company || DATIM_STUDIO_NAMES[0];
+  });
+  
+  tbody.querySelectorAll('.datim-input').forEach(input => {
+  input.onchange = function() { saveDatimPlan(this.dataset.key); };
+  });
+}
+
+async function saveDatimPlan(key) {
+  const inputs = document.querySelectorAll(`.datim-input[data-key="${key}"]`);
+  const planData = { company: '', minAmount: 0, percentage: 0, days: 0 };
+  
+  inputs.forEach(input => {
+  const field = input.dataset.field;
+  const val = input.value;
+  if (field === 'company') {
+  planData.company = val;
+  } else {
+  planData[field] = parseInt(val) || 0;
+  }
+  });
+  
+  const current = allDatimPlans[key] || {};
+  planData.active = current.active !== false;
+  
+  try {
+  await db.ref('datimPlans/' + key).update(planData);
+  toast('Plan saved');
+  } catch (e) {
+  toast('Error saving plan', '#f87171');
+  }
+}
+
+async function toggleDatimPlanActive(key) {
+  const current = allDatimPlans[key] || {};
+  const newActive = !(current.active !== false);
+  try {
+  await db.ref('datimPlans/' + key + '/active').set(newActive);
+  toast(newActive ? 'Plan activated' : 'Plan hidden from users');
+  } catch (e) {
+  toast('Error toggling plan', '#f87171');
+  }
+}
+
+async function addDatimPlanRow() {
+  const newKey = 'plan_' + Date.now();
+  const defaultData = {
+  company: DATIM_STUDIO_NAMES[0],
+  minAmount: 50000,
+  percentage: 10,
+  days: 7,
+  active: true
+  };
+  await db.ref('datimPlans/' + newKey).set(defaultData);
+  toast('Added new plan');
+}
+
+async function deleteDatimPlan(key) {
+  const confirmed = await confirmAction('Delete Plan?', 'Delete this plan? Users already staked in it will not be affected and will still receive their payout on schedule.');
+  if (confirmed) {
+  await db.ref('datimPlans/' + key).remove();
+  toast('Plan deleted');
+  }
+}
+
+// ============================================================
 // VIDEOS MANAGEMENT - NO REWARD FIELD
 // ============================================================
 
@@ -1026,6 +1198,7 @@ function renderAdminVideosTable() {
 function startRealtimeListeners() {
   startVideosListener();
   startLevelsListener();
+  startDatimPlansListener();
   
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
@@ -2219,7 +2392,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-manual-deposits': 4, 'pg-support-chat': 5, 'pg-videos': 6, 'pg-levels': 7, 'pg-settings': 8 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-manual-deposits': 4, 'pg-support-chat': 5, 'pg-videos': 6, 'pg-levels': 7, 'pg-datim': 8, 'pg-settings': 9 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
@@ -2227,6 +2400,7 @@ function showPage(id) {
   if (id === 'pg-support-chat') renderSupportChatList();
   if (id === 'pg-videos') renderAdminVideosTable();
   if (id === 'pg-levels') renderLevelsAdminTable();
+  if (id === 'pg-datim') renderDatimPlansAdminTable();
 }
 
 function showTerms() { 

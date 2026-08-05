@@ -351,6 +351,17 @@ input[type="password"]{padding-right:46px;}
 .tx-row-amount.positive{color:#10b981;}
 .tx-row-amount.negative{color:#ef4444;}
 .tx-row-status{flex-shrink:0;font-size:9px;font-weight:800;padding:4px 8px;border-radius:8px;text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap;}
+.datim-plan-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;}
+.datim-plan-company{font-size:14px;font-weight:800;color:var(--accent);margin-bottom:8px;}
+.datim-plan-details{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:12px;}
+.datim-plan-details strong{color:var(--text);font-family:'JetBrains Mono',monospace;}
+.datim-plan-input-row{display:flex;gap:8px;}
+.datim-plan-input-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;}
+.datim-lock-btn{background:#F2B84B;color:#fff;border:none;border-radius:10px;padding:10px 16px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;}
+.datim-stake-card{background:var(--surface);border:1px solid var(--success);border-radius:14px;padding:14px;margin-bottom:12px;}
+.datim-stake-company{font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.datim-stake-details{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+.datim-stake-details strong{color:var(--success);font-family:'JetBrains Mono',monospace;}
 
 .tx-empty-state{text-align:center;padding:60px 20px;}
 .tx-empty-icon{font-size:48px;margin-bottom:12px;}
@@ -524,7 +535,7 @@ input[type="password"]{padding-right:46px;}
 </div>
 <div class="section">
 <div class="action-grid">
-  <button class="action-btn gold-fill-btn" onclick="showComingSoon('DATIM')">DATIM</button>
+  <button class="action-btn gold-fill-btn" onclick="switchTab('datim')">DATIM</button>
   <button class="action-btn gold-fill-btn" onclick="showComingSoon('Lucky Spin')">Lucky Spin</button>
   <button class="action-btn gold-fill-btn" onclick="showComingSoon('Salary')">Salary</button>
 </div>
@@ -690,6 +701,29 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 
   <!-- Deposit Button -->
   <button class="green-btn" onclick="switchTab('deposit')" style="margin-top:12px;width:100%;">Deposit to General Account</button>
+</div>
+</div>
+
+  <!-- DATIM -->
+<div class="dash-section" id="sec-datim">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">DATIM</div><div class="inner-sub">Lock funds into movie company stakes</div></div></div>
+<div class="section">
+<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
+<div>
+<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your General Account</div>
+<div style="font-size:15px;font-weight:800;color:var(--accent);" id="datim-stake-balance">UGX 0</div>
+</div>
+</div>
+
+<div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">Available Plans</div>
+<div id="datim-plans-list">
+<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading plans...</div>
+</div>
+
+<div style="font-size:13px;font-weight:800;color:var(--text);margin:20px 0 10px;">My Active Stakes</div>
+<div id="datim-my-stakes">
+<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">No Active Stakes</div><div class="tx-empty-text">Lock funds into a plan above to get started.</div></div>
+</div>
 </div>
 </div>
 
@@ -1885,6 +1919,14 @@ function startVideoListener() {
   });
 }
 
+let datimPlansData = {};
+function startDatimPlansListener() {
+  db.ref('datimPlans').on('value', (snap) => {
+  datimPlansData = snap.val() || {};
+  renderDatimPlans();
+  });
+}
+
 // Simple deterministic string hash, used to seed the daily shuffle
 function hashSeed(str) {
   let h = 0;
@@ -2534,7 +2576,11 @@ function updateProfileUI() {
   updateSettingsInfo();
   updateIncomeStatsUI();
   renderGreetingBanner();
-  if (currentUsername) cleanupExpiredMissedCommissions(safeKey(currentUsername));
+  renderMyDatimStakes();
+  if (currentUsername) {
+  cleanupExpiredMissedCommissions(safeKey(currentUsername));
+  checkMaturedDatimStakes(safeKey(currentUsername));
+  }
   
   const isTrainee = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
   const lockedView = document.getElementById('recruit-locked-view');
@@ -2709,6 +2755,142 @@ async function cleanupExpiredMissedCommissions(userKey) {
   } catch (error) {
   console.error('Error cleaning up missed commissions:', error);
   }
+}
+
+// ============================================================
+// DATIM — movie company stake plans
+// ============================================================
+async function checkMaturedDatimStakes(userKey) {
+  try {
+  const snap = await db.ref('users/' + userKey + '/datimStakes').get();
+  if (!snap.exists()) return;
+  const stakes = snap.val();
+  const todayKey = getUTCKey();
+    
+  const userSnap = await db.ref('users/' + userKey).get();
+  if (!userSnap.exists()) return;
+  const user = userSnap.val();
+  let mob = user.mob || 0;
+    
+  const updates = {};
+  let anyMatured = false;
+    
+  Object.entries(stakes).forEach(([stakeId, stake]) => {
+  if (stake.maturityDate && stake.maturityDate <= todayKey) {
+  const profit = Math.round((stake.amount || 0) * (stake.percentage || 0) / 100);
+  const payout = (stake.amount || 0) + profit;
+  mob += payout;
+  updates[`datimStakes/${stakeId}`] = null;
+  anyMatured = true;
+  }
+  });
+    
+  if (anyMatured) {
+  updates.mob = mob;
+  await db.ref('users/' + userKey).update(updates);
+  }
+  } catch (error) {
+  console.error('Error checking matured DATIM stakes:', error);
+  }
+}
+
+function renderDatimPlans() {
+  const wrap = document.getElementById('datim-plans-list');
+  if (!wrap) return;
+  const balEl = document.getElementById('datim-stake-balance');
+  if (balEl && currentUser) balEl.textContent = fmt(currentUser.stake || 0);
+    
+  const activePlans = Object.entries(datimPlansData).filter(([id, p]) => p.active !== false);
+  if (!activePlans.length) {
+  wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">No Plans Available</div><div class="tx-empty-text">Check back soon for new stake plans.</div></div>';
+  return;
+  }
+    
+  wrap.innerHTML = activePlans.map(([planId, plan]) => `
+<div class="datim-plan-card">
+<div class="datim-plan-company">${escapeHtml(plan.company || 'Unknown Company')}</div>
+<div class="datim-plan-details">
+<span>Min: <strong>${fmt(plan.minAmount || 0)}</strong></span>
+<span>Return: <strong>${plan.percentage || 0}%</strong></span>
+<span>Days: <strong>${plan.days || 0}</strong></span>
+</div>
+<div class="datim-plan-input-row">
+<input type="number" id="datim-amount-${planId}" placeholder="Min ${fmt(plan.minAmount || 0)}" min="${plan.minAmount || 0}">
+<button class="datim-lock-btn" onclick="lockDatimStake('${planId}')">Lock Funds</button>
+</div>
+</div>
+  `).join('');
+}
+
+async function lockDatimStake(planId) {
+  const plan = datimPlansData[planId];
+  if (!plan) { showBanner('This plan is no longer available.'); return; }
+  const input = document.getElementById('datim-amount-' + planId);
+  const amount = parseInt(input?.value || '0');
+  const minAmount = plan.minAmount || 0;
+    
+  if (!amount || amount < minAmount) {
+  showBanner(`Minimum amount for this plan is ${fmt(minAmount)}`);
+  return;
+  }
+    
+  const currentStake = currentUser?.stake || 0;
+  if (amount > currentStake) {
+  showBanner('Insufficient General Account balance.');
+  return;
+  }
+    
+  try {
+  const userKey = safeKey(currentUsername);
+  const stakeId = 'datim_' + Date.now();
+  const startDate = getUTCKey();
+  const [sy, sm, sd] = startDate.split('-').map(Number);
+  const startMs = Date.UTC(sy, sm - 1, sd);
+  const maturityMs = startMs + (plan.days || 0) * 86400000;
+  const maturityDate = new Date(maturityMs).toISOString().slice(0, 10);
+    
+  await db.ref('users/' + userKey).update({
+  stake: currentStake - amount,
+  [`datimStakes/${stakeId}`]: {
+  planId: planId,
+  company: plan.company || 'Unknown Company',
+  amount: amount,
+  percentage: plan.percentage || 0,
+  days: plan.days || 0,
+  startDate: startDate,
+  maturityDate: maturityDate
+  }
+  });
+    
+  if (input) input.value = '';
+  showBanner(`${fmt(amount)} locked into ${plan.company}!`);
+  } catch (error) {
+  console.error('Error locking DATIM stake:', error);
+  showBanner('Failed to lock funds. Please try again.');
+  }
+}
+
+function renderMyDatimStakes() {
+  const wrap = document.getElementById('datim-my-stakes');
+  if (!wrap || !currentUser) return;
+  const stakes = currentUser.datimStakes || {};
+  const entries = Object.values(stakes);
+    
+  if (!entries.length) {
+  wrap.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">No Active Stakes</div><div class="tx-empty-text">Lock funds into a plan above to get started.</div></div>';
+  return;
+  }
+    
+  wrap.innerHTML = entries.map(stake => `
+<div class="datim-stake-card">
+<div class="datim-stake-company">${escapeHtml(stake.company || 'Unknown Company')}</div>
+<div class="datim-stake-details">
+<span>Locked: <strong>${fmt(stake.amount || 0)}</strong></span>
+<span>Return: <strong>${stake.percentage || 0}%</strong></span>
+<span>Matures: <strong>${stake.maturityDate || '—'}</strong></span>
+</div>
+</div>
+  `).join('');
 }
 
 async function recoverMissedCommissions(userKey, newLevelKey) {
@@ -3996,6 +4178,7 @@ async function doLogin() {
     
   startUserListener(fullPhone);
   startVideoListener();
+  startDatimPlansListener();
     
   updateBalanceUI();
   renderHistory();
@@ -4108,6 +4291,7 @@ async function doRegister() {
     
   startUserListener(fullPhone);
   startVideoListener();
+  startDatimPlansListener();
   updateBalanceUI();
   renderHistory();
   updateProfileUI();
@@ -4168,7 +4352,8 @@ const tabMap = {
   'deposit-phone': 'sec-deposit-phone',
   'deposit-comingsoon': 'sec-deposit-comingsoon',
   withdraw: 'sec-withdraw',
-  errands: 'sec-errands'
+  errands: 'sec-errands',
+  datim: 'sec-datim'
 };
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
@@ -4425,6 +4610,9 @@ window.showPopup = showPopup;
 window.showConfirmPopup = showConfirmPopup;
 window.renderGreetingBanner = renderGreetingBanner;
 window.showComingSoon = showComingSoon;
+window.lockDatimStake = lockDatimStake;
+window.renderDatimPlans = renderDatimPlans;
+window.renderMyDatimStakes = renderMyDatimStakes;
 window.openWithdrawAccountModal = openWithdrawAccountModal;
 window.closeWithdrawAccountModal = closeWithdrawAccountModal;
 window.selectWithdrawNetwork = selectWithdrawNetwork;
@@ -4452,6 +4640,7 @@ async function initApp() {
   startSettingsListener();
   startLevelsListener();
   startVideoListener();
+  startDatimPlansListener();
   
   const savedUser = sessionStorage.getItem('pp_current_user');
   if (savedUser) {
