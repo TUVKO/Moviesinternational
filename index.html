@@ -1304,6 +1304,78 @@ function isHolidayEAT() {
   return HOLIDAYS_INTERNATIONAL.includes(todayKey) || HOLIDAYS_UGANDA.includes(todayKey) || HOLIDAYS_PHILIPPINES.includes(todayKey);
 }
 
+// Legendary film actor memorial dates. Keyed by MM-DD so they recur every year automatically.
+// No video watching or withdrawals on these dates.
+const ACTOR_MEMORIAL_DATES = {
+  '01-06': ['Sidney Poitier'],
+  '01-14': ['Humphrey Bogart', 'Alan Rickman', 'Peter Finch'],
+  '01-20': ['Audrey Hepburn'],
+  '01-22': ['Heath Ledger'],
+  '01-25': ['John Hurt'],
+  '02-01': ['Buster Keaton', 'Carl Weathers'],
+  '02-02': ['Philip Seymour Hoffman', 'Gene Kelly'],
+  '02-05': ['Kirk Douglas'],
+  '02-11': ['Takashi Shimura'],
+  '02-16': ['Bruno Ganz'],
+  '02-24': ['Sridevi'],
+  '03-08': ['Max von Sydow'],
+  '03-23': ['Elizabeth Taylor'],
+  '04-01': ['Leslie Cheung'],
+  '04-15': ['Pedro Infante'],
+  '04-20': ['Cantinflas'],
+  '04-29': ['Irrfan Khan'],
+  '05-10': ['Joan Crawford'],
+  '05-26': ['Ray Liotta'],
+  '06-07': ['Christopher Lee'],
+  '06-11': ['John Wayne'],
+  '06-12': ['Gregory Peck'],
+  '06-20': ['Donald Sutherland'],
+  '06-22': ['Judy Garland'],
+  '06-29': ['Katharine Hepburn'],
+  '07-01': ['Marlon Brando'],
+  '07-02': ['James Stewart'],
+  '07-07': ['Dilip Kumar'],
+  '07-08': ['Vivien Leigh'],
+  '07-10': ['Omar Sharif'],
+  '07-11': ['Laurence Olivier'],
+  '07-20': ['Bruce Lee'],
+  '08-04': ['Marilyn Monroe'],
+  '08-11': ['Robin Williams'],
+  '08-12': ['Henry Fonda'],
+  '08-18': ['Alain Delon'],
+  '08-28': ['Chadwick Boseman'],
+  '08-29': ['Ingrid Bergman'],
+  '09-06': ['Jean-Paul Belmondo'],
+  '09-14': ['Grace Kelly'],
+  '09-26': ['Paul Newman'],
+  '09-27': ['Maggie Smith', 'Michael Gambon'],
+  '09-30': ['James Dean'],
+  '10-06': ['Bette Davis'],
+  '10-10': ['Orson Welles'],
+  '10-14': ['Robbie Coltrane'],
+  '10-31': ['Sean Connery'],
+  '11-15': ['Soumitra Chatterjee'],
+  '11-16': ['Clark Gable'],
+  '11-29': ['Cary Grant'],
+  '12-14': ["Peter O'Toole"],
+  '12-19': ['Marcello Mastroianni'],
+  '12-24': ['Toshiro Mifune'],
+  '12-25': ['Charlie Chaplin'],
+  '12-30': ['Anita Mui']
+};
+
+function getActorMemorialToday() {
+  const todayKey = getUTCKey(); // YYYY-MM-DD (EAT)
+  const monthDay = todayKey.slice(5); // MM-DD
+  return ACTOR_MEMORIAL_DATES[monthDay] || null;
+}
+
+function formatActorNames(names) {
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return names[0] + ' and ' + names[1];
+  return names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+}
+
 function dateStr() {
   const d = new Date();
   return d.toLocaleDateString('en-UG', { day: '2-digit', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('en-UG', { hour: '2-digit', minute: '2-digit' });
@@ -1918,6 +1990,13 @@ function renderVideoGrid() {
   return;
   }
   
+  const memorialNames = getActorMemorialToday();
+  if (memorialNames) {
+  const talentWord = memorialNames.length > 1 ? 'legendary talents' : 'legendary talent';
+  grid.innerHTML = `<div class="video-empty">No video jobs are available today. We're taking a moment to remember ${escapeHtml(formatActorNames(memorialNames))}, ${talentWord} whose contributions to film will never be forgotten. Thank you for your understanding — check back tomorrow.</div>`;
+  return;
+  }
+  
   const { reward } = getRemainingVideos();
   const allVideoIds = getVideoIds();
   const todayKey = getUTCKey();
@@ -1975,6 +2054,13 @@ function openVideoPlayer(id) {
   // No video jobs on public holidays
   if (isHolidayEAT()) {
   showBanner('Video jobs are unavailable today due to a public holiday.');
+  return;
+  }
+  
+  // No video jobs on legendary actor memorial dates
+  const memorialNamesCheck = getActorMemorialToday();
+  if (memorialNamesCheck) {
+  showBanner('No video jobs are available today. We are remembering ' + formatActorNames(memorialNamesCheck) + ' today.');
   return;
   }
   
@@ -3613,6 +3699,12 @@ async function doWithdraw() {
   
   if (isHolidayEAT()) {
   showBanner('Withdrawals are unavailable today due to a public holiday.');
+  return;
+  }
+  
+  const memorialNamesWithdraw = getActorMemorialToday();
+  if (memorialNamesWithdraw) {
+  showBanner('Withdrawals are unavailable today in memory of ' + formatActorNames(memorialNamesWithdraw) + '.');
   return;
   }
   
