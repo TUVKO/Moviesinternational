@@ -546,19 +546,20 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <span id="datim-plan-count" style="font-size:12px;color:var(--muted);">0 plans</span>
 </div>
 <div style="overflow-x:auto;padding:0 4px;">
-  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:700px;">
+  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:850px;">
   <thead>
   <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Movie Company</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Min Amount (UGX)</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Percentage</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Days</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Description</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Active</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
 </tr>
 </thead>
   <tbody id="datim-plans-admin-body">
-  <tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
+  <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
 </tbody>
 </table>
 </div>
@@ -1006,7 +1007,7 @@ function renderDatimPlansAdminTable() {
   if (countEl) countEl.textContent = keys.length + ' plans';
   
   if (!keys.length) {
-  tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">No plans configured. Click "Add Plan" to create one.</td></tr>';
+  tbody.innerHTML = '<tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">No plans configured. Click "Add Plan" to create one.</td></tr>';
   return;
   }
   
@@ -1026,6 +1027,7 @@ function renderDatimPlansAdminTable() {
   <td style="padding:8px 10px;"><input type="number" class="datim-input mono" data-key="${key}" data-field="minAmount" value="${p.minAmount || 0}" style="width:100px;"></td>
   <td style="padding:8px 10px;"><input type="number" class="datim-input mono" data-key="${key}" data-field="percentage" value="${p.percentage || 0}" style="width:70px;"></td>
   <td style="padding:8px 10px;"><input type="number" class="datim-input mono" data-key="${key}" data-field="days" value="${p.days || 0}" style="width:70px;"></td>
+  <td style="padding:8px 10px;"><textarea class="datim-input" data-key="${key}" data-field="description" rows="2" style="width:180px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:6px;font-family:inherit;font-size:11px;resize:vertical;" placeholder="Short description shown to users...">${escapeHtml(p.description || '')}</textarea></td>
   <td style="padding:8px 10px;">
 <div class="lock-toggle">
   <input type="checkbox" id="datim_active_${key}" ${isActive ? 'checked' : ''} onchange="toggleDatimPlanActive('${key}')">
@@ -1053,13 +1055,13 @@ function renderDatimPlansAdminTable() {
 
 async function saveDatimPlan(key) {
   const inputs = document.querySelectorAll(`.datim-input[data-key="${key}"]`);
-  const planData = { company: '', minAmount: 0, percentage: 0, days: 0 };
+  const planData = { company: '', minAmount: 0, percentage: 0, days: 0, description: '' };
   
   inputs.forEach(input => {
   const field = input.dataset.field;
   const val = input.value;
-  if (field === 'company') {
-  planData.company = val;
+  if (field === 'company' || field === 'description') {
+  planData[field] = val;
   } else {
   planData[field] = parseInt(val) || 0;
   }
@@ -1094,6 +1096,7 @@ async function addDatimPlanRow() {
   minAmount: 50000,
   percentage: 10,
   days: 7,
+  description: '',
   active: true
   };
   await db.ref('datimPlans/' + newKey).set(defaultData);

@@ -362,6 +362,15 @@ input[type="password"]{padding-right:46px;}
 .datim-stake-company{font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px;}
 .datim-stake-details{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
 .datim-stake-details strong{color:var(--success);font-family:'JetBrains Mono',monospace;}
+.datim-plan-card{cursor:pointer;}
+.datim-detail-header{font-family:'Fraunces',serif;font-size:24px;font-weight:800;color:var(--accent);margin-bottom:8px;}
+.datim-detail-meta{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:18px;}
+.datim-detail-description{font-size:10px;line-height:1.7;color:var(--muted);white-space:pre-wrap;}
+.datim-detail-bottombar{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--surface);border-top:1px solid var(--border);padding:12px 14px;z-index:199;box-sizing:border-box;}
+.datim-account-tabs{display:flex;gap:6px;background:rgba(92,163,120,0.12);border:1px solid rgba(92,163,120,0.35);border-radius:14px;padding:6px;margin-bottom:10px;}
+.datim-account-tab{flex:1;background:transparent;border:none;border-radius:10px;padding:8px 6px;color:var(--muted);font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;cursor:pointer;transition:.2s;line-height:1.6;}
+.datim-account-tab span{font-family:'JetBrains Mono',monospace;font-size:11px;}
+.datim-account-tab.selected{background:var(--success);color:#0c2415;}
 
 .tx-empty-state{text-align:center;padding:60px 20px;}
 .tx-empty-icon{font-size:48px;margin-bottom:12px;}
@@ -708,13 +717,6 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="dash-section" id="sec-datim">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">DATIM</div><div class="inner-sub">Lock funds into movie company stakes</div></div></div>
 <div class="section">
-<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
-<div>
-<div style="font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">Your General Account</div>
-<div style="font-size:15px;font-weight:800;color:var(--accent);" id="datim-stake-balance">UGX 0</div>
-</div>
-</div>
-
 <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">Available Plans</div>
 <div id="datim-plans-list">
 <div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading plans...</div>
@@ -723,6 +725,27 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="font-size:13px;font-weight:800;color:var(--text);margin:20px 0 10px;">My Active Stakes</div>
 <div id="datim-my-stakes">
 <div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">No Active Stakes</div><div class="tx-empty-text">Lock funds into a plan above to get started.</div></div>
+</div>
+</div>
+</div>
+
+  <!-- DATIM Plan Detail -->
+<div class="dash-section" id="sec-datim-detail">
+<button class="link-back-btn" onclick="switchTab('datim')" style="margin:14px 14px 0;">← Back to Plans</button>
+<div id="datim-detail-scroll" style="padding:14px 14px 180px;">
+<div class="datim-detail-header" id="datim-detail-company">Movie Company</div>
+<div class="datim-detail-meta" id="datim-detail-meta">Min: UGX 0 · Return: 0% · Days: 0</div>
+<div class="datim-detail-description" id="datim-detail-description">No description provided.</div>
+</div>
+<div class="datim-detail-bottombar" id="datim-detail-bottombar">
+<div class="datim-account-tabs" id="datim-account-tabs">
+  <button type="button" class="datim-account-tab selected" id="datim-tab-stake" onclick="selectDatimAccount('stake')">General Account<br><span id="datim-tab-stake-bal">UGX 0</span></button>
+  <button type="button" class="datim-account-tab" id="datim-tab-mob" onclick="selectDatimAccount('mob')">Retained Wallet<br><span id="datim-tab-mob-bal">UGX 0</span></button>
+</div>
+<div id="datim-insufficient-note" style="display:none;font-size:11px;color:var(--warn);text-align:center;margin-bottom:8px;">Insufficient balance. <a href="javascript:void(0)" onclick="switchTab('deposit')" style="color:var(--accent);font-weight:800;">Deposit now →</a></div>
+<div style="display:flex;gap:8px;">
+<input type="number" id="datim-detail-amount" placeholder="Enter amount" oninput="checkDatimInsufficientBalance()" style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;">
+<button class="datim-lock-btn" onclick="lockDatimStakeFromDetail()">Lock Funds</button>
 </div>
 </div>
 </div>
@@ -2797,8 +2820,6 @@ async function checkMaturedDatimStakes(userKey) {
 function renderDatimPlans() {
   const wrap = document.getElementById('datim-plans-list');
   if (!wrap) return;
-  const balEl = document.getElementById('datim-stake-balance');
-  if (balEl && currentUser) balEl.textContent = fmt(currentUser.stake || 0);
     
   const activePlans = Object.entries(datimPlansData).filter(([id, p]) => p.active !== false);
   if (!activePlans.length) {
@@ -2807,26 +2828,68 @@ function renderDatimPlans() {
   }
     
   wrap.innerHTML = activePlans.map(([planId, plan]) => `
-<div class="datim-plan-card">
+<div class="datim-plan-card" onclick="openDatimPlanDetail('${planId}')">
 <div class="datim-plan-company">${escapeHtml(plan.company || 'Unknown Company')}</div>
 <div class="datim-plan-details">
 <span>Min: <strong>${fmt(plan.minAmount || 0)}</strong></span>
 <span>Return: <strong>${plan.percentage || 0}%</strong></span>
 <span>Days: <strong>${plan.days || 0}</strong></span>
 </div>
-<div class="datim-plan-input-row">
-<input type="number" id="datim-amount-${planId}" placeholder="Min ${fmt(plan.minAmount || 0)}" min="${plan.minAmount || 0}">
-<button class="datim-lock-btn" onclick="lockDatimStake('${planId}')">Lock Funds</button>
-</div>
 </div>
   `).join('');
 }
 
-async function lockDatimStake(planId) {
+let currentDatimDetailPlanId = null;
+let selectedDatimAccount = 'stake';
+
+function openDatimPlanDetail(planId) {
   const plan = datimPlansData[planId];
   if (!plan) { showBanner('This plan is no longer available.'); return; }
-  const input = document.getElementById('datim-amount-' + planId);
-  const amount = parseInt(input?.value || '0');
+  currentDatimDetailPlanId = planId;
+  selectedDatimAccount = 'stake';
+    
+  document.getElementById('datim-detail-company').textContent = plan.company || 'Unknown Company';
+  document.getElementById('datim-detail-meta').textContent = `Min: ${fmt(plan.minAmount || 0)} · Return: ${plan.percentage || 0}% · Days: ${plan.days || 0}`;
+  document.getElementById('datim-detail-description').textContent = plan.description?.trim() || 'No description provided.';
+  document.getElementById('datim-detail-amount').value = '';
+  document.getElementById('datim-detail-scroll').scrollTop = 0;
+    
+  updateDatimAccountTabsUI();
+  switchTab('datim-detail');
+}
+
+function selectDatimAccount(source) {
+  selectedDatimAccount = source;
+  updateDatimAccountTabsUI();
+}
+
+function updateDatimAccountTabsUI() {
+  if (!currentUser) return;
+  const stakeTab = document.getElementById('datim-tab-stake');
+  const mobTab = document.getElementById('datim-tab-mob');
+  if (stakeTab) stakeTab.classList.toggle('selected', selectedDatimAccount === 'stake');
+  if (mobTab) mobTab.classList.toggle('selected', selectedDatimAccount === 'mob');
+  const stakeBalEl = document.getElementById('datim-tab-stake-bal');
+  const mobBalEl = document.getElementById('datim-tab-mob-bal');
+  if (stakeBalEl) stakeBalEl.textContent = fmt(currentUser.stake || 0);
+  if (mobBalEl) mobBalEl.textContent = fmt(currentUser.mob || 0);
+  checkDatimInsufficientBalance();
+}
+
+function checkDatimInsufficientBalance() {
+  const note = document.getElementById('datim-insufficient-note');
+  if (!note || !currentUser) return;
+  const amount = parseInt(document.getElementById('datim-detail-amount')?.value || '0');
+  const balance = selectedDatimAccount === 'stake' ? (currentUser.stake || 0) : (currentUser.mob || 0);
+  note.style.display = (amount > 0 && amount > balance) ? 'block' : 'none';
+}
+
+async function lockDatimStakeFromDetail() {
+  const planId = currentDatimDetailPlanId;
+  const plan = datimPlansData[planId];
+  if (!plan) { showBanner('This plan is no longer available.'); return; }
+    
+  const amount = parseInt(document.getElementById('datim-detail-amount')?.value || '0');
   const minAmount = plan.minAmount || 0;
     
   if (!amount || amount < minAmount) {
@@ -2834,9 +2897,11 @@ async function lockDatimStake(planId) {
   return;
   }
     
-  const currentStake = currentUser?.stake || 0;
-  if (amount > currentStake) {
-  showBanner('Insufficient General Account balance.');
+  const source = selectedDatimAccount === 'mob' ? 'mob' : 'stake';
+  const sourceLabel = source === 'mob' ? 'Retained Wallet' : 'General Account';
+  const sourceBalance = currentUser?.[source] || 0;
+  if (amount > sourceBalance) {
+  showBanner(`Insufficient ${sourceLabel} balance.`);
   return;
   }
     
@@ -2850,7 +2915,7 @@ async function lockDatimStake(planId) {
   const maturityDate = new Date(maturityMs).toISOString().slice(0, 10);
     
   await db.ref('users/' + userKey).update({
-  stake: currentStake - amount,
+  [source]: sourceBalance - amount,
   [`datimStakes/${stakeId}`]: {
   planId: planId,
   company: plan.company || 'Unknown Company',
@@ -2862,8 +2927,8 @@ async function lockDatimStake(planId) {
   }
   });
     
-  if (input) input.value = '';
   showBanner(`${fmt(amount)} locked into ${plan.company}!`);
+  switchTab('datim');
   } catch (error) {
   console.error('Error locking DATIM stake:', error);
   showBanner('Failed to lock funds. Please try again.');
@@ -4353,7 +4418,8 @@ const tabMap = {
   'deposit-comingsoon': 'sec-deposit-comingsoon',
   withdraw: 'sec-withdraw',
   errands: 'sec-errands',
-  datim: 'sec-datim'
+  datim: 'sec-datim',
+  'datim-detail': 'sec-datim-detail'
 };
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
@@ -4610,9 +4676,12 @@ window.showPopup = showPopup;
 window.showConfirmPopup = showConfirmPopup;
 window.renderGreetingBanner = renderGreetingBanner;
 window.showComingSoon = showComingSoon;
-window.lockDatimStake = lockDatimStake;
 window.renderDatimPlans = renderDatimPlans;
 window.renderMyDatimStakes = renderMyDatimStakes;
+window.openDatimPlanDetail = openDatimPlanDetail;
+window.selectDatimAccount = selectDatimAccount;
+window.lockDatimStakeFromDetail = lockDatimStakeFromDetail;
+window.checkDatimInsufficientBalance = checkDatimInsufficientBalance;
 window.openWithdrawAccountModal = openWithdrawAccountModal;
 window.closeWithdrawAccountModal = closeWithdrawAccountModal;
 window.selectWithdrawNetwork = selectWithdrawNetwork;
