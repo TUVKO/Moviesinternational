@@ -306,7 +306,6 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="nav-item" onclick="showPage('pg-videos')"><span class="nav-icon">🎬</span><span>Videos</span></div>
 <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
 <div class="nav-item" onclick="showPage('pg-datim')"><span class="nav-icon">🎬</span><span>DATIM Plans</span></div>
-<div class="nav-item" onclick="showPage('pg-luckyspin')"><span class="nav-icon">🎡</span><span>Lucky Spin</span></div>
 <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
 </div>
 <div class="sidebar-footer">
@@ -563,60 +562,6 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
 </tbody>
 </table>
-</div>
-</div>
-</div>
-
-  <!-- LUCKY SPIN -->
-<div class="page" id="pg-luckyspin">
-<div class="page-title">Lucky Spin</div>
-<div class="page-sub">Configure the 10 wheel segments and grant spin chances to users based on their referral activity.</div>
-
-<div class="table-wrap">
-<div class="table-header">
-<div class="table-title">Wheel Segments (10 fixed slots)</div>
-</div>
-<div style="overflow-x:auto;padding:0 4px;">
-  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:800px;">
-  <thead>
-  <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
-  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">#</th>
-  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Prize Type</th>
-  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Cash Amount / Photo</th>
-  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Color</th>
-  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Locked</th>
-  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Actions</th>
-</tr>
-</thead>
-  <tbody id="luckyspin-segments-body">
-  <tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
-</tbody>
-</table>
-</div>
-</div>
-
-<div class="table-wrap" style="margin-top:20px;">
-<div class="table-header">
-<div class="table-title">Grant Spin Chances</div>
-</div>
-<div style="padding:14px;">
-<div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:11px;color:var(--muted);line-height:1.8;">
-  <strong style="color:var(--accent);">Reference guide</strong> — based on how many of the user's direct referrals upgraded to a WM level <em>that same day</em>:<br>
-  1–2 referrals → 1 chance &nbsp;|&nbsp; 3–4 referrals → 2 chances &nbsp;|&nbsp; 5–7 referrals → 4 chances &nbsp;|&nbsp; 8–10 referrals → 6 chances<br>
-  Chances expire at midnight (EAT) if unused. Grant the number of chances based on your review of the user's support request.
-</div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
-<div style="flex:1;min-width:200px;">
-  <label style="font-size:10px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;">User Phone Number</label>
-  <input type="text" id="luckyspin-grant-phone" placeholder="e.g. 256749911757" class="f-input" style="width:100%;">
-</div>
-<div style="width:120px;">
-  <label style="font-size:10px;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;">Chances</label>
-  <input type="number" id="luckyspin-grant-count" placeholder="0" class="f-input" style="width:100%;">
-</div>
-  <button class="btn btn-save" onclick="grantLuckySpinChances()">Grant Chances</button>
-</div>
-<div id="luckyspin-grant-status" style="margin-top:10px;font-size:11px;color:var(--muted);"></div>
 </div>
 </div>
 </div>
@@ -1167,172 +1112,6 @@ async function deleteDatimPlan(key) {
 }
 
 // ============================================================
-// LUCKY SPIN MANAGEMENT (ADMIN)
-// ============================================================
-let allLuckySpinSegments = {};
-let luckySpinUnsubscribe = null;
-
-function getEATDateKey() {
-  const eat = new Date(Date.now() + 3 * 60 * 60 * 1000);
-  const y = eat.getUTCFullYear();
-  const m = String(eat.getUTCMonth() + 1).padStart(2, '0');
-  const d = String(eat.getUTCDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
-function safeKeyAdmin(phone) {
-  return String(phone).replace(/[.#$/\[\]]/g, '_');
-}
-
-function startLuckySpinListener() {
-  if (luckySpinUnsubscribe) luckySpinUnsubscribe();
-  luckySpinUnsubscribe = db.ref('luckySpinSegments').on('value', (snap) => {
-  allLuckySpinSegments = snap.val() || {};
-  renderLuckySpinAdminPage();
-  });
-}
-
-const LUCKYSPIN_DEFAULT_COLORS = ['#F2B84B', '#5CA378', '#E1584B', '#3B82F6', '#A855F7', '#2DD4BF', '#F97316', '#EC4899', '#84CC16', '#6366F1'];
-
-function renderLuckySpinAdminPage() {
-  const tbody = document.getElementById('luckyspin-segments-body');
-  if (!tbody) return;
-  
-  let rows = '';
-  for (let i = 0; i < 10; i++) {
-  const seg = allLuckySpinSegments[i] || {};
-  const type = seg.type || 'cash';
-  const isLocked = seg.locked === true;
-  const color = seg.color || LUCKYSPIN_DEFAULT_COLORS[i];
-  const imgPreview = seg.type === 'image' && seg.imageData ? `<img src="${seg.imageData}" style="width:32px;height:32px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:6px;">` : '';
-  
-  rows += `<tr>
-  <td style="padding:8px 10px;font-weight:800;color:var(--accent);">${i + 1}</td>
-  <td style="padding:8px 10px;">
-  <select id="ls-type-${i}" onchange="onLuckySpinTypeChange(${i})" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px;">
-  <option value="cash" ${type === 'cash' ? 'selected' : ''}>Cash</option>
-  <option value="image" ${type === 'image' ? 'selected' : ''}>Image</option>
-</select>
-</td>
-  <td style="padding:8px 10px;">
-<div id="ls-cash-wrap-${i}" style="display:${type === 'cash' ? 'block' : 'none'};">
-  <input type="number" id="ls-cash-${i}" value="${seg.cashAmount || 0}" placeholder="UGX amount" style="width:110px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:'JetBrains Mono',monospace;">
-</div>
-<div id="ls-image-wrap-${i}" style="display:${type === 'image' ? 'block' : 'none'};">
-  ${imgPreview}<input type="file" id="ls-image-${i}" accept="image/*" onchange="handleLuckySpinImageUpload(${i}, this)" style="font-size:10px;max-width:140px;">
-</div>
-</td>
-  <td style="padding:8px 10px;"><input type="color" id="ls-color-${i}" value="${color}" style="width:44px;height:28px;border:none;background:none;cursor:pointer;"></td>
-  <td style="padding:8px 10px;">
-<div class="lock-toggle">
-  <input type="checkbox" id="ls-locked-${i}" ${isLocked ? 'checked' : ''}>
-  <span style="font-size:9px;color:${isLocked ? 'var(--warn)' : 'var(--success)'};">${isLocked ? 'Locked' : 'Open'}</span>
-</div>
-</td>
-  <td style="padding:8px 10px;"><button class="btn btn-edit" onclick="saveLuckySpinSegment(${i})" style="padding:4px 8px;font-size:9px;">Save</button></td>
-</tr>`;
-  }
-  tbody.innerHTML = rows;
-}
-
-function onLuckySpinTypeChange(index) {
-  const type = document.getElementById('ls-type-' + index).value;
-  document.getElementById('ls-cash-wrap-' + index).style.display = type === 'cash' ? 'block' : 'none';
-  document.getElementById('ls-image-wrap-' + index).style.display = type === 'image' ? 'block' : 'none';
-}
-
-function handleLuckySpinImageUpload(index, inputEl) {
-  const file = inputEl.files?.[0];
-  if (!file) return;
-  
-  const reader = new FileReader();
-  reader.onload = function(e) {
-  const img = new Image();
-  img.onload = function() {
-  const canvas = document.createElement('canvas');
-  const size = 120;
-  canvas.width = size;
-  canvas.height = size;
-  const ctx = canvas.getContext('2d');
-      
-  // Cover-crop the image into a square so it fills the wheel icon cleanly
-  const scale = Math.max(size / img.width, size / img.height);
-  const w = img.width * scale;
-  const h = img.height * scale;
-  ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
-      
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-  db.ref('luckySpinSegments/' + index).update({ type: 'image', imageData: dataUrl }).then(() => {
-  toast('Image uploaded for segment ' + (index + 1));
-  });
-  };
-  img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-async function saveLuckySpinSegment(index) {
-  const type = document.getElementById('ls-type-' + index).value;
-  const color = document.getElementById('ls-color-' + index).value;
-  const locked = document.getElementById('ls-locked-' + index).checked;
-  
-  const current = allLuckySpinSegments[index] || {};
-  const segData = { type, color, locked };
-  
-  if (type === 'cash') {
-  const cashAmount = parseInt(document.getElementById('ls-cash-' + index).value) || 0;
-  segData.cashAmount = cashAmount;
-  segData.imageData = null;
-  } else {
-  // Preserve existing uploaded image; upload handler already writes it directly
-  segData.imageData = current.imageData || null;
-  segData.cashAmount = null;
-  }
-  
-  try {
-  await db.ref('luckySpinSegments/' + index).update(segData);
-  toast('Segment ' + (index + 1) + ' saved');
-  } catch (e) {
-  toast('Error saving segment', '#f87171');
-  }
-}
-
-async function grantLuckySpinChances() {
-  const phoneRaw = document.getElementById('luckyspin-grant-phone').value.trim();
-  const count = parseInt(document.getElementById('luckyspin-grant-count').value) || 0;
-  const statusEl = document.getElementById('luckyspin-grant-status');
-  
-  if (!phoneRaw || count <= 0) {
-  if (statusEl) { statusEl.textContent = 'Enter a valid phone number and a chance count greater than 0.'; statusEl.style.color = '#f87171'; }
-  return;
-  }
-  
-  const userKey = safeKeyAdmin(phoneRaw);
-  try {
-  const userSnap = await db.ref('users/' + userKey).get();
-  if (!userSnap.exists()) {
-  if (statusEl) { statusEl.textContent = 'No user found with that phone number.'; statusEl.style.color = '#f87171'; }
-  return;
-  }
-  const todayKey = getEATDateKey();
-  const user = userSnap.val();
-  const existingChances = (user.spinChancesDate === todayKey) ? (user.spinChances || 0) : 0;
-  
-  await db.ref('users/' + userKey).update({
-  spinChances: existingChances + count,
-  spinChancesDate: todayKey
-  });
-  
-  if (statusEl) { statusEl.textContent = `Granted ${count} chance(s) to ${user.fullName || phoneRaw}. Total available today: ${existingChances + count}.`; statusEl.style.color = 'var(--success)'; }
-  toast('Spin chances granted');
-  document.getElementById('luckyspin-grant-count').value = '';
-  } catch (e) {
-  console.error(e);
-  if (statusEl) { statusEl.textContent = 'Error granting chances. Please try again.'; statusEl.style.color = '#f87171'; }
-  }
-}
-
-// ============================================================
 // VIDEOS MANAGEMENT - NO REWARD FIELD
 // ============================================================
 
@@ -1423,7 +1202,6 @@ function startRealtimeListeners() {
   startVideosListener();
   startLevelsListener();
   startDatimPlansListener();
-  startLuckySpinListener();
   
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
@@ -2573,8 +2351,6 @@ function adminLogout() {
   if (supportChatsUnsubscribe) supportChatsUnsubscribe();
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   if (levelsUnsubscribe) levelsUnsubscribe();
-  if (datimPlansUnsubscribe) datimPlansUnsubscribe();
-  if (luckySpinUnsubscribe) luckySpinUnsubscribe();
   if (videosUnsubscribe) videosUnsubscribe();
   document.getElementById('admin-wrap').classList.remove('active');
   document.getElementById('auth-wrap').style.display = 'flex';
@@ -2619,7 +2395,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-manual-deposits': 4, 'pg-support-chat': 5, 'pg-videos': 6, 'pg-levels': 7, 'pg-datim': 8, 'pg-luckyspin': 9, 'pg-settings': 10 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-manual-deposits': 4, 'pg-support-chat': 5, 'pg-videos': 6, 'pg-levels': 7, 'pg-datim': 8, 'pg-settings': 9 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
@@ -2628,7 +2404,6 @@ function showPage(id) {
   if (id === 'pg-videos') renderAdminVideosTable();
   if (id === 'pg-levels') renderLevelsAdminTable();
   if (id === 'pg-datim') renderDatimPlansAdminTable();
-  if (id === 'pg-luckyspin') renderLuckySpinAdminPage();
 }
 
 function showTerms() { 

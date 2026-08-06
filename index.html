@@ -371,7 +371,6 @@ input[type="password"]{padding-right:46px;}
 .datim-account-tab{flex:1;background:transparent;border:none;border-radius:10px;padding:8px 6px;color:var(--muted);font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;cursor:pointer;transition:.2s;line-height:1.6;}
 .datim-account-tab span{font-family:'JetBrains Mono',monospace;font-size:11px;}
 .datim-account-tab.selected{background:var(--success);color:#0c2415;}
-.luckyspin-pointer{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:24px solid var(--accent);z-index:5;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.4));}
 
 .tx-empty-state{text-align:center;padding:60px 20px;}
 .tx-empty-icon{font-size:48px;margin-bottom:12px;}
@@ -546,7 +545,7 @@ input[type="password"]{padding-right:46px;}
 <div class="section">
 <div class="action-grid">
   <button class="action-btn gold-fill-btn" onclick="switchTab('datim')">DATIM</button>
-  <button class="action-btn gold-fill-btn" onclick="switchTab('luckyspin')">Lucky Spin</button>
+  <button class="action-btn gold-fill-btn" onclick="showComingSoon('Lucky Spin')">Lucky Spin</button>
   <button class="action-btn gold-fill-btn" onclick="showComingSoon('Salary')">Salary</button>
 </div>
 </div>
@@ -748,32 +747,6 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <input type="number" id="datim-detail-amount" placeholder="Enter amount" oninput="checkDatimInsufficientBalance()" style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;">
 <button class="datim-lock-btn" onclick="lockDatimStakeFromDetail()">Lock Funds</button>
 </div>
-</div>
-</div>
-
-  <!-- Lucky Spin -->
-<div class="dash-section" id="sec-luckyspin">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Lucky Spin</div><div class="inner-sub">Spin the wheel and win prizes</div></div></div>
-<div class="section">
-
-<div id="luckyspin-no-chances" style="display:none;">
-<div class="tx-empty-state">
-<div class="tx-empty-icon"></div>
-<div class="tx-empty-title">No Spin Chances</div>
-<div class="tx-empty-text" id="luckyspin-referral-progress">Referral Progress: 0 direct referrals upgraded today.</div>
-</div>
-  <button class="green-btn" style="width:100%;margin-top:14px;" onclick="openSupportForLuckySpin()">Contact Support</button>
-</div>
-
-<div id="luckyspin-wheel-wrap" style="display:none;">
-<div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px;">Chances available: <strong id="luckyspin-chances-count" style="color:var(--accent);">0</strong></div>
-<div style="position:relative;width:280px;height:280px;margin:0 auto 22px;">
-  <div class="luckyspin-pointer"></div>
-  <svg id="luckyspin-wheel-svg" viewBox="0 0 300 300" style="width:100%;height:100%;transform:rotate(0deg);"></svg>
-</div>
-  <button class="datim-lock-btn" style="width:100%;padding:14px;font-size:15px;border-radius:12px;" id="luckyspin-spin-btn" onclick="spinLuckyWheel()">SPIN</button>
-</div>
-
 </div>
 </div>
 
@@ -1696,7 +1669,6 @@ async function sendSupportMessage() {
   }
   });
   input.value = '';
-  input.readOnly = false;
   cleanupOldSupportMessages(userKey);
   } catch (error) {
   console.error('Error sending support message:', error);
@@ -2628,7 +2600,6 @@ function updateProfileUI() {
   updateIncomeStatsUI();
   renderGreetingBanner();
   renderMyDatimStakes();
-  renderLuckySpinPage();
   if (currentUsername) {
   cleanupExpiredMissedCommissions(safeKey(currentUsername));
   checkMaturedDatimStakes(safeKey(currentUsername));
@@ -2987,197 +2958,6 @@ function renderMyDatimStakes() {
   `).join('');
 }
 
-// ============================================================
-// LUCKY SPIN
-// ============================================================
-let luckySpinSegmentsData = {};
-let luckySpinCurrentRotation = 0;
-
-function startLuckySpinListener() {
-  db.ref('luckySpinSegments').on('value', (snap) => {
-  luckySpinSegmentsData = snap.val() || {};
-  renderLuckySpinPage();
-  });
-}
-
-function getLuckySpinTier(count) {
-  if (count >= 8) return 6;
-  if (count >= 5) return 4;
-  if (count >= 3) return 2;
-  if (count >= 1) return 1;
-  return 0;
-}
-
-function getValidSpinChances() {
-  if (!currentUser) return 0;
-  const todayKey = getUTCKey();
-  if (currentUser.spinChancesDate !== todayKey) return 0;
-  return currentUser.spinChances || 0;
-}
-
-function getTodayReferralUpgradeCount() {
-  if (!currentUser) return 0;
-  const todayKey = getUTCKey();
-  return (currentUser.dailyReferralUpgrades && currentUser.dailyReferralUpgrades[todayKey]) || 0;
-}
-
-function renderLuckySpinPage() {
-  const noChancesEl = document.getElementById('luckyspin-no-chances');
-  const wheelWrapEl = document.getElementById('luckyspin-wheel-wrap');
-  if (!noChancesEl || !wheelWrapEl || !currentUser) return;
-    
-  const chances = getValidSpinChances();
-  const todayCount = getTodayReferralUpgradeCount();
-  const tier = getLuckySpinTier(todayCount);
-    
-  const progressEl = document.getElementById('luckyspin-referral-progress');
-  if (progressEl) {
-  const refWord = todayCount === 1 ? 'referral' : 'referrals';
-  progressEl.textContent = tier > 0
-  ? `You have ${todayCount} direct ${refWord} upgraded to a WM level today — you qualify for ${tier} chance${tier === 1 ? '' : 's'}. Contact support to claim.`
-  : `Referral Progress: ${todayCount} direct ${refWord} upgraded to a WM level today. Get referrals to upgrade to qualify for spin chances.`;
-  }
-    
-  if (chances > 0) {
-  noChancesEl.style.display = 'none';
-  wheelWrapEl.style.display = 'block';
-  const countEl = document.getElementById('luckyspin-chances-count');
-  if (countEl) countEl.textContent = chances;
-  renderLuckySpinWheel();
-  } else {
-  noChancesEl.style.display = 'block';
-  wheelWrapEl.style.display = 'none';
-  }
-}
-
-function renderLuckySpinWheel() {
-  const svg = document.getElementById('luckyspin-wheel-svg');
-  if (!svg) return;
-  const cx = 150, cy = 150, r = 145;
-  let paths = '';
-  let overlays = '';
-    
-  for (let i = 0; i < 10; i++) {
-  const seg = luckySpinSegmentsData[i] || {};
-  const startAngle = i * 36 - 18;
-  const endAngle = startAngle + 36;
-  const startRad = startAngle * Math.PI / 180;
-  const endRad = endAngle * Math.PI / 180;
-  const x1 = cx + r * Math.sin(startRad);
-  const y1 = cy - r * Math.cos(startRad);
-  const x2 = cx + r * Math.sin(endRad);
-  const y2 = cy - r * Math.cos(endRad);
-  const color = seg.color || '#333333';
-  const opacity = seg.locked ? '0.35' : '1';
-  paths += `<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 0,1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${color}" opacity="${opacity}" stroke="#14110F" stroke-width="1.5"></path>`;
-      
-  const midAngle = i * 36;
-  const midRad = midAngle * Math.PI / 180;
-  const labelR = r * 0.62;
-  const lx = cx + labelR * Math.sin(midRad);
-  const ly = cy - labelR * Math.cos(midRad);
-      
-  if (seg.type === 'image' && seg.imageData) {
-  overlays += `<image href="${seg.imageData}" x="${(lx - 16).toFixed(2)}" y="${(ly - 16).toFixed(2)}" width="32" height="32" transform="rotate(${midAngle} ${lx.toFixed(2)} ${ly.toFixed(2)})" style="pointer-events:none;"></image>`;
-  } else if (seg.type === 'cash') {
-  overlays += `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" fill="#fff" font-size="11" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate(${midAngle} ${lx.toFixed(2)} ${ly.toFixed(2)})" style="pointer-events:none;">${fmt(seg.cashAmount || 0)}</text>`;
-  }
-  if (seg.locked) {
-  const lockY = ly + 16;
-  overlays += `<text x="${lx.toFixed(2)}" y="${lockY.toFixed(2)}" fill="#fff" font-size="12" text-anchor="middle" transform="rotate(${midAngle} ${lx.toFixed(2)} ${lockY.toFixed(2)})" style="pointer-events:none;">🔒</text>`;
-  }
-  }
-    
-  svg.innerHTML = paths + overlays;
-}
-
-async function spinLuckyWheel() {
-  const chances = getValidSpinChances();
-  if (chances <= 0) { showBanner('No spin chances available.'); return; }
-    
-  const btn = document.getElementById('luckyspin-spin-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Spinning...'; }
-    
-  const eligible = [];
-  for (let i = 0; i < 10; i++) {
-  const seg = luckySpinSegmentsData[i];
-  if (seg && seg.locked !== true) eligible.push(i);
-  }
-  if (!eligible.length) {
-  showBanner('No prizes are currently available. Please try again later.');
-  if (btn) { btn.disabled = false; btn.textContent = 'SPIN'; }
-  return;
-  }
-    
-  const winIndex = eligible[Math.floor(Math.random() * eligible.length)];
-  const winSegment = luckySpinSegmentsData[winIndex];
-    
-  const svg = document.getElementById('luckyspin-wheel-svg');
-  const normalized = ((luckySpinCurrentRotation % 360) + 360) % 360;
-  svg.style.transition = 'none';
-  svg.style.transform = `rotate(${normalized}deg)`;
-  svg.getBoundingClientRect(); // force reflow
-    
-  const desiredMod = (((-winIndex * 36) % 360) + 360) % 360;
-  const spins = 6 * 360;
-  let target = normalized + spins;
-  const targetMod = ((target % 360) + 360) % 360;
-  target += (desiredMod - targetMod);
-    
-  requestAnimationFrame(() => {
-  svg.style.transition = 'transform 4s cubic-bezier(0.17,0.67,0.12,0.99)';
-  svg.style.transform = `rotate(${target}deg)`;
-  });
-  luckySpinCurrentRotation = target;
-    
-  setTimeout(async () => {
-  await finalizeLuckySpinResult(winSegment);
-  if (btn) { btn.disabled = false; btn.textContent = 'SPIN'; }
-  }, 4200);
-}
-
-async function finalizeLuckySpinResult(segment) {
-  try {
-  const userKey = safeKey(currentUsername);
-  const newChances = Math.max(0, getValidSpinChances() - 1);
-  const todayKey = getUTCKey();
-  const updates = { spinChances: newChances, spinChancesDate: todayKey };
-    
-  if (segment.type === 'cash' && (segment.cashAmount || 0) > 0) {
-  updates.stake = (currentUser.stake || 0) + segment.cashAmount;
-  await db.ref('users/' + userKey).update(updates);
-  showPopup('You Won!', `Congratulations! You won ${fmt(segment.cashAmount)}, credited to your General Account!`, 'success');
-  } else if (segment.type === 'image') {
-  await db.ref('users/' + userKey).update(updates);
-  showPopup('You Won!', 'Congratulations! You won a special prize! Contact support to claim it.', 'success');
-  } else {
-  await db.ref('users/' + userKey).update(updates);
-  showPopup('Spin Complete', 'Thanks for spinning! Better luck next time.', 'info');
-  }
-    
-  currentUser = await db.ref('users/' + userKey).get().then(s => s.val());
-  updateBalanceUI();
-  renderLuckySpinPage();
-  } catch (error) {
-  console.error('Error finalizing spin result:', error);
-  }
-}
-
-function openSupportForLuckySpin() {
-  switchTab('support');
-  const count = getTodayReferralUpgradeCount();
-  const refWord = count === 1 ? 'referral' : 'referrals';
-  const msg = `Hi, today I have ${count} direct ${refWord} who upgraded to a WM level, and I'd like to claim my Lucky Spin chances. Please review and grant them. Thank you!`;
-  selectSupportTopic('Lucky Spin Chances');
-  setTimeout(() => {
-  const input = document.getElementById('support-msg-input');
-  if (input) {
-  input.value = msg;
-  input.readOnly = true;
-  }
-  }, 50);
-}
-
 async function recoverMissedCommissions(userKey, newLevelKey) {
   try {
   await cleanupExpiredMissedCommissions(userKey);
@@ -3417,23 +3197,6 @@ async function purchaseLevel(levelKey, cost, levelName) {
     
   // Pay up to 3 tiers of upline, each capped by their own level, credited to STAKE
   await payReferralBonusChain(currentUser.referredBy, cost, levelName, levelKey, currentUser.fullName);
-    
-  // Lucky Spin: if this is the user's first-ever paid level (Trainee -> WM), credit the
-  // referrer's daily "referrals upgraded today" counter used for spin-chance eligibility
-  const wasTrainee = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
-  if (wasTrainee && newCurrentLevel !== 'trainee' && currentUser.referredBy) {
-  try {
-  const codeSnap = await db.ref('referralCodes/' + currentUser.referredBy).get();
-  if (codeSnap.exists()) {
-  const referrerPhone = codeSnap.val();
-  const referrerKey = safeKey(referrerPhone);
-  const todayKey = getUTCKey();
-  await db.ref('users/' + referrerKey + '/dailyReferralUpgrades/' + todayKey).transaction(current => (current || 0) + 1);
-  }
-  } catch (trackError) {
-  console.error('Lucky Spin referral tracking error:', trackError);
-  }
-  }
     
   currentUser = await userRef.get().then(s =>s.val());
   updateBalanceUI();
@@ -4481,7 +4244,6 @@ async function doLogin() {
   startUserListener(fullPhone);
   startVideoListener();
   startDatimPlansListener();
-  startLuckySpinListener();
     
   updateBalanceUI();
   renderHistory();
@@ -4595,7 +4357,6 @@ async function doRegister() {
   startUserListener(fullPhone);
   startVideoListener();
   startDatimPlansListener();
-  startLuckySpinListener();
   updateBalanceUI();
   renderHistory();
   updateProfileUI();
@@ -4658,8 +4419,7 @@ const tabMap = {
   withdraw: 'sec-withdraw',
   errands: 'sec-errands',
   datim: 'sec-datim',
-  'datim-detail': 'sec-datim-detail',
-  luckyspin: 'sec-luckyspin'
+  'datim-detail': 'sec-datim-detail'
 };
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
@@ -4922,9 +4682,6 @@ window.openDatimPlanDetail = openDatimPlanDetail;
 window.selectDatimAccount = selectDatimAccount;
 window.lockDatimStakeFromDetail = lockDatimStakeFromDetail;
 window.checkDatimInsufficientBalance = checkDatimInsufficientBalance;
-window.spinLuckyWheel = spinLuckyWheel;
-window.openSupportForLuckySpin = openSupportForLuckySpin;
-window.renderLuckySpinPage = renderLuckySpinPage;
 window.openWithdrawAccountModal = openWithdrawAccountModal;
 window.closeWithdrawAccountModal = closeWithdrawAccountModal;
 window.selectWithdrawNetwork = selectWithdrawNetwork;
@@ -4953,7 +4710,6 @@ async function initApp() {
   startLevelsListener();
   startVideoListener();
   startDatimPlansListener();
-  startLuckySpinListener();
   
   const savedUser = sessionStorage.getItem('pp_current_user');
   if (savedUser) {
