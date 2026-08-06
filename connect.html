@@ -577,10 +577,11 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="table-title">Wheel Segments (10 fixed slots)</div>
 </div>
 <div style="overflow-x:auto;padding:0 4px;">
-  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:800px;">
+  <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:920px;">
   <thead>
   <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">#</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Prize Name</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Prize Type</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Cash Amount / Photo</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Color</th>
@@ -589,7 +590,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </tr>
 </thead>
   <tbody id="luckyspin-segments-body">
-  <tr><td colspan="6" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
+  <tr><td colspan="7" style="padding:20px;text-align:center;color:var(--muted);">Loading...</td></tr>
 </tbody>
 </table>
 </div>
@@ -685,6 +686,17 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <button class="btn btn-danger" onclick="lockWithdrawals(true)">Lock All Withdrawals</button>
   <button class="btn btn-success" onclick="lockWithdrawals(false)">Unlock Withdrawals</button>
   <span id="lock-status" style="font-size:13px;color:var(--muted);">Checking...</span>
+</div>
+</div>
+
+  <!-- Lucky Spin Control -->
+<div class="danger-zone">
+<div class="danger-title">Lucky Spin Control</div>
+<div class="danger-sub">Lock or unlock the Lucky Spin tab for ALL users globally. When locked, the tab appears grayed out and unclickable, with no error message shown.</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+  <button class="btn btn-danger" onclick="lockLuckySpin(true)">Lock Lucky Spin</button>
+  <button class="btn btn-success" onclick="lockLuckySpin(false)">Unlock Lucky Spin</button>
+  <span id="luckyspin-lock-status" style="font-size:13px;color:var(--muted);">Checking...</span>
 </div>
 </div>
 
@@ -1208,6 +1220,7 @@ function renderLuckySpinAdminPage() {
   
   rows += `<tr>
   <td style="padding:8px 10px;font-weight:800;color:var(--accent);">${i + 1}</td>
+  <td style="padding:8px 10px;"><input type="text" id="ls-name-${i}" value="${escapeHtml(seg.name || '')}" placeholder="e.g. iPhone 15" style="width:120px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;"></td>
   <td style="padding:8px 10px;">
   <select id="ls-type-${i}" onchange="onLuckySpinTypeChange(${i})" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px;">
   <option value="cash" ${type === 'cash' ? 'selected' : ''}>Cash</option>
@@ -1272,12 +1285,13 @@ function handleLuckySpinImageUpload(index, inputEl) {
 }
 
 async function saveLuckySpinSegment(index) {
+  const name = document.getElementById('ls-name-' + index).value.trim();
   const type = document.getElementById('ls-type-' + index).value;
   const color = document.getElementById('ls-color-' + index).value;
   const locked = document.getElementById('ls-locked-' + index).checked;
   
   const current = allLuckySpinSegments[index] || {};
-  const segData = { type, color, locked };
+  const segData = { name, type, color, locked };
   
   if (type === 'cash') {
   const cashAmount = parseInt(document.getElementById('ls-cash-' + index).value) || 0;
@@ -1829,7 +1843,7 @@ async function cleanupOldSupportMessagesAdmin(userKey) {
   const snap = await db.ref('supportChats/' + userKey + '/messages').get();
   if (!snap.exists()) return;
   const messages = snap.val();
-  const cutoff = Date.now() - (6 * 60 * 60 * 1000);
+  const cutoff = Date.now() - (8 * 60 * 60 * 1000);
   const updates = {};
   Object.entries(messages).forEach(([msgId, msg]) => {
   if ((msg.timestamp || 0) < cutoff) updates[msgId] = null;
@@ -2152,6 +2166,12 @@ function loadSettingsUI() {
   lockStatus.style.color = s.withdrawLocked ? 'var(--warn)' : 'var(--success)';
   }
   
+  const luckySpinLockStatus = document.getElementById('luckyspin-lock-status');
+  if (luckySpinLockStatus) {
+  luckySpinLockStatus.textContent = s.luckySpinLocked ? 'LOCKED' : 'OPEN';
+  luckySpinLockStatus.style.color = s.luckySpinLocked ? 'var(--warn)' : 'var(--success)';
+  }
+  
   const approvalStatus = document.getElementById('approval-status');
   if (approvalStatus) {
   approvalStatus.textContent = s.withdrawApproval ? 'Manual Approval ON' : 'Automatic';
@@ -2300,6 +2320,11 @@ async function saveSubAffiliateLevel2() {
 async function lockWithdrawals(lock) {
   await db.ref('settings/withdrawLocked').set(lock);
   toast(lock ? 'Withdrawals LOCKED' : 'Withdrawals UNLOCKED', lock ? '#f87171' : undefined);
+}
+
+async function lockLuckySpin(lock) {
+  await db.ref('settings/luckySpinLocked').set(lock);
+  toast(lock ? 'Lucky Spin LOCKED' : 'Lucky Spin UNLOCKED', lock ? '#f87171' : undefined);
 }
 
 async function setWithdrawApproval(val) {
