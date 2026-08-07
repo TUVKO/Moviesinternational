@@ -416,6 +416,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <button class="btn btn-approve" onclick="filterManualDeposits('approved')">Approved</button>
   <button class="btn btn-reject" onclick="filterManualDeposits('rejected')">Rejected</button>
   <button class="btn btn-edit" onclick="filterManualDeposits('all')">All</button>
+  <button class="btn btn-edit" style="margin-left:auto;" onclick="resyncStuckDeposits()">🔄 Resync Stuck Deposits</button>
 </div>
 <div class="table-wrap">
 <div class="table-header">
@@ -1785,6 +1786,65 @@ function renderManualDepositsTable() {
   }).join('');
 }
 
+async function findPendingDepositTxKey(userId, amount) {
+  try {
+  const snap = await db.ref('users/' + userId + '/transactions').get();
+  if (!snap.exists()) return null;
+  const txs = snap.val();
+  const match = Object.entries(txs).find(([key, tx]) =>
+  tx.type === 'Deposit' && tx.status === 'pending' && (tx.amount || 0) === (amount || 0)
+  );
+  return match ? match[0] : null;
+  } catch (e) {
+  console.error('Error finding legacy pending deposit tx:', e);
+  return null;
+  }
+}
+
+async function resyncStuckDeposits() {
+  const resolvedDeposits = Object.entries(allManualDeposits).filter(([key, d]) => d.status === 'approved' || d.status === 'rejected');
+  if (!resolvedDeposits.length) { toast('No resolved deposits to check'); return; }
+    
+  toast('Scanning for stuck deposits...');
+  const fixes = [];
+    
+  for (const [reqKey, dep] of resolvedDeposits) {
+  if (!dep.userId) continue;
+  const txKey = dep.txKey || await findPendingDepositTxKey(dep.userId, dep.amount);
+  if (!txKey) continue;
+    
+  const txSnap = await db.ref('users/' + dep.userId + '/transactions/' + txKey).get();
+  if (!txSnap.exists()) continue;
+  const tx = txSnap.val();
+  if (tx.status !== 'pending') continue; // already resolved, nothing stuck here
+    
+  fixes.push({ userId: dep.userId, txKey, username: dep.username, amount: dep.amount, resolvedAs: dep.status });
+  }
+    
+  if (!fixes.length) { toast('No stuck deposits found — everything is in sync'); return; }
+    
+  const confirmed = await confirmAction(
+  'Resync Stuck Deposits?',
+  `Found ${fixes.length} deposit(s) still showing "Pending" for users even though they were already ${fixes.length === 1 ? 'resolved' : 'resolved'} by admin. This will update their status to match — rejected ones become "Failed", and approved ones become "Failed" too since their balance was already credited separately (this just removes the stuck duplicate). No balances will be changed. Continue?`
+  );
+  if (!confirmed) return;
+    
+  let fixedCount = 0;
+  for (const fix of fixes) {
+  try {
+  const note = fix.resolvedAs === 'rejected'
+  ? 'Superior Recharge rejected (resynced)'
+  : 'Duplicate entry — already credited via approval (resynced)';
+  await db.ref('users/' + fix.userId + '/transactions/' + fix.txKey).update({ status: 'failed', note });
+  fixedCount++;
+  } catch (e) {
+  console.error('Error resyncing deposit for', fix.username, e);
+  }
+  }
+    
+  toast(`Resynced ${fixedCount} stuck deposit(s)`);
+}
+
 async function approveManualDeposit(reqKey) {
   const dep = allManualDeposits[reqKey];
   if (!dep) return;
@@ -1796,7 +1856,9 @@ async function approveManualDeposit(reqKey) {
   const user = userSnap.val();
   if (!user) { toast('User not found', '#f87171'); return; }
   const newStake = (user.stake || 0) + (dep.amount || 0);
-  const txKey = dep.txKey || ('tx_mdep_' + Date.now());
+  // Legacy deposits submitted before txKey-linking was added: fall back to matching
+  // the existing pending transaction by amount, so we update it instead of leaving it stuck.
+  const txKey = dep.txKey || (await findPendingDepositTxKey(dep.userId, dep.amount)) || ('tx_mdep_' + Date.now());
 
   await db.ref('users/' + dep.userId).update({
   stake: newStake,
@@ -1825,8 +1887,11 @@ async function rejectManualDeposit(reqKey) {
 
   try {
   await db.ref('manualDeposits/' + reqKey).update({ status: 'rejected' });
-  if (dep.txKey && dep.userId) {
-  await db.ref('users/' + dep.userId + '/transactions/' + dep.txKey).update({
+  // Legacy deposits submitted before txKey-linking was added: fall back to matching
+  // the existing pending transaction by amount, so it doesn't stay stuck at "Pending" forever.
+  const txKey = dep.txKey || (dep.userId ? await findPendingDepositTxKey(dep.userId, dep.amount) : null);
+  if (txKey && dep.userId) {
+  await db.ref('users/' + dep.userId + '/transactions/' + txKey).update({
   status: 'failed',
   note: 'Superior Recharge rejected'
   });
