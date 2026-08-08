@@ -1504,7 +1504,7 @@ function computeIncomeStats() {
   result.subAffiliateTotal += amt;
   if (isToday) result.subAffiliateToday += amt;
   }
-  if (depositTypes.has(tx.type)) result.credited += Math.abs(amt);
+  if (depositTypes.has(tx.type) && tx.status === 'completed') result.credited += Math.abs(amt);
   if (tx.type === 'Withdrawal') result.debited += Math.abs(amt);
   });
   
