@@ -434,7 +434,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <!-- SUPPORT CHAT -->
 <div class="page" id="pg-support-chat">
 <div class="page-title">Support Chat</div>
-<div class="page-sub">Reply to user messages — chats auto-delete after 6 hours</div>
+<div class="page-sub">Reply to user messages — chats auto-delete after 8 hours</div>
 <div id="support-chat-list-view">
 <div class="table-wrap">
 <div class="table-header">
@@ -1483,6 +1483,9 @@ function startRealtimeListeners() {
   if (activeSupportChatUser) renderSupportChatThread(activeSupportChatUser);
   updateSupportChatBadge();
   });
+  setInterval(() => {
+  Object.keys(allSupportChats).forEach(userKey => cleanupOldSupportMessagesAdmin(userKey));
+  }, 5 * 60 * 1000);
   
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
@@ -1888,7 +1891,7 @@ async function cleanupOldSupportMessagesAdmin(userKey) {
   const snap = await db.ref('supportChats/' + userKey + '/messages').get();
   if (!snap.exists()) return;
   const messages = snap.val();
-  const cutoff = Date.now() - (6 * 60 * 60 * 1000);
+  const cutoff = Date.now() - (8 * 60 * 60 * 1000);
   const updates = {};
   Object.entries(messages).forEach(([msgId, msg]) => {
   if ((msg.timestamp || 0) < cutoff) updates[msgId] = null;

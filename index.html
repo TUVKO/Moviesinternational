@@ -1646,7 +1646,7 @@ async function cleanupOldSupportMessages(userKey) {
   const snap = await db.ref('supportChats/' + userKey + '/messages').get();
   if (!snap.exists()) return;
   const messages = snap.val();
-  const cutoff = Date.now() - (6 * 60 * 60 * 1000);
+  const cutoff = Date.now() - (4 * 60 * 60 * 1000);
   const updates = {};
   Object.entries(messages).forEach(([msgId, msg]) => {
   if ((msg.timestamp || 0) < cutoff) updates[msgId] = null;
@@ -1663,6 +1663,11 @@ function startSupportChatListener() {
   if (!currentUsername) return;
   const userKey = safeKey(currentUsername);
   cleanupOldSupportMessages(userKey);
+  if (!window.supportMsgCleanupInterval) {
+  window.supportMsgCleanupInterval = setInterval(() => {
+  if (currentUsername) cleanupOldSupportMessages(safeKey(currentUsername));
+  }, 5 * 60 * 1000);
+  }
   if (supportChatUnsubscribe) supportChatUnsubscribe();
   const ref = db.ref('supportChats/' + userKey + '/messages');
   const callback = (snap) => renderSupportThread(snap.val() || {});
