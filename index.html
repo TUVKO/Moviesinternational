@@ -888,6 +888,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">How It Works</div>
 <div style="margin-bottom:10px;">Every new account begins as a Trainee, with a modest daily video allowance and starter-level rewards — enough to get a feel for the platform without any upfront cost. From there, you can choose to invest in higher levels, each one unlocking a larger daily video quota and a higher payout per video watched. The further you progress through the levels, the greater your daily, monthly, and annual earning potential becomes.</div>
 <div style="margin-bottom:14px;">Beyond watching videos, WEA also rewards you for growing the community. Every user gets a personal referral link and QR code (once they've purchased their first level) to share with friends and family. When someone in your referral network — up to three levels deep — purchases a level of their own, you earn an instant bonus credited straight to your account.</div>
+<div style="margin-bottom:14px;">For added convenience, WEA also offers Auto Watch Movies — an optional feature on the Watch & Earn page that instantly completes your remaining daily video quota without manual watching. A 10% service fee applies per video, and the reward is credited to your Retained Wallet right away.</div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Our Mission</div>
 <div style="margin-bottom:14px;">WEA is a movies advertising company that partners with movie studios and sponsors around the world to promote content to real, engaged viewers. Rather than relying on passive ad impressions, we connect entertainment brands with an audience that actively chooses to watch — and we make sure that audience is compensated fairly for their time and attention. Every video watched on WEA supports a real promotional campaign, creating value for studios, sponsors, and our users all at once.</div>
@@ -979,6 +980,14 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>Where do my earnings go?</span><span class="faq-chevron">›</span></div>
 <div class="faq-answer">Video rewards go to your Retained Wallet, which is withdrawable. Deposits go to your General Account, used to purchase levels.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>What is Auto Watch Movies?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Auto Watch Movies lets you instantly complete your remaining daily video quota without manually watching each one. Tap it on the Watch & Earn page, confirm, and your reward is credited straight to your Retained Wallet right away.</div>
+</div>
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)"><span>Does Auto Watch Movies have a fee?</span><span class="faq-chevron">›</span></div>
+<div class="faq-answer">Yes — a 10% service fee is deducted from each video's reward when you use Auto Watch. Your referral commissions to your upline still apply as normal.</div>
 </div>
 
 <div class="faq-category">Deposits &amp; Withdrawals</div>
@@ -2995,10 +3004,13 @@ function renderStages() {
     
   let btnHtml = '';
   let cardClass = 'stage-card';
+  const isPastLevel = isPurchased && !isCurrent;
     
-  if (isPurchased) {
-  cardClass += 'purchased';
-  btnHtml = `<button class="stage-btn purchased-btn"disabled>Active</button>`;
+  if (isCurrent) {
+  cardClass += ' purchased';
+  btnHtml = `<button class="stage-btn purchased-btn" disabled>Active</button>`;
+  } else if (isPastLevel) {
+  btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" disabled>Completed</button>`;
   } else if (isLocked) {
   btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">Purchase Level</button>`;
   } else if (!hasEnough) {
