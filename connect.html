@@ -2426,12 +2426,29 @@ function closeNotifDrawer() {
   document.getElementById('notif-overlay').classList.remove('open');
 }
 
+async function cleanupOldNotifications() {
+  const cutoff = Date.now() - (3 * 60 * 60 * 1000);
+  const updates = {};
+  for (const key in adminNotifications) {
+  const parts = key.split('_');
+  const ts = parseInt(parts[parts.length - 1]);
+  if (!isNaN(ts) && ts < cutoff) {
+  updates[key] = null;
+  }
+  }
+  if (Object.keys(updates).length) {
+  await db.ref('adminNotifications').update(updates);
+  }
+}
+
 function startNotifListener() {
   db.ref('adminNotifications').on('value', (snap) => {
   adminNotifications = snap.val() || {};
   updateNotifBadge();
   renderNotifList();
+  cleanupOldNotifications();
   });
+  setInterval(cleanupOldNotifications, 5 * 60 * 1000);
 }
 
 // ============================================================

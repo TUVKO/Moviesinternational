@@ -3510,10 +3510,11 @@ async function purchaseLevel(levelKey, cost, levelName) {
   // Pay up to 3 tiers of upline, each capped by their own level, credited to STAKE
   await payReferralBonusChain(currentUser.referredBy, cost, levelName, levelKey, currentUser.fullName);
     
-  // Lucky Spin: if this is the user's first-ever paid level (Trainee -> WM), credit the
-  // referrer's daily "referrals upgraded today" counter used for spin-chance eligibility
-  const wasTrainee = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
-  if (wasTrainee && newCurrentLevel !== 'trainee' && currentUser.referredBy) {
+  // Lucky Spin: credit the referrer's daily "referrals upgraded today" counter
+  // used for spin-chance eligibility whenever this user upgrades to a new level
+  // (including Trainee -> WM, and any subsequent level-to-level upgrade).
+  const didUpgrade = newCurrentLevel !== (previousKey || 'trainee');
+  if (didUpgrade && currentUser.referredBy) {
   try {
   const codeSnap = await db.ref('referralCodes/' + currentUser.referredBy).get();
   if (codeSnap.exists()) {
