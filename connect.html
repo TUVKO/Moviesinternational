@@ -1912,7 +1912,8 @@ function renderSupportChatThread(userKey) {
   const msgs = Object.values(chat.messages || {}).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
   msgsEl.innerHTML = msgs.map(m => {
   const cls = m.sender === 'admin' ? 'chat-bubble-admin' : 'chat-bubble-user';
-  return `<div class="${cls}">${escapeHtml(m.text)}</div>`;
+  const badge = m.prizeClaim ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🏆 PRIZE CLAIM${m.prizeName ? ': ' + escapeHtml(m.prizeName) : ''}</div>` : '';
+  return `<div class="${cls}">${badge}${escapeHtml(m.text)}</div>`;
   }).join('');
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
