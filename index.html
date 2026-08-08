@@ -882,6 +882,12 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="font-family:'Fraunces',serif;font-size:14px;font-weight:800;color:var(--success);margin-bottom:2px;">WEA</div>
 <div style="font-style:italic;margin-bottom:14px;">Your Screen. Your Earnings.</div>
 
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🌍 Our Story</div>
+<div style="margin-bottom:14px;">WEA began its journey in the Philippines, growing steadily across multiple countries by staying true to one simple belief: everyone deserves the chance to earn, grow, and build a better future — no matter where they start. Today, we're expanding into Africa, beginning with Uganda and Kenya.</div>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🎯 Our Growth Goal</div>
+<div style="margin-bottom:14px;">We're working toward opening official WEA offices right here in Uganda and Kenya. Our goal is to reach 12 million people across Uganda — every person who joins, watches, earns, and shares WEA brings us one step closer.</div>
+
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">What is WEA?</div>
 <div style="margin-bottom:14px;">WEA (Watch Movies, Earn Money) is a platform built around a simple idea: the time you already spend watching videos can earn you real money. Instead of scrolling passively, WEA turns your attention into an income stream — one video at a time. Every video you watch contributes toward your daily earnings, which accumulate in your account and can be withdrawn to mobile money whenever you're ready.</div>
 
@@ -889,6 +895,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="margin-bottom:10px;">Every new account begins as a Trainee, with a modest daily video allowance and starter-level rewards — enough to get a feel for the platform without any upfront cost. From there, you can choose to invest in higher levels, each one unlocking a larger daily video quota and a higher payout per video watched. The further you progress through the levels, the greater your daily, monthly, and annual earning potential becomes.</div>
 <div style="margin-bottom:14px;">Beyond watching videos, WEA also rewards you for growing the community. Every user gets a personal referral link and QR code (once they've purchased their first level) to share with friends and family. When someone in your referral network — up to three levels deep — purchases a level of their own, you earn an instant bonus credited straight to your account.</div>
 <div style="margin-bottom:14px;">For added convenience, WEA also offers Auto Watch Movies — an optional feature on the Watch & Earn page that instantly completes your remaining daily video quota without manual watching. A 10% service fee applies per video, and the reward is credited to your Retained Wallet right away.</div>
+<div style="margin-bottom:14px;">Watch every day without missing one, and every 5th consecutive day earns you an extra streak bonus on top of your normal rewards. You can also lock funds from your General Account or Retained Wallet into DATIM movie company stake plans for additional returns, and earn Lucky Spin chances — for a shot at cash or exclusive prizes — whenever your direct referrals upgrade their level.</div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Our Mission</div>
 <div style="margin-bottom:14px;">WEA is a movies advertising company that partners with movie studios and sponsors around the world to promote content to real, engaged viewers. Rather than relying on passive ad impressions, we connect entertainment brands with an audience that actively chooses to watch — and we make sure that audience is compensated fairly for their time and attention. Every video watched on WEA supports a real promotional campaign, creating value for studios, sponsors, and our users all at once.</div>
@@ -903,6 +910,9 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <li style="margin-bottom:6px;">Accounts found to be in violation of platform rules — including fraudulent activity or abuse of the referral system — may be locked pending review</li>
 <li>WEA reserves the right to update these terms, level structures, and reward rates as the platform evolves</li>
 </ul>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🏢 Company Address</div>
+<div style="margin-bottom:14px;">WEA Technologies Inc.<br>Unit 402, Cebu IT Park<br>Apas, Cebu City, 6000 Cebu<br>Philippines</div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Contact Us</div>
 <div style="margin-bottom:14px;">Email: wea.movies@gmail.com</div>
@@ -1599,7 +1609,7 @@ function renderTodaysJob() {
   const todayY = now.getFullYear(), todayM = now.getMonth(), todayD = now.getDate();
   
   const todaysVideos = Object.values(currentUser.transactions).filter(tx => {
-  if (tx.type !== 'Video Reward') return false;
+  if (tx.type !== 'Video Reward' && tx.type !== 'Auto Watch Reward') return false;
   const txDate = parseTxDate(tx.date);
   return txDate && txDate.getFullYear() === todayY && txDate.getMonth() === todayM && txDate.getDate() === todayD;
   }).reverse();
