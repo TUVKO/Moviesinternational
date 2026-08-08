@@ -581,6 +581,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <thead>
   <tr style="background:var(--surface2);border-bottom:2px solid var(--border);">
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">#</th>
+  <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Prize Name</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Prize Type</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Cash Amount / Photo</th>
   <th style="padding:8px 10px;text-align:left;color:var(--accent);font-weight:800;font-size:10px;">Color</th>
@@ -1206,8 +1207,13 @@ function renderLuckySpinAdminPage() {
   const color = seg.color || LUCKYSPIN_DEFAULT_COLORS[i];
   const imgPreview = seg.type === 'image' && seg.imageData ? `<img src="${seg.imageData}" style="width:32px;height:32px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:6px;">` : '';
   
+  const name = seg.name || '';
+  
   rows += `<tr>
   <td style="padding:8px 10px;font-weight:800;color:var(--accent);">${i + 1}</td>
+  <td style="padding:8px 10px;">
+  <input type="text" id="ls-name-${i}" value="${name.replace(/"/g, '&quot;')}" placeholder="e.g. Mega Cash" style="width:120px;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;">
+</td>
   <td style="padding:8px 10px;">
   <select id="ls-type-${i}" onchange="onLuckySpinTypeChange(${i})" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px;">
   <option value="cash" ${type === 'cash' ? 'selected' : ''}>Cash</option>
@@ -1272,12 +1278,13 @@ function handleLuckySpinImageUpload(index, inputEl) {
 }
 
 async function saveLuckySpinSegment(index) {
+  const name = document.getElementById('ls-name-' + index).value.trim();
   const type = document.getElementById('ls-type-' + index).value;
   const color = document.getElementById('ls-color-' + index).value;
   const locked = document.getElementById('ls-locked-' + index).checked;
   
   const current = allLuckySpinSegments[index] || {};
-  const segData = { type, color, locked };
+  const segData = { name, type, color, locked };
   
   if (type === 'cash') {
   const cashAmount = parseInt(document.getElementById('ls-cash-' + index).value) || 0;

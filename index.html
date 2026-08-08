@@ -774,6 +774,11 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
   <button class="datim-lock-btn" style="width:100%;padding:14px;font-size:15px;border-radius:12px;" id="luckyspin-spin-btn" onclick="spinLuckyWheel()">SPIN</button>
 </div>
 
+<div style="margin-top:22px;">
+  <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">Prizes up for grabs</div>
+  <div id="luckyspin-prizes-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;"></div>
+</div>
+
 </div>
 </div>
 
@@ -3048,6 +3053,28 @@ function renderLuckySpinPage() {
   noChancesEl.style.display = 'block';
   wheelWrapEl.style.display = 'none';
   }
+
+  renderLuckySpinPrizesGrid();
+}
+
+function renderLuckySpinPrizesGrid() {
+  const grid = document.getElementById('luckyspin-prizes-grid');
+  if (!grid) return;
+
+  let html = '';
+  for (let i = 0; i < 10; i++) {
+  const seg = luckySpinSegmentsData[i] || {};
+  const name = seg.name || (seg.type === 'cash' ? 'Cash Prize' : 'Prize');
+  const media = seg.type === 'image' && seg.imageData
+  ? `<img src="${seg.imageData}" style="width:36px;height:36px;object-fit:cover;border-radius:8px;margin-bottom:6px;">`
+  : `<div style="font-size:14px;font-weight:800;color:var(--accent);margin-bottom:4px;">${fmt(seg.cashAmount || 0)}</div>`;
+
+  html += `<div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;">
+  ${media}
+  <div style="font-size:11px;color:var(--text);font-weight:600;">${name}</div>
+</div>`;
+  }
+  grid.innerHTML = html;
 }
 
 function renderLuckySpinWheel() {
