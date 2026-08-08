@@ -756,13 +756,20 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Lucky Spin</div><div class="inner-sub">Spin the wheel and win prizes</div></div></div>
 <div class="section">
 
+<div class="stats-grid" style="grid-template-columns:1fr;margin-bottom:16px;">
+<div class="stat-box">
+<div class="stat-label">REFERRALS UPGRADED TODAY</div>
+<div class="stat-value" style="color:var(--accent);" id="luckyspin-referral-stat">0</div>
+</div>
+</div>
+
 <div id="luckyspin-no-chances" style="display:none;">
 <div class="tx-empty-state">
 <div class="tx-empty-icon"></div>
 <div class="tx-empty-title">No Spin Chances</div>
 <div class="tx-empty-text" id="luckyspin-referral-progress">Referral Progress: 0 direct referrals upgraded today.</div>
 </div>
-  <button class="green-btn" style="width:100%;margin-top:14px;" onclick="openSupportForLuckySpin()">Contact Support</button>
+  <button class="green-btn" style="width:100%;margin-top:14px;" id="luckyspin-contact-support-btn" onclick="openSupportForLuckySpin()">Contact Support</button>
 </div>
 
 <div id="luckyspin-wheel-wrap" style="display:none;">
@@ -1687,6 +1694,7 @@ async function sendSupportMessage() {
   const msgId = 'msg_' + Date.now();
   const isPrizeClaim = prizeClaimPending;
   const prizeName = pendingPrizeClaimName;
+  const isChanceClaim = spinClaimPending;
   
   try {
   const messagePayload = {
@@ -1698,6 +1706,9 @@ async function sendSupportMessage() {
   if (isPrizeClaim) {
   messagePayload.prizeClaim = true;
   messagePayload.prizeName = prizeName;
+  }
+  if (isChanceClaim) {
+  messagePayload.chanceClaim = true;
   }
   await db.ref('supportChats/' + userKey).update({
   userFullName: currentUser?.fullName || 'User',
@@ -1712,6 +1723,13 @@ async function sendSupportMessage() {
   if (isPrizeClaim) {
   prizeClaimPending = false;
   pendingPrizeClaimName = '';
+  }
+  if (isChanceClaim) {
+  spinClaimPending = false;
+  const todayKey = getUTCKey();
+  await db.ref('users/' + userKey + '/dailyReferralUpgrades/' + todayKey).set(0);
+  currentUser = await db.ref('users/' + userKey).get().then(s => s.val());
+  renderLuckySpinPage();
   }
   cleanupOldSupportMessages(userKey);
   } catch (error) {
@@ -1770,6 +1788,7 @@ let currentUsername = null;
 let settingsData = {
   withdrawCharge: 10,
   withdrawLocked: false,
+  luckySpinLocked: false,
   withdrawApproval: false,
   minDeposit: 10000,
   minWithdraw: 10000,
@@ -3046,6 +3065,17 @@ function renderLuckySpinPage() {
   const todayCount = getTodayReferralUpgradeCount();
   const tier = getLuckySpinTier(todayCount);
     
+  const statEl = document.getElementById('luckyspin-referral-stat');
+  if (statEl) statEl.textContent = todayCount;
+    
+  const contactBtn = document.getElementById('luckyspin-contact-support-btn');
+  if (contactBtn) {
+  const canClaim = tier > 0;
+  contactBtn.disabled = !canClaim;
+  contactBtn.style.opacity = canClaim ? '1' : '0.45';
+  contactBtn.style.pointerEvents = canClaim ? 'auto' : 'none';
+  }
+    
   const progressEl = document.getElementById('luckyspin-referral-progress');
   if (progressEl) {
   const refWord = todayCount === 1 ? 'referral' : 'referrals';
@@ -3142,7 +3172,12 @@ async function spinLuckyWheel() {
   return;
   }
     
-  const winIndex = eligible[Math.floor(Math.random() * eligible.length)];
+  const lastWinIndex = currentUser?.lastSpinPrizeIndex;
+  const pool = (eligible.length > 1 && eligible.includes(lastWinIndex))
+  ? eligible.filter(i => i !== lastWinIndex)
+  : eligible;
+    
+  const winIndex = pool[Math.floor(Math.random() * pool.length)];
   const winSegment = luckySpinSegmentsData[winIndex];
     
   const svg = document.getElementById('luckyspin-wheel-svg');
@@ -3164,17 +3199,18 @@ async function spinLuckyWheel() {
   luckySpinCurrentRotation = target;
     
   setTimeout(async () => {
-  await finalizeLuckySpinResult(winSegment);
+  await finalizeLuckySpinResult(winSegment, winIndex);
   if (btn) { btn.disabled = false; btn.textContent = 'SPIN'; }
   }, 4200);
 }
 
-async function finalizeLuckySpinResult(segment) {
+async function finalizeLuckySpinResult(segment, winIndex) {
   try {
   const userKey = safeKey(currentUsername);
   const newChances = Math.max(0, getValidSpinChances() - 1);
   const todayKey = getUTCKey();
   const updates = { spinChances: newChances, spinChancesDate: todayKey };
+  if (typeof winIndex === 'number') updates.lastSpinPrizeIndex = winIndex;
     
   if (segment.type === 'cash' && (segment.cashAmount || 0) > 0) {
   updates.stake = (currentUser.stake || 0) + segment.cashAmount;
@@ -3196,9 +3232,13 @@ async function finalizeLuckySpinResult(segment) {
   }
 }
 
+let spinClaimPending = false;
+
 function openSupportForLuckySpin() {
-  switchTab('support');
   const count = getTodayReferralUpgradeCount();
+  if (count < 1) return;
+  spinClaimPending = true;
+  switchTab('support');
   const refWord = count === 1 ? 'referral' : 'referrals';
   const msg = `Hi, today I have ${count} direct ${refWord} who upgraded to a WM level, and I'd like to claim my Lucky Spin chances. Please review and grant them. Thank you!`;
   selectSupportTopic('Lucky Spin Chances');
@@ -4719,8 +4759,16 @@ function switchTab(tab, fromPopState) {
   if (tab === 'withdraw' && settingsData.withdrawLocked) {
   return;
   }
+  if (tab === 'luckyspin' && settingsData.luckySpinLocked) {
+  return;
+  }
   if (prizeClaimPending && tab !== 'support') {
   showBanner('Please send your prize claim message before leaving this page.');
+  if (fromPopState) history.pushState({ appTab: 'support' }, '', '#support');
+  return;
+  }
+  if (spinClaimPending && tab !== 'support') {
+  showBanner('Please send your chance claim message before leaving this page.');
   if (fromPopState) history.pushState({ appTab: 'support' }, '', '#support');
   return;
   }

@@ -689,6 +689,17 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 </div>
 
+  <!-- Lucky Spin Control -->
+<div class="danger-zone">
+<div class="danger-title">Lucky Spin Control</div>
+<div class="danger-sub">Lock or unlock the Lucky Spin tab for ALL users globally. When locked, the tab looks normal but won't open and no error is shown.</div>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+  <button class="btn btn-danger" onclick="lockLuckySpin(true)">Lock Lucky Spin Tab</button>
+  <button class="btn btn-success" onclick="lockLuckySpin(false)">Unlock Lucky Spin Tab</button>
+  <span id="luckyspin-lock-status" style="font-size:13px;color:var(--muted);">Checking...</span>
+</div>
+</div>
+
   <!-- Danger Zone -->
 <div class="danger-zone" style="margin-top:20px;">
 <div class="danger-title">Danger Zone</div>
@@ -776,6 +787,7 @@ let allUsers = {};
 let allSettings = {
   withdrawCharge: 10,
   withdrawLocked: false,
+  luckySpinLocked: false,
   withdrawApproval: false,
   minDeposit: 10000,
   minWithdraw: 10000,
@@ -1912,7 +1924,11 @@ function renderSupportChatThread(userKey) {
   const msgs = Object.values(chat.messages || {}).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
   msgsEl.innerHTML = msgs.map(m => {
   const cls = m.sender === 'admin' ? 'chat-bubble-admin' : 'chat-bubble-user';
-  const badge = m.prizeClaim ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🏆 PRIZE CLAIM${m.prizeName ? ': ' + escapeHtml(m.prizeName) : ''}</div>` : '';
+  const badge = m.prizeClaim
+  ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🏆 PRIZE CLAIM${m.prizeName ? ': ' + escapeHtml(m.prizeName) : ''}</div>`
+  : m.chanceClaim
+  ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🎯 CHANCE CLAIM</div>`
+  : '';
   return `<div class="${cls}">${badge}${escapeHtml(m.text)}</div>`;
   }).join('');
   msgsEl.scrollTop = msgsEl.scrollHeight;
@@ -2160,6 +2176,12 @@ function loadSettingsUI() {
   lockStatus.style.color = s.withdrawLocked ? 'var(--warn)' : 'var(--success)';
   }
   
+  const luckySpinLockStatus = document.getElementById('luckyspin-lock-status');
+  if (luckySpinLockStatus) {
+  luckySpinLockStatus.textContent = s.luckySpinLocked ? 'LOCKED' : 'OPEN';
+  luckySpinLockStatus.style.color = s.luckySpinLocked ? 'var(--warn)' : 'var(--success)';
+  }
+  
   const approvalStatus = document.getElementById('approval-status');
   if (approvalStatus) {
   approvalStatus.textContent = s.withdrawApproval ? 'Manual Approval ON' : 'Automatic';
@@ -2308,6 +2330,11 @@ async function saveSubAffiliateLevel2() {
 async function lockWithdrawals(lock) {
   await db.ref('settings/withdrawLocked').set(lock);
   toast(lock ? 'Withdrawals LOCKED' : 'Withdrawals UNLOCKED', lock ? '#f87171' : undefined);
+}
+
+async function lockLuckySpin(lock) {
+  await db.ref('settings/luckySpinLocked').set(lock);
+  toast(lock ? 'Lucky Spin tab LOCKED' : 'Lucky Spin tab UNLOCKED', lock ? '#f87171' : undefined);
 }
 
 async function setWithdrawApproval(val) {
