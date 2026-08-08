@@ -1617,6 +1617,7 @@ function renderUsersTable() {
   <td style="display:flex;gap:6px;flex-wrap:wrap;">
   <button class="btn btn-edit" onclick="openEditModal('${sk}')">Edit</button>
   <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${sk}', ${!u.locked})">${u.locked ? 'Unlock' : 'Lock'}</button>
+  <button class="btn btn-reject" onclick="confirmResetUserData('${sk}', '${(displayName || '').replace(/'/g, "\\'")}', '${(u.phone || '').replace(/'/g, "\\'")}')">Reset Data</button>
   <button class="btn btn-delete" onclick="deleteUser('${sk}')">Delete</button>
 </td>
 </tr>`;
@@ -1714,6 +1715,48 @@ async function deleteUser(key) {
   await db.ref('users/' + key).remove();
   toast('User deleted', '#f87171');
   }
+}
+
+async function confirmResetUserData(key, displayName, phone) {
+  const label = displayName || phone || key;
+  const confirmed = await confirmAction(
+  'Reset Account Data?',
+  `Reset all activity data for "${label}"? Their balances, level, video progress, transaction history, DATIM stakes, spin chances, and withdrawal settings will be cleared. The account itself, login details, and referral program links stay untouched. This cannot be undone.`
+  );
+  if (confirmed) await resetUserData(key);
+}
+
+async function resetUserData(key) {
+  const todayUTC = new Date().toISOString().slice(0, 10);
+  const resetUpdates = {
+  stake: 0,
+  mob: 0,
+  currentLevel: 'trainee',
+  purchasedLevels: {},
+  traineeStartDate: todayUTC,
+  traineeDayCount: 1,
+  traineeCompleted: false,
+  videoPosition: 0,
+  totalVideosWatched: 0,
+  watchHistory: {},
+  streakDays: 0,
+  lastWatchDate: null,
+  transactions: {},
+  datimStakes: {},
+  spinChances: 0,
+  spinChancesDate: null,
+  lastSpinPrizeIndex: null,
+  dailyReferralUpgrades: {},
+  withdrawPhone: null,
+  withdrawPin: null,
+  withdrawIdName: null,
+  withdrawNetwork: null,
+  withdrawAccountLocked: false,
+  lastWithdrawDate: null,
+  locked: false
+  };
+  await db.ref('users/' + key).update(resetUpdates);
+  toast('Account data reset — referral links preserved', '#4ade80');
 }
 
 // ============================================================

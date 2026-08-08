@@ -574,7 +574,9 @@ input[type="password"]{padding-right:46px;}
 
   <!-- WATCH & EARN -->
 <div class="dash-section" id="sec-team">
-<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">WATCH & EARN</div><div class="inner-sub">Watch videos and earn money</div></div></div>
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">WATCH & EARN</div><div class="inner-sub">Watch videos and earn money</div></div>
+<button id="auto-watch-btn" onclick="confirmAutoWatch()" style="margin-left:auto;background:var(--surface2);border:1px solid var(--border);color:var(--accent);font-weight:700;font-size:11px;padding:10px 12px;border-radius:12px;line-height:1.3;white-space:normal;text-align:center;max-width:110px;">Auto Watch Movies</button>
+</div>
 <div class="section">
 <div id="video-grid" class="video-grid">
 <div class="video-empty">No videos yet. Check back soon.</div>
@@ -828,7 +830,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <button class="profile-menu-btn" onclick="switchTab('myteam')">Team</button>
 <button class="profile-menu-btn" onclick="switchTab('missed-commission')">Missed Commission</button>
 <button class="profile-menu-btn" onclick="switchTab('about')">About</button>
-<button class="profile-menu-btn" onclick="switchTab('support')">Support</button>
+<button class="profile-menu-btn" onclick="switchTab('support')" style="position:relative;">Support<span id="support-unread-dot-btn" style="display:none;position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:#f87171;"></span></button>
 <button class="profile-menu-btn" onclick="switchTab('faq')">FAQ</button>
 <button class="profile-menu-btn" onclick="startAppDownload()">App Download</button>
 <button class="profile-menu-btn" onclick="doLogout()">Exit</button>
@@ -1201,7 +1203,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-4H3v4z"/><path d="M9 20h4v-9H9v9z"/><path d="M15 20h4V6h-4v14z"/></svg></span><span class="nav-label">STAGES</span></div>
 <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">WATCH</span></div>
 <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 12h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a2 2 0 0 1 0-4z"/></svg></span><span class="nav-label">WAGES</span></div>
-<div class="nav-item" onclick="switchTab('profile')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg></span><span class="nav-label">ME</span></div>
+<div class="nav-item" onclick="switchTab('profile')" style="position:relative;"><span class="nav-icon" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg><span id="support-unread-dot-nav" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;border-radius:50%;background:#f87171;border:1.5px solid var(--bg);"></span></span><span class="nav-label">ME</span></div>
 </nav>
 </div>
 
@@ -1212,6 +1214,19 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="modal-title" id="modal-title">Notice</div>
 <div class="modal-msg" id="modal-msg">Please wait...</div>
   <button class="modal-close" onclick="closeModal()">OK, Got It</button>
+</div>
+</div>
+
+<!-- Auto Watch Confirm Modal -->
+<div class="modal-overlay" id="autowatch-modal-overlay">
+<div class="modal-box">
+<div class="modal-icon"></div>
+<div class="modal-title">Auto Watch Movies</div>
+<div class="modal-msg" id="autowatch-modal-msg">Auto-watch your remaining videos instantly?</div>
+<div style="display:flex;gap:10px;">
+  <button class="modal-close" style="background:var(--surface2);color:var(--text);flex:1;" onclick="closeAutoWatchModal()">Cancel</button>
+  <button class="modal-close" id="autowatch-confirm-btn" style="flex:1;" onclick="runAutoWatch()">Confirm</button>
+</div>
 </div>
 </div>
 
@@ -1618,11 +1633,56 @@ async function renderTeamList() {
 }
 
 let supportChatUnsubscribe = null;
+let globalSupportChatUnsubscribe = null;
+let supportLastSeenTimestamp = parseInt(sessionStorage.getItem('pp_support_last_seen') || '0');
+
+function startGlobalSupportChatListener(username) {
+  if (globalSupportChatUnsubscribe) globalSupportChatUnsubscribe();
+  const userKey = safeKey(username);
+  const ref = db.ref('supportChats/' + userKey);
+  const callback = (snap) => {
+  const chat = snap.val() || {};
+  renderSupportThread(chat.messages || {});
+  updateSupportUnreadBadge(chat);
+  };
+  ref.on('value', callback);
+  globalSupportChatUnsubscribe = () => ref.off('value', callback);
+}
+
+function isSupportThreadVisible() {
+  const el = document.getElementById('support-followup');
+  const supportTabEl = document.getElementById(tabMap['support']);
+  return !!(el && el.style.display === 'block' && supportTabEl && supportTabEl.classList.contains('active'));
+}
+
+function markSupportAsSeen(ts) {
+  supportLastSeenTimestamp = ts || Date.now();
+  sessionStorage.setItem('pp_support_last_seen', String(supportLastSeenTimestamp));
+}
+
+function setSupportBadgeVisible(show) {
+  const navDot = document.getElementById('support-unread-dot-nav');
+  const btnDot = document.getElementById('support-unread-dot-btn');
+  if (navDot) navDot.style.display = show ? 'block' : 'none';
+  if (btnDot) btnDot.style.display = show ? 'block' : 'none';
+}
+
+function updateSupportUnreadBadge(chat) {
+  if (isSupportThreadVisible()) {
+  if (chat.lastMessageAt) markSupportAsSeen(chat.lastMessageAt);
+  setSupportBadgeVisible(false);
+  return;
+  }
+  const hasNew = chat.lastSender === 'admin' && (chat.lastMessageAt || 0) > supportLastSeenTimestamp;
+  setSupportBadgeVisible(hasNew);
+}
 
 function selectSupportTopic(topic) {
   document.getElementById('support-options').style.display = 'none';
   document.getElementById('support-followup').style.display = 'block';
   document.getElementById('support-user-choice').textContent = topic;
+  markSupportAsSeen(Date.now());
+  setSupportBadgeVisible(false);
   startSupportChatListener();
 }
 
@@ -2106,6 +2166,14 @@ function updateVideoCount() {
   document.getElementById('stat-today-videos').textContent = `${watched}/${total}`;
   document.getElementById('stat-level').textContent = levelName;
   
+  const autoBtn = document.getElementById('auto-watch-btn');
+  if (autoBtn) {
+  const canAutoWatch = remaining > 0;
+  autoBtn.disabled = !canAutoWatch;
+  autoBtn.style.opacity = canAutoWatch ? '1' : '0.45';
+  autoBtn.style.pointerEvents = canAutoWatch ? 'auto' : 'none';
+  }
+  
   renderVideoGrid();
 }
 
@@ -2450,6 +2518,154 @@ async function claimReward() {
   btn.disabled = false;
   isClaimReady = true;
   }, 2000);
+  }
+}
+
+// ============================================================
+// AUTO WATCH MOVIES
+// ============================================================
+function confirmAutoWatch() {
+  if (!currentUser) return;
+  const { remaining, reward } = getRemainingVideos();
+  if (remaining <= 0) {
+  showBanner("You've already completed today's video quota.");
+  return;
+  }
+  const totalReward = remaining * reward;
+  const netReward = Math.round(totalReward * 0.9);
+  const msgEl = document.getElementById('autowatch-modal-msg');
+  if (msgEl) msgEl.textContent = `Auto-watch your remaining ${remaining} video${remaining === 1 ? '' : 's'} and earn ${fmt(netReward)} instantly? A 10% service fee applies.`;
+  const overlay = document.getElementById('autowatch-modal-overlay');
+  if (overlay) overlay.classList.add('open');
+}
+
+function closeAutoWatchModal() {
+  const overlay = document.getElementById('autowatch-modal-overlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+async function runAutoWatch() {
+  const btn = document.getElementById('autowatch-confirm-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
+
+  try {
+  const userKey = safeKey(currentUsername);
+  const userRef = db.ref('users/' + userKey);
+  const snap = await userRef.get();
+  const user = snap.val() || {};
+
+  const levelKey = getUserLevel();
+  const level = getLevelData(levelKey);
+  const reward = level.each || 0;
+  const totalVideos = level.movies || 0;
+  const todayUTC = getUTCKey();
+  const watchedToday = user.watchHistory?.[todayUTC] || 0;
+  const remaining = Math.max(0, totalVideos - watchedToday);
+
+  if (remaining <= 0) {
+  closeAutoWatchModal();
+  showBanner("You've already completed today's video quota.");
+  if (btn) { btn.disabled = false; btn.textContent = 'Confirm'; }
+  return;
+  }
+
+  const allVideoIds = getVideoIds();
+  const startPosition = user.videoPosition || 0;
+  const currentMob = user.mob || 0;
+  let mobAccumulator = currentMob;
+  const updates = {};
+  const dailyViewIncrements = {};
+
+  for (let i = 0; i < remaining; i++) {
+  const netReward = Math.round(reward * 0.9);
+  mobAccumulator += netReward;
+  const txKey = 'tx_autowatch_' + Date.now() + '_' + i;
+  updates[`transactions/${txKey}`] = {
+  type: 'Auto Watch Reward',
+  amount: netReward,
+  note: `Auto Watch: Movie ${watchedToday + i + 1} of ${totalVideos} (10% fee deducted)`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  if (allVideoIds.length > 0) {
+  const vid = allVideoIds[(startPosition + i) % allVideoIds.length];
+  if (vid) dailyViewIncrements[vid] = (dailyViewIncrements[vid] || 0) + 1;
+  }
+  }
+
+  updates.mob = mobAccumulator;
+  updates.totalVideosWatched = (user.totalVideosWatched || 0) + remaining;
+  updates.videoPosition = allVideoIds.length > 0 ? (startPosition + remaining) % allVideoIds.length : startPosition;
+  updates[`watchHistory/${todayUTC}`] = totalVideos;
+
+  // Streak logic — same as manual watching
+  const lastWatchDate = user.lastWatchDate || null;
+  let streakDays = user.streakDays || 0;
+  if (lastWatchDate === todayUTC) {
+  // no change
+  } else {
+  const yesterday = getServerTime();
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const yesterdayStr = getUTCKey(yesterday);
+  if (lastWatchDate === yesterdayStr) {
+  streakDays = (user.streakDays || 0) + 1;
+  if (streakDays % 5 === 0) {
+  const bonus = settingsData.streakBonus || 1000;
+  updates.mob = updates.mob + bonus;
+  updates[`transactions/streak_${Date.now()}`] = {
+  type: 'Streak Bonus',
+  amount: bonus,
+  note: `${streakDays}-day streak bonus!`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  }
+  } else {
+  streakDays = 1;
+  }
+  }
+  updates.streakDays = streakDays;
+  updates.lastWatchDate = todayUTC;
+
+  // Trainee day tracking — same as manual watching
+  if (levelKey === 'trainee') {
+  const traineeStartKey = user.traineeStartDate || todayUTC;
+  const startDateMs = Date.parse(traineeStartKey + 'T00:00:00Z');
+  const todayDateMs = Date.parse(todayUTC + 'T00:00:00Z');
+  const calendarDaysDiff = Math.floor((todayDateMs - startDateMs) / (1000 * 60 * 60 * 24));
+  const dayCount = Math.min(calendarDaysDiff + 1, 3);
+  updates.traineeDayCount = dayCount;
+  if (calendarDaysDiff >= 3) updates.traineeCompleted = true;
+  }
+
+  await userRef.update(updates);
+
+  // Referral commission — same trigger as manual (full quota reached), base rate reduced 10%
+  if (levelKey !== 'trainee') {
+  await paySubAffiliateRevenue(user.referredBy, (level.daily || 0) * 0.9, levelKey);
+  }
+
+  // Update shared daily view counters for each auto-watched video
+  Object.entries(dailyViewIncrements).forEach(([vid, count]) => {
+  db.ref(`videos/${vid}/dailyViews/${todayUTC}`).transaction(v => (v || 0) + count);
+  });
+
+  currentUser = await userRef.get().then(s => s.val());
+  updateBalanceUI();
+  renderHistory();
+  updateProfileUI();
+  updateLevelProgress();
+  renderStages();
+  updateVideoDisplay();
+
+  closeAutoWatchModal();
+  showBanner(`Auto-watched ${remaining} video${remaining === 1 ? '' : 's'}! Earned ${fmt(updates.mob - currentMob)} to Retained Wallet.`);
+
+  } catch (e) {
+  console.error('Auto watch error:', e);
+  showBanner('Something went wrong. Please try again.');
+  } finally {
+  if (btn) { btn.disabled = false; btn.textContent = 'Confirm'; }
   }
 }
 
@@ -4837,6 +5053,7 @@ function startUserListener(username) {
   updateVideoDisplay();
   }
   });
+  startGlobalSupportChatListener(username);
 }
 
 // ============================================================
