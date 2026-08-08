@@ -1449,7 +1449,9 @@ function startRealtimeListeners() {
   allUsers = snap.val() || {};
   renderDashboard();
   renderUsersTable();
+  cleanupOldUserTxHistories();
   });
+  setInterval(cleanupOldUserTxHistories, 5 * 60 * 1000);
   
   if (settingsUnsubscribe) settingsUnsubscribe();
   settingsUnsubscribe = db.ref('settings').on('value', (snap) => {
@@ -1486,9 +1488,47 @@ function startRealtimeListeners() {
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
   allAdminTransactions = snap.val() || {};
   renderAdminTransactions();
+  cleanupOldAdminTransactions();
   });
+  setInterval(cleanupOldAdminTransactions, 5 * 60 * 1000);
   
   startNotifListener();
+}
+
+async function cleanupOldAdminTransactions() {
+  const cutoff = Date.now() - (5 * 60 * 60 * 1000);
+  const updates = {};
+  for (const key in allAdminTransactions) {
+  const parts = key.split('_');
+  const ts = parseInt(parts[parts.length - 1]);
+  if (!isNaN(ts) && ts < cutoff) {
+  updates[key] = null;
+  }
+  }
+  if (Object.keys(updates).length) {
+  await db.ref('adminTransactions').update(updates);
+  }
+}
+
+async function cleanupOldUserTxHistories() {
+  const cutoff = Date.now() - (6 * 24 * 60 * 60 * 1000);
+  const updates = {};
+  for (const userKey in allUsers) {
+  const txs = allUsers[userKey]?.transactions;
+  if (!txs) continue;
+  for (const txKey in txs) {
+  const tx = txs[txKey];
+  if (tx.type !== 'Deposit' && tx.type !== 'Withdrawal') continue;
+  const parts = txKey.split('_');
+  const ts = parseInt(parts[parts.length - 1]);
+  if (!isNaN(ts) && ts < cutoff) {
+  updates[`users/${userKey}/transactions/${txKey}`] = null;
+  }
+  }
+  }
+  if (Object.keys(updates).length) {
+  await db.ref().update(updates);
+  }
 }
 
 // ============================================================
