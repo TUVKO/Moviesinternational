@@ -1416,6 +1416,12 @@ function isSundayEAT() {
   return eat.getUTCDay() === 0; // 0 = Sunday
 }
 
+// Saturday lockout: no withdrawals (EAT, server-synced)
+function isSaturdayEAT() {
+  const eat = new Date(getServerTime().getTime() + 3 * 60 * 60 * 1000);
+  return eat.getUTCDay() === 6; // 6 = Saturday
+}
+
 // Withdrawals only allowed 8:00 AM - 7:00 PM EAT (server-synced)
 function isWithdrawWindowOpen() {
   const eat = new Date(getServerTime().getTime() + 3 * 60 * 60 * 1000);
@@ -4515,6 +4521,11 @@ async function doWithdraw() {
   
   if (isSundayEAT()) {
   showBanner('Withdrawals are unavailable on Sundays.');
+  return;
+  }
+  
+  if (isSaturdayEAT()) {
+  showBanner('Withdrawals are unavailable on Saturdays.');
   return;
   }
   
