@@ -308,6 +308,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="nav-item" onclick="showPage('pg-levels')"><span class="nav-icon">📊</span><span>Levels</span></div>
 <div class="nav-item" onclick="showPage('pg-datim')"><span class="nav-icon">🎬</span><span>DATIM Plans</span></div>
 <div class="nav-item" onclick="showPage('pg-luckyspin')"><span class="nav-icon">🎡</span><span>Lucky Spin</span></div>
+<div class="nav-item" onclick="showPage('pg-positions')"><span class="nav-icon">💼</span><span>Positions</span></div>
 <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
 </div>
 <div class="sidebar-footer">
@@ -643,6 +644,21 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 </div>
 
+  <!-- POSITIONS / SALARY -->
+<div class="page" id="pg-positions">
+<div class="page-title">Positions</div>
+<div class="page-sub">Employee positions earned through referral network growth — salaries auto-pay to General Account on/after the 6th of each month</div>
+<div class="table-wrap">
+<div class="table-header"><div class="table-title">Position Tiers</div></div>
+  <table>
+  <thead>
+  <tr><th>Order</th><th>Name</th><th>Direct Required</th><th>Combined Levels</th><th>Combined Required</th><th>Monthly Salary (UGX)</th><th>Actions</th></tr>
+</thead>
+  <tbody id="positions-table-body"><tr class="empty-row"><td colspan="7">Loading positions...</td></tr></tbody>
+</table>
+</div>
+</div>
+
   <!-- SETTINGS -->
 <div class="page" id="pg-settings">
 <div class="page-title">Settings</div>
@@ -843,11 +859,29 @@ async function sendAdminWithdrawal() {
   phoneInput.value = '';
   amountInput.value = '';
   } else {
+  const failReason = sendResult?.message || sendResult?.error || 'Unknown error from MarzPay';
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
+  await db.ref('adminNotifications/notif_' + Date.now()).set({
+  type: 'admin_withdrawal_failed',
+  username: 'Admin Payout',
+  amount: amount,
+  message: `Admin Withdrawal Failed: Phone ${phone} | Amount: ${fmt(amount)} | Reason: ${failReason}`,
+  date: dateStr(),
+  read: false
+  });
   toast('Payout failed — check MarzPay balance/status', '#f87171');
   }
   } catch (e) {
   console.error('Admin withdrawal error:', e);
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' }).catch(() => {});
+  await db.ref('adminNotifications/notif_' + Date.now()).set({
+  type: 'admin_withdrawal_failed',
+  username: 'Admin Payout',
+  amount: amount,
+  message: `Admin Withdrawal Failed: Phone ${phone} | Amount: ${fmt(amount)} | Reason: ${e.message}`,
+  date: dateStr(),
+  read: false
+  });
   toast('Payout failed: ' + e.message, '#f87171');
   }
 }
@@ -899,6 +933,7 @@ let supportChatsUnsubscribe = null;
 let adminTxUnsubscribe = null;
 let levelsUnsubscribe = null;
 let datimPlansUnsubscribe = null;
+let positionsUnsubscribe = null;
 let videosUnsubscribe = null;
 
 function fmt(n) { return 'UGX ' + Number(n || 0).toLocaleString(); }
@@ -1134,6 +1169,66 @@ function startDatimPlansListener() {
   renderDatimPlansAdminTable();
   });
 }
+
+let allPositions = {};
+const DEFAULT_POSITIONS_ADMIN = {
+  team_leader: { name: 'Team Leader', order: 1, directRequired: 10, combinedLevels: 1, combinedRequired: 0, salary: 50000 },
+  assistant_manager: { name: 'Assistant Manager', order: 2, directRequired: 25, combinedLevels: 1, combinedRequired: 0, salary: 120000 },
+  manager: { name: 'Manager', order: 3, directRequired: 20, combinedLevels: 2, combinedRequired: 50, salary: 300000 },
+  senior_manager: { name: 'Senior Manager', order: 4, directRequired: 20, combinedLevels: 2, combinedRequired: 100, salary: 1200000 },
+  regional_director: { name: 'Regional Director', order: 5, directRequired: 60, combinedLevels: 3, combinedRequired: 500, salary: 3000000 },
+  vice_president: { name: 'Vice President', order: 6, directRequired: 100, combinedLevels: 3, combinedRequired: 1200, salary: 7000000 },
+  executive_director: { name: 'Executive Director', order: 7, directRequired: 150, combinedLevels: 3, combinedRequired: 2500, salary: 15000000 }
+};
+
+function startPositionsListener() {
+  if (positionsUnsubscribe) positionsUnsubscribe();
+  positionsUnsubscribe = db.ref('positions').on('value', async (snap) => {
+  if (!snap.exists()) {
+  await db.ref('positions').set(DEFAULT_POSITIONS_ADMIN);
+  return; // listener will refire with the seeded data
+  }
+  allPositions = snap.val();
+  renderPositionsAdminTable();
+  });
+}
+
+function renderPositionsAdminTable() {
+  const tbody = document.getElementById('positions-table-body');
+  if (!tbody) return;
+  const keys = Object.keys(allPositions).sort((a, b) => (allPositions[a].order || 0) - (allPositions[b].order || 0));
+  if (!keys.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No positions configured</td></tr>'; return; }
+
+  tbody.innerHTML = keys.map(key => {
+  const p = allPositions[key];
+  return `<tr>
+  <td>${p.order}</td>
+  <td><input type="text" id="pos-name-${key}" value="${(p.name || '').replace(/"/g, '&quot;')}" class="f-input" style="width:140px;"></td>
+  <td><input type="number" id="pos-direct-${key}" value="${p.directRequired || 0}" class="f-input" style="width:80px;"></td>
+  <td><select id="pos-combinedlevels-${key}" class="f-input" style="width:70px;">
+  <option value="1" ${p.combinedLevels === 1 ? 'selected' : ''}>1</option>
+  <option value="2" ${p.combinedLevels === 2 ? 'selected' : ''}>2</option>
+  <option value="3" ${p.combinedLevels === 3 ? 'selected' : ''}>3</option>
+  </select></td>
+  <td><input type="number" id="pos-combined-${key}" value="${p.combinedRequired || 0}" class="f-input" style="width:90px;"></td>
+  <td><input type="number" id="pos-salary-${key}" value="${p.salary || 0}" class="f-input" style="width:130px;"></td>
+  <td><button class="btn btn-save" onclick="savePosition('${key}')">Save</button></td>
+  </tr>`;
+  }).join('');
+}
+
+async function savePosition(key) {
+  const name = document.getElementById('pos-name-' + key).value.trim();
+  const directRequired = parseInt(document.getElementById('pos-direct-' + key).value, 10) || 0;
+  const combinedLevels = parseInt(document.getElementById('pos-combinedlevels-' + key).value, 10) || 1;
+  const combinedRequired = parseInt(document.getElementById('pos-combined-' + key).value, 10) || 0;
+  const salary = parseInt(document.getElementById('pos-salary-' + key).value, 10) || 0;
+  const order = allPositions[key]?.order || 0;
+
+  await db.ref('positions/' + key).update({ name, order, directRequired, combinedLevels, combinedRequired, salary });
+  toast('Position "' + name + '" updated');
+}
+
 
 function renderDatimPlansAdminTable() {
   const tbody = document.getElementById('datim-plans-admin-body');
@@ -1512,6 +1607,7 @@ function startRealtimeListeners() {
   startLevelsListener();
   startDatimPlansListener();
   startLuckySpinListener();
+  startPositionsListener();
   
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = db.ref('users').on('value', (snap) => {
@@ -2826,7 +2922,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-settings': 11 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-positions': 11, 'pg-settings': 12 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
@@ -2836,6 +2932,7 @@ function showPage(id) {
   if (id === 'pg-levels') renderLevelsAdminTable();
   if (id === 'pg-datim') renderDatimPlansAdminTable();
   if (id === 'pg-luckyspin') renderLuckySpinAdminPage();
+  if (id === 'pg-positions') renderPositionsAdminTable();
 }
 
 function showTerms() { 

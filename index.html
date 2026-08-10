@@ -547,7 +547,7 @@ input[type="password"]{padding-right:46px;}
 <div class="action-grid">
   <button class="action-btn gold-fill-btn" onclick="switchTab('datim')">DATIM</button>
   <button class="action-btn gold-fill-btn" onclick="switchTab('luckyspin')">Lucky Spin</button>
-  <button class="action-btn gold-fill-btn" onclick="showComingSoon('Salary')">Salary</button>
+  <button class="action-btn gold-fill-btn" onclick="switchTab('salary')">Salary</button>
 </div>
 </div>
 </div>
@@ -791,9 +791,25 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 </div>
 
+  <!-- Salary / Positions -->
+<div class="dash-section" id="sec-salary">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Salary</div><div class="inner-sub">Earn a monthly salary based on your referral network</div></div></div>
+<div class="section">
+<div class="stats-grid" style="grid-template-columns:1fr;margin-bottom:16px;">
+<div class="stat-box">
+<div class="stat-label">YOUR CURRENT POSITION</div>
+<div class="stat-value" style="color:var(--accent);" id="salary-current-position">None</div>
+</div>
+</div>
+<div id="salary-positions-list">
+<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Loading positions...</div>
+</div>
+</div>
+</div>
+
   <!-- Profile -->
 <div class="dash-section" id="sec-profile">
-<div class="inner-header"><span style="font-size:22px;cursor:pointer;" onclick="switchTab('settings')">⚙️</span><div><div class="inner-title" id="profile-fullname-display">User</div></div></div>
+<div class="inner-header"><span style="font-size:22px;cursor:pointer;" onclick="switchTab('settings')">⚙️</span><div><div class="inner-title" id="profile-fullname-display">User</div><div id="profile-position-badge" style="display:none;font-size:11px;font-weight:700;color:var(--accent);margin-top:2px;"></div></div></div>
 <div class="section" style="margin-bottom:0;">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;">
 <div class="stat-box">
@@ -912,6 +928,9 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <li style="margin-bottom:6px;">Accounts found to be in violation of platform rules — including fraudulent activity or abuse of the referral system — may be locked pending review</li>
 <li>WEA reserves the right to update these terms, level structures, and reward rates as the platform evolves</li>
 </ul>
+
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">💼 Positions & Salary</div>
+<div style="margin-bottom:14px;">Once you purchase your first WM level, you become a Permanent Employee and unlock the Salary page. Grow your referral network and you can qualify for a Position — Team Leader, Assistant Manager, Manager, Senior Manager, Regional Director, Vice President, or Executive Director — each with its own referral requirement and fixed monthly salary. Positions are detected and activated automatically whenever you qualify, no need to claim anything. Once qualified, your salary is credited to your General Account on or after the 6th of every month, for as long as you keep meeting the requirement.</div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🏢 Company Address</div>
 <div style="margin-bottom:14px;">WEA Technologies Inc.<br>Unit 402, Cebu IT Park<br>Apas, Cebu City, 6000 Cebu<br>Philippines</div>
@@ -1962,6 +1981,199 @@ function getLevelKeys() {
   return numA - numB;
   });
 }
+
+// ============================================================
+// POSITIONS / SALARY
+// ============================================================
+let positionsData = {};
+
+const DEFAULT_POSITIONS = {
+  team_leader: { name: 'Team Leader', order: 1, directRequired: 10, combinedLevels: 1, combinedRequired: 0, salary: 50000 },
+  assistant_manager: { name: 'Assistant Manager', order: 2, directRequired: 25, combinedLevels: 1, combinedRequired: 0, salary: 120000 },
+  manager: { name: 'Manager', order: 3, directRequired: 20, combinedLevels: 2, combinedRequired: 50, salary: 300000 },
+  senior_manager: { name: 'Senior Manager', order: 4, directRequired: 20, combinedLevels: 2, combinedRequired: 100, salary: 1200000 },
+  regional_director: { name: 'Regional Director', order: 5, directRequired: 60, combinedLevels: 3, combinedRequired: 500, salary: 3000000 },
+  vice_president: { name: 'Vice President', order: 6, directRequired: 100, combinedLevels: 3, combinedRequired: 1200, salary: 7000000 },
+  executive_director: { name: 'Executive Director', order: 7, directRequired: 150, combinedLevels: 3, combinedRequired: 2500, salary: 15000000 }
+};
+
+function startPositionsListener() {
+  db.ref('positions').on('value', (snap) => {
+  const firebasePositions = snap.val();
+  positionsData = firebasePositions && Object.keys(firebasePositions).length ? firebasePositions : DEFAULT_POSITIONS;
+  if (document.getElementById(tabMap['salary'])?.classList.contains('active')) renderSalaryPage();
+  });
+}
+
+function getSortedPositionKeys() {
+  return Object.keys(positionsData).sort((a, b) => (positionsData[a].order || 0) - (positionsData[b].order || 0));
+}
+
+// Counts qualifying (WM1+) referrals at each depth from the given user's own referrals array,
+// walking up to 3 levels deep using the existing referrals[] chain.
+async function getReferralQualifyingCounts(user) {
+  const counts = { direct: 0, l2: 0, l3: 0 };
+  const directPhones = user?.referrals || [];
+  if (!directPhones.length) return counts;
+
+  const directUsers = await Promise.all(directPhones.map(p => db.ref('users/' + safeKey(p)).get().then(s => s.val())));
+  const validDirects = directUsers.filter(u => u);
+  counts.direct = validDirects.filter(u => u.currentLevel && u.currentLevel !== 'trainee').length;
+
+  const l2Phones = validDirects.flatMap(u => u.referrals || []);
+  if (l2Phones.length) {
+  const l2Users = await Promise.all(l2Phones.map(p => db.ref('users/' + safeKey(p)).get().then(s => s.val())));
+  const validL2 = l2Users.filter(u => u);
+  counts.l2 = validL2.filter(u => u.currentLevel && u.currentLevel !== 'trainee').length;
+
+  const l3Phones = validL2.flatMap(u => u.referrals || []);
+  if (l3Phones.length) {
+  const l3Users = await Promise.all(l3Phones.map(p => db.ref('users/' + safeKey(p)).get().then(s => s.val())));
+  counts.l3 = l3Users.filter(u => u && u.currentLevel && u.currentLevel !== 'trainee').length;
+  }
+  }
+  return counts;
+}
+
+function getCombinedCount(counts, levels) {
+  if (levels >= 3) return counts.direct + counts.l2 + counts.l3;
+  if (levels === 2) return counts.direct + counts.l2;
+  return counts.direct;
+}
+
+function getBestQualifiedPosition(counts) {
+  let best = null;
+  getSortedPositionKeys().forEach(key => {
+  const p = positionsData[key];
+  const combined = getCombinedCount(counts, p.combinedLevels || 1);
+  const meetsDirect = counts.direct >= (p.directRequired || 0);
+  const meetsCombined = !p.combinedRequired || combined >= p.combinedRequired;
+  if (meetsDirect && meetsCombined) best = key;
+  });
+  return best;
+}
+
+let positionCheckInFlight = false;
+
+async function refreshPositionStatus() {
+  if (!currentUser || !currentUsername || positionCheckInFlight) return;
+  if (!currentUser.currentLevel || currentUser.currentLevel === 'trainee') {
+  updateProfilePositionBadge();
+  return;
+  }
+  positionCheckInFlight = true;
+  try {
+  const userKey = safeKey(currentUsername);
+  const counts = await getReferralQualifyingCounts(currentUser);
+  const qualifiedKey = getBestQualifiedPosition(counts);
+  const updates = {};
+
+  if ((qualifiedKey || null) !== (currentUser.position || null)) {
+  updates.position = qualifiedKey || null;
+  }
+
+  // Monthly salary auto-pay — on/after the 6th of the month, once per month, straight to General Account
+  const eat = new Date(getServerTime().getTime() + 3 * 60 * 60 * 1000);
+  const dayOfMonth = eat.getUTCDate();
+  const monthKey = `${eat.getUTCFullYear()}-${String(eat.getUTCMonth() + 1).padStart(2, '0')}`;
+  const effectivePosition = qualifiedKey;
+  if (effectivePosition && dayOfMonth >= 6 && currentUser.lastSalaryMonth !== monthKey) {
+  const posData = positionsData[effectivePosition];
+  const salaryAmount = posData?.salary || 0;
+  if (salaryAmount > 0) {
+  updates.stake = (currentUser.stake || 0) + salaryAmount;
+  updates.lastSalaryMonth = monthKey;
+  updates[`transactions/tx_salary_${Date.now()}`] = {
+  type: 'Position Salary',
+  amount: salaryAmount,
+  note: `${posData.name} monthly salary — credited to General Account`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  }
+  }
+
+  if (Object.keys(updates).length) {
+  await db.ref('users/' + userKey).update(updates);
+  currentUser = await db.ref('users/' + userKey).get().then(s => s.val());
+  updateBalanceUI();
+  renderHistory();
+  }
+
+  updateProfilePositionBadge();
+  } catch (e) {
+  console.error('Position refresh error:', e);
+  } finally {
+  positionCheckInFlight = false;
+  }
+}
+
+function updateProfilePositionBadge() {
+  const badge = document.getElementById('profile-position-badge');
+  if (!badge || !currentUser) return;
+  if (currentUser.position && positionsData[currentUser.position]) {
+  badge.textContent = positionsData[currentUser.position].name;
+  badge.style.display = 'block';
+  } else if (currentUser.currentLevel && currentUser.currentLevel !== 'trainee') {
+  badge.textContent = 'Permanent Employee';
+  badge.style.display = 'block';
+  } else {
+  badge.style.display = 'none';
+  }
+}
+
+async function renderSalaryPage() {
+  const list = document.getElementById('salary-positions-list');
+  const currentEl = document.getElementById('salary-current-position');
+  if (!list || !currentUser) return;
+
+  if (currentEl) {
+  currentEl.textContent = currentUser.position && positionsData[currentUser.position]
+  ? positionsData[currentUser.position].name
+  : 'None yet';
+  }
+
+  if (!currentUser.currentLevel || currentUser.currentLevel === 'trainee') {
+  list.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">Purchase a Level First</div><div class="tx-empty-text">Positions and salaries unlock once you purchase your first WM level and start referring others.</div></div>';
+  return;
+  }
+
+  list.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;">Checking your referral network...</div>';
+  const counts = await getReferralQualifyingCounts(currentUser);
+
+  const html = getSortedPositionKeys().map(key => {
+  const p = positionsData[key];
+  const combined = getCombinedCount(counts, p.combinedLevels || 1);
+  const isHeld = currentUser.position === key;
+  const meetsDirect = counts.direct >= (p.directRequired || 0);
+  const meetsCombined = !p.combinedRequired || combined >= p.combinedRequired;
+  const qualifies = meetsDirect && meetsCombined;
+
+  const reqParts = [`${p.directRequired} direct referral${p.directRequired === 1 ? '' : 's'} at WM1+`];
+  if (p.combinedRequired) {
+  reqParts.push(`${p.combinedRequired} combined (L1${p.combinedLevels >= 2 ? '+L2' : ''}${p.combinedLevels >= 3 ? '+L3' : ''}) at WM1+`);
+  }
+
+  const cardStyle = isHeld
+  ? 'border-color:var(--success);background:rgba(92,163,120,0.1);'
+  : qualifies
+  ? 'border-color:var(--accent);'
+  : '';
+
+  return `<div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;${cardStyle}">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+  <div style="font-weight:800;font-size:14px;color:var(--text);">${escapeHtml(p.name)}</div>
+  ${isHeld ? '<span style="background:var(--success);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;">CURRENT</span>' : ''}
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">${reqParts.join(' AND ')}</div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Progress: ${counts.direct}/${p.directRequired} direct${p.combinedRequired ? `, ${combined}/${p.combinedRequired} combined` : ''}</div>
+  <div style="font-weight:800;color:var(--accent);font-size:14px;">${fmt(p.salary)}/month</div>
+  </div>`;
+  }).join('');
+
+  list.innerHTML = html;
+}
+
 
 function getUserLevel() {
   if (!currentUser) return 'trainee';
@@ -5008,7 +5220,8 @@ const tabMap = {
   errands: 'sec-errands',
   datim: 'sec-datim',
   'datim-detail': 'sec-datim-detail',
-  luckyspin: 'sec-luckyspin'
+  luckyspin: 'sec-luckyspin',
+  salary: 'sec-salary'
 };
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
@@ -5039,6 +5252,8 @@ function switchTab(tab, fromPopState) {
   if (tab === 'myteam') renderTeamList();
   if (tab === 'missed-commission') renderMissedCommissionList();
   if (tab === 'withdraw') renderWithdrawPresets();
+  if (tab === 'salary') { renderSalaryPage(); refreshPositionStatus(); }
+  if (tab === 'profile') refreshPositionStatus();
   
   if (!fromPopState) {
   history.pushState({ appTab: tab }, '', '#' + tab);
@@ -5089,6 +5304,7 @@ function startUserListener(username) {
   }
   });
   startGlobalSupportChatListener(username);
+  refreshPositionStatus();
 }
 
 // ============================================================
@@ -5317,6 +5533,7 @@ async function initApp() {
   startVideoListener();
   startDatimPlansListener();
   startLuckySpinListener();
+  startPositionsListener();
   
   const savedUser = sessionStorage.getItem('pp_current_user');
   if (savedUser) {
