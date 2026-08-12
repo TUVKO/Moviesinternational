@@ -1184,12 +1184,9 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="deposit-note">Depositing <strong id="dep-phone-amount-display">UGX 0</strong> to your General Account.</div>
 <div class="field-group">
   <label class="field-label">Mobile Money Phone Number</label>
-<div class="phone-prefix-wrap" id="dep-phone-wrap">
-<div class="phone-prefix-badge" id="dep-prefix">+256</div>
-  <input type="tel" id="dep-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
-</div>
-<div class="field-hint">9 digits starting with 7 (any MTN or Airtel number)</div>
-<div class="field-error" id="dep-phone-err">Enter 9 digits starting with 7</div>
+  <input type="tel" id="dep-phone" class="f-input" placeholder="0750100200" maxlength="10" oninput="depPhoneInput(this)" style="width:100%;">
+<div class="field-hint">10 digits starting with 07 (any MTN or Airtel number)</div>
+<div class="field-error" id="dep-phone-err">Enter 10 digits starting with 07</div>
 </div>
   <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">CONFIRM</button>
   <button class="link-back-btn" onclick="switchTab('deposit-amount')">Back</button>
@@ -4607,9 +4604,9 @@ async function confirmSuperiorPayment() {
 
 async function doDeposit() {
   clearErrors('dep-phone-err');
-  const phoneDigits = document.getElementById('dep-phone').value.trim();
-  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
-  setErr('dep-phone-err', true, 'Enter 9 digits starting with 7');
+  const localPhone = document.getElementById('dep-phone').value.trim();
+  if (!localPhone || localPhone.length !== 10 || !localPhone.startsWith('07')) {
+  setErr('dep-phone-err', true, 'Enter 10 digits starting with 07');
   return;
   }
   const amount = selectedDepositAmount;
@@ -4625,7 +4622,7 @@ async function doDeposit() {
   const btn = document.getElementById('dep-submit-btn');
   btn.disabled = true;
   btn.textContent = 'Processing...';
-  const fullPhone = '+256' + phoneDigits;
+  const fullPhone = '+256' + localPhone.slice(1);
   const reference = genUUID();
   const taxPercent = settingsData.depositTaxPercent || 0;
   const totalAmount = Math.round(amount * (1 + taxPercent / 100));
@@ -4653,17 +4650,21 @@ async function doDeposit() {
   };
   
   try {
-  await db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord);
-  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).set({
+  // Fire the MarzPay request in parallel with the record-keeping writes, instead of
+  // waiting for both Firebase writes to finish first — cuts the delay before the
+  // payment prompt reaches the user's phone.
+  const [, , result] = await Promise.all([
+  db.ref('adminTransactions/' + adminTxKey).set(adminTxRecord),
+  db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).set({
   type: 'Deposit',
   method: 'easypay',
   amount: amount,
   note: 'Easy Pay deposit submitted',
   date: dateStr(),
   status: 'pending'
-  });
-    
-  const result = await marzCollect(fullPhone, totalAmount, reference, 'WEA Deposit');
+  }),
+  marzCollect(fullPhone, totalAmount, reference, 'WEA Deposit')
+  ]);
   if (result.status !== 'success') {
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
   await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).update({ status: 'failed', note: 'Easy Pay deposit failed to initiate' });
@@ -4970,7 +4971,7 @@ function toggleCountryPrefix(badgeId) {
 
 function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
 function loginPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
-function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 9); }
+function depPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
 
 function setErr(id, show, msg) {
   const el = document.getElementById(id);
