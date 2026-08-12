@@ -2427,7 +2427,7 @@ function renderVideoGrid() {
   }
   
   const memorialNames = getActorMemorialToday();
-  if (memorialNames) {
+  if (memorialNames && getUserLevel() !== 'trainee') {
   const talentWord = memorialNames.length > 1 ? 'legendary talents' : 'legendary talent';
   grid.innerHTML = `<div class="video-empty">No video jobs are available today. We're taking a moment to remember ${escapeHtml(formatActorNames(memorialNames))}, ${talentWord} whose contributions to film will never be forgotten. Thank you for your understanding — check back tomorrow.</div>`;
   return;
@@ -2493,9 +2493,9 @@ function openVideoPlayer(id) {
   return;
   }
   
-  // No video jobs on legendary actor memorial dates
+  // No video jobs on legendary actor memorial dates (trainees are exempt)
   const memorialNamesCheck = getActorMemorialToday();
-  if (memorialNamesCheck) {
+  if (memorialNamesCheck && getUserLevel() !== 'trainee') {
   showBanner('No video jobs are available today. We are remembering ' + formatActorNames(memorialNamesCheck) + ' today.');
   return;
   }
