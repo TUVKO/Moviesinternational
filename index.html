@@ -3167,7 +3167,7 @@ function renderReferralLink(code) {
   const linkDisplay = document.getElementById('recruit-link-display');
   const qrImg = document.getElementById('recruit-qr-img');
   if (!linkDisplay || !qrImg) return;
-  const referralLink = window.location.origin + window.location.pathname + '?ref=' + encodeURIComponent(code);
+  const referralLink = 'https://wea-adverts.com/?ref=' + encodeURIComponent(code);
   linkDisplay.value = referralLink;
   qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(referralLink);
 }
