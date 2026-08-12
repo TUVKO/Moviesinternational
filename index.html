@@ -2403,7 +2403,7 @@ function updateVideoCount() {
   const autoBtn = document.getElementById('auto-watch-btn');
   if (autoBtn) {
   const isLockedDay = isSundayEAT() || isHolidayEAT() || !!getActorMemorialToday();
-  const canAutoWatch = remaining > 0 && !isLockedDay;
+  const canAutoWatch = levelKey !== 'trainee' && remaining > 0 && !isLockedDay;
   autoBtn.disabled = !canAutoWatch;
   autoBtn.style.opacity = canAutoWatch ? '1' : '0.45';
   autoBtn.style.pointerEvents = canAutoWatch ? 'auto' : 'none';
@@ -2421,7 +2421,7 @@ function renderVideoGrid() {
   return;
   }
   
-  if (isHolidayEAT()) {
+  if (isHolidayEAT() && getUserLevel() !== 'trainee') {
   grid.innerHTML = '<div class="video-empty">No video jobs today due to a public holiday. Check back tomorrow.</div>';
   return;
   }
@@ -2487,8 +2487,8 @@ function openVideoPlayer(id) {
   return;
   }
   
-  // No video jobs on public holidays
-  if (isHolidayEAT()) {
+  // No video jobs on public holidays (trainees are exempt)
+  if (isHolidayEAT() && getUserLevel() !== 'trainee') {
   showBanner('Video jobs are unavailable today due to a public holiday.');
   return;
   }
@@ -2762,6 +2762,11 @@ async function claimReward() {
 function confirmAutoWatch() {
   if (!currentUser) return;
 
+  if (getUserLevel() === 'trainee') {
+  showBanner('Auto Watch is available for WM levels only.');
+  return;
+  }
+
   if (isSundayEAT()) {
   showBanner('Auto Watch is unavailable on Sundays. Check back tomorrow.');
   return;
@@ -2796,6 +2801,12 @@ function closeAutoWatchModal() {
 
 async function runAutoWatch() {
   const btn = document.getElementById('autowatch-confirm-btn');
+
+  if (getUserLevel() === 'trainee') {
+  closeAutoWatchModal();
+  showBanner('Auto Watch is available for WM levels only.');
+  return;
+  }
 
   if (isSundayEAT() || isHolidayEAT() || getActorMemorialToday()) {
   closeAutoWatchModal();
