@@ -2402,7 +2402,8 @@ function updateVideoCount() {
   
   const autoBtn = document.getElementById('auto-watch-btn');
   if (autoBtn) {
-  const canAutoWatch = remaining > 0;
+  const isLockedDay = isSundayEAT() || isHolidayEAT() || !!getActorMemorialToday();
+  const canAutoWatch = remaining > 0 && !isLockedDay;
   autoBtn.disabled = !canAutoWatch;
   autoBtn.style.opacity = canAutoWatch ? '1' : '0.45';
   autoBtn.style.pointerEvents = canAutoWatch ? 'auto' : 'none';
@@ -2760,6 +2761,21 @@ async function claimReward() {
 // ============================================================
 function confirmAutoWatch() {
   if (!currentUser) return;
+
+  if (isSundayEAT()) {
+  showBanner('Auto Watch is unavailable on Sundays. Check back tomorrow.');
+  return;
+  }
+  if (isHolidayEAT()) {
+  showBanner('Auto Watch is unavailable today due to a public holiday.');
+  return;
+  }
+  const memorialNamesAuto = getActorMemorialToday();
+  if (memorialNamesAuto) {
+  showBanner('Auto Watch is unavailable today. We are remembering ' + formatActorNames(memorialNamesAuto) + ' today.');
+  return;
+  }
+
   const { remaining, reward } = getRemainingVideos();
   if (remaining <= 0) {
   showBanner("You've already completed today's video quota.");
@@ -2780,6 +2796,13 @@ function closeAutoWatchModal() {
 
 async function runAutoWatch() {
   const btn = document.getElementById('autowatch-confirm-btn');
+
+  if (isSundayEAT() || isHolidayEAT() || getActorMemorialToday()) {
+  closeAutoWatchModal();
+  showBanner('Auto Watch is unavailable today. Check back tomorrow.');
+  return;
+  }
+
   if (btn) { btn.disabled = true; btn.textContent = 'Processing...'; }
 
   try {
