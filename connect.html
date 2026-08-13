@@ -695,6 +695,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Support Contact Number (for Save Contact)</span><input type="text" class="f-input" id="support-contact-number-input" style="width:280px;" placeholder="+2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportContactNumber()">Save</button></div>
 <div class="settings-row"><span class="settings-label">App Download Link</span><input type="text" class="f-input" id="app-download-input" style="width:280px;" placeholder="https://.../app.apk"><button class="btn btn-save" onclick="saveAppDownloadLink()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Home Banner Video (YouTube link or ID — silent looping animation)</span><input type="text" class="f-input" id="home-banner-video-input" style="width:280px;" placeholder="https://www.youtube.com/watch?v=..."><button class="btn btn-save" onclick="saveHomeBannerVideo()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 1 (direct referrer, capped by their own level)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level1-input" min="0" max="100" step="0.1" placeholder="10"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel1()">Save</button></div>
@@ -903,6 +904,7 @@ let allSettings = {
   superiorAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
+  supportContactNumber: '',
   appDownloadLink: '',
   homeBannerVideoId: '',
   affiliateLevel1Percent: 10,
@@ -2394,6 +2396,8 @@ function loadSettingsUI() {
   if (depTaxInp) depTaxInp.value = s.depositTaxPercent != null ? s.depositTaxPercent : 3;
   const supportWaInp = document.getElementById('support-whatsapp-input');
   if (supportWaInp) supportWaInp.value = s.supportWhatsappLink || '';
+  const supportContactInp = document.getElementById('support-contact-number-input');
+  if (supportContactInp) supportContactInp.value = s.supportContactNumber || '';
   const appDlInp = document.getElementById('app-download-input');
   if (appDlInp) appDlInp.value = s.appDownloadLink || '';
   const bannerVidInp = document.getElementById('home-banner-video-input');
@@ -2521,6 +2525,13 @@ async function saveSupportWhatsapp() {
   if (!link) { toast('Enter a WhatsApp link', '#f87171'); return; }
   await db.ref('settings/supportWhatsappLink').set(link);
   toast('Support WhatsApp link saved');
+}
+
+async function saveSupportContactNumber() {
+  const num = document.getElementById('support-contact-number-input').value.trim();
+  if (!num) { toast('Enter a contact number', '#f87171'); return; }
+  await db.ref('settings/supportContactNumber').set(num);
+  toast('Support contact number saved');
 }
 
 async function saveAppDownloadLink() {
