@@ -304,6 +304,15 @@ input[type="password"]{padding-right:46px;}
 .savecontact-yesno{display:flex;gap:10px;}
 .savecontact-yesno button{flex:1;border-radius:12px;padding:12px;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;}
 
+/* Announcements */
+.ann-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.75);z-index:850;align-items:center;justify-content:center;}
+.ann-overlay.open{display:flex;}
+.ann-shell{position:relative;width:92%;height:85%;max-width:460px;background:var(--surface);border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.6);}
+.ann-close-btn{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:1px solid rgba(255,255,255,.3);font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:5;}
+.ann-scroll{width:100%;height:100%;overflow-y:auto;padding:16px;box-sizing:border-box;}
+.ann-card{border-radius:16px;padding:20px 16px;margin-bottom:16px;color:#fff;font-size:14px;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.35);}
+.ann-card:last-child{margin-bottom:0;}
+
 /* Transaction List */
 .tx-table-wrapper{width:100%;overflow-x:auto;border-radius:14px;border:1px solid var(--border);background:var(--surface);}
 .tx-table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -1312,6 +1321,14 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 </div>
 
+<!-- Announcements Modal -->
+<div class="ann-overlay" id="announcement-overlay" onclick="if(event.target.id==='announcement-overlay') closeAnnouncementModal()">
+<div class="ann-shell">
+  <div class="ann-close-btn" onclick="closeAnnouncementModal()">✕</div>
+  <div class="ann-scroll" id="announcement-scroll"></div>
+</div>
+</div>
+
 <!-- Terms Modal -->
 <div class="modal-overlay" id="terms-modal-overlay" onclick="closeTermsModal(event)">
 <div class="modal-box" style="position:relative;">
@@ -1831,6 +1848,30 @@ function handleSaveContactNo() {
 function handleSaveContactYes() {
   document.getElementById('savecontact-step2').style.display = 'none';
   document.getElementById('savecontact-step3').style.display = 'flex';
+}
+
+async function showAnnouncementsPopup() {
+  try {
+  const snap = await db.ref('announcements').get();
+  const data = snap.val() || {};
+  const ids = Object.keys(data).sort((a, b) => (data[a].createdAt || 0) - (data[b].createdAt || 0));
+  if (!ids.length) return;
+
+  const scrollEl = document.getElementById('announcement-scroll');
+  scrollEl.innerHTML = ids.map(id => {
+  const a = data[id];
+  const bg = a.bgColor || '#0e2a1f';
+  return '<div class="ann-card" style="background:' + bg + ';">' + (a.html || '') + '</div>';
+  }).join('');
+
+  document.getElementById('announcement-overlay').classList.add('open');
+  } catch (e) {
+  console.warn('Failed to load announcements:', e);
+  }
+}
+
+function closeAnnouncementModal() {
+  document.getElementById('announcement-overlay').classList.remove('open');
 }
 
 async function cleanupOldSupportMessages(userKey) {
@@ -5191,6 +5232,7 @@ async function doLogin() {
     
   showDashboard();
   switchTab('home');
+  showAnnouncementsPopup();
     
   } catch (error) {
   console.error('Login error:', error);
@@ -5692,6 +5734,7 @@ async function initApp() {
   updateVideoDisplay();
   showDashboard();
   switchTab('home');
+  showAnnouncementsPopup();
   console.log('Auto-login successful for:', savedUser);
   } else {
   sessionStorage.removeItem('pp_current_user');

@@ -116,6 +116,17 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .btn-delete:hover{background:var(--surface3);}
 .btn-save{background:var(--accent);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .btn-danger{background:var(--warn);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
+
+/* Announcements */
+.ann-toolbar{display:flex;flex-wrap:wrap;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:12px 12px 0 0;padding:8px;}
+.ann-toolbar button{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);cursor:pointer;}
+.ann-toolbar button:hover{background:var(--accent);color:#fff;}
+.ann-toolbar input[type="color"]{width:34px;height:30px;padding:0;border:1px solid var(--border);border-radius:6px;background:var(--surface);cursor:pointer;}
+.ann-toolbar select{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:12px;color:var(--text);}
+.ann-editor{min-height:220px;background:#0e2a1f;border:1px solid var(--border);border-top:none;border-radius:0 0 12px 12px;padding:16px;color:#fff;font-size:14px;line-height:1.6;outline:none;}
+.ann-bg-row{display:flex;align-items:center;gap:10px;margin-top:14px;}
+.ann-list-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.ann-list-preview{max-height:120px;overflow:hidden;border-radius:8px;padding:12px;margin-bottom:10px;color:#fff;font-size:12px;}
 .btn-success{background:var(--success);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .settings-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
 .settings-title{font-size:15px;font-weight:800;margin-bottom:4px;}
@@ -309,6 +320,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="nav-item" onclick="showPage('pg-datim')"><span class="nav-icon">🎬</span><span>DATIM Plans</span></div>
 <div class="nav-item" onclick="showPage('pg-luckyspin')"><span class="nav-icon">🎡</span><span>Lucky Spin</span></div>
 <div class="nav-item" onclick="showPage('pg-positions')"><span class="nav-icon">💼</span><span>Positions</span></div>
+<div class="nav-item" onclick="showPage('pg-announcements')"><span class="nav-icon">📢</span><span>Announcements</span></div>
 <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
 </div>
 <div class="sidebar-footer">
@@ -656,6 +668,45 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </thead>
   <tbody id="positions-table-body"><tr class="empty-row"><td colspan="7">Loading positions...</td></tr></tbody>
 </table>
+</div>
+</div>
+
+  <!-- ANNOUNCEMENTS -->
+<div class="page" id="pg-announcements">
+<div class="page-title">Announcements</div>
+<div class="page-sub">Shown to users on login and page refresh. Up to 3 active at once — delete one to make room for another.</div>
+
+<div class="table-wrap" style="padding:16px;">
+<div style="font-weight:800;margin-bottom:10px;">New Announcement</div>
+<div class="ann-toolbar">
+  <button type="button" onclick="annExec('bold')"><b>B</b></button>
+  <button type="button" onclick="annExec('italic')"><i>I</i></button>
+  <button type="button" onclick="annExec('underline')"><u>U</u></button>
+  <input type="color" id="ann-text-color" title="Text color" value="#ffd166" onchange="annExec('foreColor', this.value)">
+  <select id="ann-font-size" onchange="annExec('fontSize', this.value)">
+    <option value="">Size</option>
+    <option value="2">Small</option>
+    <option value="4">Normal</option>
+    <option value="5">Large</option>
+    <option value="6">X-Large</option>
+    <option value="7">Huge</option>
+  </select>
+  <button type="button" onclick="annExec('justifyLeft')">⬅</button>
+  <button type="button" onclick="annExec('justifyCenter')">⬌</button>
+  <button type="button" onclick="annExec('justifyRight')">➡</button>
+</div>
+<div class="ann-editor" id="ann-editor" contenteditable="true" style="background:#0e2a1f;"></div>
+
+<div class="ann-bg-row">
+  <span style="font-size:13px;font-weight:700;">Card Background:</span>
+  <input type="color" id="ann-bg-color" value="#0e2a1f" onchange="document.getElementById('ann-editor').style.background=this.value">
+  <button class="btn btn-save" onclick="postAnnouncement()" style="margin-left:auto;">Post Announcement</button>
+</div>
+</div>
+
+<div class="table-wrap" style="padding:16px;">
+<div style="font-weight:800;margin-bottom:12px;">Active Announcements (<span id="ann-count">0</span>/3)</div>
+<div id="ann-admin-list">Loading...</div>
 </div>
 </div>
 
@@ -2534,6 +2585,57 @@ async function saveSupportContactNumber() {
   toast('Support contact number saved');
 }
 
+// ============================================================
+// ANNOUNCEMENTS
+// ============================================================
+function annExec(cmd, value) {
+  document.getElementById('ann-editor').focus();
+  document.execCommand(cmd, false, value || null);
+}
+
+async function loadAnnouncementsAdmin() {
+  const listEl = document.getElementById('ann-admin-list');
+  const countEl = document.getElementById('ann-count');
+  try {
+  const snap = await db.ref('announcements').get();
+  const data = snap.val() || {};
+  const ids = Object.keys(data).sort((a, b) => (data[a].createdAt || 0) - (data[b].createdAt || 0));
+  countEl.textContent = ids.length;
+  if (!ids.length) { listEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">No active announcements.</div>'; return; }
+  listEl.innerHTML = ids.map(id => {
+  const a = data[id];
+  const bg = a.bgColor || '#0e2a1f';
+  return '<div class="ann-list-card"><div class="ann-list-preview" style="background:' + bg + ';">' + (a.html || '') + '</div><button class="btn btn-danger" onclick="deleteAnnouncement(\'' + id + '\')">Delete</button></div>';
+  }).join('');
+  } catch (e) {
+  listEl.innerHTML = '<div style="color:#f87171;">Failed to load announcements.</div>';
+  }
+}
+
+async function postAnnouncement() {
+  const editor = document.getElementById('ann-editor');
+  const html = editor.innerHTML.trim();
+  if (!html || html === '<br>') { toast('Write an announcement first', '#f87171'); return; }
+  const bgColor = document.getElementById('ann-bg-color').value;
+
+  const snap = await db.ref('announcements').get();
+  const data = snap.val() || {};
+  if (Object.keys(data).length >= 3) { toast('Max 3 announcements active. Delete one first.', '#f87171'); return; }
+
+  await db.ref('announcements').push({ html, bgColor, createdAt: Date.now() });
+  editor.innerHTML = '';
+  document.getElementById('ann-bg-color').value = '#0e2a1f';
+  editor.style.background = '#0e2a1f';
+  toast('Announcement posted');
+  loadAnnouncementsAdmin();
+}
+
+async function deleteAnnouncement(id) {
+  await db.ref('announcements/' + id).remove();
+  toast('Announcement deleted');
+  loadAnnouncementsAdmin();
+}
+
 async function saveAppDownloadLink() {
   const link = document.getElementById('app-download-input').value.trim();
   if (!link) { toast('Enter a download link', '#f87171'); return; }
@@ -2933,7 +3035,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-positions': 11, 'pg-settings': 12 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-positions': 11, 'pg-announcements': 12, 'pg-settings': 13 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
@@ -2944,6 +3046,7 @@ function showPage(id) {
   if (id === 'pg-datim') renderDatimPlansAdminTable();
   if (id === 'pg-luckyspin') renderLuckySpinAdminPage();
   if (id === 'pg-positions') renderPositionsAdminTable();
+  if (id === 'pg-announcements') loadAnnouncementsAdmin();
 }
 
 function showTerms() { 
