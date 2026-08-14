@@ -1082,8 +1082,8 @@ function renderLevelsAdminTable() {
 </div>
 </td>
   <td style="padding:8px 10px;">
-  <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;"></button>
-  ${!isTrainee ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;"></button>` : '<span style="font-size:9px;color:var(--muted);"></span>'}
+  <button class="btn btn-edit" onclick="saveLevel('${key}')" style="padding:4px 8px;font-size:9px;">Save</button>
+  ${!isTrainee ? `<button class="btn btn-delete" onclick="deleteLevel('${key}')" style="padding:4px 8px;font-size:9px;">Delete</button>` : '<span style="font-size:9px;color:var(--muted);"></span>'}
 </td>
 </tr>`;
   }).join('');
@@ -2011,7 +2011,7 @@ function renderAdminTransactions() {
   <td class="mono">${amountStr}</td>
   <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
   <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
-  <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')"></button></td>
+  <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">Delete</button></td>
 </tr>`;
   }).join('');
 }
@@ -2749,7 +2749,7 @@ function renderNotifList() {
   const n = adminNotifications[k];
   const isUnread = !n.read;
   return `<div class="notif-item ${isUnread ? 'unread' : ''}">
-  <button class="notif-item-dismiss" onclick="dismissNotification('${k}')"></button>
+  <button class="notif-item-dismiss" onclick="dismissNotification('${k}')">✕</button>
 <div class="notif-item-msg">${n.message || 'Notification'}</div>
 <div class="notif-item-date">${n.date || ''} · ${n.username || ''} · ${n.amount ? fmt(n.amount) : ''}</div>
 </div>`;
