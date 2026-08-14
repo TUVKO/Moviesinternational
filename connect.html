@@ -357,9 +357,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
   <table>
   <thead>
-  <tr><th>Name</th><th>Phone</th><th>Password</th><th>General Acct</th><th>Retained Wallet</th><th>Videos</th><th>Streak</th><th>Level</th><th>Status</th><th>Actions</th></tr>
+  <tr><th>Name</th><th>Phone</th><th>Password</th><th>General Acct</th><th>Retained Wallet</th><th>Videos</th><th>Streak</th><th>Level</th><th>Referrals</th><th>Status</th><th>Actions</th></tr>
 </thead>
-  <tbody id="users-table-body"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
+  <tbody id="users-table-body"><tr class="empty-row"><td colspan="11">Loading...</td></tr></tbody>
 </table>
 </div>
 </div>
@@ -835,13 +835,13 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 // ============================================================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAo3bA7iQ5S_6css-tWCaVbWnzzJ6zZwNQ",
-  authDomain: "money-c6b24.firebaseapp.com",
-  projectId: "money-c6b24",
-  storageBucket: "money-c6b24.firebasestorage.app",
-  messagingSenderId: "940795117401",
-  appId: "1:940795117401:web:53945795f9c2c07fef1648",
-  databaseURL: "https://money-c6b24-default-rtdb.europe-west1.firebasedatabase.app/"
+  apiKey: "AIzaSyCfWH2s2wf_jDjI1hgQFhBQ0ms4JIUQYx0",
+  authDomain: "wea-adverts.firebaseapp.com",
+  projectId: "wea-adverts",
+  storageBucket: "wea-adverts.firebasestorage.app",
+  messagingSenderId: "129555960263",
+  appId: "1:129555960263:web:eacf9c0adeca0ff17309e2",
+  databaseURL: "https://wea-adverts-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -1814,27 +1814,20 @@ function renderUsersTable() {
   return (u.fullName && u.fullName.toLowerCase().includes(q)) || (u.username && u.username.toLowerCase().includes(q)) || (u.phone && u.phone.toLowerCase().includes(q));
   }) : entries;
   const tbody = document.getElementById('users-table-body');
-  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="10">No users found</tr>'; return; }
+  if (!filtered.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="11">No users found</tr>'; return; }
   
-  const levelKeys = Object.keys(allLevels).sort((a, b) => {
-  if (a === 'trainee') return -1;
-  if (b === 'trainee') return 1;
-  const numA = parseInt(a.replace('wm', '')) || 0;
-  const numB = parseInt(b.replace('wm', '')) || 0;
-  return numA - numB;
+  // Count direct referrals per referral code, once, from all loaded users.
+  const referralCounts = {};
+  Object.values(allUsers).forEach(u => {
+  if (u.referredBy) referralCounts[u.referredBy] = (referralCounts[u.referredBy] || 0) + 1;
   });
   
   tbody.innerHTML = filtered.map(([key, u]) => {
   const sk = key;
   const displayName = u.fullName || u.username || '—';
-  let levelName = 'Trainee';
-  const userVideos = u.totalVideosWatched || 0;
-  for (const lkey of levelKeys) {
-  const level = allLevels[lkey];
-  if (level && userVideos >= (level.collateral || 0)) {
-  levelName = level.name || 'Trainee';
-  }
-  }
+  const levelKey = u.currentLevel || 'trainee';
+  const levelName = allLevels[levelKey]?.name || 'Trainee';
+  const referralCount = referralCounts[u.referralCode] || 0;
     
   return `<tr>
   <td><strong>${displayName}</strong></td>
@@ -1845,6 +1838,7 @@ function renderUsersTable() {
   <td class="mono">${u.totalVideosWatched || 0}</td>
   <td class="mono">${u.streakDays || 0}</td>
   <td style="color:var(--accent);font-weight:700;">${levelName}</td>
+  <td class="mono" style="text-align:center;">${referralCount}</td>
   <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
   <td style="display:flex;gap:6px;flex-wrap:wrap;">
   <button class="btn btn-edit" onclick="openEditModal('${sk}')">Edit</button>
