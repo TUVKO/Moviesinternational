@@ -933,6 +933,9 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div style="margin-bottom:14px;">For added convenience, WEA also offers Auto Watch Movies — an optional feature on the Watch & Earn page that instantly completes your remaining daily video quota without manual watching. A 10% service fee applies per video, and the reward is credited to your Retained Wallet right away.</div>
 <div style="margin-bottom:14px;">Watch every day without missing one, and every 5th consecutive day earns you an extra streak bonus on top of your normal rewards. You can also lock funds from your General Account or Retained Wallet into DATIM movie company stake plans for additional returns, and earn Lucky Spin chances — for a shot at cash or exclusive prizes — whenever your direct referrals upgrade their level.</div>
 
+<div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">📈 About Our Levels</div>
+<div style="margin-bottom:14px;">You'll notice our paid levels are labeled VM1 through VM12 — VM stands for Verified Member. Each level represents a step up in daily video quota and earning potential, and every level you purchase verifies and upgrades your standing on the platform. Whichever level you choose, your rewards scale with it, from your first upgrade all the way to VM12.</div>
+
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Our Mission</div>
 <div style="margin-bottom:14px;">WEA is a movies advertising company that partners with movie studios and sponsors around the world to promote content to real, engaged viewers. Rather than relying on passive ad impressions, we connect entertainment brands with an audience that actively chooses to watch — and we make sure that audience is compensated fairly for their time and attention. Every video watched on WEA supports a real promotional campaign, creating value for studios, sponsors, and our users all at once.</div>
 
@@ -948,7 +951,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </ul>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">💼 Positions & Salary</div>
-<div style="margin-bottom:10px;">Once you purchase your first WM level, you become a Permanent Employee and unlock the Salary page. Grow your referral network and you can qualify for a Position — Team Leader, Assistant Manager, Manager, Senior Manager, Regional Director, Vice President, or Executive Director — each with its own referral requirement and fixed monthly salary. Positions are detected and activated automatically whenever you qualify, no need to claim anything. Once qualified, your salary is credited to your General Account on or after the 6th of every month, for as long as you keep meeting the requirement.</div>
+<div style="margin-bottom:10px;">Once you purchase your first VM level, you become a Permanent Employee and unlock the Salary page. Grow your referral network and you can qualify for a Position — Team Leader, Assistant Manager, Manager, Senior Manager, Regional Director, Vice President, or Executive Director — each with its own referral requirement and fixed monthly salary. Positions are detected and activated automatically whenever you qualify, no need to claim anything. Once qualified, your salary is credited to your General Account on or after the 6th of every month, for as long as you keep meeting the requirement.</div>
 <div id="about-salary-list" style="margin-bottom:14px;"></div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🏢 Company Address</div>
@@ -2149,7 +2152,7 @@ function renderAboutSalaries() {
   }).join('');
 }
 
-// Counts qualifying (WM1+) referrals at each depth from the given user's own referrals array,
+// Counts qualifying (VM1+) referrals at each depth from the given user's own referrals array,
 // walking up to 3 levels deep using the existing referrals[] chain.
 async function getReferralQualifyingCounts(user) {
   const counts = { direct: 0, l2: 0, l3: 0 };
@@ -2274,7 +2277,7 @@ async function renderSalaryPage() {
   }
 
   if (!currentUser.currentLevel || currentUser.currentLevel === 'trainee') {
-  list.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">Purchase a Level First</div><div class="tx-empty-text">Positions and salaries unlock once you purchase your first WM level and start referring others.</div></div>';
+  list.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">Purchase a Level First</div><div class="tx-empty-text">Positions and salaries unlock once you purchase your first VM level and start referring others.</div></div>';
   return;
   }
 
@@ -2289,9 +2292,9 @@ async function renderSalaryPage() {
   const meetsCombined = !p.combinedRequired || combined >= p.combinedRequired;
   const qualifies = meetsDirect && meetsCombined;
 
-  const reqParts = [`${p.directRequired} direct referral${p.directRequired === 1 ? '' : 's'} at WM1+`];
+  const reqParts = [`${p.directRequired} direct referral${p.directRequired === 1 ? '' : 's'} at VM1+`];
   if (p.combinedRequired) {
-  reqParts.push(`${p.combinedRequired} combined (L1${p.combinedLevels >= 2 ? '+L2' : ''}${p.combinedLevels >= 3 ? '+L3' : ''}) at WM1+`);
+  reqParts.push(`${p.combinedRequired} combined (L1${p.combinedLevels >= 2 ? '+L2' : ''}${p.combinedLevels >= 3 ? '+L3' : ''}) at VM1+`);
   }
 
   const cardStyle = isHeld
@@ -2431,7 +2434,7 @@ function updateLevelProgress() {
   const percent = Math.min((current / needed) * 100, 100);
   progressEl.style.width = percent + '%';
   progressText.textContent = `${current}/${needed} videos`;
-  progressNext.textContent = nextLevel.name || 'WM1';
+  progressNext.textContent = nextLevel.name || 'VM1';
   } else {
   progressEl.style.width = '100%';
   progressText.textContent = 'Max level reached!';
@@ -2908,7 +2911,7 @@ function confirmAutoWatch() {
   if (!currentUser) return;
 
   if (getUserLevel() === 'trainee') {
-  showBanner('Auto Watch is available for WM levels only.');
+  showBanner('Auto Watch is available for VM levels only.');
   return;
   }
 
@@ -2949,7 +2952,7 @@ async function runAutoWatch() {
 
   if (getUserLevel() === 'trainee') {
   closeAutoWatchModal();
-  showBanner('Auto Watch is available for WM levels only.');
+  showBanner('Auto Watch is available for VM levels only.');
   return;
   }
 
@@ -3717,8 +3720,8 @@ function renderLuckySpinPage() {
   if (progressEl) {
   const refWord = todayCount === 1 ? 'referral' : 'referrals';
   progressEl.textContent = tier > 0
-  ? `You have ${todayCount} direct ${refWord} upgraded to a WM level today — you qualify for ${tier} chance${tier === 1 ? '' : 's'}. Contact support to claim.`
-  : `Referral Progress: ${todayCount} direct ${refWord} upgraded to a WM level today. Get referrals to upgrade to qualify for spin chances.`;
+  ? `You have ${todayCount} direct ${refWord} upgraded to a VM level today — you qualify for ${tier} chance${tier === 1 ? '' : 's'}. Contact support to claim.`
+  : `Referral Progress: ${todayCount} direct ${refWord} upgraded to a VM level today. Get referrals to upgrade to qualify for spin chances.`;
   }
     
   if (chances > 0) {
@@ -3877,7 +3880,7 @@ function openSupportForLuckySpin() {
   spinClaimPending = true;
   switchTab('support');
   const refWord = count === 1 ? 'referral' : 'referrals';
-  const msg = `Hi, today I have ${count} direct ${refWord} who upgraded to a WM level, and I'd like to claim my Lucky Spin chances. Please review and grant them. Thank you!`;
+  const msg = `Hi, today I have ${count} direct ${refWord} who upgraded to a VM level, and I'd like to claim my Lucky Spin chances. Please review and grant them. Thank you!`;
   selectSupportTopic('Lucky Spin Chances');
   setTimeout(() => {
   const input = document.getElementById('support-msg-input');
@@ -4149,7 +4152,7 @@ async function purchaseLevel(levelKey, cost, levelName) {
     
   // Lucky Spin: credit the referrer's daily "referrals upgraded today" counter
   // used for spin-chance eligibility whenever this user upgrades to a new level
-  // (including Trainee -> WM, and any subsequent level-to-level upgrade).
+  // (including Trainee -> VM, and any subsequent level-to-level upgrade).
   const didUpgrade = newCurrentLevel !== (previousKey || 'trainee');
   if (didUpgrade && currentUser.referredBy) {
   try {

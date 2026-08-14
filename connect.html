@@ -636,7 +636,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 <div style="padding:14px;">
 <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:16px;font-size:11px;color:var(--muted);line-height:1.8;">
-  <strong style="color:var(--accent);">Reference guide</strong> — based on how many of the user's direct referrals upgraded to a WM level <em>that same day</em>:<br>
+  <strong style="color:var(--accent);">Reference guide</strong> — based on how many of the user's direct referrals upgraded to a VM level <em>that same day</em>:<br>
   1–2 referrals → 1 chance &nbsp;|&nbsp; 3–4 referrals → 2 chances &nbsp;|&nbsp; 5–7 referrals → 4 chances &nbsp;|&nbsp; 8–10 referrals → 6 chances<br>
   Chances expire at midnight (EAT) if unused. Grant the number of chances based on your review of the user's support request.
 </div>
@@ -1007,18 +1007,18 @@ function escapeHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({'&':'
 
 const DEFAULT_LEVELS = {
   trainee: { name: "Trainee", collateral: 0, movies: 3, each: 500, daily: 1500, monthly: 4500, annual: 4500, locked: false },
-  wm1: { name: "WM1", collateral: 61000, movies: 4, each: 512, daily: 2048, monthly: 61440, annual: 737280, locked: false },
-  wm2: { name: "WM2", collateral: 176000, movies: 7, each: 842, daily: 5894, monthly: 176820, annual: 2121840, locked: false },
-  wm3: { name: "WM3", collateral: 562000, movies: 16, each: 1211, daily: 19376, monthly: 581280, annual: 6975360, locked: false },
-  wm4: { name: "WM4", collateral: 1430000, movies: 29, each: 1761, daily: 51069, monthly: 1532070, annual: 18384840, locked: false },
-  wm5: { name: "WM5", collateral: 3800000, movies: 47, each: 2887, daily: 135689, monthly: 4070670, annual: 48848040, locked: false },
-  wm6: { name: "WM6", collateral: 9100000, movies: 60, each: 5229, daily: 313740, monthly: 9412280, annual: 112946400, locked: false },
-  wm7: { name: "WM7", collateral: 28000000, movies: 75, each: 12873, daily: 965475, monthly: 28964250, annual: 347571080, locked: false },
-  wm8: { name: "WM8", collateral: 41000000, movies: 90, each: 16273, daily: 1464570, monthly: 43937100, annual: 527245200, locked: false },
-  wm9: { name: "WM9", collateral: 59000000, movies: 103, each: 21215, daily: 2185145, monthly: 65554350, annual: 786652200, locked: false },
-  wm10: { name: "WM10", collateral: 77000000, movies: 134, each: 22300, daily: 2988200, monthly: 89646000, annual: 1075752000, locked: false },
-  wm11: { name: "WM11", collateral: 83000000, movies: 146, each: 27000, daily: 3942000, monthly: 118260000, annual: 1419120000, locked: false },
-  wm12: { name: "WM12", collateral: 102000000, movies: 157, each: 31000, daily: 4867000, monthly: 146010000, annual: 1752120000, locked: false }
+  wm1: { name: "VM1", collateral: 61000, movies: 4, each: 512, daily: 2048, monthly: 61440, annual: 737280, locked: false },
+  wm2: { name: "VM2", collateral: 176000, movies: 7, each: 842, daily: 5894, monthly: 176820, annual: 2121840, locked: false },
+  wm3: { name: "VM3", collateral: 562000, movies: 16, each: 1211, daily: 19376, monthly: 581280, annual: 6975360, locked: false },
+  wm4: { name: "VM4", collateral: 1430000, movies: 29, each: 1761, daily: 51069, monthly: 1532070, annual: 18384840, locked: false },
+  wm5: { name: "VM5", collateral: 3800000, movies: 47, each: 2887, daily: 135689, monthly: 4070670, annual: 48848040, locked: false },
+  wm6: { name: "VM6", collateral: 9100000, movies: 60, each: 5229, daily: 313740, monthly: 9412280, annual: 112946400, locked: false },
+  wm7: { name: "VM7", collateral: 28000000, movies: 75, each: 12873, daily: 965475, monthly: 28964250, annual: 347571080, locked: false },
+  wm8: { name: "VM8", collateral: 41000000, movies: 90, each: 16273, daily: 1464570, monthly: 43937100, annual: 527245200, locked: false },
+  wm9: { name: "VM9", collateral: 59000000, movies: 103, each: 21215, daily: 2185145, monthly: 65554350, annual: 786652200, locked: false },
+  wm10: { name: "VM10", collateral: 77000000, movies: 134, each: 22300, daily: 2988200, monthly: 89646000, annual: 1075752000, locked: false },
+  wm11: { name: "VM11", collateral: 83000000, movies: 146, each: 27000, daily: 3942000, monthly: 118260000, annual: 1419120000, locked: false },
+  wm12: { name: "VM12", collateral: 102000000, movies: 157, each: 31000, daily: 4867000, monthly: 146010000, annual: 1752120000, locked: false }
 };
 
 function ensureTraineeExists(levels) {
@@ -1168,7 +1168,7 @@ async function addLevelRow() {
   const newKey = 'wm' + nextNum;
   
   const defaultData = {
-  name: 'WM' + nextNum,
+  name: 'VM' + nextNum,
   collateral: nextNum * 100000,
   movies: nextNum * 10 + 5,
   each: nextNum * 1000 + 500,
