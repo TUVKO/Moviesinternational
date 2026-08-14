@@ -1613,7 +1613,19 @@ function parseTxDate(dateString) {
 
 function computeIncomeStats() {
   const result = { today: 0, month: 0, total: 0, credited: 0, debited: 0, affiliate: 0, subAffiliateTotal: 0, subAffiliateToday: 0 };
-  if (!currentUser || !currentUser.transactions) return result;
+  if (!currentUser) return result;
+  
+  // Total Credited / Total Debited are sourced from permanent lifetime counters
+  // (currentUser.totalCreditedLifetime / totalDebitedLifetime) so they survive
+  // transaction-log auto-deletion. Accounts that predate this counter (no field yet)
+  // fall back to summing their still-present transaction log, until their first
+  // new credit/debit event starts the permanent counter.
+  const hasLifetimeCredited = currentUser.totalCreditedLifetime !== undefined;
+  const hasLifetimeDebited = currentUser.totalDebitedLifetime !== undefined;
+  if (hasLifetimeCredited) result.credited = currentUser.totalCreditedLifetime || 0;
+  if (hasLifetimeDebited) result.debited = currentUser.totalDebitedLifetime || 0;
+  
+  if (!currentUser.transactions) return result;
   
   const incomeTypes = new Set(['Bonus', 'Video Reward', 'Streak Bonus', 'Level Refund', 'Affiliate Earning', 'Sub-affiliate Revenue']);
   const depositTypes = new Set(['Deposit', 'Manual Deposit']);
@@ -1639,8 +1651,12 @@ function computeIncomeStats() {
   result.subAffiliateTotal += amt;
   if (isToday) result.subAffiliateToday += amt;
   }
-  if (depositTypes.has(tx.type) && tx.status === 'completed') result.credited += Math.abs(amt);
-  if (tx.type === 'Withdrawal') result.debited += Math.abs(amt);
+  if (!hasLifetimeCredited && depositTypes.has(tx.type) && tx.status === 'completed') result.credited += Math.abs(amt);
+  if (!hasLifetimeDebited && tx.type === 'Withdrawal') result.debited += Math.abs(amt);
+  if (!hasLifetimeCredited && !hasLifetimeDebited && tx.type === 'Admin Edit' && tx.status === 'completed') {
+  if (tx.direction === 'Credit') result.credited += Math.abs(amt);
+  else if (tx.direction === 'Debit') result.debited += Math.abs(amt);
+  }
   });
   
   return result;
@@ -4861,6 +4877,7 @@ async function doDeposit() {
   const newStake = oldStake + amount;
   const updates = {
   stake: newStake,
+  totalCreditedLifetime: firebase.database.ServerValue.increment(amount),
   [`transactions/${txKey}`]: {
   type: 'Deposit',
   method: 'easypay',
@@ -4871,6 +4888,7 @@ async function doDeposit() {
   }
   };
   await db.ref('users/' + safeKey(currentUsername)).update(updates);
+  await db.ref('stats/totalCredited').transaction(v => (v || 0) + amount);
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
       
   popup.textContent = ` Deposit of ${fmt(amount)} added to your General Account!`;

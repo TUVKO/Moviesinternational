@@ -368,10 +368,15 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="page" id="pg-transactions">
 <div class="page-title">Transactions</div>
 <div class="page-sub">Real-time deposits and withdrawals</div>
+<div class="stats-row" style="grid-template-columns:repeat(2,1fr);margin-bottom:16px;">
+<div class="stat-card"><div class="stat-card-label">Total Credited</div><div class="stat-card-val" style="color:#22c55e;" id="adm-tx-total-credited">UGX 0</div></div>
+<div class="stat-card"><div class="stat-card-label">Total Debited</div><div class="stat-card-val" style="color:#ef4444;" id="adm-tx-total-debited">UGX 0</div></div>
+</div>
 <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
   <button class="btn btn-save" onclick="filterAdmTx('all')">All</button>
   <button class="btn btn-edit" onclick="filterAdmTx('Deposit')">Deposits</button>
   <button class="btn btn-edit" onclick="filterAdmTx('Withdrawal')">Withdrawals</button>
+  <button class="btn btn-edit" onclick="filterAdmTx('Admin Edit')">Admin Edits</button>
 </div>
 <div class="table-wrap">
 <div class="table-header">
@@ -1713,6 +1718,15 @@ function startRealtimeListeners() {
   });
   setInterval(cleanupOldAdminTransactions, 5 * 60 * 1000);
   
+  db.ref('stats/totalCredited').on('value', (snap) => {
+  const el = document.getElementById('adm-tx-total-credited');
+  if (el) el.textContent = fmt(snap.val() || 0);
+  });
+  db.ref('stats/totalDebited').on('value', (snap) => {
+  const el = document.getElementById('adm-tx-total-debited');
+  if (el) el.textContent = fmt(snap.val() || 0);
+  });
+  
   startNotifListener();
 }
 
@@ -1901,6 +1915,11 @@ async function saveEditUser() {
   const user = allUsers[key];
   if (!user) return;
   
+  const oldStake = user.stake || 0;
+  const oldMob = user.mob || 0;
+  const stakeDelta = newStake - oldStake;
+  const mobDelta = newMob - oldMob;
+  
   const updates = {
   password: newPassword,
   phone: newPhone,
@@ -1914,6 +1933,51 @@ async function saveEditUser() {
   withdrawPin: newWithdrawPin,
   withdrawAccountLocked: newWithdrawLocked
   };
+  
+  // Log any manual balance edit as a transaction, so it's tracked and counted
+  // toward Total Credited / Total Debited — both admin-side and on the user's own profile.
+  const editEntries = [];
+  if (stakeDelta !== 0) editEntries.push({ label: 'General Account', delta: stakeDelta, oldVal: oldStake, newVal: newStake });
+  if (mobDelta !== 0) editEntries.push({ label: 'Retained Wallet', delta: mobDelta, oldVal: oldMob, newVal: newMob });
+  
+  let creditSum = 0, debitSum = 0;
+  
+  for (const entry of editEntries) {
+  const txKey = 'tx_admedit_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+  const isCredit = entry.delta > 0;
+  const record = {
+  type: 'Admin Edit',
+  direction: isCredit ? 'Credit' : 'Debit',
+  field: entry.label,
+  amount: Math.abs(entry.delta),
+  oldValue: entry.oldVal,
+  newValue: entry.newVal,
+  note: `Admin manually ${isCredit ? 'credited' : 'debited'} ${entry.label} by ${fmt(Math.abs(entry.delta))} (was ${fmt(entry.oldVal)}, now ${fmt(entry.newVal)})`,
+  date: dateStr(),
+  status: 'completed'
+  };
+  updates['transactions/' + txKey] = record;
+  if (isCredit) creditSum += Math.abs(entry.delta);
+  else debitSum += Math.abs(entry.delta);
+  db.ref('adminTransactions/adm_' + txKey).set({
+  type: 'Admin Edit',
+  username: user.username || key,
+  phone: user.phone || '',
+  amount: entry.delta,
+  reference: entry.label + ' — ' + (isCredit ? 'Credit' : 'Debit'),
+  date: dateStr(),
+  status: 'successful'
+  });
+  }
+  
+  if (creditSum > 0) {
+  updates['totalCreditedLifetime'] = firebase.database.ServerValue.increment(creditSum);
+  db.ref('stats/totalCredited').transaction(v => (v || 0) + creditSum);
+  }
+  if (debitSum > 0) {
+  updates['totalDebitedLifetime'] = firebase.database.ServerValue.increment(debitSum);
+  db.ref('stats/totalDebited').transaction(v => (v || 0) + debitSum);
+  }
   
   await db.ref('users/' + key).update(updates);
   closeEditModal();
@@ -2002,12 +2066,19 @@ function renderAdminTransactions() {
   else if (tx.status === 'failed') { statusColor = 'var(--warn)'; statusText = 'Failed'; }
   const typeIcon = tx.type === 'Deposit' ? '' : '';
   const amountStr = fmt(tx.amount || 0);
+  let badgeClass = 'badge-pending';
+  let typeLabel = tx.type;
+  if (tx.type === 'Deposit') badgeClass = 'badge-approved';
+  if (tx.type === 'Admin Edit') {
+  badgeClass = (tx.amount || 0) > 0 ? 'badge-approved' : 'badge-rejected';
+  typeLabel = 'Admin Edit (' + ((tx.amount || 0) > 0 ? 'Credit' : 'Debit') + ')';
+  }
     
   return `<tr>
   <td class="mono" style="font-size:11px;">${tx.date || '—'}</td>
   <td><strong>${tx.username || '—'}</strong></td>
   <td class="mono" style="font-size:11px;">${tx.phone || '—'}</td>
-  <td><span class="badge ${tx.type === 'Deposit' ? 'badge-approved' : 'badge-pending'}">${typeIcon} ${tx.type}</span></td>
+  <td><span class="badge ${badgeClass}">${typeIcon} ${typeLabel}</span></td>
   <td class="mono">${amountStr}</td>
   <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
   <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
@@ -2109,6 +2180,7 @@ async function approveManualDeposit(reqKey) {
 
   await db.ref('users/' + dep.userId).update({
   stake: newStake,
+  totalCreditedLifetime: firebase.database.ServerValue.increment(dep.amount || 0),
   ['transactions/' + txKey]: {
   type: 'Deposit',
   method: 'superior',
@@ -2118,6 +2190,7 @@ async function approveManualDeposit(reqKey) {
   status: 'completed'
   }
   });
+  await db.ref('stats/totalCredited').transaction(v => (v || 0) + (dep.amount || 0));
   await db.ref('manualDeposits/' + reqKey).update({ status: 'approved', processed: true });
   toast('Deposit approved for ' + dep.username);
   } catch (error) {
@@ -2333,6 +2406,8 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
   status: 'completed',
   note: `Withdrawal approved and sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
   });
+  await db.ref('users/' + userId + '/totalDebitedLifetime').transaction(v => (v || 0) + amount);
+  await db.ref('stats/totalDebited').transaction(v => (v || 0) + amount);
   await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
   toast('Withdrawal approved and sent for ' + username);
