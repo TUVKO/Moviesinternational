@@ -653,17 +653,17 @@ input[type="password"]{padding-right:46px;}
 </div>
 
   <!-- Levels Table -->
-<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+<div style="background:var(--surface);border:1px solid #6b6b6b;border-radius:0;overflow:hidden;">
 <div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
-  <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid var(--border);">
+  <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:1px solid #6b6b6b;">
   <thead>
   <tr style="background:var(--surface2);border-bottom:2px solid var(--accent);">
-  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">LvL</th>
-  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Col</th>
-  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Mov</th>
-  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Each</th>
-  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Daily</th>
-  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;border-right:1px solid var(--border);border-bottom:2px solid var(--accent);">Monthly</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:8%;border-right:1px solid #6b6b6b;border-bottom:2px solid var(--accent);">LvL</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:14%;border-right:1px solid #6b6b6b;border-bottom:2px solid var(--accent);">Col</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:6%;border-right:1px solid #6b6b6b;border-bottom:2px solid var(--accent);">Mov</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:11%;border-right:1px solid #6b6b6b;border-bottom:2px solid var(--accent);">Each</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:16%;border-right:1px solid #6b6b6b;border-bottom:2px solid var(--accent);">Daily</th>
+  <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:21%;border-right:1px solid #6b6b6b;border-bottom:2px solid var(--accent);">Monthly</th>
   <th style="padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:var(--accent);font-size:6.5px;width:24%;border-bottom:2px solid var(--accent);">Annual</th>
 </tr>
 </thead>
@@ -2348,17 +2348,9 @@ function renderLevelsTable() {
   if (!tbody) return;
   
   const levelKeys = getLevelKeys();
-  const userVideos = currentUser?.totalVideosWatched || 0;
-  let currentLevelKey = 'trainee';
-  let currentLevelData = levelsData['trainee'] || DEFAULT_TRAINEE;
-  
-  for (const key of levelKeys) {
-  const level = levelsData[key];
-  if (level && userVideos >= (level.collateral || 0)) {
-  currentLevelKey = key;
-  currentLevelData = level;
-  }
-  }
+  const userStake = currentUser?.stake || 0;
+  const currentLevelKey = currentUser?.currentLevel || 'trainee';
+  const currentLevelData = levelsData[currentLevelKey] || levelsData['trainee'] || DEFAULT_TRAINEE;
   
   const levelNameEl = document.getElementById('user-current-level');
   const dailyEl = document.getElementById('user-current-daily');
@@ -2368,18 +2360,18 @@ function renderLevelsTable() {
   levelNameEl.textContent = currentLevelData.name || 'Trainee';
   dailyEl.textContent = fmt(currentLevelData.daily || 0);
     
-  let nextLevel = null;
-  for (const key of levelKeys) {
-  const level = levelsData[key];
-  if (level && (level.collateral || 0) >userVideos) {
-  nextLevel = level;
-  break;
-  }
-  }
+  const currentIndex = levelKeys.indexOf(currentLevelKey);
+  const nextKey = currentIndex >= 0 && currentIndex < levelKeys.length - 1 ? levelKeys[currentIndex + 1] : null;
+  const nextLevel = nextKey ? levelsData[nextKey] : null;
     
   if (nextLevel) {
-  const need = (nextLevel.collateral || 0) - userVideos;
-  nextEl.textContent = `Next: ${nextLevel.name} needs ${nextLevel.collateral || 0} videos (${need} more)`;
+  const cost = nextLevel.collateral || 0;
+  if (userStake >= cost) {
+  nextEl.textContent = `${nextLevel.name} is ready to purchase — visit Stages to upgrade!`;
+  } else {
+  const need = cost - userStake;
+  nextEl.textContent = `Next: ${nextLevel.name} costs ${fmt(cost)} — deposit ${fmt(need)} more to unlock`;
+  }
   } else {
   nextEl.textContent = 'You are at the highest level!';
   }
@@ -2397,14 +2389,14 @@ function renderLevelsTable() {
   const bgColor = isCurrent ? 'rgba(242,184,75,0.12)' : 'transparent';
   const borderLeft = isCurrent ? '2px solid var(--accent)' : 'none';
     
-  html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid var(--border);">
-  <td style="padding:5px 3px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.name || key}</td>
-  <td style="padding:5px 3px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.collateral || 0)}</td>
-  <td style="padding:5px 3px;text-align:center;font-size:7.5px;white-space:nowrap;border-right:1px solid var(--border);">${level.movies || 0}</td>
-  <td style="padding:5px 3px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.each || 0)}</td>
-  <td style="padding:5px 3px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.daily || 0)}</td>
-  <td style="padding:5px 3px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid var(--border);">${fmtShort(level.monthly || 0)}</td>
-  <td style="padding:5px 3px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;">${fmtShort(level.annual || 0)}</td>
+  html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid #6b6b6b;">
+  <td style="padding:5px 4px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid #6b6b6b;">${level.name || key}</td>
+  <td style="padding:5px 4px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid #6b6b6b;">${fmtShort(level.collateral || 0)}</td>
+  <td style="padding:5px 4px;text-align:center;font-size:7.5px;white-space:nowrap;border-right:1px solid #6b6b6b;">${level.movies || 0}</td>
+  <td style="padding:5px 4px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid #6b6b6b;">${fmtShort(level.each || 0)}</td>
+  <td style="padding:5px 4px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid #6b6b6b;">${fmtShort(level.daily || 0)}</td>
+  <td style="padding:5px 4px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;border-right:1px solid #6b6b6b;">${fmtShort(level.monthly || 0)}</td>
+  <td style="padding:5px 4px;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;">${fmtShort(level.annual || 0)}</td>
 </tr>`;
   }
   
@@ -2416,28 +2408,14 @@ function renderLevelsTable() {
 }
 
 function updateLevelProgress() {
-  const userVideos = currentUser?.totalVideosWatched || 0;
+  const userStake = currentUser?.stake || 0;
   const levelKeys = getLevelKeys();
+  const currentLevelKey = currentUser?.currentLevel || 'trainee';
+  const currentLevel = levelsData[currentLevelKey] || levelsData['trainee'] || DEFAULT_TRAINEE;
   
-  let currentLevelKey = 'trainee';
-  let currentLevel = levelsData['trainee'] || DEFAULT_TRAINEE;
-  let nextLevel = null;
-  
-  for (const key of levelKeys) {
-  const level = levelsData[key];
-  if (level && userVideos >= (level.collateral || 0)) {
-  currentLevelKey = key;
-  currentLevel = level;
-  }
-  }
-  
-  for (const key of levelKeys) {
-  const level = levelsData[key];
-  if (level && (level.collateral || 0) >userVideos) {
-  nextLevel = level;
-  break;
-  }
-  }
+  const currentIndex = levelKeys.indexOf(currentLevelKey);
+  const nextKey = currentIndex >= 0 && currentIndex < levelKeys.length - 1 ? levelKeys[currentIndex + 1] : null;
+  const nextLevel = nextKey ? levelsData[nextKey] : null;
   
   const progressEl = document.getElementById('level-progress-fill');
   const progressText = document.getElementById('level-progress-text');
@@ -2445,11 +2423,10 @@ function updateLevelProgress() {
   if (!progressEl || !progressText || !progressNext) return;
   
   if (nextLevel) {
-  const current = userVideos - (currentLevel.collateral || 0);
-  const needed = (nextLevel.collateral || 0) - (currentLevel.collateral || 0);
-  const percent = Math.min((current / needed) * 100, 100);
+  const cost = nextLevel.collateral || 0;
+  const percent = cost > 0 ? Math.min((userStake / cost) * 100, 100) : 0;
   progressEl.style.width = percent + '%';
-  progressText.textContent = `${current}/${needed} videos`;
+  progressText.textContent = `${fmt(userStake)}/${fmt(cost)}`;
   progressNext.textContent = nextLevel.name || 'VM1';
   } else {
   progressEl.style.width = '100%';
