@@ -2386,8 +2386,8 @@ function renderLevelsTable() {
   if (key !== 'trainee') hasNonTrainee = true;
     
   const isCurrent = (key === currentLevelKey);
-  const bgColor = isCurrent ? 'rgba(242,184,75,0.12)' : 'transparent';
-  const borderLeft = isCurrent ? '2px solid var(--accent)' : 'none';
+  const bgColor = isCurrent ? 'rgba(242,184,75,0.20)' : 'transparent';
+  const borderLeft = isCurrent ? '3px solid var(--accent)' : 'none';
     
   html += `<tr style="background:${bgColor};border-left:${borderLeft};border-bottom:1px solid #6b6b6b;">
   <td style="padding:5px 4px;font-weight:${isCurrent ? '800' : '400'};color:${isCurrent ? 'var(--accent)' : 'var(--text)'};font-size:7.5px;white-space:nowrap;border-right:1px solid #6b6b6b;">${level.name || key}</td>
