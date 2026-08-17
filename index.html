@@ -2557,7 +2557,7 @@ function renderVideoGrid() {
   const grid = document.getElementById('video-grid');
   if (!grid) return;
   
-  if (isSundayEAT()) {
+  if (isSundayEAT() && getUserLevel() !== 'trainee') {
   grid.innerHTML = '<div class="video-empty">No video jobs today — Sundays are a rest day. Check back tomorrow.</div>';
   return;
   }
@@ -2622,8 +2622,8 @@ function openVideoPlayer(id) {
   const v = videosData[id];
   if (!v) return;
   
-  // No video jobs on Sundays
-  if (isSundayEAT()) {
+  // No video jobs on Sundays (trainees are exempt)
+  if (isSundayEAT() && getUserLevel() !== 'trainee') {
   showBanner('Video jobs are unavailable on Sundays. Check back tomorrow.');
   return;
   }
