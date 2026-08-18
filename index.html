@@ -5736,15 +5736,15 @@ async function initApp() {
   console.log('Auto-login successful for:', savedUser);
   } else {
   sessionStorage.removeItem('pp_current_user');
-  showAuth('login-page');
+  showAuth(pendingReferralCode ? 'register-page' : 'login-page');
   }
   } catch (err) {
   console.warn('Login check error:', err);
   sessionStorage.removeItem('pp_current_user');
-  showAuth('login-page');
+  showAuth(pendingReferralCode ? 'register-page' : 'login-page');
   }
   } else {
-  showAuth('login-page');
+  showAuth(pendingReferralCode ? 'register-page' : 'login-page');
   }
   
   document.getElementById('loading-screen').style.display = 'none';
