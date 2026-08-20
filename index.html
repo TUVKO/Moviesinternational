@@ -4907,6 +4907,11 @@ async function doWithdraw() {
   return;
   }
   
+  if (getUserLevel() === 'trainee') {
+  showBanner('Withdrawals are available for VM levels only. Upgrade your level to unlock withdrawals.');
+  return;
+  }
+  
   if (isSundayEAT()) {
   showBanner('Withdrawals are unavailable on Sundays.');
   return;
@@ -5428,7 +5433,12 @@ function switchTab(tab, fromPopState) {
   if (tab === 'todaysjob') renderTodaysJob();
   if (tab === 'myteam') renderTeamList();
   if (tab === 'missed-commission') renderMissedCommissionList();
-  if (tab === 'withdraw') renderWithdrawPresets();
+  if (tab === 'withdraw') {
+  renderWithdrawPresets();
+  if (getUserLevel() === 'trainee') {
+  showBanner('Withdrawals are available for VM levels only. Upgrade your level to unlock withdrawals.');
+  }
+  }
   if (tab === 'salary') { renderSalaryPage(); refreshPositionStatus(); }
   if (tab === 'profile') refreshPositionStatus();
   
