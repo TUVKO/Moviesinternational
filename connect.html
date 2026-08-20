@@ -405,6 +405,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <button class="btn btn-save" onclick="filterWithdrawals('pending')">Pending</button>
   <button class="btn btn-approve" onclick="filterWithdrawals('approved')">Approved</button>
   <button class="btn btn-reject" onclick="filterWithdrawals('rejected')">Rejected</button>
+  <button class="btn btn-danger" onclick="filterWithdrawals('review failed')">Review Failed</button>
   <button class="btn btn-edit" onclick="filterWithdrawals('all')">All</button>
 </div>
 <div class="table-wrap">
@@ -1678,7 +1679,9 @@ function startRealtimeListeners() {
   renderWithdrawalsStats();
   renderWithdrawalsTable();
   updateWithdrawalsBadge();
+  autoExpireStaleWithdrawals();
   });
+  setInterval(autoExpireStaleWithdrawals, 10 * 60 * 1000);
 
   if (manualDepositsUnsubscribe) manualDepositsUnsubscribe();
   manualDepositsUnsubscribe = db.ref('manualDeposits').on('value', (snap) => {
@@ -2344,8 +2347,8 @@ function renderWithdrawalsTable() {
   if (!entries.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No withdrawal requests yet</tr>'; return; }
   
   tbody.innerHTML = entries.map(([k, v]) => {
-  const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : 'var(--gold)';
-  const si = v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : 'Pending';
+  const sc = v.status === 'approved' ? 'var(--success)' : v.status === 'rejected' ? 'var(--warn)' : v.status === 'review failed' ? '#f87171' : 'var(--gold)';
+  const si = v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : v.status === 'review failed' ? 'Review Failed' : 'Pending';
   const fee = Math.round((v.amount || 0) * 0.10);
   const sendAmt = v.sendAmount || (v.amount - fee);
   const actions = v.status === 'pending' ? `
@@ -2425,6 +2428,47 @@ async function rejectWithdrawal(reqKey, userId, username, amount) {
   } catch (error) { 
   console.error('Error rejecting withdrawal:', error);
   toast('Error rejecting withdrawal', '#f87171'); 
+  }
+}
+
+async function autoExpireStaleWithdrawals() {
+  const cutoff = Date.now() - (48 * 60 * 60 * 1000);
+  for (const [reqKey, v] of Object.entries(allWithdrawals)) {
+  if (v.status !== 'pending') continue;
+  if (!v.createdAt || v.createdAt > cutoff) continue;
+    
+  try {
+  const userId = v.userId;
+  const txKey = v.txKey;
+  const adminTxKey = v.adminTxKey;
+  const acctLabel = v.sourceAccount || 'Retained Wallet';
+  const acctField = acctLabel === 'General Account' ? 'stake' : 'mob';
+      
+  const userSnap = await db.ref('users/' + userId).get();
+  const user = userSnap.val();
+  if (!user) continue;
+  const newBalance = (user[acctField] || 0) + (v.amount || 0);
+      
+  await db.ref('users/' + userId).update({
+  [acctField]: newBalance,
+  ['transactions/' + txKey + '/status']: 'failed',
+  ['transactions/' + txKey + '/note']: `Review Failed - No admin action within 48 hours, amount refunded to ${acctLabel}`
+  });
+  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'review failed', processed: true });
+  if (adminTxKey) {
+  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' }).catch(() => {});
+  }
+  await db.ref('adminNotifications/notif_' + Date.now() + '_' + reqKey).set({
+  type: 'withdrawal_review_failed',
+  username: v.username,
+  amount: v.amount,
+  message: `Review Failed: ${v.username} | Amount: ${fmt(v.amount)} | No admin action within 48 hours — full refund issued to ${acctLabel}`,
+  date: dateStr(),
+  read: false
+  });
+  } catch (error) {
+  console.error('Error auto-expiring withdrawal ' + reqKey + ':', error);
+  }
   }
 }
 
