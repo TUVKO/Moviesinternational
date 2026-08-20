@@ -761,17 +761,6 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Sub-affiliate Revenue — Level 2 (daily)</span><div class="ugx-group"><input type="number" class="ugx-input" id="subaffiliate-level2-input" min="0" max="100" step="0.1" placeholder="1"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveSubAffiliateLevel2()">Save</button></div>
 </div>
 
-  <!-- Withdrawal Approval Toggle -->
-<div class="settings-section">
-<div class="settings-title">Withdrawal Approval Mode</div>
-<div class="settings-sub">When ON, admin must approve each withdrawal. When OFF, withdrawals are automatic.</div>
-<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
-  <button class="btn btn-success" onclick="setWithdrawApproval(true)">Manual Approval ON</button>
-  <button class="btn btn-danger" onclick="setWithdrawApproval(false)">Automatic OFF</button>
-  <span id="approval-status" style="font-size:13px;color:var(--muted);">Checking...</span>
-</div>
-</div>
-
   <!-- Withdrawal Control -->
 <div class="danger-zone">
 <div class="danger-title">Withdrawal Control</div>
@@ -2377,7 +2366,7 @@ function renderWithdrawalsTable() {
 }
 
 async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
-  const confirmed = await confirmAction('Approve Withdrawal?', 'Approve withdrawal for ' + username + '? Amount: ' + fmt(amount) + '. Net to send: ' + fmt(sendAmount));
+  const confirmed = await confirmAction('Approve Withdrawal?', 'Approve withdrawal for ' + username + '? Amount: ' + fmt(amount) + '. Net to send: ' + fmt(sendAmount) + '. You must send this amount manually — the system will NOT send it automatically.');
   if (!confirmed) return;
   
   try {
@@ -2386,70 +2375,18 @@ async function approveWithdrawal(reqKey, userId, username, amount, sendAmount) {
   const adminTxKey = withdrawal?.adminTxKey;
   const userPhone = withdrawal?.phone;
   const fee = withdrawal?.fee;
-  const acctLabel = withdrawal?.sourceAccount || 'Retained Wallet';
-  const acctField = acctLabel === 'General Account' ? 'stake' : 'mob';
-  const reference = genUUID();
     
-  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'processing' });
-    
-  try {
-  const sendResult = await marzSend(userPhone, sendAmount, reference, 'WEA Withdrawal');
-      
-  if (sendResult && sendResult.status === 'success') {
   await db.ref('users/' + userId + '/transactions/' + txKey).update({
   status: 'completed',
-  note: `Withdrawal approved and sent to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
+  note: `Withdrawal approved — sent manually by admin to ${userPhone} (Fee: ${fmt(fee)}, Received: ${fmt(sendAmount)})`
   });
   await db.ref('users/' + userId + '/totalDebitedLifetime').transaction(v => (v || 0) + amount);
   await db.ref('stats/totalDebited').transaction(v => (v || 0) + amount);
   await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'approved', processed: true });
   await db.ref('adminTransactions/' + adminTxKey).update({ status: 'successful' });
-  toast('Withdrawal approved and sent for ' + username);
-  } else {
-  const userSnap = await db.ref('users/' + userId).get();
-  const user = userSnap.val();
-  const refundedBalance = (user[acctField] || 0) + amount;
-  await db.ref('users/' + userId).update({
-  [acctField]: refundedBalance,
-  ['transactions/' + txKey + '/status']: 'failed',
-  ['transactions/' + txKey + '/note']: `Withdrawal Failed - Refunded to ${acctLabel}`
-  });
-  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-  await db.ref('adminNotifications/notif_' + Date.now()).set({
-  type: 'withdrawal_marz_failed',
-  username: username,
-  amount: amount,
-  message: `Withdrawal Failed: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to ${acctLabel}`,
-  date: dateStr(),
-  read: false
-  });
-  toast('Marz failed - refund issued to ' + username, '#f87171');
-  }
-  } catch (marzError) {
-  const userSnap = await db.ref('users/' + userId).get();
-  const user = userSnap.val();
-  const refundedBalance = (user[acctField] || 0) + amount;
-  await db.ref('users/' + userId).update({
-  [acctField]: refundedBalance,
-  ['transactions/' + txKey + '/status']: 'failed',
-  ['transactions/' + txKey + '/note']: `Withdrawal Error - Refunded to ${acctLabel}`
-  });
-  await db.ref('pendingWithdrawals/' + reqKey).update({ status: 'failed', processed: true });
-  await db.ref('adminTransactions/' + adminTxKey).update({ status: 'failed' });
-  await db.ref('adminNotifications/notif_' + Date.now()).set({
-  type: 'withdrawal_marz_failed',
-  username: username,
-  amount: amount,
-  message: `Withdrawal Error: ${username} | Phone: ${userPhone} | Amount: ${fmt(amount)} | Full refund issued to ${acctLabel}`,
-  date: dateStr(),
-  read: false
-  });
-  toast('Marz error - refund issued to ' + username, '#f87171');
-  }
-  } catch (error) { 
-  console.error('Error approving withdrawal:', error);
-  toast('Error approving withdrawal', '#f87171'); 
+  toast('Withdrawal approved for ' + username + ' — remember to send ' + fmt(sendAmount) + ' manually');
+  } catch (error) {
+  toast('Error approving withdrawal', '#f87171');
   }
 }
 
@@ -2555,12 +2492,6 @@ function loadSettingsUI() {
   if (luckySpinLockStatus) {
   luckySpinLockStatus.textContent = s.luckySpinLocked ? 'LOCKED' : 'OPEN';
   luckySpinLockStatus.style.color = s.luckySpinLocked ? 'var(--warn)' : 'var(--success)';
-  }
-  
-  const approvalStatus = document.getElementById('approval-status');
-  if (approvalStatus) {
-  approvalStatus.textContent = s.withdrawApproval ? 'Manual Approval ON' : 'Automatic';
-  approvalStatus.style.color = s.withdrawApproval ? 'var(--gold)' : 'var(--success)';
   }
 }
 
@@ -2768,11 +2699,6 @@ async function lockWithdrawals(lock) {
 async function lockLuckySpin(lock) {
   await db.ref('settings/luckySpinLocked').set(lock);
   toast(lock ? 'Lucky Spin tab LOCKED' : 'Lucky Spin tab UNLOCKED', lock ? '#f87171' : undefined);
-}
-
-async function setWithdrawApproval(val) {
-  await db.ref('settings/withdrawApproval').set(val);
-  toast(val ? 'Manual approval ON' : 'Automatic withdrawals ON', val ? undefined : '#38bdf8');
 }
 
 async function deleteAllUsers() {
