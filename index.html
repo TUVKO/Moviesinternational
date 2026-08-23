@@ -525,7 +525,7 @@ input[type="password"]{padding-right:46px;}
 </div>
 </div>
 <div class="section">
-<div class="stats-grid" style="grid-template-columns:1fr 1fr;">
+<div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;">
 <div class="stat-box">
 <div class="stat-label">GENERAL ACCOUNT</div>
 <div class="stat-value stake" id="stat-stake">UGX 0</div>
@@ -533,6 +533,10 @@ input[type="password"]{padding-right:46px;}
 <div class="stat-box">
 <div class="stat-label">RETAINED WALLET</div>
 <div class="stat-value mob" id="stat-mob">UGX 0</div>
+</div>
+<div class="stat-box" style="cursor:pointer;" onclick="switchTab('missed-commission')">
+<div class="stat-label">MSSD ACCOUNT</div>
+<div class="stat-value" style="color:#f87171;" id="stat-mssd-account">UGX 0</div>
 </div>
 </div>
 <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
@@ -1679,11 +1683,13 @@ function updateIncomeStatsUI() {
   if (subAffTodayEl) subAffTodayEl.textContent = fmt(s.subAffiliateToday);
   
   const slippedEl = document.getElementById('stat-slipped-commission');
-  if (slippedEl) {
+  const mssdEl = document.getElementById('stat-mssd-account');
+  if (slippedEl || mssdEl) {
   const now = Date.now();
   const entries = Object.values(currentUser?.missedCommissions || {});
   const pendingTotal = entries.filter(e => (e.expiresAt || 0) > now).reduce((sum, e) => sum + (e.amount || 0), 0);
-  slippedEl.textContent = fmt(pendingTotal);
+  if (slippedEl) slippedEl.textContent = fmt(pendingTotal);
+  if (mssdEl) mssdEl.textContent = fmt(pendingTotal);
   }
 }
 
