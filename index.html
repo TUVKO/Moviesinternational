@@ -1730,24 +1730,51 @@ function renderTodaysJob() {
 async function renderTeamList() {
   const wrap = document.getElementById('team-list');
   if (!wrap) return;
-  const referrals = currentUser?.referrals || [];
-  if (!referrals.length) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">You haven\'t referred anyone yet. Share your referral link from the Recruit page!</div>'; return; }
+  const directPhones = currentUser?.referrals || [];
+  if (!directPhones.length) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">You haven\'t referred anyone yet. Share your referral link from the Recruit page!</div>'; return; }
   
   wrap.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;">Loading team...</div>';
   
   try {
-  const members = await Promise.all(referrals.map(async phone => {
+  const directUsers = await Promise.all(directPhones.map(async phone => {
   const snap = await db.ref('users/' + safeKey(phone)).get();
-  return snap.exists() ? snap.val() : null;
+  return snap.exists() ? { ...snap.val(), _level: 1 } : null;
   }));
-    
-  const validMembers = members.filter(m => m);
+  const validDirects = directUsers.filter(m => m);
+  
+  const l2Phones = validDirects.flatMap(u => u.referrals || []);
+  const l2Users = l2Phones.length ? await Promise.all(l2Phones.map(async phone => {
+  const snap = await db.ref('users/' + safeKey(phone)).get();
+  return snap.exists() ? { ...snap.val(), _level: 2 } : null;
+  })) : [];
+  const validL2 = l2Users.filter(m => m);
+  
+  const l3Phones = validL2.flatMap(u => u.referrals || []);
+  const l3Users = l3Phones.length ? await Promise.all(l3Phones.map(async phone => {
+  const snap = await db.ref('users/' + safeKey(phone)).get();
+  return snap.exists() ? { ...snap.val(), _level: 3 } : null;
+  })) : [];
+  const validL3 = l3Users.filter(m => m);
+  
+  const validMembers = [...validDirects, ...validL2, ...validL3];
   if (!validMembers.length) { wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">You haven\'t referred anyone yet.</div>'; return; }
+  
+  // Sort oldest to newest using traineeStartDate (falls back to createdAt, then joinedDate year)
+  validMembers.sort((a, b) => {
+  const aKey = a.traineeStartDate || (a.createdAt ? new Date(a.createdAt).toISOString().slice(0,10) : '') || (a.joinedDate || '');
+  const bKey = b.traineeStartDate || (b.createdAt ? new Date(b.createdAt).toISOString().slice(0,10) : '') || (b.joinedDate || '');
+  if (aKey < bKey) return -1;
+  if (aKey > bKey) return 1;
+  return (a.createdAt || 0) - (b.createdAt || 0);
+  });
+  
+  const levelMark = { 1: '¹', 2: '²', 3: '³' };
     
   wrap.innerHTML = validMembers.map(m => {
   const levelName = levelsData[m.currentLevel || 'trainee']?.name || 'Trainee';
   const dotColor = m.locked ? 'var(--warn)' : 'var(--success)';
-  return `<div class="team-member-row"><span class="team-status-dot" style="background:${dotColor};"></span><span class="team-member-name">${escapeHtml(m.fullName || 'User')}</span><span class="team-member-level">${escapeHtml(levelName)}</span></div>`;
+  const mark = levelMark[m._level] || '';
+  return `<div class="team-member-row"><span class="team-status-dot" style="background:${dotColor};"></span><span class="team-member-name">${escapeHtml(m.fullName || 'User')}<sup style="font-size:9px;color:var(--accent);margin-left:1px;">${mark}</sup></span><span class="team-member-level">${escapeHtml(levelName)}</span></div>`;
   }).join('');
   } catch (error) {
   console.error('Error loading team:', error);
@@ -5236,6 +5263,7 @@ async function doRegister() {
   streakDays: 0,
   lastWatchDate: null,
   joinedDate: new Date().getFullYear().toString(),
+  createdAt: getServerTime().getTime(),
   locked: false,
   currentLevel: 'trainee',
   purchasedLevels: {},
