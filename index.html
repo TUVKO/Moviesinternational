@@ -688,9 +688,6 @@ Earn instant bonuses to your <strong>General Account</strong> whenever people in
 <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;">
 Your bonus on each purchase is based on whichever is <strong>smaller</strong>: what your referral actually spent, or the cost of your own current level. So the higher your own level, the more you can earn from your team's upgrades.
 </div>
-<div style="font-size:12px;color:var(--warn);line-height:1.6;margin-bottom:14px;">
-Note: Trainee accounts can't refer others yet — purchase any level to unlock your referral link.
-</div>
   <button class="green-btn" onclick="switchTab('recruit')">Get My Referral Link</button>
 </div>
 </div>
@@ -949,7 +946,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <li style="margin-bottom:6px;">Deposits are added to your General Account balance and used to purchase or upgrade levels; your Retained Wallet balance holds earnings that are available for withdrawal</li>
 <li style="margin-bottom:6px;">Withdrawal requests are reviewed and processed within 48 hours. If a withdrawal takes longer than that, please contact support immediately</li>
 <li style="margin-bottom:6px;">Referral bonuses are paid instantly, across up to three levels of your referral network, at rates set out on the Wages page — these rates may be adjusted from time to time</li>
-<li style="margin-bottom:6px;">Trainee accounts cannot refer others; purchasing your first level unlocks your referral link and QR code</li>
+<li style="margin-bottom:6px;">Every account, including Trainees, gets a referral link and QR code to invite others from day one</li>
 <li style="margin-bottom:6px;">Accounts found to be in violation of platform rules — including fraudulent activity or abuse of the referral system — may be locked pending review</li>
 <li>WEA reserves the right to update these terms, level structures, and reward rates as the platform evolves</li>
 </ul>
@@ -1075,7 +1072,7 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 </div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>Can Trainee accounts refer others?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">No — you need to purchase at least one level before your referral link becomes active.</div>
+<div class="faq-answer">Yes — your referral link is active from the moment you register. Note that your commission is still capped by your own current level, so purchasing a level lets you actually earn from your team's upgrades.</div>
 </div>
 
 </div>
@@ -1094,11 +1091,6 @@ Note: Trainee accounts can't refer others yet — purchase any level to unlock y
 <div class="dash-section" id="sec-recruit">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Recruit</div><div class="inner-sub">Invite friends and earn together</div></div></div>
 <div class="section" id="recruit-locked-view" style="display:none;text-align:center;padding:20px 16px;">
-<div class="action-card" style="text-align:center;">
-<div style="font-size:14px;color:var(--muted);margin-bottom:16px;">Purchase a level to unlock referrals. Trainee accounts can't refer others yet.</div>
-  <button class="green-btn" onclick="switchTab('errands')">View Levels</button>
-  <button class="link-back-btn" onclick="switchTab('profile')">Back</button>
-</div>
 </div>
 <div class="section" id="recruit-unlocked-view">
 <div class="action-card" style="text-align:center;">
@@ -3305,15 +3297,12 @@ function updateProfileUI() {
   checkMaturedDatimStakes(safeKey(currentUsername));
   }
   
-  const isTrainee = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
   const lockedView = document.getElementById('recruit-locked-view');
   const unlockedView = document.getElementById('recruit-unlocked-view');
   if (lockedView && unlockedView) {
-  lockedView.style.display = isTrainee ? 'block' : 'none';
-  unlockedView.style.display = isTrainee ? 'none' : 'block';
+  lockedView.style.display = 'none';
+  unlockedView.style.display = 'block';
   }
-  
-  if (isTrainee) return;
   
   const linkDisplay = document.getElementById('recruit-link-display');
   const qrImg = document.getElementById('recruit-qr-img');
