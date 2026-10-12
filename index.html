@@ -3402,22 +3402,23 @@ function renderStages() {
   }
   
   let html = '';
-  let previousPurchased = true;
+  let ownedIdx = -1;
+  levelKeys.forEach((k, i) => {
+  if (k !== 'trainee' && purchased[k] === true) ownedIdx = i;
+  });
   
-  for (const key of levelKeys) {
+  for (let idx = 0; idx < levelKeys.length; idx++) {
+  const key = levelKeys[idx];
   const level = levelsData[key];
   if (!level) continue;
-  if (key === 'trainee') {
-  previousPurchased = true;
-  continue;
-  }
+  if (key === 'trainee') continue;
     
   const isPurchased = purchased[key] === true;
   const isLocked = level.locked === true;
   const isCurrent = userLevel === key;
   const cost = level.collateral || 0;
   const hasEnough = userStake >= cost;
-  const canPurchase = previousPurchased && !isPurchased && !isLocked && hasEnough;
+  const canPurchase = idx > ownedIdx && !isPurchased && !isLocked && hasEnough;
     
   const color = LEVEL_COLORS[key] || '#666';
   const name = level.name || key;
@@ -3427,7 +3428,7 @@ function renderStages() {
     
   let btnHtml = '';
   let cardClass = 'stage-card';
-  const isPastLevel = isPurchased && !isCurrent;
+  const isPastLevel = !isCurrent && (isPurchased || idx < ownedIdx);
     
   if (isCurrent) {
   cardClass += ' purchased';
@@ -3440,8 +3441,6 @@ function renderStages() {
   btnHtml = `<button class="stage-btn need-funds" onclick="showInsufficientPopup('${fmt(cost)}')">Need ${fmt(cost)}</button>`;
   } else if (canPurchase) {
   btnHtml = `<button class="stage-btn" onclick="purchaseLevel('${key}', ${cost}, '${name}')">Purchase Level</button>`;
-  } else if (!previousPurchased) {
-  btnHtml = `<button class="stage-btn" style="background:var(--surface3);color:var(--muted);" onclick="showNeedPreviousPopup('${name}')">Purchase Level</button>`;
   } else {
   btnHtml = `<button class="stage-btn" onclick="showReservedPopup()">Purchase Level</button>`;
   }
@@ -3462,9 +3461,6 @@ function renderStages() {
 </div>
   `;
     
-  if (isPurchased) {
-  previousPurchased = true;
-  }
   }
   
   grid.innerHTML = html;
@@ -4097,15 +4093,13 @@ async function purchaseLevel(levelKey, cost, levelName) {
   }
   
   const levelKeys = getLevelKeys();
+  // Highest level the user currently owns (refund source); null if none
   let previousKey = null;
-  for (const key of levelKeys) {
-  if (key === levelKey) break;
-  if (key !== 'trainee') {
-  previousKey = key;
-  }
-  }
-  if (previousKey && !currentUser.purchasedLevels?.[previousKey]) {
-  showNeedPreviousPopup(levelName);
+  levelKeys.forEach(k => {
+  if (k !== 'trainee' && currentUser.purchasedLevels?.[k] === true) previousKey = k;
+  });
+  if (previousKey && levelKeys.indexOf(levelKey) <= levelKeys.indexOf(previousKey)) {
+  showPopup('Already Own Higher Level', 'You already own a higher level than ' + levelName + '.', 'info');
   return;
   }
   
