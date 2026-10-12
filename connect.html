@@ -474,7 +474,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <!-- SUPPORT CHAT -->
 <div class="page" id="pg-support-chat">
 <div class="page-title">Support Chat</div>
-<div class="page-sub">Reply to user messages — chats auto-delete after 8 hours</div>
+<div class="page-sub">Reply to user messages</div>
 <div id="support-chat-list-view">
 <div class="table-wrap">
 <div class="table-header">
@@ -1698,10 +1698,6 @@ function startRealtimeListeners() {
   if (activeSupportChatUser) renderSupportChatThread(activeSupportChatUser);
   updateSupportChatBadge();
   });
-  setInterval(() => {
-  Object.keys(allSupportChats).forEach(userKey => cleanupOldSupportMessagesAdmin(userKey));
-  }, 5 * 60 * 1000);
-  
   if (adminTxUnsubscribe) adminTxUnsubscribe();
   adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
   allAdminTransactions = snap.val() || {};
@@ -2206,24 +2202,6 @@ async function rejectManualDeposit(reqKey) {
   }
 }
 
-async function cleanupOldSupportMessagesAdmin(userKey) {
-  try {
-  const snap = await db.ref('supportChats/' + userKey + '/messages').get();
-  if (!snap.exists()) return;
-  const messages = snap.val();
-  const cutoff = Date.now() - (8 * 60 * 60 * 1000);
-  const updates = {};
-  Object.entries(messages).forEach(([msgId, msg]) => {
-  if ((msg.timestamp || 0) < cutoff) updates[msgId] = null;
-  });
-  if (Object.keys(updates).length) {
-  await db.ref('supportChats/' + userKey + '/messages').update(updates);
-  }
-  } catch (error) {
-  console.error('Error cleaning up support messages:', error);
-  }
-}
-
 function updateSupportChatBadge() {
   const count = Object.values(allSupportChats).filter(c => c.unreadForAdmin).length;
   const badge = document.getElementById('support-chat-nav-badge');
@@ -2236,8 +2214,6 @@ function renderSupportChatList() {
   const listBody = document.getElementById('sc-list-body');
   const countEl = document.getElementById('sc-count');
   if (!listBody) return;
-  Object.keys(allSupportChats).forEach(userKey => cleanupOldSupportMessagesAdmin(userKey));
-  
   const entries = Object.entries(allSupportChats).filter(([k, c]) => c.messages && Object.keys(c.messages).length);
   entries.sort((a, b) => (b[1].lastMessageAt || 0) - (a[1].lastMessageAt || 0));
   if (countEl) countEl.textContent = entries.length + ' conversations';
@@ -2262,7 +2238,6 @@ function renderSupportChatList() {
 function openSupportChatThread(userKey) {
   activeSupportChatUser = userKey;
   db.ref('supportChats/' + userKey + '/unreadForAdmin').set(false);
-  cleanupOldSupportMessagesAdmin(userKey);
   document.getElementById('support-chat-list-view').style.display = 'none';
   document.getElementById('support-chat-thread-view').style.display = 'block';
   renderSupportChatThread(userKey);
@@ -2318,7 +2293,6 @@ async function sendAdminSupportReply() {
   }
   });
   input.value = '';
-  cleanupOldSupportMessagesAdmin(userKey);
   } catch (error) {
   console.error('Error sending admin reply:', error);
   toast('Failed to send reply', '#f87171');
