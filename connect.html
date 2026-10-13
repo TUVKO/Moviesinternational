@@ -127,27 +127,6 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .ann-bg-row{display:flex;align-items:center;gap:10px;margin-top:14px;}
 .ann-list-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
 .ann-list-preview{max-height:120px;overflow:hidden;border-radius:8px;padding:12px;margin-bottom:10px;color:#fff;font-size:12px;}
-.ann-style-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
-.ann-style-opt{flex:1 1 30%;min-width:96px;background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:6px;font-size:11px;font-weight:700;color:var(--text);cursor:pointer;text-align:center;}
-.ann-style-opt.sel{border-color:var(--accent);background:var(--surface);}
-.ann-sw{display:block;width:100%;height:34px;border-radius:7px;margin-bottom:5px;border:2px solid var(--a-border);background:linear-gradient(180deg,var(--a-bg1),var(--a-bg2));}
-.ann-field{width:100%;box-sizing:border-box;margin-bottom:10px;}
-.ann-s1{--a-bg1:#0f4a33;--a-bg2:#07281c;--a-border:#d9b45a;--a-soft:rgba(243,210,122,.35);--a-accent:#f3d27a;--a-text:#f3efe0;}
-.ann-s2{--a-bg1:#2a2013;--a-bg2:#0a0806;--a-border:#f2b64d;--a-soft:rgba(242,182,77,.35);--a-accent:#f2b64d;--a-text:#f5ecd9;}
-.ann-s3{--a-bg1:#472384;--a-bg2:#1a0b36;--a-border:#d9b45a;--a-soft:rgba(241,210,124,.35);--a-accent:#f1d27c;--a-text:#efe8fa;}
-.ann-s4{--a-bg1:#14509a;--a-bg2:#081d3f;--a-border:#d8c27f;--a-soft:rgba(232,212,154,.35);--a-accent:#e8d49a;--a-text:#e8f0fb;}
-.ann-s5{--a-bg1:#7a1629;--a-bg2:#33060f;--a-border:#d9b45a;--a-soft:rgba(243,210,122,.35);--a-accent:#f3d27a;--a-text:#fbeaea;}
-.ann-s6{--a-bg1:#9a4510;--a-bg2:#3d1805;--a-border:#f3c27a;--a-soft:rgba(255,217,160,.35);--a-accent:#ffd9a0;--a-text:#fff1e0;}
-.ann-card{position:relative;border-radius:18px;padding:18px 16px 24px;margin-bottom:16px;color:var(--a-text);font-size:14px;line-height:1.6;text-align:center;background:repeating-conic-gradient(from 0deg at 50% -10%,rgba(255,255,255,.05) 0 5deg,transparent 5deg 10deg),linear-gradient(180deg,var(--a-bg1),var(--a-bg2));border:2px solid var(--a-border);box-shadow:inset 0 0 0 4px rgba(0,0,0,.25),inset 0 0 0 5px var(--a-soft),0 10px 30px rgba(0,0,0,.5);overflow:hidden;}
-.ann-card::before,.ann-card::after{content:'';position:absolute;bottom:0;width:34px;height:34px;background:linear-gradient(135deg,var(--a-accent),var(--a-border));}
-.ann-card::before{left:0;clip-path:polygon(0 0,0 100%,100% 100%);}
-.ann-card::after{right:0;clip-path:polygon(100% 0,100% 100%,0 100%);}
-.ann-brand{display:inline-block;padding:8px 22px;border:1px solid var(--a-border);border-radius:14px;background:rgba(0,0,0,.3);font-weight:800;letter-spacing:2px;color:var(--a-text);font-size:16px;margin-bottom:10px;}
-.ann-title{font-family:'Fraunces',Georgia,serif;color:var(--a-accent);font-size:26px;font-weight:800;line-height:1.2;margin-bottom:6px;text-shadow:0 2px 6px rgba(0,0,0,.45);}
-.ann-banner{margin:8px 0 12px;padding:8px 10px;background:linear-gradient(180deg,#f6e3a0,var(--a-border));color:#1b1306;font-weight:800;border-radius:4px;outline:2px solid var(--a-border);outline-offset:2px;font-size:15px;}
-.ann-body{text-align:left;color:var(--a-text);padding:4px;word-wrap:break-word;}
-.ann-body a{color:var(--a-accent);font-weight:700;}
-.ann-btn{display:block;margin:14px 0 4px;padding:12px;border-radius:12px;background:linear-gradient(180deg,#f6e3a0,var(--a-border));color:#1b1306;font-weight:800;font-size:15px;text-decoration:none;box-shadow:0 3px 0 rgba(0,0,0,.35);}
 .btn-success{background:var(--success);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .settings-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
 .settings-title{font-size:15px;font-weight:800;margin-bottom:4px;}
@@ -705,17 +684,6 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 
 <div class="table-wrap" style="padding:16px;">
 <div style="font-weight:800;margin-bottom:10px;">New Announcement</div>
-<div style="font-size:13px;font-weight:700;margin-bottom:6px;">Card Style</div>
-<div class="ann-style-row" id="ann-style-row">
-  <button type="button" class="ann-style-opt sel" data-style="1" onclick="selectAnnStyle(1)"><span class="ann-sw ann-s1"></span>Royal Green</button>
-  <button type="button" class="ann-style-opt" data-style="2" onclick="selectAnnStyle(2)"><span class="ann-sw ann-s2"></span>Midnight Gold</button>
-  <button type="button" class="ann-style-opt" data-style="3" onclick="selectAnnStyle(3)"><span class="ann-sw ann-s3"></span>Royal Purple</button>
-  <button type="button" class="ann-style-opt" data-style="4" onclick="selectAnnStyle(4)"><span class="ann-sw ann-s4"></span>Ocean Blue</button>
-  <button type="button" class="ann-style-opt" data-style="5" onclick="selectAnnStyle(5)"><span class="ann-sw ann-s5"></span>Ruby Red</button>
-  <button type="button" class="ann-style-opt" data-style="6" onclick="selectAnnStyle(6)"><span class="ann-sw ann-s6"></span>Sunset Orange</button>
-</div>
-<input type="text" class="settings-input ann-field" id="ann-title-input" placeholder="Title (optional) e.g. Important Update" maxlength="60">
-<input type="text" class="settings-input ann-field" id="ann-banner-input" placeholder="Banner line (optional) e.g. New Community Group" maxlength="80">
 <div class="ann-toolbar">
   <button type="button" onclick="annExec('bold')"><b>B</b></button>
   <button type="button" onclick="annExec('italic')"><i>I</i></button>
@@ -735,11 +703,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 <div class="ann-editor" id="ann-editor" contenteditable="true" style="background:#0e2a1f;"></div>
 
-<div style="margin-top:14px;">
-  <input type="text" class="settings-input ann-field" id="ann-btn-label" placeholder="Button label (optional) e.g. WhatsApp Group" maxlength="40">
-  <input type="text" class="settings-input ann-field" id="ann-btn-link" placeholder="Button link (optional) e.g. https://chat.whatsapp.com/...">
-</div>
 <div class="ann-bg-row">
+  <span style="font-size:13px;font-weight:700;">Card Background:</span>
+  <input type="color" id="ann-bg-color" value="#0e2a1f" onchange="document.getElementById('ann-editor').style.background=this.value">
   <button class="btn btn-save" onclick="postAnnouncement()" style="margin-left:auto;">Post Announcement</button>
 </div>
 </div>
@@ -2640,28 +2606,6 @@ async function saveSupportContactNumber() {
 // ============================================================
 // ANNOUNCEMENTS
 // ============================================================
-function annCardHtml(a) {
-  const st = [1,2,3,4,5,6].includes(Number(a.style)) ? Number(a.style) : 1;
-  let h = '<div class="ann-card ann-s' + st + '"><div class="ann-brand">WEA</div>';
-  if (a.title) h += '<div class="ann-title">' + escapeHtml(a.title) + '</div>';
-  if (a.banner) h += '<div class="ann-banner">' + escapeHtml(a.banner) + '</div>';
-  h += '<div class="ann-body">' + (a.html || '') + '</div>';
-  if (a.btnLink) {
-    let link = String(a.btnLink).trim();
-    if (!/^https?:\/\//i.test(link)) link = 'https://' + link;
-    h += '<a class="ann-btn" href="' + escapeHtml(link) + '" target="_blank" rel="noopener">' + escapeHtml(a.btnLabel || 'Open') + '</a>';
-  }
-  return h + '</div>';
-}
-
-const annStyleBg = { 1:'#0f4a33', 2:'#2a2013', 3:'#472384', 4:'#14509a', 5:'#7a1629', 6:'#9a4510' };
-let annSelectedStyle = 1;
-function selectAnnStyle(n) {
-  annSelectedStyle = n;
-  document.querySelectorAll('#ann-style-row .ann-style-opt').forEach(b => b.classList.toggle('sel', Number(b.dataset.style) === n));
-  document.getElementById('ann-editor').style.background = annStyleBg[n];
-}
-
 function annExec(cmd, value) {
   document.getElementById('ann-editor').focus();
   document.execCommand(cmd, false, value || null);
@@ -2678,7 +2622,8 @@ async function loadAnnouncementsAdmin() {
   if (!ids.length) { listEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">No active announcements.</div>'; return; }
   listEl.innerHTML = ids.map(id => {
   const a = data[id];
-  return '<div class="ann-list-card"><div style="max-height:360px;overflow:auto;border-radius:12px;margin-bottom:10px;">' + annCardHtml(a) + '</div><button class="btn btn-danger" onclick="deleteAnnouncement(\'' + id + '\')">Delete</button></div>';
+  const bg = a.bgColor || '#0e2a1f';
+  return '<div class="ann-list-card"><div class="ann-list-preview" style="background:' + bg + ';">' + (a.html || '') + '</div><button class="btn btn-danger" onclick="deleteAnnouncement(\'' + id + '\')">Delete</button></div>';
   }).join('');
   } catch (e) {
   listEl.innerHTML = '<div style="color:#f87171;">Failed to load announcements.</div>';
@@ -2689,20 +2634,16 @@ async function postAnnouncement() {
   const editor = document.getElementById('ann-editor');
   const html = editor.innerHTML.trim();
   if (!html || html === '<br>') { toast('Write an announcement first', '#f87171'); return; }
-  const style = annSelectedStyle;
-  const title = document.getElementById('ann-title-input').value.trim();
-  const banner = document.getElementById('ann-banner-input').value.trim();
-  const btnLabel = document.getElementById('ann-btn-label').value.trim();
-  const btnLink = document.getElementById('ann-btn-link').value.trim();
+  const bgColor = document.getElementById('ann-bg-color').value;
 
   const snap = await db.ref('announcements').get();
   const data = snap.val() || {};
   if (Object.keys(data).length >= 3) { toast('Max 3 announcements active. Delete one first.', '#f87171'); return; }
 
-  await db.ref('announcements').push({ html, style, bgColor: annStyleBg[style], title, banner, btnLabel, btnLink, createdAt: Date.now() });
+  await db.ref('announcements').push({ html, bgColor, createdAt: Date.now() });
   editor.innerHTML = '';
-  ['ann-title-input','ann-banner-input','ann-btn-label','ann-btn-link'].forEach(id => { document.getElementById(id).value = ''; });
-  selectAnnStyle(1);
+  document.getElementById('ann-bg-color').value = '#0e2a1f';
+  editor.style.background = '#0e2a1f';
   toast('Announcement posted');
   loadAnnouncementsAdmin();
 }
