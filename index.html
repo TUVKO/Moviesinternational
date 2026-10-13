@@ -1051,7 +1051,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="faq-category">Deposits &amp; Withdrawals</div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>What deposit methods are available?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">Easy Pay (MTN/Airtel Mobile Money) is fully automated. Superior Recharge and Bank transfer are available as alternative methods.</div>
+<div class="faq-answer">Deposits are available through Superior Recharge and Bank transfer.</div>
 </div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>How long do withdrawals take?</span><span class="faq-chevron">›</span></div>
@@ -1111,10 +1111,6 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="dash-section" id="sec-deposit">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Deposit</div><div class="inner-sub">Choose a deposit method</div></div><button class="link-back-btn" style="margin-left:auto;padding:6px 12px;border:1px solid var(--border);border-radius:8px;width:auto;" onclick="openHistoryFiltered('Deposit')">Records</button></div>
 <div class="section">
-<div class="deposit-method-card" onclick="selectDepositMethod('easypay')">
-<div class="deposit-method-name">Easy Pay</div>
-<div class="deposit-method-sub">Mobile Money — MTN / Airtel</div>
-</div>
 <div class="deposit-method-card" onclick="selectDepositMethod('superior')">
 <div class="deposit-method-name">Superior Recharge</div>
 <div class="deposit-method-sub">Alternative recharge method</div>
@@ -1221,7 +1217,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="dep-comingsoon-title">Coming Soon</div><div class="inner-sub">This method isn't available yet</div></div></div>
 <div class="section">
 <div class="action-card" style="text-align:center;">
-<div style="font-size:15px;color:var(--muted);margin-bottom:16px;">This deposit method is coming soon. Please use Easy Pay for now.</div>
+<div style="font-size:15px;color:var(--muted);margin-bottom:16px;">This deposit method is coming soon. Please use Superior Recharge for now.</div>
   <button class="green-btn" onclick="switchTab('deposit')">Back to Methods</button>
 </div>
 </div>
@@ -3774,7 +3770,9 @@ function renderLuckySpinWheel() {
   if (seg.type === 'image' && seg.imageData) {
   overlays += `<image href="${seg.imageData}" x="${(lx - 16).toFixed(2)}" y="${(ly - 16).toFixed(2)}" width="32" height="32" transform="rotate(${midAngle} ${lx.toFixed(2)} ${ly.toFixed(2)})" style="pointer-events:none;"></image>`;
   } else if (seg.type === 'cash') {
-  overlays += `<text x="${lx.toFixed(2)}" y="${ly.toFixed(2)}" fill="#fff" font-size="11" font-weight="800" text-anchor="middle" dominant-baseline="middle" transform="rotate(${midAngle} ${lx.toFixed(2)} ${ly.toFixed(2)})" style="pointer-events:none;">${fmt(seg.cashAmount || 0)}</text>`;
+  const sx = cx + 30 * Math.sin(midRad);
+  const sy = cy - 30 * Math.cos(midRad);
+  overlays += `<text x="${sx.toFixed(2)}" y="${sy.toFixed(2)}" fill="#fff" font-size="9" font-weight="800" text-anchor="start" dominant-baseline="middle" transform="rotate(${midAngle - 90} ${sx.toFixed(2)} ${sy.toFixed(2)})" style="pointer-events:none;">${fmt(seg.cashAmount || 0)}</text>`;
   }
   }
     
