@@ -442,10 +442,10 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 </div>
 
-  <!-- MANUAL DEPOSITS (Superior Recharge) -->
+  <!-- MANUAL DEPOSITS (Superior Recharge + TIXAN PAY) -->
 <div class="page" id="pg-manual-deposits">
 <div class="page-title">Manual Deposits</div>
-<div class="page-sub">Superior Recharge submissions — verify and approve or reject</div>
+<div class="page-sub">Superior Recharge and TIXAN PAY submissions — verify and approve or reject. Pending requests cannot be deleted.</div>
 <div class="stats-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
 <div class="stat-card"><div class="stat-card-label">Pending</div><div class="stat-card-val gold" id="md-stat-pending">0</div></div>
 <div class="stat-card"><div class="stat-card-label">Approved</div><div class="stat-card-val emerald" id="md-stat-approved">0</div></div>
@@ -750,6 +750,8 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Withdrawal Amount Options (comma-separated UGX)</span><input type="text" class="f-input" id="with-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000"><button class="btn btn-save" onclick="saveWithdrawPresets()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — MTN Number</span><input type="text" class="f-input" id="sup-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorMtn()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
+<div class="settings-row"><span class="settings-label">TIXAN PAY — MTN Number</span><input type="text" class="f-input" id="tix-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="tix-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveTixanMtn()">Save</button></div>
+<div class="settings-row"><span class="settings-label">TIXAN PAY — Airtel Number</span><input type="text" class="f-input" id="tix-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="tix-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveTixanAirtel()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support Contact Number (for Save Contact)</span><input type="text" class="f-input" id="support-contact-number-input" style="width:280px;" placeholder="+2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportContactNumber()">Save</button></div>
@@ -948,6 +950,10 @@ let allSettings = {
   superiorMtnName: '',
   superiorAirtelNumber: '',
   superiorAirtelName: '',
+  tixanMtnNumber: '',
+  tixanMtnName: '',
+  tixanAirtelNumber: '',
+  tixanAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
   supportContactNumber: '',
@@ -1971,9 +1977,35 @@ async function toggleLock(key, lock) {
   toast(lock ? 'User locked' : 'User unlocked', lock ? '#f87171' : undefined);
 }
 
+// ============================================================
+// PENDING-PROTECTION: pending deposits / withdrawals can never be deleted
+// ============================================================
+async function getPendingCounts(userKey) {
+  const [mdSnap, wdSnap] = await Promise.all([
+  db.ref('manualDeposits').get(),
+  db.ref('pendingWithdrawals').get()
+  ]);
+  const md = mdSnap.val() || {};
+  const wd = wdSnap.val() || {};
+  const mine = (v) => !userKey || v.userId === userKey || safeKey(v.username || '') === userKey;
+  const deposits = Object.values(md).filter(v => v && v.status === 'pending' && mine(v)).length;
+  const withdrawals = Object.values(wd).filter(v => v && v.status === 'pending' && mine(v)).length;
+  return { deposits, withdrawals };
+}
+
+function pendingBlockMessage(c) {
+  const parts = [];
+  if (c.deposits) parts.push(c.deposits + ' pending deposit' + (c.deposits === 1 ? '' : 's'));
+  if (c.withdrawals) parts.push(c.withdrawals + ' pending withdrawal' + (c.withdrawals === 1 ? '' : 's'));
+  return 'Blocked: ' + parts.join(' and ') + '. Approve or reject ' + (c.deposits + c.withdrawals === 1 ? 'it' : 'them') + ' first.';
+}
+
 async function deleteUser(key) {
   const user = allUsers[key];
   const label = user ? (user.fullName || user.username || key) : key;
+  let counts;
+  try { counts = await getPendingCounts(key); } catch (e) { toast('Could not check pending requests — delete cancelled', '#f87171'); return; }
+  if (counts.deposits || counts.withdrawals) { toast(pendingBlockMessage(counts), '#f87171'); return; }
   const confirmed = await confirmAction('Delete User?', 'Delete user "' + label + '"? This cannot be undone.');
   if (confirmed) {
   await db.ref('users/' + key).remove();
@@ -2064,12 +2096,14 @@ function renderAdminTransactions() {
   <td class="mono">${amountStr}</td>
   <td class="mono" style="font-size:10px;max-width:120px;word-break:break-all;">${tx.reference || '—'}</td>
   <td><span style="font-size:11px;font-weight:700;color:${statusColor};">${statusText}</span></td>
-  <td><button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">Delete</button></td>
+  <td>${(tx.status === 'successful' || tx.status === 'failed') ? `<button class="btn btn-delete" onclick="deleteAdmTx('${tx.key}')">Delete</button>` : '<span style="font-size:10px;color:var(--muted);">Locked</span>'}</td>
 </tr>`;
   }).join('');
 }
 
 async function deleteAdmTx(key) {
+  const t = allAdminTransactions[key];
+  if (t && t.status !== 'successful' && t.status !== 'failed') { toast('Pending transactions cannot be deleted. Approve or reject first.', '#f87171'); return; }
   const confirmed = await confirmAction('Delete Transaction?', 'Delete this admin transaction? This cannot be undone.');
   if (!confirmed) return;
   try {
@@ -2136,11 +2170,11 @@ function renderManualDepositsTable() {
   <td><strong>${v.username || '—'}</strong></td>
   <td class="mono">${v.registeredPhone || '—'}</td>
   <td class="mono">${v.senderPhone || '—'}</td>
-  <td>${networkLabel}</td>
+  <td>${networkLabel}<br><span style="font-size:10px;font-weight:700;color:var(--accent);">${v.method === 'tixan' ? 'TIXAN PAY' : 'Superior'}</span></td>
   <td class="mono" style="font-size:11px;">${v.companyNumber || '—'}<br><span style="color:var(--muted);">${v.companyName || ''}</span></td>
   <td class="mono" style="color:var(--success);font-weight:800;">${fmt(v.amount)}</td>
-  <td class="mono" style="font-size:11px;">${v.tid || '—'}</td>
-  <td style="max-width:180px;font-size:11px;color:var(--muted);word-break:break-word;">${v.rawMessage || '—'}</td>
+  <td class="mono" style="font-size:11px;">${v.method === 'tixan' ? ('Paid from:<br>' + (v.paidFrom || '—')) : (v.tid || '—')}</td>
+  <td style="max-width:180px;font-size:11px;color:var(--muted);word-break:break-word;">${v.method === 'tixan' ? 'TIXAN PAY — no SMS' : (v.rawMessage || '—')}</td>
   <td><span style="font-size:11px;font-weight:700;color:${sc};">${si}</span></td>
   <td style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</td>
 </tr>`;
@@ -2165,9 +2199,9 @@ async function approveManualDeposit(reqKey) {
   totalCreditedLifetime: firebase.database.ServerValue.increment(dep.amount || 0),
   ['transactions/' + txKey]: {
   type: 'Deposit',
-  method: 'superior',
+  method: dep.method === 'tixan' ? 'tixan' : 'superior',
   amount: dep.amount,
-  note: `Superior Recharge approved (TID: ${dep.tid || 'N/A'})`,
+  note: dep.method === 'tixan' ? `TIXAN PAY approved (Paid from: ${dep.paidFrom || 'N/A'})` : `Superior Recharge approved (TID: ${dep.tid || 'N/A'})`,
   date: dateStr(),
   status: 'completed'
   }
@@ -2192,7 +2226,7 @@ async function rejectManualDeposit(reqKey) {
   if (dep.txKey && dep.userId) {
   await db.ref('users/' + dep.userId + '/transactions/' + dep.txKey).update({
   status: 'failed',
-  note: 'Superior Recharge rejected'
+  note: dep.method === 'tixan' ? 'TIXAN PAY rejected' : 'Superior Recharge rejected'
   });
   }
   toast('Deposit rejected for ' + dep.username);
@@ -2467,6 +2501,14 @@ function loadSettingsUI() {
   if (supAirtelNum) supAirtelNum.value = s.superiorAirtelNumber || '';
   const supAirtelName = document.getElementById('sup-airtel-name-input');
   if (supAirtelName) supAirtelName.value = s.superiorAirtelName || '';
+  const tixMtnNum = document.getElementById('tix-mtn-number-input');
+  if (tixMtnNum) tixMtnNum.value = s.tixanMtnNumber || '';
+  const tixMtnName = document.getElementById('tix-mtn-name-input');
+  if (tixMtnName) tixMtnName.value = s.tixanMtnName || '';
+  const tixAirtelNum = document.getElementById('tix-airtel-number-input');
+  if (tixAirtelNum) tixAirtelNum.value = s.tixanAirtelNumber || '';
+  const tixAirtelName = document.getElementById('tix-airtel-name-input');
+  if (tixAirtelName) tixAirtelName.value = s.tixanAirtelName || '';
   const depTaxInp = document.getElementById('dep-tax-input');
   if (depTaxInp) depTaxInp.value = s.depositTaxPercent != null ? s.depositTaxPercent : 3;
   const supportWaInp = document.getElementById('support-whatsapp-input');
@@ -2580,6 +2622,22 @@ async function saveSuperiorAirtel() {
   if (!number || !name) { toast('Enter both Airtel number and name', '#f87171'); return; }
   await db.ref('settings').update({ superiorAirtelNumber: number, superiorAirtelName: name });
   toast('Airtel details saved');
+}
+
+async function saveTixanMtn() {
+  const number = document.getElementById('tix-mtn-number-input').value.trim();
+  const name = document.getElementById('tix-mtn-name-input').value.trim();
+  if (!number || !name) { toast('Enter both MTN number and name', '#f87171'); return; }
+  await db.ref('settings').update({ tixanMtnNumber: number, tixanMtnName: name });
+  toast('TIXAN PAY MTN details saved');
+}
+
+async function saveTixanAirtel() {
+  const number = document.getElementById('tix-airtel-number-input').value.trim();
+  const name = document.getElementById('tix-airtel-name-input').value.trim();
+  if (!number || !name) { toast('Enter both Airtel number and name', '#f87171'); return; }
+  await db.ref('settings').update({ tixanAirtelNumber: number, tixanAirtelName: name });
+  toast('TIXAN PAY Airtel details saved');
 }
 
 async function saveDepositTax() {
@@ -2720,6 +2778,9 @@ async function lockLuckySpin(lock) {
 }
 
 async function deleteAllUsers() {
+  let counts;
+  try { counts = await getPendingCounts(null); } catch (e) { toast('Could not check pending requests — delete cancelled', '#f87171'); return; }
+  if (counts.deposits || counts.withdrawals) { toast(pendingBlockMessage(counts), '#f87171'); return; }
   const confirmed = await confirmAction('DELETE ALL USERS?', 'Are you absolutely sure? This cannot be undone.');
   if (confirmed) {
   const users = Object.values(allUsers);
@@ -2731,6 +2792,9 @@ async function deleteAllUsers() {
 }
 
 async function deleteAllData() {
+  let counts;
+  try { counts = await getPendingCounts(null); } catch (e) { toast('Could not check pending requests — delete cancelled', '#f87171'); return; }
+  if (counts.deposits || counts.withdrawals) { toast(pendingBlockMessage(counts), '#f87171'); return; }
   const confirmed = await confirmAction('DELETE ALL DATA?', 'This will wipe everything! This cannot be undone. Are you 100% sure?');
   if (confirmed) {
   const users = Object.values(allUsers);

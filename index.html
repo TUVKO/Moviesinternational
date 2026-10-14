@@ -866,7 +866,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <button class="profile-menu-btn" onclick="switchTab('myteam')">Team</button>
 <button class="profile-menu-btn" onclick="switchTab('missed-commission')">Missed Commission</button>
 <button class="profile-menu-btn" onclick="switchTab('about')">About</button>
-<button class="profile-menu-btn" onclick="openSupportWhatsapp()" style="position:relative;">Support<span id="support-unread-dot-btn" style="display:none;position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:#f87171;"></span></button>
+<button class="profile-menu-btn" onclick="openSupportChat()" style="position:relative;">Support<span id="support-unread-dot-btn" style="display:none;position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:#f87171;"></span></button>
 <button class="profile-menu-btn" onclick="switchTab('faq')">FAQ</button>
 <button class="profile-menu-btn" onclick="startAppDownload()">App Download</button>
 <button class="profile-menu-btn" onclick="doLogout()">Exit</button>
@@ -984,7 +984,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 <div id="support-followup" style="display:none;">
 <div class="chat-bubble-user" id="support-user-choice"></div>
-<div class="chat-bubble-bot">Got it! You can keep chatting with us right here, or jump to WhatsApp.</div>
+<div class="chat-bubble-bot" id="support-bot-reply">Got it! You can keep chatting with us right here, or jump to WhatsApp.</div>
   <button class="green-btn" onclick="openSupportWhatsapp()">Chat us on WhatsApp</button>
   <button class="link-back-btn" onclick="resetSupportChat()">Start over</button>
 
@@ -1051,7 +1051,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="faq-category">Deposits &amp; Withdrawals</div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>What deposit methods are available?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">Deposits are available through Superior Recharge and Bank transfer.</div>
+<div class="faq-answer">Deposits are available through Superior Recharge, TIXAN PAY and Bank transfer.</div>
 </div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>How long do withdrawals take?</span><span class="faq-chevron">›</span></div>
@@ -1118,6 +1118,10 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="deposit-method-card" onclick="selectDepositMethod('bank')">
 <div class="deposit-method-name">Add through Bank</div>
 <div class="deposit-method-sub">Bank transfer deposit</div>
+</div>
+<div class="deposit-method-card" onclick="selectDepositMethod('tixan')">
+<div class="deposit-method-name">TIXAN PAY</div>
+<div class="deposit-method-sub">Mobile money deposit</div>
 </div>
 </div>
 </div>
@@ -1194,6 +1198,61 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 </div>
 
+  <!-- Deposit: TIXAN PAY Phone + Network -->
+<div class="dash-section" id="sec-deposit-tixan-phone">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">TIXAN PAY</div><div class="inner-sub">Enter your phone number and network</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="deposit-note">Depositing <strong id="tix-phone-amount-display">UGX 0</strong> to your General Account.</div>
+<div class="field-group">
+  <label class="field-label">Your Mobile Money Phone Number</label>
+<div class="phone-prefix-wrap">
+<div class="phone-prefix-badge">+256</div>
+  <input type="tel" id="tix-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
+</div>
+<div class="field-hint">9 digits starting with 7</div>
+<div class="field-error" id="tix-phone-err">Enter 9 digits starting with 7</div>
+</div>
+<div class="field-group">
+  <label class="field-label">Select Network</label>
+  <div class="network-toggle">
+  <button type="button" class="network-btn" id="net-btn-tix-mtn" onclick="selectTixanNetwork('mtn')">MTN</button>
+  <button type="button" class="network-btn" id="net-btn-tix-airtel" onclick="selectTixanNetwork('airtel')">Airtel</button>
+  </div>
+<div class="field-error" id="tix-network-err">Please select a network</div>
+</div>
+  <button class="green-btn" onclick="continueTixanPhone()">CONTINUE</button>
+  <button class="link-back-btn" onclick="switchTab('deposit-amount')">Back</button>
+</div>
+</div>
+</div>
+
+  <!-- Deposit: TIXAN PAY Payment Instructions -->
+<div class="dash-section" id="sec-deposit-tixan-instructions">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Send Payment</div><div class="inner-sub">Follow the steps below</div></div></div>
+<div class="section">
+<div class="action-card">
+<div class="deposit-note" style="margin-bottom:14px;">Send <strong id="tix-instr-amount">UGX 0</strong> on <strong id="tix-instr-network">MTN</strong> to the number below.</div>
+<div class="stat-box" style="text-align:center;margin-bottom:14px;">
+<div class="stat-label">Send To</div>
+<div class="stat-value" id="tix-instr-number" style="color:var(--accent);">—</div>
+<div style="font-size:12px;color:var(--muted);margin-top:4px;">Registered Name: <strong id="tix-instr-name" style="color:var(--text);">—</strong></div>
+</div>
+<div class="field-group">
+  <label class="field-label">Number you used to pay</label>
+<div class="phone-prefix-wrap">
+<div class="phone-prefix-badge">+256</div>
+  <input type="tel" id="tix-paid-phone" placeholder="7XXXXXXXX" maxlength="9" oninput="depPhoneInput(this)">
+</div>
+<div class="field-hint">The number the money was sent from — 9 digits starting with 7</div>
+<div class="field-error" id="tix-paid-err">Enter 9 digits starting with 7</div>
+</div>
+  <button class="green-btn" id="tix-confirm-btn" onclick="confirmTixanPayment()">CONFIRM</button>
+  <button class="link-back-btn" onclick="switchTab('deposit-tixan-phone')">Back</button>
+</div>
+</div>
+</div>
+
   <!-- Deposit: Easy Pay Phone Entry -->
 <div class="dash-section" id="sec-deposit-phone">
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">Easy Pay</div><div class="inner-sub">Enter your mobile money number</div></div></div>
@@ -1261,7 +1320,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="nav-item" onclick="switchTab('profile')" style="position:relative;"><span class="nav-icon" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg><span id="support-unread-dot-nav" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;border-radius:50%;background:#f87171;border:1.5px solid var(--bg);"></span></span><span class="nav-label">ME</span></div>
 </nav>
 
-<div class="floating-support-btn" id="floating-support-btn" onclick="openSupportWhatsapp()">
+<div class="floating-support-btn" id="floating-support-btn" onclick="openSupportChat()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 0 1 18 0v5a3 3 0 0 1-3 3h-1v-7h4"/><path d="M3 16v-5h4v7H6a3 3 0 0 1-3-3z"/><path d="M8 21c1.5 1 3 1 5 1"/></svg>
 </div>
 </div>
@@ -1827,6 +1886,23 @@ function selectSupportTopic(topic) {
   document.getElementById('support-options').style.display = 'none';
   document.getElementById('support-followup').style.display = 'block';
   document.getElementById('support-user-choice').textContent = topic;
+  const choiceEl = document.getElementById('support-user-choice');
+  if (choiceEl) choiceEl.style.display = '';
+  const botEl = document.getElementById('support-bot-reply');
+  if (botEl) botEl.textContent = 'Got it! You can keep chatting with us right here, or jump to WhatsApp.';
+  markSupportAsSeen(Date.now());
+  setSupportBadgeVisible(false);
+  startSupportChatListener();
+}
+
+function openSupportChat() {
+  switchTab('support');
+  document.getElementById('support-options').style.display = 'none';
+  document.getElementById('support-followup').style.display = 'block';
+  const choiceEl = document.getElementById('support-user-choice');
+  if (choiceEl) choiceEl.style.display = 'none';
+  const botEl = document.getElementById('support-bot-reply');
+  if (botEl) botEl.textContent = "Hi! Type your message below and we'll reply right here.";
   markSupportAsSeen(Date.now());
   setSupportBadgeVisible(false);
   startSupportChatListener();
@@ -2054,6 +2130,10 @@ let settingsData = {
   superiorMtnName: '',
   superiorAirtelNumber: '',
   superiorAirtelName: '',
+  tixanMtnNumber: '',
+  tixanMtnName: '',
+  tixanAirtelNumber: '',
+  tixanAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
   supportContactNumber: '',
@@ -4414,7 +4494,7 @@ function renderHistory() {
   
   function getTxStatusLabel(tx) {
   const status = tx.status;
-  if (tx.type === 'Deposit' && tx.method === 'superior') {
+  if (tx.type === 'Deposit' && (tx.method === 'superior' || tx.method === 'tixan')) {
   if (status === 'pending') return 'In the queue';
   if (status === 'completed') return 'Validated';
   return 'Stalled';
@@ -4574,7 +4654,7 @@ let selectedDepositAmount = 0;
 
 function selectDepositMethod(method) {
   selectedDepositMethod = method;
-  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', bank: 'Add through Bank' };
+  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', tixan: 'TIXAN PAY', bank: 'Add through Bank' };
   const titleEl = document.getElementById('dep-amount-title');
   if (titleEl) titleEl.textContent = names[method] || 'Select Amount';
   const amtInput = document.getElementById('dep-amount');
@@ -4667,6 +4747,15 @@ function confirmDepositAmount() {
   document.getElementById('net-btn-airtel').classList.remove('selected');
   document.getElementById('sup-phone').value = '';
   switchTab('deposit-superior-phone');
+  } else if (selectedDepositMethod === 'tixan') {
+  const tixDisplayEl = document.getElementById('tix-phone-amount-display');
+  if (tixDisplayEl) tixDisplayEl.textContent = fmt(amount);
+  tixanNetwork = null;
+  document.getElementById('net-btn-tix-mtn').classList.remove('selected');
+  document.getElementById('net-btn-tix-airtel').classList.remove('selected');
+  document.getElementById('tix-phone').value = '';
+  clearErrors('tix-phone-err', 'tix-network-err');
+  switchTab('deposit-tixan-phone');
   } else {
   const names = { bank: 'Add through Bank' };
   const csTitle = document.getElementById('dep-comingsoon-title');
@@ -4776,6 +4865,102 @@ async function confirmSuperiorPayment() {
   switchTab('home');
   } catch (error) {
   console.error('Manual deposit submit error:', error);
+  showBanner('Failed to submit. Please try again.');
+  }
+  btn.disabled = false;
+  btn.textContent = 'CONFIRM';
+}
+
+// ============================================================
+// TIXAN PAY
+// ============================================================
+let tixanNetwork = null;
+let tixanPhone = '';
+
+function selectTixanNetwork(net) {
+  tixanNetwork = net;
+  document.getElementById('net-btn-tix-mtn').classList.toggle('selected', net === 'mtn');
+  document.getElementById('net-btn-tix-airtel').classList.toggle('selected', net === 'airtel');
+  clearErrors('tix-network-err');
+}
+
+function continueTixanPhone() {
+  clearErrors('tix-phone-err', 'tix-network-err');
+  const phoneDigits = document.getElementById('tix-phone').value.trim();
+  if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
+  setErr('tix-phone-err', true, 'Enter 9 digits starting with 7');
+  return;
+  }
+  if (!tixanNetwork) {
+  setErr('tix-network-err', true, 'Please select a network');
+  return;
+  }
+  tixanPhone = '+256' + phoneDigits;
+
+  const companyNumber = tixanNetwork === 'mtn' ? (settingsData.tixanMtnNumber || 'Not set yet') : (settingsData.tixanAirtelNumber || 'Not set yet');
+  const companyName = tixanNetwork === 'mtn' ? (settingsData.tixanMtnName || '—') : (settingsData.tixanAirtelName || '—');
+
+  document.getElementById('tix-instr-amount').textContent = fmt(selectedDepositAmount);
+  document.getElementById('tix-instr-network').textContent = tixanNetwork === 'mtn' ? 'MTN' : 'Airtel';
+  document.getElementById('tix-instr-number').textContent = companyNumber;
+  document.getElementById('tix-instr-name').textContent = companyName;
+  document.getElementById('tix-paid-phone').value = phoneDigits;
+  clearErrors('tix-paid-err');
+
+  switchTab('deposit-tixan-instructions');
+}
+
+async function confirmTixanPayment() {
+  clearErrors('tix-paid-err');
+  const paidDigits = document.getElementById('tix-paid-phone').value.trim();
+  if (!paidDigits || paidDigits.length !== 9 || !paidDigits.startsWith('7')) {
+  setErr('tix-paid-err', true, 'Enter 9 digits starting with 7');
+  return;
+  }
+  const paidFrom = '+256' + paidDigits;
+
+  const btn = document.getElementById('tix-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+
+  const companyNumber = tixanNetwork === 'mtn' ? (settingsData.tixanMtnNumber || '') : (settingsData.tixanAirtelNumber || '');
+  const companyName = tixanNetwork === 'mtn' ? (settingsData.tixanMtnName || '') : (settingsData.tixanAirtelName || '');
+
+  const reqKey = 'mdep_' + Date.now();
+  const txKey = 'tx_dep_' + Date.now();
+  const record = {
+  username: currentUsername,
+  userId: safeKey(currentUsername),
+  registeredPhone: currentUser?.phone || '—',
+  senderPhone: tixanPhone,
+  paidFrom: paidFrom,
+  method: 'tixan',
+  network: tixanNetwork,
+  companyNumber: companyNumber,
+  companyName: companyName,
+  amount: selectedDepositAmount,
+  tid: '',
+  rawMessage: '',
+  date: dateStr(),
+  status: 'pending',
+  txKey: txKey
+  };
+
+  try {
+  await db.ref('manualDeposits/' + reqKey).set(record);
+  await db.ref('users/' + safeKey(currentUsername) + '/transactions/' + txKey).set({
+  type: 'Deposit',
+  method: 'tixan',
+  amount: selectedDepositAmount,
+  note: 'TIXAN PAY submitted for review',
+  date: dateStr(),
+  status: 'pending'
+  });
+  sendAdminNotification('manual_deposit', currentUsername, selectedDepositAmount, `TIXAN PAY submitted — Paid from: ${paidFrom}`);
+  showPopup('Submitted!', 'Your payment has been submitted for review. It will be added to your General Account once approved.', 'success');
+  switchTab('home');
+  } catch (error) {
+  console.error('TIXAN PAY submit error:', error);
   showBanner('Failed to submit. Please try again.');
   }
   btn.disabled = false;
@@ -5346,6 +5531,8 @@ const tabMap = {
   'deposit-amount': 'sec-deposit-amount',
   'deposit-superior-phone': 'sec-deposit-superior-phone',
   'deposit-superior-instructions': 'sec-deposit-superior-instructions',
+  'deposit-tixan-phone': 'sec-deposit-tixan-phone',
+  'deposit-tixan-instructions': 'sec-deposit-tixan-instructions',
   'deposit-phone': 'sec-deposit-phone',
   'deposit-comingsoon': 'sec-deposit-comingsoon',
   withdraw: 'sec-withdraw',
