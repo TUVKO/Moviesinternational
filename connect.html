@@ -127,6 +127,42 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .ann-bg-row{display:flex;align-items:center;gap:10px;margin-top:14px;}
 .ann-list-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
 .ann-list-preview{max-height:120px;overflow:hidden;border-radius:8px;padding:12px;margin-bottom:10px;color:#fff;font-size:12px;}
+
+/* Announcement styles (20) */
+.annx{position:relative;border-radius:16px;padding:18px 14px 16px;margin-bottom:16px;color:var(--ink);background:var(--bg);box-shadow:0 4px 14px rgba(0,0,0,.35);overflow:hidden;font-size:14px;line-height:1.6;box-sizing:border-box;}
+.annx:last-child{margin-bottom:0;}
+.annx-brand{text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:22px;letter-spacing:3px;color:var(--brand);margin-bottom:8px;text-shadow:0 2px 6px rgba(0,0,0,.35);}
+.annx-title{margin:6px -8px 14px;padding:10px 22px;background:var(--rb);color:var(--ri);text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:19px;line-height:1.25;text-transform:uppercase;box-shadow:0 3px 8px rgba(0,0,0,.28);clip-path:polygon(0 0,100% 0,calc(100% - 12px) 50%,100% 100%,0 100%,12px 50%);}
+.annx-body{word-wrap:break-word;overflow-wrap:anywhere;}
+.annx-body .ann-hl{color:var(--hl);font-weight:800;text-decoration:underline;}
+.annx-foot{margin-top:14px;text-align:center;font-family:Georgia,serif;font-weight:700;font-size:10.5px;opacity:.85;}
+.ann-style-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+.ann-style-thumb{height:58px;border-radius:10px;background:var(--bg);color:var(--ink);font-size:9.5px;font-weight:700;line-height:1.15;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:6px 4px 4px;border:2px solid transparent;cursor:pointer;text-align:center;}
+.ann-style-thumb i{display:block;width:80%;height:8px;border-radius:3px;background:var(--rb);border:1px solid rgba(255,255,255,.25);}
+.ann-style-thumb.sel{border-color:#fff;box-shadow:0 0 0 2px #22c55e;}
+.annst-1{--bg:linear-gradient(180deg,#a8a416,#2f8f2f 45%,#0b4d1d);--ink:#0d1f0d;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#d11a1a;--brand:#ffffff;}
+.annst-2{--bg:linear-gradient(180deg,#0c3b2e,#071f18);--ink:#eef4f0;--rb:linear-gradient(180deg,#f6ebc2,#d9c07a);--ri:#12332a;--hl:#ffd86b;--brand:#ffffff;}
+.annst-3{--bg:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 3px,transparent 3px 6px),linear-gradient(180deg,#d2b273,#b38d4a);--ink:#fffaf0;--rb:transparent;--ri:#ffffff;--hl:#a80f14;--brand:#ffffff;}
+.annst-4{--bg:radial-gradient(circle at 10% 6%,#f5c542 0 7px,transparent 8px),radial-gradient(circle at 92% 14%,#f5c542 0 9px,transparent 10px),radial-gradient(circle at 6% 92%,#f5c542 0 8px,transparent 9px),radial-gradient(circle at 94% 88%,#f5c542 0 6px,transparent 7px),linear-gradient(180deg,#0d2b1a,#04120a);--ink:#eef6ee;--rb:transparent;--ri:#f7c52e;--hl:#ffd24a;--brand:#ffffff;}
+.annst-5{--bg:linear-gradient(180deg,#0b2a6f,#061a45);--ink:#eef3ff;--rb:linear-gradient(180deg,#6db4ff,#2b6fd6);--ri:#ffffff;--hl:#7fe9ff;--brand:#ffffff;}
+.annst-6{--bg:linear-gradient(180deg,#3b0f66,#1d0735);--ink:#f6ecff;--rb:linear-gradient(180deg,#cd96ff,#8a3fd6);--ri:#ffffff;--hl:#ffd1ff;--brand:#ffffff;}
+.annst-7{--bg:linear-gradient(180deg,#7a0d1c,#3b0610);--ink:#fff0f0;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#ffd86b;--brand:#ffffff;}
+.annst-8{--bg:linear-gradient(180deg,#1a1a1a,#050505);--ink:#eeeeee;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#f5c542;--brand:#f5c542;}
+.annst-9{--bg:linear-gradient(180deg,#0b6b73,#053a40);--ink:#effffe;--rb:linear-gradient(180deg,#86eae6,#2bb3ad);--ri:#022a2c;--hl:#fff3a0;--brand:#ffffff;}
+.annst-10{--bg:linear-gradient(180deg,#ff8a3d,#b83a0a);--ink:#ffffff;--rb:linear-gradient(180deg,#fff1d0,#ffd08a);--ri:#5a2000;--hl:#fff59a;--brand:#ffffff;}
+.annst-11{--bg:linear-gradient(180deg,#ff7fb0,#c2185b);--ink:#ffffff;--rb:linear-gradient(180deg,#ffffff,#ffd9e8);--ri:#7a0f3a;--hl:#fff3a0;--brand:#ffffff;}
+.annst-12{--bg:linear-gradient(180deg,#e4e9ee,#9aa6b2);--ink:#1c2630;--rb:linear-gradient(180deg,#3b4756,#1f2933);--ri:#ffffff;--hl:#b3141a;--brand:#1f2933;}
+.annst-13{--bg:linear-gradient(180deg,#0a0a1f,#18003f);--ink:#e8ecff;--rb:transparent;--ri:#55ffff;--hl:#ff4df0;--brand:#55ffff;}
+.annst-14{--bg:linear-gradient(180deg,#fbf4e4,#efe0bd);--ink:#3a2a10;--rb:linear-gradient(180deg,#8a2323,#5e1212);--ri:#ffffff;--hl:#a40e1a;--brand:#5e1212;}
+.annst-15{--bg:linear-gradient(180deg,#b87333,#6b3a12);--ink:#ffffff;--rb:linear-gradient(180deg,#ffdba8,#e0a35a);--ri:#3a1d00;--hl:#fff1b0;--brand:#ffffff;}
+.annst-16{--bg:linear-gradient(180deg,#b7e34a,#4a9a14);--ink:#10300a;--rb:linear-gradient(180deg,#14532d,#0b3a1d);--ri:#eaffc0;--hl:#b00020;--brand:#10300a;}
+.annst-17{--bg:linear-gradient(180deg,#5ab4ff,#0b3d91);--ink:#ffffff;--rb:linear-gradient(180deg,#ffffff,#dbeeff);--ri:#0b3d91;--hl:#ffe14d;--brand:#ffffff;}
+.annst-18{--bg:linear-gradient(180deg,#5b1230,#2a0615);--ink:#fdeef3;--rb:linear-gradient(180deg,#f3dcae,#d3b070);--ri:#3a1020;--hl:#ffd86b;--brand:#ffffff;}
+.annst-19{--bg:linear-gradient(135deg,#0f2027,#2c5364 40%,#6a3093 70%,#ff6a88);--ink:#ffffff;--rb:rgba(255,255,255,.22);--ri:#ffffff;--hl:#fff58a;--brand:#ffffff;}
+.annst-20{--bg:linear-gradient(180deg,#1f3d1f,#0d200d);--ink:#f1f7e8;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#ffe27a;--brand:#f5d36a;}
+.annst-3 .annx-title,.annst-4 .annx-title,.annst-13 .annx-title{clip-path:none;box-shadow:none;background:transparent;}
+.annst-13{box-shadow:0 0 0 1px #55ffff,0 0 18px rgba(85,255,255,.45);}
+.annst-20{box-shadow:0 0 0 2px #e0b84a,0 4px 14px rgba(0,0,0,.35);}
 .btn-success{background:var(--success);color:#fff;padding:10px 24px;font-size:13px;font-weight:700;border:none;}
 .settings-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
 .settings-title{font-size:15px;font-weight:800;margin-bottom:4px;}
@@ -485,12 +521,21 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 </div>
 <div id="support-chat-thread-view" style="display:none;">
-  <button class="btn btn-edit" onclick="closeSupportChatThread()" style="margin-bottom:12px;">Back to list</button>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+  <button class="btn btn-edit" onclick="closeSupportChatThread()">Back to list</button>
+  <button class="btn btn-delete" onclick="clearActiveSupportChat()">Clear chat</button>
+  </div>
 <div class="table-wrap" style="padding:16px;">
 <div id="sc-thread-name" style="font-weight:800;color:var(--accent);margin-bottom:4px;"></div>
 <div id="sc-thread-phone" style="font-size:12px;color:var(--muted);margin-bottom:16px;"></div>
   <div id="sc-thread-messages" style="max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+<div id="sc-img-preview" style="display:none;margin-bottom:10px;position:relative;width:96px;">
+  <img id="sc-img-thumb" style="width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--border);">
+  <button type="button" onclick="clearAdminChatImage()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;">✕</button>
+</div>
+<input type="file" id="sc-img-file" accept="image/*" style="display:none;" onchange="pickAdminChatImage(this)">
 <div style="display:flex;gap:8px;">
+  <button type="button" class="btn btn-edit" onclick="document.getElementById('sc-img-file').click()" style="font-size:16px;">📎</button>
   <input type="text" id="sc-reply-input" placeholder="Type a reply..." class="f-input" style="flex:1;" onkeydown="if(event.key==='Enter')sendAdminSupportReply()">
   <button class="btn btn-save" onclick="sendAdminSupportReply()">Send</button>
 </div>
@@ -684,6 +729,12 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 
 <div class="table-wrap" style="padding:16px;">
 <div style="font-weight:800;margin-bottom:10px;">New Announcement</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+  <input type="text" class="f-input" id="ann-brand" maxlength="20" value="WEA" placeholder="Header text (e.g. WEA)" style="width:150px;" oninput="annUpdatePreview()">
+  <input type="text" class="f-input" id="ann-title" maxlength="70" placeholder="Title (shown in the banner)" style="flex:1;min-width:200px;" oninput="annUpdatePreview()">
+</div>
+<div style="font-size:13px;font-weight:700;">Appearance style: <span id="ann-style-name" style="color:var(--accent);"></span></div>
+<div class="ann-style-grid" id="ann-style-grid"></div>
 <div class="ann-toolbar">
   <button type="button" onclick="annExec('bold')"><b>B</b></button>
   <button type="button" onclick="annExec('italic')"><i>I</i></button>
@@ -700,12 +751,14 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <button type="button" onclick="annExec('justifyLeft')">⬅</button>
   <button type="button" onclick="annExec('justifyCenter')">⬌</button>
   <button type="button" onclick="annExec('justifyRight')">➡</button>
+  <button type="button" onclick="annHighlight()" title="Highlight selected text (amounts)">Highlight</button>
 </div>
-<div class="ann-editor" id="ann-editor" contenteditable="true" style="background:#0e2a1f;"></div>
+<div class="ann-editor" id="ann-editor" contenteditable="true" style="background:#0e2a1f;" oninput="annUpdatePreview()"></div>
+<input type="text" class="f-input" id="ann-footer" maxlength="120" placeholder="Footer line (optional)" style="width:100%;margin-top:10px;" oninput="annUpdatePreview()">
+<div style="font-size:13px;font-weight:700;margin:14px 0 8px;">Preview</div>
+<div id="ann-preview"></div>
 
 <div class="ann-bg-row">
-  <span style="font-size:13px;font-weight:700;">Card Background:</span>
-  <input type="color" id="ann-bg-color" value="#0e2a1f" onchange="document.getElementById('ann-editor').style.background=this.value">
   <button class="btn btn-save" onclick="postAnnouncement()" style="margin-left:auto;">Post Announcement</button>
 </div>
 </div>
@@ -748,10 +801,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Streak Bonus (UGX)</span><div class="ugx-group"><span class="ugx-label">UGX</span><input type="number" class="ugx-input" id="streak-bonus-input" min="100" step="100" placeholder="1000"></div><button class="btn btn-save" onclick="saveStreakBonus()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Amount Presets (comma-separated UGX)</span><input type="text" class="f-input" id="dep-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000,200000,500000"><button class="btn btn-save" onclick="saveDepositPresets()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Withdrawal Amount Options (comma-separated UGX)</span><input type="text" class="f-input" id="with-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000"><button class="btn btn-save" onclick="saveWithdrawPresets()">Save</button></div>
-<div class="settings-row"><span class="settings-label">Superior Recharge — MTN Number</span><input type="text" class="f-input" id="sup-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorMtn()">Save</button></div>
-<div class="settings-row"><span class="settings-label">Superior Recharge — Airtel Number</span><input type="text" class="f-input" id="sup-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="sup-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveSuperiorAirtel()">Save</button></div>
-<div class="settings-row"><span class="settings-label">TIXAN PAY — MTN Number</span><input type="text" class="f-input" id="tix-mtn-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="tix-mtn-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveTixanMtn()">Save</button></div>
-<div class="settings-row"><span class="settings-label">TIXAN PAY — Airtel Number</span><input type="text" class="f-input" id="tix-airtel-number-input" style="width:200px;" placeholder="07XXXXXXXX"><input type="text" class="f-input" id="tix-airtel-name-input" style="width:180px;" placeholder="Recipient Name"><button class="btn btn-save" onclick="saveTixanAirtel()">Save</button></div>
+<div class="settings-row" style="display:block;"><span class="settings-label" style="display:block;margin-bottom:10px;">Company Deposit Accounts (up to 10) — used by Superior Recharge and TIXAN PAY. Users get the next account for their network each time they deposit.</span><div id="company-accounts-list"></div><button class="btn btn-save" style="margin-top:10px;" onclick="saveCompanyAccounts()">Save All Accounts</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support Contact Number (for Save Contact)</span><input type="text" class="f-input" id="support-contact-number-input" style="width:280px;" placeholder="+2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportContactNumber()">Save</button></div>
@@ -950,10 +1000,6 @@ let allSettings = {
   superiorMtnName: '',
   superiorAirtelNumber: '',
   superiorAirtelName: '',
-  tixanMtnNumber: '',
-  tixanMtnName: '',
-  tixanAirtelNumber: '',
-  tixanAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
   supportContactNumber: '',
@@ -2173,12 +2219,21 @@ function renderManualDepositsTable() {
   <td>${networkLabel}<br><span style="font-size:10px;font-weight:700;color:var(--accent);">${v.method === 'tixan' ? 'TIXAN PAY' : 'Superior'}</span></td>
   <td class="mono" style="font-size:11px;">${v.companyNumber || '—'}<br><span style="color:var(--muted);">${v.companyName || ''}</span></td>
   <td class="mono" style="color:var(--success);font-weight:800;">${fmt(v.amount)}</td>
-  <td class="mono" style="font-size:11px;">${v.method === 'tixan' ? ('Paid from:<br>' + (v.paidFrom || '—')) : (v.tid || '—')}</td>
-  <td style="max-width:180px;font-size:11px;color:var(--muted);word-break:break-word;">${v.method === 'tixan' ? 'TIXAN PAY — no SMS' : (v.rawMessage || '—')}</td>
+  <td class="mono" style="font-size:11px;">${v.method === 'tixan' ? ('Paid from:<br>' + (v.paidFrom || '—')) : ((v.tid || '—') + (isDuplicateTid(v) ? '<br><span style="color:#f87171;font-weight:800;">DUPLICATE TID</span>' : ''))}</td>
+  <td style="max-width:180px;font-size:11px;color:var(--muted);word-break:break-word;">${v.method === 'tixan' ? 'TIXAN PAY — no SMS' : ((v.nameMatched === true ? '<span style="color:var(--success);font-weight:700;">Name matched</span><br>' : (v.nameMatched === false ? '<span style="color:var(--gold);font-weight:700;">Name not in SMS</span><br>' : '')) + (v.rawMessage || '—'))}</td>
   <td><span style="font-size:11px;font-weight:700;color:${sc};">${si}</span></td>
   <td style="display:flex;gap:6px;flex-wrap:wrap;">${actions}</td>
 </tr>`;
   }).join('');
+}
+
+function isDuplicateTid(v) {
+  if (!v || !v.tid || v.method === 'tixan') return false;
+  let n = 0;
+  for (const o of Object.values(allManualDeposits)) {
+  if (o && o.method !== 'tixan' && o.tid === v.tid) n++;
+  }
+  return n > 1;
 }
 
 async function approveManualDeposit(reqKey) {
@@ -2236,6 +2291,96 @@ async function rejectManualDeposit(reqKey) {
   }
 }
 
+
+// ---------- Chat pictures ----------
+function compressChatImage(file) {
+  return new Promise((resolve, reject) => {
+  if (!file || !/^image\//.test(file.type)) { reject(new Error('Please choose an image file.')); return; }
+  const reader = new FileReader();
+  reader.onerror = () => reject(new Error('Could not read the image.'));
+  reader.onload = () => {
+  const img = new Image();
+  img.onerror = () => reject(new Error('Could not open that image.'));
+  img.onload = () => {
+  const attempt = (maxSide, quality) => {
+  const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(img.width * scale));
+  canvas.height = Math.max(1, Math.round(img.height * scale));
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', quality);
+  };
+  let out = attempt(900, 0.7);
+  if (out.length > 300000) out = attempt(700, 0.55);
+  if (out.length > 450000) { reject(new Error('That picture is too large. Try a smaller one.')); return; }
+  resolve(out);
+  };
+  img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+  });
+}
+
+function chatImageHtml(m) {
+  if (!m || typeof m.image !== 'string' || m.image.indexOf('data:image/') !== 0) return '';
+  return '<img src="' + m.image + '" onclick="openChatImage(this.src)" style="max-width:100%;max-height:260px;border-radius:10px;display:block;margin:0 0 4px;cursor:pointer;">';
+}
+
+function openChatImage(src) {
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:12px;';
+  ov.onclick = () => ov.remove();
+  const im = document.createElement('img');
+  im.src = src;
+  im.style.cssText = 'max-width:100%;max-height:100%;border-radius:8px;';
+  ov.appendChild(im);
+  document.body.appendChild(ov);
+}
+
+let adminPendingImage = null;
+
+async function pickAdminChatImage(inputEl) {
+  const file = inputEl.files && inputEl.files[0];
+  inputEl.value = '';
+  if (!file) return;
+  try {
+  adminPendingImage = await compressChatImage(file);
+  document.getElementById('sc-img-thumb').src = adminPendingImage;
+  document.getElementById('sc-img-preview').style.display = 'block';
+  } catch (e) {
+  adminPendingImage = null;
+  toast(e.message || 'Could not use that picture', '#f87171');
+  }
+}
+
+function clearAdminChatImage() {
+  adminPendingImage = null;
+  const p = document.getElementById('sc-img-preview');
+  if (p) p.style.display = 'none';
+}
+
+async function clearSupportChat(userKey) {
+  const chat = allSupportChats[userKey];
+  const label = chat ? (chat.userFullName || 'this user') : 'this user';
+  const confirmed = await confirmAction('Clear chat?', 'Permanently delete the whole conversation with "' + label + '"? It will disappear from the user\'s site too. This cannot be undone.');
+  if (!confirmed) return;
+  try {
+  await db.ref('supportChats/' + userKey).remove();
+  if (activeSupportChatUser === userKey) closeSupportChatThread();
+  toast('Chat cleared');
+  } catch (e) {
+  console.error('Clear chat error:', e);
+  toast('Failed to clear chat', '#f87171');
+  }
+}
+
+function clearActiveSupportChat() {
+  if (activeSupportChatUser) clearSupportChat(activeSupportChatUser);
+}
+
 function updateSupportChatBadge() {
   const count = Object.values(allSupportChats).filter(c => c.unreadForAdmin).length;
   const badge = document.getElementById('support-chat-nav-badge');
@@ -2256,7 +2401,7 @@ function renderSupportChatList() {
   listBody.innerHTML = entries.map(([userKey, chat]) => {
   const msgs = Object.values(chat.messages || {}).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
   const lastMsg = msgs[msgs.length - 1];
-  const preview = lastMsg ? (lastMsg.sender === 'admin' ? 'You: ' : '') + lastMsg.text : '';
+  const preview = lastMsg ? (lastMsg.sender === 'admin' ? 'You: ' : '') + ((lastMsg.image ? '📷 Photo' : '') + (lastMsg.image && lastMsg.text ? ' ' : '') + (lastMsg.text || '')) : '';
   const unreadDot = chat.unreadForAdmin ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--warn);flex-shrink:0;"></span>' : '';
   return `<div class="sc-list-row" onclick="openSupportChatThread('${userKey}')">
   ${unreadDot}
@@ -2265,6 +2410,7 @@ function renderSupportChatList() {
   <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(preview)}</div>
 </div>
   <div style="font-size:10px;color:var(--muted);">${chat.userPhone || ''}</div>
+  <button class="btn btn-delete" style="padding:4px 10px;font-size:11px;" onclick="event.stopPropagation();clearSupportChat('${userKey}')">Clear</button>
 </div>`;
   }).join('');
 }
@@ -2285,7 +2431,7 @@ function closeSupportChatThread() {
 
 function renderSupportChatThread(userKey) {
   const chat = allSupportChats[userKey];
-  if (!chat) return;
+  if (!chat) { closeSupportChatThread(); return; }
   const nameEl = document.getElementById('sc-thread-name');
   const phoneEl = document.getElementById('sc-thread-phone');
   const msgsEl = document.getElementById('sc-thread-messages');
@@ -2301,7 +2447,7 @@ function renderSupportChatThread(userKey) {
   : m.chanceClaim
   ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🎯 CHANCE CLAIM</div>`
   : '';
-  return `<div class="${cls}">${badge}${escapeHtml(m.text)}</div>`;
+  return `<div class="${cls}">${badge}${chatImageHtml(m)}${m.text ? escapeHtml(m.text) : ''}</div>`;
   }).join('');
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
@@ -2310,7 +2456,8 @@ async function sendAdminSupportReply() {
   const input = document.getElementById('sc-reply-input');
   if (!input || !activeSupportChatUser) return;
   const text = input.value.trim();
-  if (!text) return;
+  const imageData = adminPendingImage;
+  if (!text && !imageData) return;
   
   const userKey = activeSupportChatUser;
   const msgId = 'msg_' + Date.now();
@@ -2319,14 +2466,15 @@ async function sendAdminSupportReply() {
   lastMessageAt: Date.now(),
   lastSender: 'admin',
   unreadForAdmin: false,
-  [`messages/${msgId}`]: {
+  [`messages/${msgId}`]: Object.assign({
   sender: 'admin',
   text: text,
   timestamp: Date.now(),
   date: dateStr()
-  }
+  }, imageData ? { image: imageData } : {})
   });
   input.value = '';
+  clearAdminChatImage();
   } catch (error) {
   console.error('Error sending admin reply:', error);
   toast('Failed to send reply', '#f87171');
@@ -2493,22 +2641,7 @@ function loadSettingsUI() {
   if (presetsInp) presetsInp.value = (s.depositPresets || [10000, 20000, 50000, 100000, 200000, 500000]).join(',');
   const withPresetsInp = document.getElementById('with-presets-input');
   if (withPresetsInp) withPresetsInp.value = (s.withdrawAmounts || [10000, 20000, 50000, 100000]).join(',');
-  const supMtnNum = document.getElementById('sup-mtn-number-input');
-  if (supMtnNum) supMtnNum.value = s.superiorMtnNumber || '';
-  const supMtnName = document.getElementById('sup-mtn-name-input');
-  if (supMtnName) supMtnName.value = s.superiorMtnName || '';
-  const supAirtelNum = document.getElementById('sup-airtel-number-input');
-  if (supAirtelNum) supAirtelNum.value = s.superiorAirtelNumber || '';
-  const supAirtelName = document.getElementById('sup-airtel-name-input');
-  if (supAirtelName) supAirtelName.value = s.superiorAirtelName || '';
-  const tixMtnNum = document.getElementById('tix-mtn-number-input');
-  if (tixMtnNum) tixMtnNum.value = s.tixanMtnNumber || '';
-  const tixMtnName = document.getElementById('tix-mtn-name-input');
-  if (tixMtnName) tixMtnName.value = s.tixanMtnName || '';
-  const tixAirtelNum = document.getElementById('tix-airtel-number-input');
-  if (tixAirtelNum) tixAirtelNum.value = s.tixanAirtelNumber || '';
-  const tixAirtelName = document.getElementById('tix-airtel-name-input');
-  if (tixAirtelName) tixAirtelName.value = s.tixanAirtelName || '';
+  renderCompanyAccountsUI(s);
   const depTaxInp = document.getElementById('dep-tax-input');
   if (depTaxInp) depTaxInp.value = s.depositTaxPercent != null ? s.depositTaxPercent : 3;
   const supportWaInp = document.getElementById('support-whatsapp-input');
@@ -2608,36 +2741,42 @@ async function saveWithdrawPresets() {
   toast('Withdrawal amount options saved');
 }
 
-async function saveSuperiorMtn() {
-  const number = document.getElementById('sup-mtn-number-input').value.trim();
-  const name = document.getElementById('sup-mtn-name-input').value.trim();
-  if (!number || !name) { toast('Enter both MTN number and name', '#f87171'); return; }
-  await db.ref('settings').update({ superiorMtnNumber: number, superiorMtnName: name });
-  toast('MTN details saved');
+const COMPANY_SLOTS = 10;
+
+function renderCompanyAccountsUI(s) {
+  const box = document.getElementById('company-accounts-list');
+  if (!box) return;
+  let list = Array.isArray(s.companyAccounts) ? s.companyAccounts : (s.companyAccounts && typeof s.companyAccounts === 'object' ? Object.values(s.companyAccounts) : []);
+  if (!list.length) {
+  if (s.superiorMtnNumber) list.push({ network: 'mtn', number: s.superiorMtnNumber, name: s.superiorMtnName || '' });
+  if (s.superiorAirtelNumber) list.push({ network: 'airtel', number: s.superiorAirtelNumber, name: s.superiorAirtelName || '' });
+  }
+  let html = '';
+  for (let i = 0; i < COMPANY_SLOTS; i++) {
+  const it = list[i] || {};
+  html += `<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px;">
+  <span style="width:22px;font-size:12px;color:var(--muted);">${i + 1}.</span>
+  <select class="f-input" id="ca-net-${i}" style="width:90px;"><option value="mtn"${it.network === 'airtel' ? '' : ' selected'}>MTN</option><option value="airtel"${it.network === 'airtel' ? ' selected' : ''}>Airtel</option></select>
+  <input type="text" class="f-input" id="ca-num-${i}" style="width:150px;" placeholder="07XXXXXXXX" maxlength="10" value="${(it.number || '').replace(/"/g, '')}">
+  <input type="text" class="f-input" id="ca-name-${i}" style="width:170px;" placeholder="Recipient Name" value="${(it.name || '').replace(/"/g, '&quot;')}">
+  </div>`;
+  }
+  box.innerHTML = html;
 }
 
-async function saveSuperiorAirtel() {
-  const number = document.getElementById('sup-airtel-number-input').value.trim();
-  const name = document.getElementById('sup-airtel-name-input').value.trim();
-  if (!number || !name) { toast('Enter both Airtel number and name', '#f87171'); return; }
-  await db.ref('settings').update({ superiorAirtelNumber: number, superiorAirtelName: name });
-  toast('Airtel details saved');
-}
-
-async function saveTixanMtn() {
-  const number = document.getElementById('tix-mtn-number-input').value.trim();
-  const name = document.getElementById('tix-mtn-name-input').value.trim();
-  if (!number || !name) { toast('Enter both MTN number and name', '#f87171'); return; }
-  await db.ref('settings').update({ tixanMtnNumber: number, tixanMtnName: name });
-  toast('TIXAN PAY MTN details saved');
-}
-
-async function saveTixanAirtel() {
-  const number = document.getElementById('tix-airtel-number-input').value.trim();
-  const name = document.getElementById('tix-airtel-name-input').value.trim();
-  if (!number || !name) { toast('Enter both Airtel number and name', '#f87171'); return; }
-  await db.ref('settings').update({ tixanAirtelNumber: number, tixanAirtelName: name });
-  toast('TIXAN PAY Airtel details saved');
+async function saveCompanyAccounts() {
+  const accounts = [];
+  for (let i = 0; i < COMPANY_SLOTS; i++) {
+  const network = document.getElementById('ca-net-' + i).value;
+  const number = document.getElementById('ca-num-' + i).value.trim();
+  const name = document.getElementById('ca-name-' + i).value.trim();
+  if (!number && !name) continue;
+  if (!/^07\d{8}$/.test(number)) { toast('Row ' + (i + 1) + ': number must be 10 digits starting with 07', '#f87171'); return; }
+  if (!name) { toast('Row ' + (i + 1) + ': enter the recipient name', '#f87171'); return; }
+  accounts.push({ network, number, name });
+  }
+  await db.ref('settings/companyAccounts').set(accounts.length ? accounts : null);
+  toast(accounts.length + ' company account' + (accounts.length === 1 ? '' : 's') + ' saved');
 }
 
 async function saveDepositTax() {
@@ -2669,6 +2808,64 @@ function annExec(cmd, value) {
   document.execCommand(cmd, false, value || null);
 }
 
+
+const ANN_STYLE_NAMES = ["Emerald Gold Ribbon", "Royal Green Banner", "Desert Gold Paper", "Coins on Green-Black", "Royal Blue", "Purple Velvet", "Crimson Gold", "Midnight Black Gold", "Ocean Teal", "Sunset Orange", "Rose Pink", "Silver Steel", "Neon Cyber", "Ivory Classic", "Bronze Copper", "Lime Fresh", "Navy Sky", "Wine Burgundy", "Aurora Gradient", "Forest Gold"];
+function annEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderAnnCard(a) {
+  if (!a.styleId) return '<div class="ann-card" style="background:' + (a.bgColor || '#0e2a1f') + ';">' + (a.html || '') + '</div>';
+  return '<div class="annx annst-' + Number(a.styleId) + '">'
+  + (a.brand ? '<div class="annx-brand">' + annEsc(a.brand) + '</div>' : '')
+  + (a.title ? '<div class="annx-title"><span>' + annEsc(a.title) + '</span></div>' : '')
+  + '<div class="annx-body">' + (a.html || '') + '</div>'
+  + (a.footer ? '<div class="annx-foot">' + annEsc(a.footer) + '</div>' : '')
+  + '</div>';
+}
+
+let annSelectedStyle = 1;
+
+function annBuildStyleGrid() {
+  const grid = document.getElementById('ann-style-grid');
+  if (!grid) return;
+  grid.innerHTML = ANN_STYLE_NAMES.map((n, i) => '<div class="ann-style-thumb annst-' + (i + 1) + (annSelectedStyle === i + 1 ? ' sel' : '') + '" onclick="annPickStyle(' + (i + 1) + ')"><i></i><span>' + (i + 1) + '. ' + n + '</span></div>').join('');
+  const nm = document.getElementById('ann-style-name');
+  if (nm) nm.textContent = annSelectedStyle + '. ' + ANN_STYLE_NAMES[annSelectedStyle - 1];
+}
+
+function annPickStyle(n) {
+  annSelectedStyle = n;
+  annBuildStyleGrid();
+  annUpdatePreview();
+}
+
+function annCurrent() {
+  return {
+  styleId: annSelectedStyle,
+  brand: (document.getElementById('ann-brand').value || '').trim(),
+  title: (document.getElementById('ann-title').value || '').trim(),
+  footer: (document.getElementById('ann-footer').value || '').trim(),
+  html: document.getElementById('ann-editor').innerHTML.trim()
+  };
+}
+
+function annUpdatePreview() {
+  const box = document.getElementById('ann-preview');
+  if (!box) return;
+  const cur = annCurrent();
+  const empty = !cur.html || cur.html === '<br>';
+  if (empty && !cur.title) { box.innerHTML = '<div style="color:var(--muted);font-size:12px;">Type a title or message to see the preview.</div>'; return; }
+  box.innerHTML = renderAnnCard(cur);
+}
+
+function annHighlight() {
+  const editor = document.getElementById('ann-editor');
+  editor.focus();
+  const sel = window.getSelection();
+  const txt = sel ? sel.toString() : '';
+  if (!txt) { toast('Select the text to highlight first', '#f87171'); return; }
+  document.execCommand('insertHTML', false, '<span class="ann-hl">' + annEsc(txt) + '</span>');
+  annUpdatePreview();
+}
+
 async function loadAnnouncementsAdmin() {
   const listEl = document.getElementById('ann-admin-list');
   const countEl = document.getElementById('ann-count');
@@ -2680,8 +2877,8 @@ async function loadAnnouncementsAdmin() {
   if (!ids.length) { listEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">No active announcements.</div>'; return; }
   listEl.innerHTML = ids.map(id => {
   const a = data[id];
-  const bg = a.bgColor || '#0e2a1f';
-  return '<div class="ann-list-card"><div class="ann-list-preview" style="background:' + bg + ';">' + (a.html || '') + '</div><button class="btn btn-danger" onclick="deleteAnnouncement(\'' + id + '\')">Delete</button></div>';
+  const inner = a.styleId ? ('<div style="margin-bottom:10px;">' + renderAnnCard(a) + '</div>') : ('<div class="ann-list-preview" style="background:' + (a.bgColor || '#0e2a1f') + ';">' + (a.html || '') + '</div>');
+  return '<div class="ann-list-card">' + inner + '<button class="btn btn-danger" onclick="deleteAnnouncement(\'' + id + '\')">Delete</button></div>';
   }).join('');
   } catch (e) {
   listEl.innerHTML = '<div style="color:#f87171;">Failed to load announcements.</div>';
@@ -2690,18 +2887,19 @@ async function loadAnnouncementsAdmin() {
 
 async function postAnnouncement() {
   const editor = document.getElementById('ann-editor');
-  const html = editor.innerHTML.trim();
-  if (!html || html === '<br>') { toast('Write an announcement first', '#f87171'); return; }
-  const bgColor = document.getElementById('ann-bg-color').value;
+  const cur = annCurrent();
+  const html = cur.html;
+  if ((!html || html === '<br>') && !cur.title) { toast('Write an announcement first', '#f87171'); return; }
 
   const snap = await db.ref('announcements').get();
   const data = snap.val() || {};
   if (Object.keys(data).length >= 3) { toast('Max 3 announcements active. Delete one first.', '#f87171'); return; }
 
-  await db.ref('announcements').push({ html, bgColor, createdAt: Date.now() });
+  await db.ref('announcements').push({ html: (html === '<br>' ? '' : html), styleId: cur.styleId, brand: cur.brand, title: cur.title, footer: cur.footer, createdAt: Date.now() });
   editor.innerHTML = '';
-  document.getElementById('ann-bg-color').value = '#0e2a1f';
-  editor.style.background = '#0e2a1f';
+  document.getElementById('ann-title').value = '';
+  document.getElementById('ann-footer').value = '';
+  annUpdatePreview();
   toast('Announcement posted');
   loadAnnouncementsAdmin();
 }
@@ -3123,7 +3321,7 @@ function showPage(id) {
   if (id === 'pg-datim') renderDatimPlansAdminTable();
   if (id === 'pg-luckyspin') renderLuckySpinAdminPage();
   if (id === 'pg-positions') renderPositionsAdminTable();
-  if (id === 'pg-announcements') loadAnnouncementsAdmin();
+  if (id === 'pg-announcements') { annBuildStyleGrid(); annUpdatePreview(); loadAnnouncementsAdmin(); }
 }
 
 function showTerms() { 

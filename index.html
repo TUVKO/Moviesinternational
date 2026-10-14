@@ -313,6 +313,43 @@ input[type="password"]{padding-right:46px;}
 .ann-card{border-radius:16px;padding:20px 16px;margin-bottom:16px;color:#fff;font-size:14px;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.35);}
 .ann-card:last-child{margin-bottom:0;}
 
+
+/* Announcement styles (20) */
+.annx{position:relative;border-radius:16px;padding:18px 14px 16px;margin-bottom:16px;color:var(--ink);background:var(--bg);box-shadow:0 4px 14px rgba(0,0,0,.35);overflow:hidden;font-size:14px;line-height:1.6;box-sizing:border-box;}
+.annx:last-child{margin-bottom:0;}
+.annx-brand{text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:22px;letter-spacing:3px;color:var(--brand);margin-bottom:8px;text-shadow:0 2px 6px rgba(0,0,0,.35);}
+.annx-title{margin:6px -8px 14px;padding:10px 22px;background:var(--rb);color:var(--ri);text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:900;font-size:19px;line-height:1.25;text-transform:uppercase;box-shadow:0 3px 8px rgba(0,0,0,.28);clip-path:polygon(0 0,100% 0,calc(100% - 12px) 50%,100% 100%,0 100%,12px 50%);}
+.annx-body{word-wrap:break-word;overflow-wrap:anywhere;}
+.annx-body .ann-hl{color:var(--hl);font-weight:800;text-decoration:underline;}
+.annx-foot{margin-top:14px;text-align:center;font-family:Georgia,serif;font-weight:700;font-size:10.5px;opacity:.85;}
+.ann-style-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0;}
+.ann-style-thumb{height:58px;border-radius:10px;background:var(--bg);color:var(--ink);font-size:9.5px;font-weight:700;line-height:1.15;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:6px 4px 4px;border:2px solid transparent;cursor:pointer;text-align:center;}
+.ann-style-thumb i{display:block;width:80%;height:8px;border-radius:3px;background:var(--rb);border:1px solid rgba(255,255,255,.25);}
+.ann-style-thumb.sel{border-color:#fff;box-shadow:0 0 0 2px #22c55e;}
+.annst-1{--bg:linear-gradient(180deg,#a8a416,#2f8f2f 45%,#0b4d1d);--ink:#0d1f0d;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#d11a1a;--brand:#ffffff;}
+.annst-2{--bg:linear-gradient(180deg,#0c3b2e,#071f18);--ink:#eef4f0;--rb:linear-gradient(180deg,#f6ebc2,#d9c07a);--ri:#12332a;--hl:#ffd86b;--brand:#ffffff;}
+.annst-3{--bg:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 3px,transparent 3px 6px),linear-gradient(180deg,#d2b273,#b38d4a);--ink:#fffaf0;--rb:transparent;--ri:#ffffff;--hl:#a80f14;--brand:#ffffff;}
+.annst-4{--bg:radial-gradient(circle at 10% 6%,#f5c542 0 7px,transparent 8px),radial-gradient(circle at 92% 14%,#f5c542 0 9px,transparent 10px),radial-gradient(circle at 6% 92%,#f5c542 0 8px,transparent 9px),radial-gradient(circle at 94% 88%,#f5c542 0 6px,transparent 7px),linear-gradient(180deg,#0d2b1a,#04120a);--ink:#eef6ee;--rb:transparent;--ri:#f7c52e;--hl:#ffd24a;--brand:#ffffff;}
+.annst-5{--bg:linear-gradient(180deg,#0b2a6f,#061a45);--ink:#eef3ff;--rb:linear-gradient(180deg,#6db4ff,#2b6fd6);--ri:#ffffff;--hl:#7fe9ff;--brand:#ffffff;}
+.annst-6{--bg:linear-gradient(180deg,#3b0f66,#1d0735);--ink:#f6ecff;--rb:linear-gradient(180deg,#cd96ff,#8a3fd6);--ri:#ffffff;--hl:#ffd1ff;--brand:#ffffff;}
+.annst-7{--bg:linear-gradient(180deg,#7a0d1c,#3b0610);--ink:#fff0f0;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#ffd86b;--brand:#ffffff;}
+.annst-8{--bg:linear-gradient(180deg,#1a1a1a,#050505);--ink:#eeeeee;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#f5c542;--brand:#f5c542;}
+.annst-9{--bg:linear-gradient(180deg,#0b6b73,#053a40);--ink:#effffe;--rb:linear-gradient(180deg,#86eae6,#2bb3ad);--ri:#022a2c;--hl:#fff3a0;--brand:#ffffff;}
+.annst-10{--bg:linear-gradient(180deg,#ff8a3d,#b83a0a);--ink:#ffffff;--rb:linear-gradient(180deg,#fff1d0,#ffd08a);--ri:#5a2000;--hl:#fff59a;--brand:#ffffff;}
+.annst-11{--bg:linear-gradient(180deg,#ff7fb0,#c2185b);--ink:#ffffff;--rb:linear-gradient(180deg,#ffffff,#ffd9e8);--ri:#7a0f3a;--hl:#fff3a0;--brand:#ffffff;}
+.annst-12{--bg:linear-gradient(180deg,#e4e9ee,#9aa6b2);--ink:#1c2630;--rb:linear-gradient(180deg,#3b4756,#1f2933);--ri:#ffffff;--hl:#b3141a;--brand:#1f2933;}
+.annst-13{--bg:linear-gradient(180deg,#0a0a1f,#18003f);--ink:#e8ecff;--rb:transparent;--ri:#55ffff;--hl:#ff4df0;--brand:#55ffff;}
+.annst-14{--bg:linear-gradient(180deg,#fbf4e4,#efe0bd);--ink:#3a2a10;--rb:linear-gradient(180deg,#8a2323,#5e1212);--ri:#ffffff;--hl:#a40e1a;--brand:#5e1212;}
+.annst-15{--bg:linear-gradient(180deg,#b87333,#6b3a12);--ink:#ffffff;--rb:linear-gradient(180deg,#ffdba8,#e0a35a);--ri:#3a1d00;--hl:#fff1b0;--brand:#ffffff;}
+.annst-16{--bg:linear-gradient(180deg,#b7e34a,#4a9a14);--ink:#10300a;--rb:linear-gradient(180deg,#14532d,#0b3a1d);--ri:#eaffc0;--hl:#b00020;--brand:#10300a;}
+.annst-17{--bg:linear-gradient(180deg,#5ab4ff,#0b3d91);--ink:#ffffff;--rb:linear-gradient(180deg,#ffffff,#dbeeff);--ri:#0b3d91;--hl:#ffe14d;--brand:#ffffff;}
+.annst-18{--bg:linear-gradient(180deg,#5b1230,#2a0615);--ink:#fdeef3;--rb:linear-gradient(180deg,#f3dcae,#d3b070);--ri:#3a1020;--hl:#ffd86b;--brand:#ffffff;}
+.annst-19{--bg:linear-gradient(135deg,#0f2027,#2c5364 40%,#6a3093 70%,#ff6a88);--ink:#ffffff;--rb:rgba(255,255,255,.22);--ri:#ffffff;--hl:#fff58a;--brand:#ffffff;}
+.annst-20{--bg:linear-gradient(180deg,#1f3d1f,#0d200d);--ink:#f1f7e8;--rb:linear-gradient(180deg,#f7d36a,#c8922a);--ri:#3a2400;--hl:#ffe27a;--brand:#f5d36a;}
+.annst-3 .annx-title,.annst-4 .annx-title,.annst-13 .annx-title{clip-path:none;box-shadow:none;background:transparent;}
+.annst-13{box-shadow:0 0 0 1px #55ffff,0 0 18px rgba(85,255,255,.45);}
+.annst-20{box-shadow:0 0 0 2px #e0b84a,0 4px 14px rgba(0,0,0,.35);}
+
 /* Transaction List */
 .tx-table-wrapper{width:100%;overflow-x:auto;border-radius:14px;border:1px solid var(--border);background:var(--surface);}
 .tx-table{width:100%;border-collapse:collapse;font-size:12px;}
@@ -989,7 +1026,13 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
   <button class="link-back-btn" onclick="resetSupportChat()">Start over</button>
 
   <div id="support-chat-thread" style="margin-top:16px;max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+<div id="support-img-preview" style="display:none;margin-top:10px;position:relative;width:96px;">
+  <img id="support-img-thumb" style="width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--border);">
+  <button type="button" onclick="clearSupportImage()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;">✕</button>
+</div>
+<input type="file" id="support-img-file" accept="image/*" style="display:none;" onchange="pickSupportImage(this)">
 <div style="display:flex;gap:8px;margin-top:10px;">
+  <button type="button" onclick="document.getElementById('support-img-file').click()" style="width:42px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;color:var(--text);">📎</button>
   <input type="text" id="support-msg-input" placeholder="Type a message..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;" onkeydown="if(event.key==='Enter')sendSupportMessage()">
   <button class="green-btn" style="width:auto;padding:10px 18px;margin:0;" onclick="sendSupportMessage()">Send</button>
 </div>
@@ -1967,6 +2010,19 @@ function handleSaveContactYes() {
   document.getElementById('savecontact-step3').style.display = 'flex';
 }
 
+
+const ANN_STYLE_NAMES = ["Emerald Gold Ribbon", "Royal Green Banner", "Desert Gold Paper", "Coins on Green-Black", "Royal Blue", "Purple Velvet", "Crimson Gold", "Midnight Black Gold", "Ocean Teal", "Sunset Orange", "Rose Pink", "Silver Steel", "Neon Cyber", "Ivory Classic", "Bronze Copper", "Lime Fresh", "Navy Sky", "Wine Burgundy", "Aurora Gradient", "Forest Gold"];
+function annEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function renderAnnCard(a) {
+  if (!a.styleId) return '<div class="ann-card" style="background:' + (a.bgColor || '#0e2a1f') + ';">' + (a.html || '') + '</div>';
+  return '<div class="annx annst-' + Number(a.styleId) + '">'
+  + (a.brand ? '<div class="annx-brand">' + annEsc(a.brand) + '</div>' : '')
+  + (a.title ? '<div class="annx-title"><span>' + annEsc(a.title) + '</span></div>' : '')
+  + '<div class="annx-body">' + (a.html || '') + '</div>'
+  + (a.footer ? '<div class="annx-foot">' + annEsc(a.footer) + '</div>' : '')
+  + '</div>';
+}
+
 async function showAnnouncementsPopup() {
   try {
   const snap = await db.ref('announcements').get();
@@ -1976,9 +2032,7 @@ async function showAnnouncementsPopup() {
 
   const scrollEl = document.getElementById('announcement-scroll');
   scrollEl.innerHTML = ids.map(id => {
-  const a = data[id];
-  const bg = a.bgColor || '#0e2a1f';
-  return '<div class="ann-card" style="background:' + bg + ';">' + (a.html || '') + '</div>';
+  return renderAnnCard(data[id]);
   }).join('');
 
   document.getElementById('announcement-overlay').classList.add('open');
@@ -2001,6 +2055,77 @@ function startSupportChatListener() {
   supportChatUnsubscribe = () => ref.off('value', callback);
 }
 
+
+// ---------- Chat pictures ----------
+function compressChatImage(file) {
+  return new Promise((resolve, reject) => {
+  if (!file || !/^image\//.test(file.type)) { reject(new Error('Please choose an image file.')); return; }
+  const reader = new FileReader();
+  reader.onerror = () => reject(new Error('Could not read the image.'));
+  reader.onload = () => {
+  const img = new Image();
+  img.onerror = () => reject(new Error('Could not open that image.'));
+  img.onload = () => {
+  const attempt = (maxSide, quality) => {
+  const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(img.width * scale));
+  canvas.height = Math.max(1, Math.round(img.height * scale));
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', quality);
+  };
+  let out = attempt(900, 0.7);
+  if (out.length > 300000) out = attempt(700, 0.55);
+  if (out.length > 450000) { reject(new Error('That picture is too large. Try a smaller one.')); return; }
+  resolve(out);
+  };
+  img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+  });
+}
+
+function chatImageHtml(m) {
+  if (!m || typeof m.image !== 'string' || m.image.indexOf('data:image/') !== 0) return '';
+  return '<img src="' + m.image + '" onclick="openChatImage(this.src)" style="max-width:100%;max-height:260px;border-radius:10px;display:block;margin:0 0 4px;cursor:pointer;">';
+}
+
+function openChatImage(src) {
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99999;display:flex;align-items:center;justify-content:center;padding:12px;';
+  ov.onclick = () => ov.remove();
+  const im = document.createElement('img');
+  im.src = src;
+  im.style.cssText = 'max-width:100%;max-height:100%;border-radius:8px;';
+  ov.appendChild(im);
+  document.body.appendChild(ov);
+}
+
+let supportPendingImage = null;
+
+async function pickSupportImage(inputEl) {
+  const file = inputEl.files && inputEl.files[0];
+  inputEl.value = '';
+  if (!file) return;
+  try {
+  supportPendingImage = await compressChatImage(file);
+  document.getElementById('support-img-thumb').src = supportPendingImage;
+  document.getElementById('support-img-preview').style.display = 'block';
+  } catch (e) {
+  supportPendingImage = null;
+  showBanner(e.message || 'Could not use that picture.');
+  }
+}
+
+function clearSupportImage() {
+  supportPendingImage = null;
+  const p = document.getElementById('support-img-preview');
+  if (p) p.style.display = 'none';
+}
+
 function renderSupportThread(messages) {
   const thread = document.getElementById('support-chat-thread');
   if (!thread) return;
@@ -2011,7 +2136,7 @@ function renderSupportThread(messages) {
   }
   thread.innerHTML = entries.map(m => {
   const bubbleClass = m.sender === 'admin' ? 'chat-bubble-bot' : 'chat-bubble-user';
-  return `<div class="${bubbleClass}" style="margin-bottom:0;max-width:85%;">${escapeHtml(m.text)}</div>`;
+  return `<div class="${bubbleClass}" style="margin-bottom:0;max-width:85%;">${chatImageHtml(m)}${m.text ? escapeHtml(m.text) : ''}</div>`;
   }).join('');
   thread.scrollTop = thread.scrollHeight;
 }
@@ -2020,7 +2145,8 @@ async function sendSupportMessage() {
   const input = document.getElementById('support-msg-input');
   if (!input) return;
   const text = input.value.trim();
-  if (!text || !currentUsername) return;
+  const imageData = supportPendingImage;
+  if ((!text && !imageData) || !currentUsername) return;
   const userKey = safeKey(currentUsername);
   const msgId = 'msg_' + Date.now();
   const isPrizeClaim = prizeClaimPending;
@@ -2034,6 +2160,7 @@ async function sendSupportMessage() {
   timestamp: Date.now(),
   date: dateStr()
   };
+  if (imageData) messagePayload.image = imageData;
   if (isPrizeClaim) {
   messagePayload.prizeClaim = true;
   messagePayload.prizeName = prizeName;
@@ -2051,6 +2178,7 @@ async function sendSupportMessage() {
   });
   input.value = '';
   input.readOnly = false;
+  clearSupportImage();
   if (isPrizeClaim) {
   prizeClaimPending = false;
   pendingPrizeClaimName = '';
@@ -2130,10 +2258,6 @@ let settingsData = {
   superiorMtnName: '',
   superiorAirtelNumber: '',
   superiorAirtelName: '',
-  tixanMtnNumber: '',
-  tixanMtnName: '',
-  tixanAirtelNumber: '',
-  tixanAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
   supportContactNumber: '',
@@ -4774,7 +4898,7 @@ function selectNetwork(net) {
   clearErrors('sup-network-err');
 }
 
-function continueSuperiorPhone() {
+async function continueSuperiorPhone() {
   clearErrors('sup-phone-err', 'sup-network-err');
   const phoneDigits = document.getElementById('sup-phone').value.trim();
   if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
@@ -4787,8 +4911,9 @@ function continueSuperiorPhone() {
   }
   superiorPhone = '+256' + phoneDigits;
 
-  const companyNumber = selectedNetwork === 'mtn' ? (settingsData.superiorMtnNumber || 'Not set yet') : (settingsData.superiorAirtelNumber || 'Not set yet');
-  const companyName = selectedNetwork === 'mtn' ? (settingsData.superiorMtnName || '—') : (settingsData.superiorAirtelName || '—');
+  superiorAccount = await pickCompanyAccount(selectedNetwork);
+  const companyNumber = superiorAccount.number || 'Not set yet';
+  const companyName = superiorAccount.name || '—';
 
   document.getElementById('sup-instr-amount').textContent = fmt(selectedDepositAmount);
   document.getElementById('sup-instr-network').textContent = selectedNetwork === 'mtn' ? 'MTN' : 'Airtel';
@@ -4798,6 +4923,62 @@ function continueSuperiorPhone() {
   clearErrors('sup-sms-err');
 
   switchTab('deposit-superior-instructions');
+}
+
+// ============================================================
+// COMPANY ACCOUNTS (rotation) + SMS CHECK
+// ============================================================
+let superiorAccount = { number: '', name: '' };
+let tixanAccount = { number: '', name: '' };
+
+function getCompanyAccounts(network) {
+  const raw = settingsData.companyAccounts;
+  let list = Array.isArray(raw) ? raw : (raw && typeof raw === 'object' ? Object.values(raw) : []);
+  list = list.filter(a => a && a.network === network && a.number);
+  if (!list.length) {
+  const num = network === 'mtn' ? settingsData.superiorMtnNumber : settingsData.superiorAirtelNumber;
+  const nm = network === 'mtn' ? settingsData.superiorMtnName : settingsData.superiorAirtelName;
+  if (num) list = [{ network, number: num, name: nm || '' }];
+  }
+  return list;
+}
+
+async function pickCompanyAccount(network) {
+  const list = getCompanyAccounts(network);
+  if (!list.length) return { number: '', name: '' };
+  const prev = Number(currentUser && currentUser.depRot && currentUser.depRot[network]) || 0;
+  const idx = prev % list.length;
+  const acct = list[idx];
+  const next = (idx + 1) % list.length;
+  if (currentUser) currentUser.depRot = { ...(currentUser.depRot || {}), [network]: next };
+  try { await db.ref('users/' + safeKey(currentUsername) + '/depRot/' + network).set(next); } catch (e) { console.warn('rotation save failed', e); }
+  return acct;
+}
+
+function parseDepositSms(message, network, amount, accounts) {
+  const msg = String(message || '');
+  const flat = msg.replace(/[\s\-]/g, '');
+  // Transaction ID: MTN = 11 digits, Airtel = 12 digits
+  const len = network === 'mtn' ? 11 : 12;
+  const accDigits = accounts.map(a => String(a.number || '').replace(/\D/g, ''));
+  let tid = '';
+  const re = new RegExp('(?:^|\\D)(\\d{' + len + '})(?!\\d)', 'g');
+  let m;
+  while ((m = re.exec(msg)) !== null) {
+  const cand = m[1];
+  if (cand.startsWith('256')) continue;
+  if (accDigits.some(d => d && cand.endsWith(d.slice(-9)))) continue;
+  tid = cand; break;
+  }
+  // Amount
+  const nums = (msg.match(/\d[\d,]*(?:\.\d+)?/g) || []).map(t => parseFloat(t.replace(/,/g, '')));
+  const amountOk = nums.some(n => n === Number(amount));
+  // Company number (any saved account for this network)
+  const numberOk = accDigits.some(d => d.length >= 9 && flat.includes(d.slice(-9)));
+  // Name (optional)
+  const names = accounts.map(a => String(a.name || '').trim().toLowerCase()).filter(Boolean);
+  const nameMatched = names.length ? names.some(n => msg.toLowerCase().includes(n)) : null;
+  return { tid, amountOk, numberOk, nameMatched };
 }
 
 function extractTID(message) {
@@ -4823,14 +5004,29 @@ async function confirmSuperiorPayment() {
   setErr('sup-sms-err', true, 'Please paste the confirmation message');
   return;
   }
-  const tid = extractTID(rawMessage);
+  const allAccts = getCompanyAccounts(selectedNetwork);
+  if (superiorAccount.number && !allAccts.some(a => a.number === superiorAccount.number)) allAccts.push({ network: selectedNetwork, number: superiorAccount.number, name: superiorAccount.name });
+  const check = parseDepositSms(rawMessage, selectedNetwork, selectedDepositAmount, allAccts);
+  if (!check.tid) {
+  setErr('sup-sms-err', true, 'Transaction ID not found. Paste the full ' + (selectedNetwork === 'mtn' ? 'MTN' : 'Airtel') + ' confirmation message.');
+  return;
+  }
+  if (!check.amountOk) {
+  setErr('sup-sms-err', true, "The amount in the message doesn't match " + fmt(selectedDepositAmount) + '.');
+  return;
+  }
+  if (!check.numberOk) {
+  setErr('sup-sms-err', true, 'Company number not found in the message. Make sure you paid the number shown above.');
+  return;
+  }
+  const tid = check.tid;
 
   const btn = document.getElementById('sup-confirm-btn');
   btn.disabled = true;
   btn.textContent = 'Submitting...';
 
-  const companyNumber = selectedNetwork === 'mtn' ? (settingsData.superiorMtnNumber || '') : (settingsData.superiorAirtelNumber || '');
-  const companyName = selectedNetwork === 'mtn' ? (settingsData.superiorMtnName || '') : (settingsData.superiorAirtelName || '');
+  const companyNumber = superiorAccount.number || '';
+  const companyName = superiorAccount.name || '';
 
   const reqKey = 'mdep_' + Date.now();
   const txKey = 'tx_dep_' + Date.now();
@@ -4845,6 +5041,7 @@ async function confirmSuperiorPayment() {
   amount: selectedDepositAmount,
   tid: tid,
   rawMessage: rawMessage,
+  nameMatched: check.nameMatched,
   date: dateStr(),
   status: 'pending',
   txKey: txKey
@@ -4884,7 +5081,7 @@ function selectTixanNetwork(net) {
   clearErrors('tix-network-err');
 }
 
-function continueTixanPhone() {
+async function continueTixanPhone() {
   clearErrors('tix-phone-err', 'tix-network-err');
   const phoneDigits = document.getElementById('tix-phone').value.trim();
   if (!phoneDigits || phoneDigits.length !== 9 || !phoneDigits.startsWith('7')) {
@@ -4897,8 +5094,9 @@ function continueTixanPhone() {
   }
   tixanPhone = '+256' + phoneDigits;
 
-  const companyNumber = tixanNetwork === 'mtn' ? (settingsData.tixanMtnNumber || 'Not set yet') : (settingsData.tixanAirtelNumber || 'Not set yet');
-  const companyName = tixanNetwork === 'mtn' ? (settingsData.tixanMtnName || '—') : (settingsData.tixanAirtelName || '—');
+  tixanAccount = await pickCompanyAccount(tixanNetwork);
+  const companyNumber = tixanAccount.number || 'Not set yet';
+  const companyName = tixanAccount.name || '—';
 
   document.getElementById('tix-instr-amount').textContent = fmt(selectedDepositAmount);
   document.getElementById('tix-instr-network').textContent = tixanNetwork === 'mtn' ? 'MTN' : 'Airtel';
@@ -4923,8 +5121,8 @@ async function confirmTixanPayment() {
   btn.disabled = true;
   btn.textContent = 'Submitting...';
 
-  const companyNumber = tixanNetwork === 'mtn' ? (settingsData.tixanMtnNumber || '') : (settingsData.tixanAirtelNumber || '');
-  const companyName = tixanNetwork === 'mtn' ? (settingsData.tixanMtnName || '') : (settingsData.tixanAirtelName || '');
+  const companyNumber = tixanAccount.number || '';
+  const companyName = tixanAccount.name || '';
 
   const reqKey = 'mdep_' + Date.now();
   const txKey = 'tx_dep_' + Date.now();
