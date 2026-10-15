@@ -1746,6 +1746,7 @@ function startRealtimeListeners() {
   if (supportChatsUnsubscribe) supportChatsUnsubscribe();
   supportChatsUnsubscribe = db.ref('supportChats').on('value', (snap) => {
   allSupportChats = snap.val() || {};
+  removeEmptySupportChats();
   renderSupportChatList();
   if (activeSupportChatUser) renderSupportChatThread(activeSupportChatUser);
   updateSupportChatBadge();
@@ -2381,8 +2382,18 @@ function clearActiveSupportChat() {
   if (activeSupportChatUser) clearSupportChat(activeSupportChatUser);
 }
 
+const emptyChatsRemoving = new Set();
+function removeEmptySupportChats() {
+  Object.entries(allSupportChats).forEach(([k, c]) => {
+  const hasMsgs = c && c.messages && Object.keys(c.messages).length;
+  if (hasMsgs || emptyChatsRemoving.has(k)) return;
+  emptyChatsRemoving.add(k);
+  db.ref('supportChats/' + k).remove().catch(() => {}).finally(() => emptyChatsRemoving.delete(k));
+  });
+}
+
 function updateSupportChatBadge() {
-  const count = Object.values(allSupportChats).filter(c => c.unreadForAdmin).length;
+  const count = Object.values(allSupportChats).filter(c => c && c.unreadForAdmin && c.messages && Object.keys(c.messages).length).length;
   const badge = document.getElementById('support-chat-nav-badge');
   if (!badge) return;
   if (count > 0) { badge.textContent = count; badge.style.display = 'inline-flex'; }
@@ -2417,7 +2428,8 @@ function renderSupportChatList() {
 
 function openSupportChatThread(userKey) {
   activeSupportChatUser = userKey;
-  db.ref('supportChats/' + userKey + '/unreadForAdmin').set(false);
+  const openedChat = allSupportChats[userKey];
+  if (openedChat && openedChat.messages && openedChat.unreadForAdmin) db.ref('supportChats/' + userKey + '/unreadForAdmin').set(false);
   document.getElementById('support-chat-list-view').style.display = 'none';
   document.getElementById('support-chat-thread-view').style.display = 'block';
   renderSupportChatThread(userKey);
