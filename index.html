@@ -1174,14 +1174,14 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title" id="dep-amount-title">Select Amount</div><div class="inner-sub">Add funds to your General Account</div></div></div>
 <div class="section">
 <div class="action-card">
-<div class="deposit-note">Minimum deposit: <strong>UGX 10,000</strong>. Funds added to your General Account.</div>
+<div class="deposit-note">Minimum deposit: <strong id="dep-min-note">UGX 61,000</strong>. Funds added to your General Account.</div>
 <div class="field-group">
   <label class="field-label">Quick Select</label>
   <div class="amount-preset-grid" id="dep-preset-grid"></div>
 </div>
 <div class="field-group">
   <label class="field-label">Or Enter Amount (UGX)</label>
-<div class="field-wrap"><input type="number" id="dep-amount" placeholder="Min 10,000" min="10000" oninput="clearDepositPresetSelection()"></div>
+<div class="field-wrap"><input type="number" id="dep-amount" placeholder="Min 61,000" min="61000" oninput="clearDepositPresetSelection()"></div>
 <div class="field-error" id="dep-amount-err">Please check the amount</div>
 </div>
   <button class="green-btn" id="dep-amount-continue-btn" onclick="confirmDepositAmount()">CONTINUE</button>
@@ -2248,7 +2248,7 @@ let settingsData = {
   withdrawLocked: false,
   luckySpinLocked: false,
   withdrawApproval: false,
-  minDeposit: 10000,
+  minDeposit: 61000,
   minWithdraw: 10000,
   marzApiKey: '',
   streakBonus: 1000,
@@ -4789,6 +4789,11 @@ function selectDepositMethod(method) {
 }
 
 function renderDepositPresets() {
+  const minDepUi = settingsData.minDeposit || 61000;
+  const minNote = document.getElementById('dep-min-note');
+  if (minNote) minNote.textContent = fmt(minDepUi);
+  const minInput = document.getElementById('dep-amount');
+  if (minInput) { minInput.min = minDepUi; minInput.placeholder = 'Min ' + Number(minDepUi).toLocaleString('en-US'); }
   const grid = document.getElementById('dep-preset-grid');
   if (!grid) return;
   const presets = settingsData.depositPresets || [10000, 20000, 50000, 100000, 200000, 500000];
@@ -4852,7 +4857,7 @@ function pickWithdrawPreset(amount, btn) {
 
 function confirmDepositAmount() {
   clearErrors('dep-amount-err');
-  const minDep = settingsData.minDeposit || 10000;
+  const minDep = settingsData.minDeposit || 61000;
   const amount = parseInt(document.getElementById('dep-amount').value) || 0;
   if (amount < minDep) {
   setErr('dep-amount-err', true, 'Minimum deposit is ' + fmt(minDep));
@@ -5173,7 +5178,7 @@ async function doDeposit() {
   return;
   }
   const amount = selectedDepositAmount;
-  if (!amount || amount < (settingsData.minDeposit || 10000)) {
+  if (!amount || amount < (settingsData.minDeposit || 61000)) {
   switchTab('deposit-amount');
   return;
   }

@@ -991,7 +991,7 @@ let allSettings = {
   withdrawLocked: false,
   luckySpinLocked: false,
   withdrawApproval: false,
-  minDeposit: 10000,
+  minDeposit: 61000,
   minWithdraw: 10000,
   marzApiKey: '',
   streakBonus: 1000,
@@ -1828,12 +1828,12 @@ function renderDashboard() {
   document.getElementById('d-total-mob').textContent = fmt(totalMob);
   document.getElementById('d-total-videos').textContent = totalVideos;
   document.getElementById('d-locked').textContent = locked;
-  document.getElementById('d-min-deposit').textContent = fmt(allSettings.minDeposit || 10000);
+  document.getElementById('d-min-deposit').textContent = fmt(allSettings.minDeposit || 61000);
   document.getElementById('d-videos-today').textContent = videosToday;
   
   const s = allSettings;
   document.getElementById('pct-summary').innerHTML = `
-<div class="pct-pill">Min Deposit <span>${fmt(s.minDeposit || 10000)}</span></div>
+<div class="pct-pill">Min Deposit <span>${fmt(s.minDeposit || 61000)}</span></div>
 <div class="pct-pill">Streak Bonus <span>${fmt(s.streakBonus || 1000)}</span></div>
 <div class="pct-pill">Withdrawal Charge <span>${s.withdrawCharge || 10}%</span></div>
 <div class="pct-pill">MarzPay API <span style="color:${s.marzApiKey ? 'var(--accent3)' : 'var(--warn)'};">${s.marzApiKey ? 'Set' : 'Not Set'}</span></div>
@@ -2633,7 +2633,7 @@ async function autoExpireStaleWithdrawals() {
 // ============================================================
 function loadSettingsUI() {
   const s = allSettings;
-  document.getElementById('min-deposit-input').value = s.minDeposit || 10000;
+  document.getElementById('min-deposit-input').value = s.minDeposit || 61000;
   document.getElementById('min-withdraw-input').value = s.minWithdraw || 10000;
   document.getElementById('with-charge-input').value = s.withdrawCharge || 10;
   document.getElementById('streak-bonus-input').value = s.streakBonus || 1000;
