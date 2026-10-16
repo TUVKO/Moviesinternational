@@ -20,11 +20,11 @@
   --surface2:#2A2520;
   --surface3:#332C24;
   --border:#3D362C;
-  --accent:#F2B84B;
-  --accent2:#D99A3D;
-  --accent3:#F2B84B;
+  --accent:#fb7185;
+  --accent2:#e11d48;
+  --accent3:#fb7185;
   --warn:#E1584B;
-  --gold:#F2B84B;
+  --gold:#fb7185;
   --text:#F6F1E7;
   --muted:#B8AF9E;
   --table-header:#211D18;
@@ -1469,7 +1469,7 @@ function startLuckySpinListener() {
   });
 }
 
-const LUCKYSPIN_DEFAULT_COLORS = ['#F2B84B', '#5CA378', '#E1584B', '#3B82F6', '#A855F7', '#2DD4BF', '#F97316', '#EC4899', '#84CC16', '#6366F1'];
+const LUCKYSPIN_DEFAULT_COLORS = ['#fb7185', '#5CA378', '#E1584B', '#3B82F6', '#A855F7', '#2DD4BF', '#F97316', '#EC4899', '#84CC16', '#6366F1'];
 
 function renderLuckySpinAdminPage() {
   const tbody = document.getElementById('luckyspin-segments-body');
@@ -1702,6 +1702,75 @@ function renderAdminVideosTable() {
 // ============================================================
 // REALTIME LISTENERS
 // ============================================================
+// ============================================================
+// INSTANT LOADING: saved copy on this device + smarter rendering
+// ============================================================
+const IDB_NAME = 'wea_admin_cache';
+const IDB_STORE = 'kv';
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+  const r = indexedDB.open(IDB_NAME, 1);
+  r.onupgradeneeded = () => r.result.createObjectStore(IDB_STORE);
+  r.onsuccess = () => resolve(r.result);
+  r.onerror = () => reject(r.error);
+  });
+}
+async function idbGet(key) {
+  try {
+  const d = await idbOpen();
+  return await new Promise((resolve) => {
+  const q = d.transaction(IDB_STORE).objectStore(IDB_STORE).get(key);
+  q.onsuccess = () => resolve(q.result);
+  q.onerror = () => resolve(undefined);
+  });
+  } catch (e) { return undefined; }
+}
+async function idbSet(key, value) {
+  try {
+  const d = await idbOpen();
+  d.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).put(value, key);
+  } catch (e) {}
+}
+async function idbClearAll() {
+  try {
+  const d = await idbOpen();
+  d.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).clear();
+  } catch (e) {}
+}
+
+const _gotLive = {};
+const _cacheTimers = {};
+function listenCached(path, handler) {
+  idbGet('cache:' + path).then((v) => {
+  if (_gotLive[path] || v === undefined || v === null) return;
+  try { handler({ val: () => v, exists: () => true }, true); } catch (e) { console.warn('cache paint failed for', path, e); }
+  });
+  const cb = (snap) => {
+  _gotLive[path] = true;
+  handler(snap, false);
+  clearTimeout(_cacheTimers[path]);
+  _cacheTimers[path] = setTimeout(() => idbSet('cache:' + path, snap.val()), 2500);
+  };
+  db.ref(path).on('value', cb);
+  return cb;
+}
+
+const _renderTimers = {};
+function schedRender(key, fn, delay) {
+  clearTimeout(_renderTimers[key]);
+  _renderTimers[key] = setTimeout(fn, delay || 120);
+}
+function pageActive(id) {
+  const el = document.getElementById(id);
+  return !!(el && el.classList.contains('active'));
+}
+let _userCleanupScheduled = false;
+function scheduleUserTxCleanupOnce() {
+  if (_userCleanupScheduled) return;
+  _userCleanupScheduled = true;
+  setTimeout(cleanupOldUserTxHistories, 20000);
+}
+
 function startRealtimeListeners() {
   startVideosListener();
   startLevelsListener();
@@ -1709,55 +1778,66 @@ function startRealtimeListeners() {
   startLuckySpinListener();
   startPositionsListener();
   
-  if (usersUnsubscribe) usersUnsubscribe();
-  usersUnsubscribe = db.ref('users').on('value', (snap) => {
-  allUsers = snap.val() || {};
-  renderDashboard();
-  renderUsersTable();
-  cleanupOldUserTxHistories();
-  });
-  setInterval(cleanupOldUserTxHistories, 5 * 60 * 1000);
-  
+  // Priority data first (badges and counts), the rest right after.
   if (settingsUnsubscribe) settingsUnsubscribe();
-  settingsUnsubscribe = db.ref('settings').on('value', (snap) => {
+  settingsUnsubscribe = listenCached('settings', (snap) => {
   if (snap.exists()) allSettings = snap.val();
-  loadSettingsUI();
-  renderDashboard();
+  schedRender('settings', () => { loadSettingsUI(); if (pageActive('pg-dashboard')) renderDashboard(); });
   });
-  
+
   if (withdrawalsUnsubscribe) withdrawalsUnsubscribe();
-  withdrawalsUnsubscribe = db.ref('pendingWithdrawals').on('value', (snap) => {
+  withdrawalsUnsubscribe = listenCached('pendingWithdrawals', (snap, fromCache) => {
   allWithdrawals = snap.val() || {};
-  renderWithdrawalsStats();
-  renderWithdrawalsTable();
   updateWithdrawalsBadge();
-  autoExpireStaleWithdrawals();
+  schedRender('withdrawals', () => {
+  renderWithdrawalsStats();
+  if (pageActive('pg-withdrawals')) renderWithdrawalsTable();
+  });
+  if (!fromCache) autoExpireStaleWithdrawals();
   });
   setInterval(autoExpireStaleWithdrawals, 10 * 60 * 1000);
 
   if (manualDepositsUnsubscribe) manualDepositsUnsubscribe();
-  manualDepositsUnsubscribe = db.ref('manualDeposits').on('value', (snap) => {
+  manualDepositsUnsubscribe = listenCached('manualDeposits', (snap) => {
   allManualDeposits = snap.val() || {};
-  renderManualDepositsStats();
-  renderManualDepositsTable();
   updateManualDepositsBadge();
+  schedRender('manualDeposits', () => {
+  renderManualDepositsStats();
+  if (pageActive('pg-manual-deposits')) renderManualDepositsTable();
   });
-  
+  });
+
+  setTimeout(() => {
+  if (usersUnsubscribe) usersUnsubscribe();
+  usersUnsubscribe = listenCached('users', (snap, fromCache) => {
+  allUsers = snap.val() || {};
+  schedRender('users', () => {
+  if (pageActive('pg-dashboard')) renderDashboard();
+  if (pageActive('pg-users')) renderUsersTable();
+  });
+  if (!fromCache) scheduleUserTxCleanupOnce();
+  });
+  setInterval(cleanupOldUserTxHistories, 5 * 60 * 1000);
+
   if (supportChatsUnsubscribe) supportChatsUnsubscribe();
-  supportChatsUnsubscribe = db.ref('supportChats').on('value', (snap) => {
+  supportChatsUnsubscribe = listenCached('supportChats', (snap, fromCache) => {
   allSupportChats = snap.val() || {};
-  removeEmptySupportChats();
-  renderSupportChatList();
-  if (activeSupportChatUser) renderSupportChatThread(activeSupportChatUser);
+  if (!fromCache) removeEmptySupportChats();
   updateSupportChatBadge();
+  schedRender('supportChats', () => {
+  if (pageActive('pg-support-chat')) renderSupportChatList();
+  if (activeSupportChatUser) renderSupportChatThread(activeSupportChatUser);
   });
+  });
+
   if (adminTxUnsubscribe) adminTxUnsubscribe();
-  adminTxUnsubscribe = db.ref('adminTransactions').on('value', (snap) => {
+  adminTxUnsubscribe = listenCached('adminTransactions', (snap, fromCache) => {
   allAdminTransactions = snap.val() || {};
-  renderAdminTransactions();
-  cleanupOldAdminTransactions();
+  schedRender('adminTx', () => { if (pageActive('pg-transactions')) renderAdminTransactions(); });
+  if (!fromCache) cleanupOldAdminTransactions();
   });
   setInterval(cleanupOldAdminTransactions, 5 * 60 * 1000);
+  }, 150);
   
   db.ref('stats/totalCredited').on('value', (snap) => {
   const el = document.getElementById('adm-tx-total-credited');
@@ -1777,7 +1857,8 @@ async function cleanupOldAdminTransactions() {
   for (const key in allAdminTransactions) {
   const parts = key.split('_');
   const ts = parseInt(parts[parts.length - 1]);
-  if (!isNaN(ts) && ts < cutoff) {
+  const adminTxStatus = allAdminTransactions[key] && allAdminTransactions[key].status;
+  if (!isNaN(ts) && ts < cutoff && (adminTxStatus === 'successful' || adminTxStatus === 'failed')) {
   updates[key] = null;
   }
   }
@@ -1795,6 +1876,7 @@ async function cleanupOldUserTxHistories() {
   for (const txKey in txs) {
   const tx = txs[txKey];
   if (tx.type !== 'Deposit' && tx.type !== 'Withdrawal') continue;
+  if (tx.status === 'pending' || tx.status === 'processing') continue;
   const parts = txKey.split('_');
   const ts = parseInt(parts[parts.length - 1]);
   if (!isNaN(ts) && ts < cutoff) {
@@ -2325,9 +2407,38 @@ function compressChatImage(file) {
   });
 }
 
-function chatImageHtml(m) {
-  if (!m || typeof m.image !== 'string' || m.image.indexOf('data:image/') !== 0) return '';
-  return '<img src="' + m.image + '" onclick="openChatImage(this.src)" style="max-width:100%;max-height:260px;border-radius:10px;display:block;margin:0 0 4px;cursor:pointer;">';
+const chatImgCache = {};
+function chatImageHtml(m, userKey, msgId) {
+  if (!m) return '';
+  const st = 'max-width:100%;max-height:260px;border-radius:10px;display:block;margin:0 0 4px;cursor:pointer;';
+  if (typeof m.image === 'string' && m.image.indexOf('data:image/') === 0) {
+  return '<img src="' + m.image + '" onclick="openChatImage(this.src)" style="' + st + '">';
+  }
+  if (m.hasImage && userKey && msgId) {
+  const cached = chatImgCache[userKey + '/' + msgId];
+  if (cached) return '<img src="' + cached + '" onclick="openChatImage(this.src)" style="' + st + '">';
+  return '<img data-sup-user="' + userKey + '" data-sup-id="' + msgId + '" alt="Loading picture..." onclick="openChatImage(this.src)" style="' + st + 'min-height:70px;min-width:140px;background:#2a2a2a;color:#9a9a9a;font-size:11px;">';
+  }
+  return '';
+}
+
+async function hydrateChatImages(root) {
+  if (!root) return;
+  const imgs = root.querySelectorAll('img[data-sup-id]');
+  for (const im of imgs) {
+  const uk = im.getAttribute('data-sup-user');
+  const id = im.getAttribute('data-sup-id');
+  const k = uk + '/' + id;
+  try {
+  if (!chatImgCache[k]) {
+  const snap = await db.ref('supportImages/' + uk + '/' + id).get();
+  const v = snap.val();
+  if (typeof v === 'string' && v.indexOf('data:image/') === 0) chatImgCache[k] = v;
+  }
+  if (chatImgCache[k]) { im.src = chatImgCache[k]; im.removeAttribute('data-sup-id'); }
+  else im.alt = 'Picture unavailable';
+  } catch (e) { im.alt = 'Picture unavailable'; }
+  }
 }
 
 function openChatImage(src) {
@@ -2369,7 +2480,7 @@ async function clearSupportChat(userKey) {
   const confirmed = await confirmAction('Clear chat?', 'Permanently delete the whole conversation with "' + label + '"? It will disappear from the user\'s site too. This cannot be undone.');
   if (!confirmed) return;
   try {
-  await db.ref('supportChats/' + userKey).remove();
+  await db.ref().update({ ['supportChats/' + userKey]: null, ['supportImages/' + userKey]: null });
   if (activeSupportChatUser === userKey) closeSupportChatThread();
   toast('Chat cleared');
   } catch (e) {
@@ -2412,7 +2523,7 @@ function renderSupportChatList() {
   listBody.innerHTML = entries.map(([userKey, chat]) => {
   const msgs = Object.values(chat.messages || {}).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
   const lastMsg = msgs[msgs.length - 1];
-  const preview = lastMsg ? (lastMsg.sender === 'admin' ? 'You: ' : '') + ((lastMsg.image ? '📷 Photo' : '') + (lastMsg.image && lastMsg.text ? ' ' : '') + (lastMsg.text || '')) : '';
+  const preview = lastMsg ? (lastMsg.sender === 'admin' ? 'You: ' : '') + (((lastMsg.image || lastMsg.hasImage) ? '📷 Photo' : '') + ((lastMsg.image || lastMsg.hasImage) && lastMsg.text ? ' ' : '') + (lastMsg.text || '')) : '';
   const unreadDot = chat.unreadForAdmin ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--warn);flex-shrink:0;"></span>' : '';
   return `<div class="sc-list-row" onclick="openSupportChatThread('${userKey}')">
   ${unreadDot}
@@ -2451,17 +2562,18 @@ function renderSupportChatThread(userKey) {
   if (phoneEl) phoneEl.textContent = chat.userPhone || '';
   if (!msgsEl) return;
   
-  const msgs = Object.values(chat.messages || {}).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-  msgsEl.innerHTML = msgs.map(m => {
+  const msgs = Object.entries(chat.messages || {}).map(([id, m]) => ({ id, m })).sort((a, b) => (a.m.timestamp || 0) - (b.m.timestamp || 0));
+  msgsEl.innerHTML = msgs.map(({ id, m }) => {
   const cls = m.sender === 'admin' ? 'chat-bubble-admin' : 'chat-bubble-user';
   const badge = m.prizeClaim
   ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🏆 PRIZE CLAIM${m.prizeName ? ': ' + escapeHtml(m.prizeName) : ''}</div>`
   : m.chanceClaim
   ? `<div style="font-size:10px;font-weight:800;color:var(--accent);margin-bottom:4px;">🎯 CHANCE CLAIM</div>`
   : '';
-  return `<div class="${cls}">${badge}${chatImageHtml(m)}${m.text ? escapeHtml(m.text) : ''}</div>`;
+  return `<div class="${cls}">${badge}${chatImageHtml(m, userKey, id)}${m.text ? escapeHtml(m.text) : ''}</div>`;
   }).join('');
   msgsEl.scrollTop = msgsEl.scrollHeight;
+  hydrateChatImages(msgsEl);
 }
 
 async function sendAdminSupportReply() {
@@ -2474,17 +2586,26 @@ async function sendAdminSupportReply() {
   const userKey = activeSupportChatUser;
   const msgId = 'msg_' + Date.now();
   try {
-  await db.ref('supportChats/' + userKey).update({
-  lastMessageAt: Date.now(),
-  lastSender: 'admin',
-  unreadForAdmin: false,
-  [`messages/${msgId}`]: Object.assign({
-  sender: 'admin',
-  text: text,
-  timestamp: Date.now(),
-  date: dateStr()
-  }, imageData ? { image: imageData } : {})
-  });
+  const chatBase = 'supportChats/' + userKey;
+  const adminMsg = { sender: 'admin', text: text, timestamp: Date.now(), date: dateStr() };
+  if (imageData) adminMsg.hasImage = true;
+  const chatUpdates = {
+  [chatBase + '/lastMessageAt']: Date.now(),
+  [chatBase + '/lastSender']: 'admin',
+  [chatBase + '/unreadForAdmin']: false,
+  [chatBase + '/messages/' + msgId]: adminMsg
+  };
+  if (imageData) chatUpdates['supportImages/' + userKey + '/' + msgId] = imageData;
+  try {
+  await db.ref().update(chatUpdates);
+  } catch (imgErr) {
+  if (!imageData) throw imgErr;
+  delete chatUpdates['supportImages/' + userKey + '/' + msgId];
+  const inlineMsg = Object.assign({}, adminMsg, { image: imageData });
+  delete inlineMsg.hasImage;
+  chatUpdates[chatBase + '/messages/' + msgId] = inlineMsg;
+  await db.ref().update(chatUpdates);
+  }
   input.value = '';
   clearAdminChatImage();
   } catch (error) {
@@ -3269,6 +3390,7 @@ async function adminRegister() {
 
 function adminLogout() {
   localStorage.removeItem(SESSION_KEY);
+  idbClearAll();
   if (usersUnsubscribe) usersUnsubscribe();
   if (settingsUnsubscribe) settingsUnsubscribe();
   if (withdrawalsUnsubscribe) withdrawalsUnsubscribe();
@@ -3324,6 +3446,8 @@ function showPage(id) {
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
   const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-positions': 11, 'pg-announcements': 12, 'pg-settings': 13 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
+  if (id === 'pg-dashboard') renderDashboard();
+  if (id === 'pg-users') renderUsersTable();
   if (id === 'pg-transactions') renderAdminTransactions();
   if (id === 'pg-withdrawals') renderWithdrawalsTable();
   if (id === 'pg-manual-deposits') renderManualDepositsTable();
