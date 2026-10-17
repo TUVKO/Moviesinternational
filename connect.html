@@ -803,6 +803,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Withdrawal Amount Options (comma-separated UGX)</span><input type="text" class="f-input" id="with-presets-input" style="width:260px;" placeholder="10000,20000,50000,100000"><button class="btn btn-save" onclick="saveWithdrawPresets()">Save</button></div>
 <div class="settings-row" style="display:block;"><span class="settings-label" style="display:block;margin-bottom:10px;">Company Deposit Accounts (up to 10) — used by Superior Recharge and TIXAN PAY. Users get the next account for their network each time they deposit.</span><div id="company-accounts-list"></div><button class="btn btn-save" style="margin-top:10px;" onclick="saveCompanyAccounts()">Save All Accounts</button></div>
 <div class="settings-row"><span class="settings-label">Deposit Tax % (Easy Pay — added on top, sent to MarzPay, user only credited the original amount)</span><div class="ugx-group"><input type="number" class="ugx-input" id="dep-tax-input" min="0" max="100" step="0.1" placeholder="3"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveDepositTax()">Save</button></div>
+<div class="settings-row"><span class="settings-label">Community Group Link (WhatsApp)</span><input type="text" class="f-input" id="community-link-input" style="width:320px;" placeholder="https://chat.whatsapp.com/..."><button class="btn btn-save" onclick="saveCommunityLink()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support Contact Number (for Save Contact)</span><input type="text" class="f-input" id="support-contact-number-input" style="width:280px;" placeholder="+2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportContactNumber()">Save</button></div>
 <div class="settings-row"><span class="settings-label">App Download Link</span><input type="text" class="f-input" id="app-download-input" style="width:280px;" placeholder="https://.../app.apk"><button class="btn btn-save" onclick="saveAppDownloadLink()">Save</button></div>
@@ -1002,6 +1003,7 @@ let allSettings = {
   superiorAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
+  communityGroupLink: '',
   supportContactNumber: '',
   appDownloadLink: '',
   homeBannerVideoId: '',
@@ -2777,6 +2779,8 @@ function loadSettingsUI() {
   renderCompanyAccountsUI(s);
   const depTaxInp = document.getElementById('dep-tax-input');
   if (depTaxInp) depTaxInp.value = s.depositTaxPercent != null ? s.depositTaxPercent : 3;
+  const communityInp = document.getElementById('community-link-input');
+  if (communityInp) communityInp.value = s.communityGroupLink || '';
   const supportWaInp = document.getElementById('support-whatsapp-input');
   if (supportWaInp) supportWaInp.value = s.supportWhatsappLink || '';
   const supportContactInp = document.getElementById('support-contact-number-input');
@@ -2917,6 +2921,16 @@ async function saveDepositTax() {
   if (isNaN(v) || v < 0 || v > 100) { toast('Enter a valid percentage (0-100)', '#f87171'); return; }
   await db.ref('settings/depositTaxPercent').set(v);
   toast('Deposit tax set to ' + v + '%');
+}
+
+async function saveCommunityLink() {
+  const link = document.getElementById('community-link-input').value.trim();
+  if (link && !/^https:\/\/(chat\.whatsapp\.com|wa\.me|whatsapp\.com)\//i.test(link)) {
+  toast('Enter a valid WhatsApp link (https://chat.whatsapp.com/...)', '#f87171');
+  return;
+  }
+  await db.ref('settings/communityGroupLink').set(link || null);
+  toast(link ? 'Community link saved' : 'Community card removed');
 }
 
 async function saveSupportWhatsapp() {

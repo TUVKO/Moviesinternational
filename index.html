@@ -165,7 +165,7 @@ input[type="password"]{padding-right:46px;}
 .video-overlay-close{cursor:pointer;font-size:18px;padding:4px 8px;}
 .video-player-wrap{width:100%;aspect-ratio:16/9;background:#000;flex-shrink:0;}
 #video-player-embed, #video-player-embed iframe{width:100%;height:100%;border:0;display:block;}
-.video-controls{flex:1;background:#14110F;padding:16px 20px 24px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;}
+.video-controls{flex:1;min-height:0;background:#14110F;padding:12px 16px 0;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;gap:8px;overflow:hidden;}
 .countdown-display{display:flex;align-items:center;gap:12px;}
 .countdown-number{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:36px;font-weight:700;color:var(--text);}
 .countdown-label{font-size:12px;color:var(--muted);}
@@ -178,6 +178,21 @@ input[type="password"]{padding-right:46px;}
 .claim-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
 .action-grid{display:flex;flex-direction:row;gap:10px;margin:8px 0;align-items:stretch;}
+/* Home movies + More tasks + comments + welcome card */
+.more-tasks-btn{width:100%;padding:13px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin:2px 0 10px;box-shadow:0 3px 12px rgba(0,200,83,.35);}
+.more-tasks-btn:active{transform:scale(.98);}
+.home-movies{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.home-movies .video-card{margin:0;}
+.welcome-card{display:none;align-items:center;gap:8px;margin:0 16px 10px;}
+.welcome-card.show{display:flex;}
+.welcome-btn{flex:1;padding:14px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(0,200,83,.35);}
+.welcome-close{width:34px;height:34px;border:none;border-radius:50%;background:#2a2622;color:#F6F1E7;font-size:15px;cursor:pointer;flex-shrink:0;}
+.comments-title{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;align-self:flex-start;margin-top:4px;}
+.comments-list{flex:1;min-height:0;overflow-y:auto;width:100%;display:flex;flex-direction:column;gap:8px;padding:2px 0 10px;-webkit-overflow-scrolling:touch;}
+.comment-item{padding:12px 14px;border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:14px;color:var(--text);cursor:pointer;flex-shrink:0;}
+.comment-item.selected{border-color:#3B82F6;background:rgba(59,130,246,.18);}
+.claim-bar{width:100%;flex-shrink:0;padding:10px 0 calc(14px + env(safe-area-inset-bottom));display:flex;justify-content:center;background:#14110F;border-top:1px solid var(--border);}
+
 .greeting-banner{position:relative;background:var(--surface);border:1.5px solid var(--success);border-radius:14px;padding:16px;padding-top:26px;font-size:13px;line-height:1.6;color:var(--text);text-align:center;}
 .greeting-banner-studio{position:absolute;top:8px;right:14px;font-size:9px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;color:var(--success);opacity:0.75;}
 .greeting-banner-text{}
@@ -569,6 +584,10 @@ input[type="password"]{padding-right:46px;}
 
   <!-- HOME / DASHBOARD -->
 <div class="dash-section active" id="sec-home">
+<div class="welcome-card" id="welcome-card">
+  <button type="button" class="welcome-btn" onclick="openCommunityGroup()">Join Free Community</button>
+  <button type="button" class="welcome-close" onclick="dismissWelcomeCard()">✕</button>
+</div>
 <div class="section" id="home-banner-wrap" style="display:none;">
 <div class="home-banner-box">
 <div id="home-banner-video"></div>
@@ -623,6 +642,10 @@ input[type="password"]{padding-right:46px;}
   <button class="action-btn gold-fill-btn" onclick="switchTab('salary')">Salary</button>
 </div>
 </div>
+<div class="section">
+  <button type="button" class="more-tasks-btn" onclick="switchTab('team')">More tasks &gt;</button>
+  <div class="home-movies" id="home-movies"></div>
+</div>
 </div>
 
   <!-- History -->
@@ -674,9 +697,13 @@ input[type="password"]{padding-right:46px;}
 <div class="countdown-progress">
 <div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
 </div>
+<div class="comments-title">Pick a comment</div>
+<div class="comments-list" id="comments-list"></div>
+<div class="claim-bar">
   <button class="claim-btn" id="claim-btn" onclick="claimReward()"disabled>
   Watch for 5 seconds...
 </button>
+</div>
 </div>
 </div>
 
@@ -1978,6 +2005,24 @@ function resetSupportChat() {
   if (supportChatUnsubscribe) { supportChatUnsubscribe(); supportChatUnsubscribe = null; }
 }
 
+let welcomeDismissed = false;
+function updateWelcomeCard() {
+  const card = document.getElementById('welcome-card');
+  if (!card) return;
+  const link = (settingsData.communityGroupLink || '').trim();
+  const show = !!link && !welcomeDismissed && !!currentUser;
+  card.classList.toggle('show', show);
+}
+function dismissWelcomeCard() {
+  welcomeDismissed = true;
+  updateWelcomeCard();
+}
+function openCommunityGroup() {
+  const link = (settingsData.communityGroupLink || '').trim();
+  if (!link) return;
+  window.open(link, '_blank');
+}
+
 function openSupportWhatsapp() {
   const link = settingsData.supportWhatsappLink;
   if (!link) {
@@ -2325,6 +2370,7 @@ let settingsData = {
   superiorAirtelName: '',
   depositTaxPercent: 3,
   supportWhatsappLink: '',
+  communityGroupLink: '',
   supportContactNumber: '',
   appDownloadLink: '',
   affiliateLevel1Percent: 10,
@@ -2836,7 +2882,68 @@ function updateVideoCount() {
   renderVideoGrid();
 }
 
+let homeSlots = [];
+
+function pickNextHomeVideo(allIds, exclude) {
+  if (!allIds.length) return null;
+  let maxIdx = -1;
+  homeSlots.forEach(id => { const k = allIds.indexOf(id); if (k > maxIdx) maxIdx = k; });
+  for (let step = 1; step <= allIds.length; step++) {
+  const cand = allIds[(maxIdx + step + allIds.length) % allIds.length];
+  if (!exclude.includes(cand)) return cand;
+  }
+  return allIds[0];
+}
+
+function ensureHomeSlots() {
+  const allIds = getVideoIds().filter(id => videosData[id]);
+  if (!allIds.length) { homeSlots = []; return allIds; }
+  const valid = homeSlots.length && homeSlots.every(id => videosData[id]);
+  if (!valid) {
+  const pos = getUserVideoPosition() % allIds.length;
+  homeSlots = [allIds[pos]];
+  if (allIds.length > 1) homeSlots.push(allIds[(pos + 1) % allIds.length]);
+  }
+  return allIds;
+}
+
+function advanceHomeSlot(watchedId) {
+  const allIds = getVideoIds().filter(id => videosData[id]);
+  const at = homeSlots.indexOf(watchedId);
+  if (at === -1 || allIds.length <= 2) return;
+  const keep = homeSlots.filter((_, i) => i !== at);
+  const next = pickNextHomeVideo(allIds, [watchedId, ...keep]);
+  if (next) homeSlots[at] = next;
+}
+
+function renderHomeMovies() {
+  const box = document.getElementById('home-movies');
+  if (!box) return;
+  ensureHomeSlots();
+  const { reward } = getRemainingVideos();
+  const lvlReward = reward || (getLevelData(getUserLevel()).each || 0);
+  box.innerHTML = homeSlots.map(id => {
+  const v = videosData[id];
+  if (!v) return '';
+  return `<div class="video-card" onclick="openVideoPlayer('${id}')">
+<div class="video-thumb-wrap">
+  <img src="https://img.youtube.com/vi/${v.youtubeId}/hqdefault.jpg" alt="">
+<div class="video-play-badge">
+  <svg viewBox="0 0 24 24" width="34" height="34"><circle cx="12" cy="12" r="11" fill="rgba(0,0,0,.5)"/><path d="M10 8l6 4-6 4V8z" fill="#fb7185"/></svg>
+</div>
+<div class="video-reward-badge">${fmt(lvlReward)}</div>
+</div>
+<div class="video-title">${escapeHtml(v.title || 'Video')}</div>
+</div>`;
+  }).join('');
+}
+
 function renderVideoGrid() {
+  renderVideoGridMain();
+  renderHomeMovies();
+}
+
+function renderVideoGridMain() {
   const grid = document.getElementById('video-grid');
   if (!grid) return;
   
@@ -2900,6 +3007,43 @@ let currentPlayingVideo = null;
 let countdownTimer = null;
 let countdownValue = 5;
 let isClaimReady = false;
+let countdownFinished = false;
+let selectedComment = null;
+const VIDEO_COMMENTS = ['Great movie! 🔥', 'Loved it 😍', 'Very interesting', 'Nice story 👌', 'Amazing action! 💥', 'Well made 👏', 'Worth watching ⭐'];
+
+function renderComments() {
+  const box = document.getElementById('comments-list');
+  if (!box) return;
+  box.innerHTML = VIDEO_COMMENTS.map((c, i) => '<div class="comment-item' + (selectedComment === i ? ' selected' : '') + '" onclick="selectComment(' + i + ')">' + c + '</div>').join('');
+}
+
+function selectComment(i) {
+  selectedComment = i;
+  renderComments();
+  updateClaimButton();
+}
+
+function updateClaimButton() {
+  const claimBtn = document.getElementById('claim-btn');
+  if (!claimBtn || !currentPlayingVideo) return;
+  if (claimBtn.classList.contains('claimed')) return;
+  if (countdownFinished && selectedComment !== null) {
+  isClaimReady = true;
+  claimBtn.disabled = false;
+  claimBtn.className = 'claim-btn ready';
+  claimBtn.textContent = ` GET REWARD (${fmt(currentPlayingVideo.reward)})`;
+  } else if (countdownFinished) {
+  isClaimReady = false;
+  claimBtn.disabled = true;
+  claimBtn.className = 'claim-btn';
+  claimBtn.textContent = 'Pick a comment to continue';
+  } else {
+  isClaimReady = false;
+  claimBtn.disabled = true;
+  claimBtn.className = 'claim-btn';
+  claimBtn.textContent = selectedComment === null ? 'Watch for 5 seconds & pick a comment' : 'Watch for 5 seconds...';
+  }
+}
 
 function openVideoPlayer(id) {
   const v = videosData[id];
@@ -2966,6 +3110,9 @@ function openVideoPlayer(id) {
   claimBtn.className = 'claim-btn';
   claimBtn.textContent = 'Watch for 5 seconds...';
   claimBtn.onclick = claimReward;
+  selectedComment = null;
+  countdownFinished = false;
+  renderComments();
   
   const countdownNum = document.getElementById('countdown-number');
   countdownNum.textContent = '5';
@@ -2989,10 +3136,8 @@ function startCountdown() {
   
   numberEl.textContent = countdownValue;
   progressEl.style.width = '0%';
-  claimBtn.disabled = true;
-  claimBtn.className = 'claim-btn';
-  claimBtn.textContent = 'Watch for 5 seconds...';
-  isClaimReady = false;
+  countdownFinished = false;
+  updateClaimButton();
   
   if (countdownTimer) clearInterval(countdownTimer);
   countdownTimer = setInterval(() => {
@@ -3003,10 +3148,8 @@ function startCountdown() {
   if (countdownValue <= 0) {
   clearInterval(countdownTimer);
   numberEl.textContent = '';
-  claimBtn.disabled = false;
-  claimBtn.className = 'claim-btn ready';
-  claimBtn.textContent = ` GET REWARD (${fmt(currentPlayingVideo.reward)})`;
-  isClaimReady = true;
+  countdownFinished = true;
+  updateClaimButton();
   return;
   }
   numberEl.textContent = countdownValue;
@@ -3151,6 +3294,7 @@ async function claimReward() {
   updateProfileUI();
   updateLevelProgress();
   renderStages();
+  advanceHomeSlot(currentPlayingVideo && currentPlayingVideo.id);
   updateVideoDisplay();
     
   // FIX: Show completed state and allow watching next
@@ -3365,6 +3509,7 @@ async function runAutoWatch() {
 // UI UPDATE FUNCTIONS
 // ============================================================
 function updateBalanceUI() {
+  updateWelcomeCard();
   if (!currentUser) return;
   
   let stake = currentUser.stake || 0;
@@ -4733,6 +4878,7 @@ function startSettingsListener() {
   updateBalanceUI();
   renderReferralProgramTiers();
   renderHomeBannerVideo();
+  updateWelcomeCard();
   });
 }
 
@@ -5620,7 +5766,7 @@ async function doLogin() {
   console.log('Login successful for:', fullPhone);
   currentUser = userData;
   currentUsername = fullPhone;
-  saveUserSession(fullPhone);
+  saveUserSession(fullPhone); welcomeDismissed = false;
     
   startUserListener(fullPhone);
   startVideoListener();
@@ -5736,7 +5882,7 @@ async function doRegister() {
     
   currentUser = newUser;
   currentUsername = fullPhone;
-  saveUserSession(fullPhone);
+  saveUserSession(fullPhone); welcomeDismissed = false;
     
   startUserListener(fullPhone);
   startVideoListener();
@@ -5766,6 +5912,7 @@ async function doRegister() {
 async function doLogout() {
   if (userListener && currentUsername) db.ref('users/' + safeKey(currentUsername)).off('value', userListener);
   clearUserSession();
+  welcomeDismissed = false;
   currentUser = null;
   currentUsername = null;
   setTimeout(() => {
