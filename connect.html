@@ -755,7 +755,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <button type="button" onclick="annExec('bold')"><b>B</b></button>
   <button type="button" onclick="annExec('italic')"><i>I</i></button>
   <button type="button" onclick="annExec('underline')"><u>U</u></button>
-  <input type="color" id="ann-text-color" title="Text color" value="#ffd166" onchange="annExec('foreColor', this.value)">
+  <input type="color" id="ann-text-color" title="Text color" value="#ffd166" onchange="annApplyColor(this.value)">
   <select id="ann-font-size" onchange="annExec('fontSize', this.value)">
     <option value="">Size</option>
     <option value="2">Small</option>
@@ -3028,6 +3028,55 @@ function annExec(cmd, value) {
   document.execCommand(cmd, false, value || null);
 }
 
+// ---- Text colour: stays exactly as chosen until the admin picks another ----
+let annSavedRange = null;   // last selection made inside the editor (survives the colour dialog)
+let annBaseColor = '';      // colour for the whole message (remembered on this phone)
+try { annBaseColor = localStorage.getItem('ann_text_color') || ''; } catch (e) {}
+
+document.addEventListener('selectionchange', () => {
+  const ed = document.getElementById('ann-editor');
+  const sel = window.getSelection();
+  if (ed && sel && sel.rangeCount && ed.contains(sel.anchorNode) && ed.contains(sel.focusNode)) {
+    annSavedRange = sel.getRangeAt(0).cloneRange();
+  }
+});
+
+function annApplyColor(v) {
+  try { localStorage.setItem('ann_text_color', v); } catch (e) {}
+  const ed = document.getElementById('ann-editor');
+  ed.focus();
+  if (annSavedRange && !annSavedRange.collapsed) {
+    // text was selected: colour only that text
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(annSavedRange);
+    document.execCommand('styleWithCSS', false, true);
+    document.execCommand('foreColor', false, v);
+  } else {
+    // nothing selected: colour the whole message (and everything typed next)
+    annBaseColor = v;
+    ed.style.color = v;
+    ed.querySelectorAll('[color],[style*="color"]').forEach(el => {
+      if (el.classList.contains('ann-hl')) return;
+      el.removeAttribute('color');
+      el.style.color = '';
+      if (!el.getAttribute('style')) el.removeAttribute('style');
+    });
+  }
+  annUpdatePreview();
+}
+
+(function annInitColor() {
+  function go() {
+    const ed = document.getElementById('ann-editor');
+    const inp = document.getElementById('ann-text-color');
+    if (!ed || !inp || !annBaseColor) return;
+    inp.value = annBaseColor;
+    ed.style.color = annBaseColor;
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
+})();
+
 
 const ANN_STYLE_NAMES = ["Emerald Gold Ribbon", "Royal Green Banner", "Desert Gold Paper", "Coins on Green-Black", "Royal Blue", "Purple Velvet", "Crimson Gold", "Midnight Black Gold", "Ocean Teal", "Sunset Orange", "Rose Pink", "Silver Steel", "Neon Cyber", "Ivory Classic", "Bronze Copper", "Lime Fresh", "Navy Sky", "Wine Burgundy", "Aurora Gradient", "Forest Gold"];
 function annEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
@@ -3063,7 +3112,10 @@ function annCurrent() {
   brand: (document.getElementById('ann-brand').value || '').trim(),
   title: (document.getElementById('ann-title').value || '').trim(),
   footer: (document.getElementById('ann-footer').value || '').trim(),
-  html: document.getElementById('ann-editor').innerHTML.trim()
+  html: (() => {
+  const h = document.getElementById('ann-editor').innerHTML.trim();
+  return (annBaseColor && h && h !== '<br>') ? '<div style="color:' + annBaseColor + '">' + h + '</div>' : h;
+  })()
   };
 }
 
