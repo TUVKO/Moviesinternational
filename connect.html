@@ -185,6 +185,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 .pct-summary{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
 .pct-pill{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;}
 .pct-pill span{color:var(--accent);font-weight:800;}
+.pct-pill span.on{color:var(--success);}
+.pct-pill span.off{color:var(--warn);}
+.dash-block-title{font-size:12px;font-weight:700;color:var(--muted);margin:4px 0 8px;}
 .pw-cell{display:flex;align-items:center;gap:6px;}
 .pw-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .pw-val:hover{background:var(--surface3);}
@@ -380,6 +383,19 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="stat-card"><div class="stat-card-label">Min Deposit</div><div class="stat-card-val gold" id="d-min-deposit">—</div></div>
 <div class="stat-card"><div class="stat-card-label">Videos Today</div><div class="stat-card-val amber" id="d-videos-today">—</div></div>
 </div>
+<div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
+<div class="stat-card"><div class="stat-card-label">Total VM Members</div><div class="stat-card-val green" id="d-vm-members">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Trainee Members</div><div class="stat-card-val blue" id="d-trainee-members">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Completed Today's Job</div><div class="stat-card-val amber" id="d-completed-today">—</div></div>
+</div>
+<div class="stats-row" style="grid-template-columns:repeat(2,1fr)">
+<div class="stat-card"><div class="stat-card-label">Total Amount Purchased</div><div class="stat-card-val gold" id="d-total-purchased">—</div></div>
+<div class="stat-card"><div class="stat-card-label">Total Amount in Working</div><div class="stat-card-val purple" id="d-total-working">—</div></div>
+</div>
+<div class="dash-block-title">Levels</div>
+<div class="pct-summary" id="level-status-pills"></div>
+<div class="dash-block-title">Settings status</div>
+<div class="pct-summary" id="settings-status-pills"></div>
 </div>
 
   <!-- USERS -->
@@ -1085,6 +1101,7 @@ function startLevelsListener() {
   levels = ensureTraineeExists(levels);
   allLevels = levels;
   renderLevelsAdminTable();
+  if (pageActive('pg-dashboard')) renderDashboard();
   });
 }
 
@@ -1269,6 +1286,7 @@ function startDatimPlansListener() {
   datimPlansUnsubscribe = db.ref('datimPlans').on('value', (snap) => {
   allDatimPlans = snap.val() || {};
   renderDatimPlansAdminTable();
+  if (pageActive('pg-dashboard')) renderDashboard();
   });
 }
 
@@ -1897,8 +1915,11 @@ async function cleanupOldUserTxHistories() {
 function renderDashboard() {
   const users = Object.values(allUsers);
   let totalStake = 0, totalMob = 0, locked = 0, videosToday = 0;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date(Date.now() + 3 * 3600 * 1000).toISOString().slice(0, 10); // Uganda day (UTC+3), same as user site
   const totalVideos = Object.keys(allVideos).length;
+  const lvls = ensureTraineeExists(Object.keys(allLevels || {}).length ? allLevels : DEFAULT_LEVELS);
+  const lvMembers = {}, lvDone = {};
+  let vmMembers = 0, traineeMembers = 0, completedToday = 0, totalPurchased = 0, totalWorking = 0, workingStakes = 0;
   
   users.forEach(u => {
   totalStake += u.stake || 0;
@@ -1906,6 +1927,15 @@ function renderDashboard() {
   if (u.locked) locked++;
   const watchedToday = u.watchHistory?.[today] || 0;
   videosToday += watchedToday;
+  const lk = u.currentLevel || 'trainee';
+  const lv = lvls[lk] || lvls.trainee;
+  lvMembers[lk] = (lvMembers[lk] || 0) + 1;
+  if (lk === 'trainee') traineeMembers++; else { vmMembers++; totalPurchased += lv.collateral || 0; }
+  const quota = lv.movies || 0;
+  if (quota > 0 && watchedToday >= quota) { completedToday++; lvDone[lk] = (lvDone[lk] || 0) + 1; }
+  Object.values(u.datimStakes || {}).forEach(st => {
+    if (st && (st.maturityDate || '') >= today) { totalWorking += st.amount || 0; workingStakes++; }
+  });
   });
   
   document.getElementById('d-total-users').textContent = users.length;
@@ -1915,6 +1945,49 @@ function renderDashboard() {
   document.getElementById('d-locked').textContent = locked;
   document.getElementById('d-min-deposit').textContent = fmt(allSettings.minDeposit || 61000);
   document.getElementById('d-videos-today').textContent = videosToday;
+  document.getElementById('d-vm-members').textContent = vmMembers;
+  document.getElementById('d-trainee-members').textContent = traineeMembers;
+  document.getElementById('d-completed-today').textContent = completedToday;
+  document.getElementById('d-total-purchased').textContent = fmt(totalPurchased);
+  document.getElementById('d-total-working').textContent = fmt(totalWorking) + (workingStakes ? ' (' + workingStakes + (workingStakes === 1 ? ' stake)' : ' stakes)') : '');
+  const lvKeys = Object.keys(lvMembers).sort((a, b) => {
+    if (a === 'trainee') return -1; if (b === 'trainee') return 1;
+    return (parseInt(a.replace(/\D/g, '')) || 0) - (parseInt(b.replace(/\D/g, '')) || 0);
+  });
+  document.getElementById('level-status-pills').innerHTML = lvKeys.length ? lvKeys.map(k => {
+    const l = lvls[k] || {};
+    const amt = k === 'trainee' ? '' : ' · ' + fmt((l.collateral || 0) * lvMembers[k]);
+    return `<div class="pct-pill">${escapeHtml(l.name || k)} <span>${lvMembers[k]}</span> (${lvDone[k] || 0} done)${amt}</div>`;
+  }).join('') : '<div class="pct-pill">No members yet</div>';
+  const st = allSettings;
+  const onoff = (label, on) => `<div class="pct-pill">${label} <span class="${on ? 'on' : 'off'}">${on ? 'Active' : 'Not active'}</span></div>`;
+  const hasVal = v => !!(v && String(v).trim());
+  const accts = Array.isArray(st.companyAccounts) ? st.companyAccounts : (st.companyAccounts && typeof st.companyAccounts === 'object' ? Object.values(st.companyAccounts) : []);
+  const lockedLevels = Object.keys(lvls).filter(k => k !== 'trainee' && lvls[k] && lvls[k].locked === true).length;
+  const val = (label, v) => `<div class="pct-pill">${label} <span>${v}</span></div>`;
+  const list = a => (a && a.length ? a.join(', ') : '—');
+  document.getElementById('settings-status-pills').innerHTML =
+    onoff('Withdrawals', !st.withdrawLocked) +
+    onoff('Lucky Spin', !st.luckySpinLocked) +
+    onoff('Withdrawal approval', !!st.withdrawApproval) +
+    onoff('MarzPay API key', hasVal(st.marzApiKey) && String(st.marzApiKey).length > 5) +
+    onoff('Company accounts', accts.length > 0 || hasVal(st.superiorMtnNumber)) +
+    onoff('Community link', hasVal(st.communityGroupLink)) +
+    onoff('Support WhatsApp', hasVal(st.supportWhatsappLink)) +
+    onoff('Support number', hasVal(st.supportContactNumber)) +
+    onoff('App download link', hasVal(st.appDownloadLink)) +
+    onoff('Home banner video', hasVal(st.homeBannerVideoId)) +
+    onoff('DATIM plans', Object.keys(allDatimPlans || {}).length > 0) +
+    `<div class="pct-pill">Levels locked <span class="${lockedLevels ? 'off' : 'on'}">${lockedLevels ? lockedLevels : 'None'}</span></div>` +
+    val('Min Deposit', fmt(st.minDeposit || 61000)) +
+    val('Min Withdraw', fmt(st.minWithdraw || 10000)) +
+    val('Withdraw Charge', (st.withdrawCharge || 10) + '%') +
+    val('Streak Bonus', fmt(st.streakBonus || 1000)) +
+    val('Deposit Tax', (st.depositTaxPercent != null ? st.depositTaxPercent : 3) + '%') +
+    val('Affiliate L1/L2/L3', (st.affiliateLevel1Percent != null ? st.affiliateLevel1Percent : 10) + '% / ' + (st.affiliateLevel2Percent != null ? st.affiliateLevel2Percent : 5) + '% / ' + (st.affiliateLevel3Percent != null ? st.affiliateLevel3Percent : 1) + '%') +
+    val('Sub-affiliate L1/L2', (st.subAffiliateLevel1Percent != null ? st.subAffiliateLevel1Percent : 4.9) + '% / ' + (st.subAffiliateLevel2Percent != null ? st.subAffiliateLevel2Percent : 1) + '%') +
+    val('Deposit amounts', list(st.depositPresets)) +
+    val('Withdraw amounts', list(st.withdrawAmounts));
   
   const s = allSettings;
   document.getElementById('pct-summary').innerHTML = `
