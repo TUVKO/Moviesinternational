@@ -1778,7 +1778,7 @@ function listenCached(path, handler) {
 const _renderTimers = {};
 function schedRender(key, fn, delay) {
   clearTimeout(_renderTimers[key]);
-  _renderTimers[key] = setTimeout(fn, delay || 120);
+  _renderTimers[key] = setTimeout(fn, delay == null ? 40 : delay);
 }
 function pageActive(id) {
   const el = document.getElementById(id);
@@ -1827,14 +1827,14 @@ function startRealtimeListeners() {
   });
   });
 
-  setTimeout(() => {
+  (() => {
   if (usersUnsubscribe) usersUnsubscribe();
   usersUnsubscribe = listenCached('users', (snap, fromCache) => {
   allUsers = snap.val() || {};
   schedRender('users', () => {
   if (pageActive('pg-dashboard')) renderDashboard();
   if (pageActive('pg-users')) renderUsersTable();
-  });
+  }, 100);
   if (!fromCache) scheduleUserTxCleanupOnce();
   });
   setInterval(cleanupOldUserTxHistories, 5 * 60 * 1000);
@@ -1857,7 +1857,7 @@ function startRealtimeListeners() {
   if (!fromCache) cleanupOldAdminTransactions();
   });
   setInterval(cleanupOldAdminTransactions, 5 * 60 * 1000);
-  }, 150);
+  })();
   
   db.ref('stats/totalCredited').on('value', (snap) => {
   const el = document.getElementById('adm-tx-total-credited');
@@ -3138,12 +3138,16 @@ function annHighlight() {
   annUpdatePreview();
 }
 
-async function loadAnnouncementsAdmin() {
+let _annAdminListening = false;
+function loadAnnouncementsAdmin() {
+  if (_annAdminListening) return;
+  _annAdminListening = true;
+  db.ref('announcements').on('value', (snap) => renderAnnouncementsAdmin(snap.val() || {}), () => { _annAdminListening = false; });
+}
+function renderAnnouncementsAdmin(data) {
   const listEl = document.getElementById('ann-admin-list');
   const countEl = document.getElementById('ann-count');
   try {
-  const snap = await db.ref('announcements').get();
-  const data = snap.val() || {};
   const ids = Object.keys(data).sort((a, b) => (data[a].createdAt || 0) - (data[b].createdAt || 0));
   countEl.textContent = ids.length;
   if (!ids.length) { listEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">No active announcements.</div>'; return; }
@@ -3645,6 +3649,27 @@ function initAdmin() {
   document.getElementById('auth-wrap').style.display = 'flex';
   }
 }
+
+// ---- Live connection indicator + instant resync after sleep / weak network ----
+(function liveStatus() {
+  const dot = document.createElement('div');
+  dot.id = 'live-dot';
+  dot.style.cssText = 'position:fixed;top:8px;right:10px;width:9px;height:9px;border-radius:50%;background:#f59e0b;z-index:9999;pointer-events:none;';
+  dot.title = 'Connecting…';
+  document.body.appendChild(dot);
+  db.ref('.info/connected').on('value', (s) => {
+    const on = s.val() === true;
+    dot.style.background = on ? '#00C853' : '#f59e0b';
+    dot.title = on ? 'Live' : 'Reconnecting…';
+  });
+  let hiddenAt = 0;
+  function resync() { try { db.goOffline(); db.goOnline(); } catch (e) {} }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) hiddenAt = Date.now();
+    else if (Date.now() - hiddenAt > 3000) resync();
+  });
+  window.addEventListener('online', resync);
+})();
 
 initAdmin();
 </script>

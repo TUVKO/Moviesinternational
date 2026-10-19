@@ -5737,6 +5737,23 @@ function sendAdminNotification(type, username, amount, message) {
 // ============================================================
 // LOGIN
 // ============================================================
+let _authBusy = false;
+function authBusy(on, sel, label) {
+  _authBusy = on;
+  const b = document.querySelector(sel);
+  if (!b) return;
+  if (on) { b.dataset.t = b.textContent; b.textContent = label; b.disabled = true; b.style.opacity = '.7'; }
+  else { if (b.dataset.t) b.textContent = b.dataset.t; b.disabled = false; b.style.opacity = ''; }
+}
+function startAfterAuth(phone) {
+  // heavy work runs after the dashboard has been painted
+  requestAnimationFrame(() => setTimeout(() => {
+    try {
+      renderHistory(); updateLevelProgress(); renderLevelsTable(); renderStages(); updateVideoDisplay();
+      startUserListener(phone); startVideoListener(); startDatimPlansListener(); startLuckySpinListener();
+    } catch (e) { console.error('post-login init error:', e); }
+  }, 0));
+}
 async function doLogin() {
   console.log('Login button clicked');
   clearErrors('login-user-err', 'login-pw-err');
@@ -5751,6 +5768,8 @@ async function doLogin() {
   
   const fullPhone = prefix + phoneDigits.substring(1);
   
+  if (_authBusy) return;
+  authBusy(true, 'button[onclick="doLogin()"]', 'Signing in…');
   try {
   console.log('Checking user:', fullPhone);
   const userSnap = await db.ref('users/' + safeKey(fullPhone)).get();
@@ -5777,26 +5796,18 @@ async function doLogin() {
   currentUsername = fullPhone;
   saveUserSession(fullPhone); welcomeDismissed = false;
     
-  startUserListener(fullPhone);
-  startVideoListener();
-  startDatimPlansListener();
-  startLuckySpinListener();
-    
   updateBalanceUI();
-  renderHistory();
   updateProfileUI();
-  updateLevelProgress();
-  renderLevelsTable();
-  renderStages();
-  updateVideoDisplay();
-    
   showDashboard();
   switchTab('home');
+  startAfterAuth(fullPhone);
   showAnnouncementsPopup();
     
   } catch (error) {
   console.error('Login error:', error);
-  setErr('login-general-err', true, 'Login failed. Please try again.');
+  setErr('login-general-err', true, navigator.onLine === false ? 'No internet connection. Check your network and try again.' : 'Login failed. Please try again.');
+  } finally {
+  authBusy(false, 'button[onclick="doLogin()"]');
   }
 }
 
@@ -5823,12 +5834,18 @@ async function doRegister() {
   const fullPhone = prefix + phoneDigits.substring(1);
   const country = prefix === '+254' ? 'KE' : 'UG';
   
+  if (_authBusy) return;
+  authBusy(true, 'button[onclick="doRegister()"]', 'Creating account…');
   try {
-  const existing = await db.ref('users/' + safeKey(fullPhone)).get();
+  // run the checks at the same time (one round trip instead of three)
+  const candidateCode = generateReferralCode();
+  const [existing, codeSnap, candSnap] = await Promise.all([
+  db.ref('users/' + safeKey(fullPhone)).get(),
+  db.ref('referralCodes/' + referralCodeRaw.toUpperCase()).get(),
+  db.ref('referralCodes/' + candidateCode).get()
+  ]);
   if (existing.exists()) { setErr('reg-phone-err', true, 'Phone number already registered'); return; }
-  
   // Referral code is required — registration is blocked if the code doesn't exist
-  const codeSnap = await db.ref('referralCodes/' + referralCodeRaw.toUpperCase()).get();
   if (!codeSnap.exists()) {
   setErr('reg-referral-err', true, 'Please enter a valid referral code');
   return;
@@ -5837,7 +5854,7 @@ async function doRegister() {
   const referrerKey = safeKey(referrerPhone);
   const referredBy = referralCodeRaw.toUpperCase();
   
-  const myReferralCode = await generateUniqueReferralCode();
+  const myReferralCode = candSnap.exists() ? await generateUniqueReferralCode() : candidateCode;
     
   const now = dateStr();
   const todayUTC = getUTCKey();
@@ -5877,8 +5894,17 @@ async function doRegister() {
   }
   };
     
+  // one atomic write: user + referral code are saved together or not at all
+  try {
+  await db.ref().update({
+  ['users/' + safeKey(fullPhone)]: newUser,
+  ['referralCodes/' + myReferralCode]: fullPhone
+  });
+  } catch (upErr) {
+  console.warn('atomic save failed, falling back:', upErr);
   await db.ref('users/' + safeKey(fullPhone)).set(newUser);
   await db.ref('referralCodes/' + myReferralCode).set(fullPhone);
+  }
   console.log('User registered:', fullPhone);
   
   if (referrerKey) {
@@ -5886,26 +5912,18 @@ async function doRegister() {
   const arr = list || [];
   arr.push(fullPhone);
   return arr;
-  });
+  }).catch(e => console.warn('referral update failed', e));
   }
     
   currentUser = newUser;
   currentUsername = fullPhone;
   saveUserSession(fullPhone); welcomeDismissed = false;
     
-  startUserListener(fullPhone);
-  startVideoListener();
-  startDatimPlansListener();
-  startLuckySpinListener();
   updateBalanceUI();
-  renderHistory();
   updateProfileUI();
-  updateLevelProgress();
-  renderLevelsTable();
-  renderStages();
-  updateVideoDisplay();
   showDashboard();
   switchTab('home');
+  startAfterAuth(fullPhone);
     
   document.getElementById('reg-fullname').value = '';
   document.getElementById('reg-phone').value = '';
@@ -5914,7 +5932,9 @@ async function doRegister() {
     
   } catch (error) {
   console.error('Registration error:', error);
-  setErr('reg-general-err', true, 'Registration failed. Please try again.');
+  setErr('reg-general-err', true, navigator.onLine === false ? 'No internet connection. Check your network and try again.' : 'Registration failed. Please try again.');
+  } finally {
+  authBusy(false, 'button[onclick="doRegister()"]');
   }
 }
 
