@@ -172,10 +172,34 @@ input[type="password"]{padding-right:46px;}
 .countdown-progress{width:100%;max-width:300px;height:4px;background:var(--surface2);border-radius:4px;overflow:hidden;}
 .countdown-progress-fill{height:100%;background:var(--muted);border-radius:4px;transition:width 0.3s;}
 .claim-btn{width:100%;max-width:300px;padding:14px;border:none;border-radius:12px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.3s;background:var(--surface2);color:var(--muted);}
-.claim-btn.ready{background:#3B82F6;color:#fff;box-shadow:0 4px 20px rgba(59,130,246,0.4);cursor:pointer;}
+.claim-btn.ready{background:#00C853;color:#fff;box-shadow:0 4px 20px rgba(0,200,83,0.4);cursor:pointer;}
 .claim-btn.ready:active{transform:scale(0.97);}
 .claim-btn.claimed{background:var(--success);color:#fff;cursor:default;}
 .claim-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.claim-btn.counting{background:linear-gradient(90deg,rgba(0,200,83,.5) var(--p,0%),var(--surface2) var(--p,0%));color:var(--text);}
+.claim-btn.counting:disabled,.claim-btn.waiting:disabled{opacity:1;}
+.claim-btn.waiting{background:var(--surface2);color:var(--muted);}
+.lv-grid th,.lv-grid td{border-right:1px solid rgba(255,255,255,.3)!important;}
+.lv-grid th:last-child,.lv-grid td:last-child{border-right:none!important;}
+.pos-box{background:#0b1a33;border:1px solid #2f6fd0;border-radius:8px;overflow:hidden;box-shadow:0 0 14px rgba(47,111,208,.45);}
+.pos-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.pos-grid{width:100%;border-collapse:collapse;table-layout:fixed;min-width:330px;font-size:9px;}
+.pos-grid th,.pos-grid td{padding:7px 4px;text-align:left;vertical-align:middle;overflow:hidden;border-right:1px solid rgba(255,255,255,.3);}
+.pos-grid th:last-child,.pos-grid td:last-child{border-right:none;}
+.pos-grid th{color:#fff;font-weight:800;text-transform:uppercase;font-size:7px;text-shadow:0 1px 2px rgba(0,0,0,.55);}
+.pos-grid th:nth-child(1){background:linear-gradient(180deg,#fb7185,#be123c);width:23%;}
+.pos-grid th:nth-child(2){background:linear-gradient(180deg,#2ECC71,#17904A);width:15%;}
+.pos-grid th:nth-child(3){background:linear-gradient(180deg,#3498DB,#1F6AA8);width:19%;}
+.pos-grid th:nth-child(4){background:linear-gradient(180deg,#9B59B6,#6C3483);width:19%;}
+.pos-grid th:nth-child(5){background:linear-gradient(180deg,#F39C12,#B9700A);width:24%;}
+.pos-grid td{color:#dbe7ff;border-top:1px solid rgba(255,255,255,.14);}
+.pos-grid td b{color:#fff;font-weight:800;}
+.pos-grid td small{display:block;font-size:7px;opacity:.75;margin-top:1px;}
+.pos-grid .pg{display:block;white-space:nowrap;}
+.pos-grid .sal{font-weight:800;color:#6ef0a5;white-space:nowrap;}
+.pos-grid tr.held td{background:rgba(92,163,120,.32);}
+.pos-grid tr.qual td{background:rgba(255,122,156,.2);}
+.pos-cur{display:inline-block;margin-top:2px;background:var(--success);color:#fff;font-size:6.5px;font-weight:800;padding:1px 4px;border-radius:4px;}
 
 .action-grid{display:flex;flex-direction:row;gap:10px;margin:8px 0;align-items:stretch;}
 /* Home movies + More tasks + comments + welcome card */
@@ -473,7 +497,7 @@ input[type="password"]{padding-right:46px;}
 
 /* WA Button */
 
-.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;}
+.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:16px;transition:opacity .2s ease;}
 .loading-spinner{width:48px;height:48px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-text{font-size:14px;color:var(--muted);}
@@ -505,9 +529,7 @@ input[type="password"]{padding-right:46px;}
 </head>
 <body>
 
-<div class="loading-screen" id="loading-screen">
-<div style="font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);">W-E-A Earn with confidence</div>
-</div>
+<div class="loading-screen" id="loading-screen"></div>
 
 <!-- LOGIN -->
 <div class="auth-page" id="login-page">
@@ -699,18 +721,11 @@ input[type="password"]{padding-right:46px;}
 <div id="video-player-embed"></div>
 </div>
 <div class="video-controls" id="video-controls">
-<div class="countdown-display">
-  <span class="countdown-number" id="countdown-number">5</span>
-  <span class="countdown-label">seconds</span>
-</div>
-<div class="countdown-progress">
-<div class="countdown-progress-fill" id="countdown-progress-fill" style="width:0%;"></div>
-</div>
 <div class="comments-title">Pick a comment</div>
 <div class="comments-list" id="comments-list"></div>
 <div class="claim-bar">
   <button class="claim-btn" id="claim-btn" onclick="claimReward()"disabled>
-  Watch for 5 seconds...
+  Watching… 5s
 </button>
 </div>
 </div>
@@ -746,7 +761,7 @@ input[type="password"]{padding-right:46px;}
   <!-- Levels Table -->
 <div style="background:#0b1a33;border:1px solid #2f6fd0;border-radius:6px;overflow:hidden;box-shadow:0 0 14px rgba(47,111,208,.45);">
 <div style="overflow-x:auto;padding:0 2px;-webkit-overflow-scrolling:touch;">
-  <table style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:none;">
+  <table class="lv-grid" style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:none;">
   <thead>
   <tr style="background:#0b1a33;border-bottom:2px solid rgba(255,255,255,.35);">
   <th style="background:linear-gradient(180deg,#fb7185,#be123c);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:8%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">LvL</th>
@@ -1143,7 +1158,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="faq-category">Deposits &amp; Withdrawals</div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>What deposit methods are available?</span><span class="faq-chevron">›</span></div>
-<div class="faq-answer">Deposits are available through Superior Recharge, TIXAN PAY and Bank transfer.</div>
+<div class="faq-answer">Deposits are available through Superior Recharge and TIXAN PAY.</div>
 </div>
 <div class="faq-item">
 <div class="faq-question" onclick="toggleFaq(this)"><span>How long do withdrawals take?</span><span class="faq-chevron">›</span></div>
@@ -1206,10 +1221,6 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="deposit-method-card" onclick="selectDepositMethod('superior')">
 <div class="deposit-method-name">Superior Recharge</div>
 <div class="deposit-method-sub">Alternative recharge method</div>
-</div>
-<div class="deposit-method-card" onclick="selectDepositMethod('bank')">
-<div class="deposit-method-name">Add through Bank</div>
-<div class="deposit-method-sub">Bank transfer deposit</div>
 </div>
 <div class="deposit-method-card" onclick="selectDepositMethod('tixan')">
 <div class="deposit-method-name">TIXAN PAY</div>
@@ -2621,37 +2632,27 @@ async function renderSalaryPage() {
   list.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;">Checking your referral network...</div>';
   const counts = await getReferralQualifyingCounts(currentUser);
 
-  const html = getSortedPositionKeys().map(key => {
+  const rowsHtml = getSortedPositionKeys().map(key => {
   const p = positionsData[key];
   const combined = getCombinedCount(counts, p.combinedLevels || 1);
   const isHeld = currentUser.position === key;
   const meetsDirect = counts.direct >= (p.directRequired || 0);
   const meetsCombined = !p.combinedRequired || combined >= p.combinedRequired;
   const qualifies = meetsDirect && meetsCombined;
+  const lv = 'L1' + (p.combinedLevels >= 2 ? '+L2' : '') + (p.combinedLevels >= 3 ? '+L3' : '');
 
-  const reqParts = [`${p.directRequired} direct referral${p.directRequired === 1 ? '' : 's'} at VM1+`];
-  if (p.combinedRequired) {
-  reqParts.push(`${p.combinedRequired} combined (L1${p.combinedLevels >= 2 ? '+L2' : ''}${p.combinedLevels >= 3 ? '+L3' : ''}) at VM1+`);
-  }
-
-  const cardStyle = isHeld
-  ? 'border-color:var(--success);background:rgba(92,163,120,0.1);'
-  : qualifies
-  ? 'border-color:var(--accent);'
-  : '';
-
-  return `<div style="border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;${cardStyle}">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-  <div style="font-weight:800;font-size:14px;color:var(--text);">${escapeHtml(p.name)}</div>
-  ${isHeld ? '<span style="background:var(--success);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:6px;">CURRENT</span>' : ''}
-  </div>
-  <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">${reqParts.join(' AND ')}</div>
-  <div style="font-size:12px;color:var(--muted);margin-bottom:8px;">Progress: ${counts.direct}/${p.directRequired} direct${p.combinedRequired ? `, ${combined}/${p.combinedRequired} combined` : ''}</div>
-  <div style="font-weight:800;color:var(--accent);font-size:14px;">${fmt(p.salary)}/month</div>
-  </div>`;
+  return `<tr class="${isHeld ? 'held' : (qualifies ? 'qual' : '')}">
+  <td><b>${escapeHtml(p.name)}</b>${isHeld ? '<span class="pos-cur">CURRENT</span>' : ''}</td>
+  <td>${p.directRequired}<small>at VM1+</small></td>
+  <td>${p.combinedRequired ? p.combinedRequired + '<small>' + lv + ' at VM1+</small>' : '&mdash;'}</td>
+  <td><span class="pg">D ${counts.direct}/${p.directRequired}</span>${p.combinedRequired ? `<span class="pg">C ${combined}/${p.combinedRequired}</span>` : ''}</td>
+  <td class="sal">${fmt(p.salary)}</td>
+  </tr>`;
   }).join('');
 
-  list.innerHTML = html;
+  list.innerHTML = `<div class="pos-box"><div class="pos-scroll"><table class="pos-grid"><thead><tr>
+  <th>Position</th><th>Direct</th><th>Combined</th><th>Progress</th><th>Salary / month</th>
+  </tr></thead><tbody>${rowsHtml}</tbody></table></div></div>`;
 }
 
 
@@ -3018,7 +3019,7 @@ let countdownValue = 5;
 let isClaimReady = false;
 let countdownFinished = false;
 let selectedComment = null;
-const VIDEO_COMMENTS = ['Great movie! 🔥', 'Loved it 😍', 'Very interesting', 'Nice story 👌', 'Amazing action! 💥', 'Well made 👏', 'Worth watching ⭐'];
+const VIDEO_COMMENTS = ['Great movie!', 'Loved it', 'Very interesting', 'Nice story', 'Amazing action!', 'Well made', 'Worth watching'];
 
 function renderComments() {
   const box = document.getElementById('comments-list');
@@ -3040,17 +3041,18 @@ function updateClaimButton() {
   isClaimReady = true;
   claimBtn.disabled = false;
   claimBtn.className = 'claim-btn ready';
-  claimBtn.textContent = ` GET REWARD (${fmt(currentPlayingVideo.reward)})`;
+  claimBtn.textContent = `Receive ${fmt(currentPlayingVideo.reward)}`;
   } else if (countdownFinished) {
   isClaimReady = false;
   claimBtn.disabled = true;
-  claimBtn.className = 'claim-btn';
-  claimBtn.textContent = 'Pick a comment to continue';
+  claimBtn.className = 'claim-btn waiting';
+  claimBtn.textContent = 'Pick a comment above';
   } else {
   isClaimReady = false;
   claimBtn.disabled = true;
-  claimBtn.className = 'claim-btn';
-  claimBtn.textContent = selectedComment === null ? 'Watch for 5 seconds & pick a comment' : 'Watch for 5 seconds...';
+  claimBtn.className = 'claim-btn counting';
+  claimBtn.style.setProperty('--p', (((5 - countdownValue) / 5) * 100) + '%');
+  claimBtn.textContent = 'Watching… ' + countdownValue + 's';
   }
 }
 
@@ -3111,23 +3113,18 @@ function openVideoPlayer(id) {
   
   document.getElementById('video-overlay-title').textContent = v.title || 'Movie';
   document.getElementById('video-player-embed').innerHTML =
-  `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media"allowfullscreen></iframe>`;
+  `<iframe src="https://www.youtube.com/embed/${v.youtubeId}?autoplay=1&mute=1&playsinline=1&rel=0" allow="autoplay; encrypted-media"allowfullscreen></iframe>`;
   
   // Reset controls
   const claimBtn = document.getElementById('claim-btn');
   claimBtn.disabled = true;
   claimBtn.className = 'claim-btn';
-  claimBtn.textContent = 'Watch for 5 seconds...';
+  claimBtn.textContent = 'Watching… 5s';
+  claimBtn.style.setProperty('--p', '0%');
   claimBtn.onclick = claimReward;
   selectedComment = null;
   countdownFinished = false;
   renderComments();
-  
-  const countdownNum = document.getElementById('countdown-number');
-  countdownNum.textContent = '5';
-  
-  const progressFill = document.getElementById('countdown-progress-fill');
-  progressFill.style.width = '0%';
   
   isClaimReady = false;
   countdownValue = 5;
@@ -3139,29 +3136,20 @@ function openVideoPlayer(id) {
 
 function startCountdown() {
   countdownValue = 5;
-  const numberEl = document.getElementById('countdown-number');
-  const progressEl = document.getElementById('countdown-progress-fill');
-  const claimBtn = document.getElementById('claim-btn');
-  
-  numberEl.textContent = countdownValue;
-  progressEl.style.width = '0%';
   countdownFinished = false;
   updateClaimButton();
   
   if (countdownTimer) clearInterval(countdownTimer);
   countdownTimer = setInterval(() => {
   countdownValue--;
-  const progress = ((5 - countdownValue) / 5) * 100;
-  progressEl.style.width = progress + '%';
-    
   if (countdownValue <= 0) {
   clearInterval(countdownTimer);
-  numberEl.textContent = '';
+  countdownValue = 0;
   countdownFinished = true;
   updateClaimButton();
   return;
   }
-  numberEl.textContent = countdownValue;
+  updateClaimButton();
   }, 1000);
 }
 
@@ -3325,7 +3313,7 @@ async function claimReward() {
   btn.disabled = false;
   btn.textContent = 'Error, try again';
   setTimeout(() => {
-  btn.textContent = ` GET REWARD (${fmt(currentPlayingVideo?.reward || 0)})`;
+  btn.textContent = `Receive ${fmt(currentPlayingVideo?.reward || 0)}`;
   btn.className = 'claim-btn ready';
   btn.disabled = false;
   isClaimReady = true;
@@ -4998,7 +4986,7 @@ let selectedDepositAmount = 0;
 
 function selectDepositMethod(method) {
   selectedDepositMethod = method;
-  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', tixan: 'TIXAN PAY', bank: 'Add through Bank' };
+  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', tixan: 'TIXAN PAY' };
   const titleEl = document.getElementById('dep-amount-title');
   if (titleEl) titleEl.textContent = names[method] || 'Select Amount';
   const amtInput = document.getElementById('dep-amount');
@@ -5106,7 +5094,7 @@ function confirmDepositAmount() {
   clearErrors('tix-phone-err', 'tix-network-err');
   switchTab('deposit-tixan-phone');
   } else {
-  const names = { bank: 'Add through Bank' };
+  const names = {};
   const csTitle = document.getElementById('dep-comingsoon-title');
   if (csTitle) csTitle.textContent = names[selectedDepositMethod] || 'Coming Soon';
   switchTab('deposit-comingsoon');
@@ -6337,9 +6325,27 @@ async function initApp() {
   showAuth(pendingReferralCode ? 'register-page' : 'login-page');
   }
   
-  document.getElementById('loading-screen').style.display = 'none';
+  hideLoader();
   console.log('App initialized');
 }
+
+// Silent loader: plain background cover (no text) that fades away when the app is ready
+let _loaderHidden = false;
+function hideLoader() {
+  if (_loaderHidden) return;
+  _loaderHidden = true;
+  const ls = document.getElementById('loading-screen');
+  if (!ls) return;
+  ls.style.pointerEvents = 'none';
+  ls.style.opacity = '0';
+  setTimeout(() => { ls.style.display = 'none'; }, 220);
+}
+// Safety: never leave the user on a blank screen if the connection is very slow
+setTimeout(() => {
+  if (_loaderHidden) return;
+  try { if (!currentUser) showAuth(pendingReferralCode ? 'register-page' : 'login-page'); } catch (e) {}
+  hideLoader();
+}, 6000);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
