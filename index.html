@@ -181,6 +181,9 @@ input[type="password"]{padding-right:46px;}
 .claim-btn.waiting{background:var(--surface2);color:var(--muted);}
 .lv-grid th,.lv-grid td{border-right:1px solid rgba(255,255,255,.3)!important;}
 .lv-grid th:last-child,.lv-grid td:last-child{border-right:none!important;}
+.lv-grid tbody td{padding:6px 3px;font-size:8px;color:#dbe7ff;white-space:nowrap;overflow:hidden;font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;border-top:1px solid rgba(255,255,255,.14);}
+.lv-grid tbody td:nth-child(5){color:#6ef0a5;font-weight:700;}
+.lv-grid tbody tr.lv-cur td{background:rgba(155,89,182,.35);color:#fff;font-weight:700;}
 .pos-box{background:#0b1a33;border:1px solid #2f6fd0;border-radius:8px;overflow:hidden;box-shadow:0 0 14px rgba(47,111,208,.45);}
 .pos-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .pos-grid{width:100%;border-collapse:collapse;table-layout:fixed;min-width:330px;font-size:9px;}
@@ -764,13 +767,13 @@ input[type="password"]{padding-right:46px;}
   <table class="lv-grid" style="width:100%;border-collapse:collapse;font-size:7.5px;min-width:320px;max-width:100%;table-layout:fixed;border:none;">
   <thead>
   <tr style="background:#0b1a33;border-bottom:2px solid rgba(255,255,255,.35);">
-  <th style="background:linear-gradient(180deg,#fb7185,#be123c);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:8%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">LvL</th>
-  <th style="background:linear-gradient(180deg,#2ECC71,#17904A);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:14%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Col</th>
-  <th style="background:linear-gradient(180deg,#3498DB,#1F6AA8);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:6%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Mov</th>
-  <th style="background:linear-gradient(180deg,#9B59B6,#6C3483);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:11%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Each</th>
-  <th style="background:linear-gradient(180deg,#F39C12,#B9700A);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:16%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Daily</th>
-  <th style="background:linear-gradient(180deg,#E74C3C,#A5281B);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:21%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Monthly</th>
-  <th style="background:linear-gradient(180deg,#1ABC9C,#0E8570);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:6.5px;width:24%;border-bottom:2px solid rgba(255,255,255,.35);">Annual</th>
+  <th style="background:linear-gradient(180deg,#fb7185,#be123c);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:15%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">LvL</th>
+  <th style="background:linear-gradient(180deg,#2ECC71,#17904A);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:15%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Col</th>
+  <th style="background:linear-gradient(180deg,#3498DB,#1F6AA8);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:8%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Mov</th>
+  <th style="background:linear-gradient(180deg,#9B59B6,#6C3483);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:11%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Each</th>
+  <th style="background:linear-gradient(180deg,#F39C12,#B9700A);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:15%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Daily</th>
+  <th style="background:linear-gradient(180deg,#E74C3C,#A5281B);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:17%;border-right:1px solid rgba(255,255,255,.25);border-bottom:2px solid rgba(255,255,255,.35);">Monthly</th>
+  <th style="background:linear-gradient(180deg,#1ABC9C,#0E8570);padding:5px 3px;text-align:left;font-weight:800;text-transform:uppercase;letter-spacing:0.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);font-size:7px;width:19%;border-bottom:2px solid rgba(255,255,255,.35);">Annual</th>
 </tr>
 </thead>
   <tbody id="levels-table-body">
@@ -2708,34 +2711,14 @@ function renderLevelsTable() {
   if (key !== 'trainee') hasNonTrainee = true;
     
   const isCurrent = (key === currentLevelKey);
-  const rowIdx = levelKeys.indexOf(key);
-  const WPAL = [
-    ['#fb7185','#be123c','251,113,133'],
-    ['#FF8A3D','#D9600F','255,138,61'],
-    ['#2ECC71','#17904A','46,204,113'],
-    ['#3FA9F5','#1F6AA8','63,169,245'],
-    ['#B266E0','#6C3483','178,102,224'],
-    ['#FF4D6A','#A5281B','255,77,106'],
-    ['#22D3C5','#0E8570','34,211,197']
-  ];
-  const pal = WPAL[rowIdx % WPAL.length];
-  const rowBg = isCurrent
-    ? 'linear-gradient(90deg,rgba(251,113,133,.38),rgba(251,113,133,.16))'
-    : `linear-gradient(90deg,rgba(${pal[2]},.20),rgba(${pal[2]},.05))`;
-  const rowBorder = isCurrent ? '3px solid #fda4af' : `3px solid ${pal[0]}`;
-  const glow = isCurrent ? 'box-shadow:inset 0 0 10px rgba(253,164,175,.35);' : '';
-  const line = 'border-bottom:1px solid rgba(120,160,230,.28);';
-  const vr = 'border-right:1px solid rgba(120,160,230,.22);';
-  const num = "font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:7px;white-space:nowrap;";
-    
-  html += `<tr style="background:${rowBg};border-left:${rowBorder};${line}${glow}">
-  <td style="padding:4px 3px;font-size:7.5px;white-space:nowrap;${vr}"><span style="display:inline-block;padding:2px 5px;border-radius:8px;background:linear-gradient(180deg,${pal[0]},${pal[1]});color:#fff;font-weight:800;text-shadow:0 1px 1px rgba(0,0,0,.5);box-shadow:0 1px 3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.35);">${level.name || key}</span></td>
-  <td style="padding:5px 4px;${num}color:#fff;${vr}">${fmtShort(level.collateral || 0)}</td>
-  <td style="padding:5px 4px;text-align:center;font-size:7.5px;white-space:nowrap;color:#cfe3ff;font-weight:700;${vr}">${level.movies || 0}</td>
-  <td style="padding:5px 4px;${num}color:#ffd9a0;${vr}">${fmtShort(level.each || 0)}</td>
-  <td style="padding:5px 4px;${num}color:#5CFF9D;font-weight:800;${vr}">${fmtShort(level.daily || 0)}</td>
-  <td style="padding:5px 4px;${num}color:#66E0FF;font-weight:700;${vr}">${fmtShort(level.monthly || 0)}</td>
-  <td style="padding:5px 4px;${num}color:#fda4af;font-weight:700;">${fmtShort(level.annual || 0)}</td>
+  html += `<tr class="lv-row${isCurrent ? ' lv-cur' : ''}">
+  <td>${level.name || key}</td>
+  <td>${level.collateral ? fmtShort(level.collateral) : ''}</td>
+  <td>${level.movies || 0}</td>
+  <td>${fmtShort(level.each || 0)}</td>
+  <td>${fmtShort(level.daily || 0)}</td>
+  <td>${fmtShort(level.monthly || 0)}</td>
+  <td>${fmtShort(level.annual || 0)}</td>
 </tr>`;
   }
   
