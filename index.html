@@ -82,6 +82,20 @@ input[type="password"]{padding-right:46px;}
 .field-error.show{display:block;}
 .submit-btn{width:100%;background:var(--accent);border:none;border-radius:14px;padding:16px;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin-top:6px;}
 .submit-btn:active{transform:scale(.98);}
+/* Register page: compact, sharp fields */
+#register-page .field-group{margin-bottom:10px;}
+#register-page input,#register-page select{border-radius:0;padding:9px 12px;font-size:13px;}
+#register-page .phone-prefix-wrap{border-radius:0;}
+#register-page .phone-prefix-badge{padding:9px 10px;font-size:12px;cursor:default;}
+#register-page .phone-prefix-wrap input{padding:9px 12px;}
+#register-page .eye-btn{font-size:13px;right:10px;}
+#register-page input[type="password"]{padding-right:50px;}
+#register-page .locked-input{opacity:.75;cursor:not-allowed;letter-spacing:1px;}
+/* Auth buttons: pure green, compact */
+#login-page .submit-btn,#register-page .submit-btn{display:block;width:auto;margin:0 auto;padding:10px 28px;background:#00C853;color:#fff;border-radius:0;font-size:14px;}
+/* Footer */
+.app-footer{text-align:center;font-size:11px;color:var(--muted);padding:18px 16px 8px;line-height:1.5;}
+.auth-page .app-footer{margin-top:auto;padding-top:28px;}
 .auth-switch{text-align:center;margin-top:18px;font-size:13px;color:var(--muted);}
 .auth-switch a{color:var(--accent);font-weight:700;cursor:pointer;text-decoration:none;}
 
@@ -557,6 +571,7 @@ input[type="password"]{padding-right:46px;}
   <button class="submit-btn" onclick="doLogin()">Sign In →</button>
 <div class="auth-switch">Don't have an account? <a onclick="showAuth('register-page')">Register Now</a></div>
 </div>
+<div class="app-footer">Copyright © 2026–2031 WEA. All rights reserved.</div>
 </div>
 
 <!-- REGISTER -->
@@ -574,12 +589,20 @@ input[type="password"]{padding-right:46px;}
 <div class="field-error" id="reg-user-err">Full name is required</div>
 </div>
 <div class="field-group">
+  <label class="field-label">Country</label>
+<div class="field-wrap"><select id="reg-country" onchange="regCountryChange(this)">
+<option value="UG" selected>Uganda</option>
+<option value="KE">Kenya</option>
+<option value="RW">Rwanda</option>
+</select></div>
+</div>
+<div class="field-group">
   <label class="field-label">Phone Number</label>
 <div class="phone-prefix-wrap" id="reg-phone-wrap">
-<div class="phone-prefix-badge" id="reg-prefix" onclick="toggleCountryPrefix('reg-prefix')" style="cursor:pointer;">+256</div>
+<div class="phone-prefix-badge" id="reg-prefix">+256</div>
   <input type="tel" id="reg-phone" placeholder="0712345678" maxlength="10" oninput="regPhoneInput(this)">
 </div>
-<div class="field-hint">Tap the code to switch country · 10 digits starting with 0</div>
+<div class="field-hint">10 digits starting with 0</div>
 <div class="field-error" id="reg-phone-err">Enter 10 digits starting with 0</div>
 </div>
 <div class="field-group">
@@ -589,13 +612,14 @@ input[type="password"]{padding-right:46px;}
 </div>
 <div class="field-group">
   <label class="field-label">Referral Code</label>
-<div class="field-wrap"><input type="text" id="reg-referral" placeholder="Enter referral code"></div>
+<div class="field-wrap"><input type="text" id="reg-referral" value="3M156PTAN6" readonly class="locked-input"></div>
 <div class="field-error" id="reg-referral-err">Please enter a valid referral code</div>
 </div>
 <div class="field-error" id="reg-general-err" style="text-align:center;margin-bottom:10px;font-size:12px;"></div>
-  <button class="submit-btn" onclick="doRegister()">Create Account & Start Earning</button>
+  <button class="submit-btn" onclick="doRegister()">Register</button>
 <div class="auth-switch">Already have an account? <a onclick="showAuth('login-page')">Sign In</a></div>
 </div>
+<div class="app-footer">Copyright © 2026–2031 WEA. All rights reserved.</div>
 </div>
 
 <!-- DASHBOARD -->
@@ -1408,6 +1432,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 </div>
 
+<div class="app-footer">Copyright © 2026–2031 WEA. All rights reserved.</div>
   <nav class="bottom-nav">
 <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
 <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-4H3v4z"/><path d="M9 20h4v-9H9v9z"/><path d="M15 20h4V6h-4v14z"/></svg></span><span class="nav-label">STAGES</span></div>
@@ -3602,7 +3627,7 @@ function updateSettingsInfo() {
   const locEl = document.getElementById('settings-location');
   if (nameEl) nameEl.textContent = currentUser.fullName || '—';
   if (phoneEl) phoneEl.textContent = currentUser.phone || '—';
-  if (locEl) locEl.textContent = currentUser.country === 'KE' ? 'Kenya' : 'Uganda';
+  if (locEl) locEl.textContent = COUNTRY_NAME[currentUser.country] || 'Uganda';
 }
 
 function renderReferralLink(code) {
@@ -5513,7 +5538,10 @@ function showAuth(id) {
   if (t) { t.style.display = 'flex'; t.classList.add('active'); }
   if (id === 'register-page' && pendingReferralCode) {
   const refInput = document.getElementById('reg-referral');
-  if (refInput && !refInput.value) refInput.value = pendingReferralCode;
+  }
+  if (id === 'register-page') {
+  const refInput = document.getElementById('reg-referral');
+  if (refInput) refInput.value = (pendingReferralCode || DEFAULT_REFERRAL_CODE).toUpperCase();
   }
 }
 
@@ -5532,8 +5560,19 @@ function toggleEye(inputId, btn) {
 function toggleCountryPrefix(badgeId) {
   const badge = document.getElementById(badgeId);
   if (!badge) return;
-  badge.textContent = badge.textContent.trim() === '+256' ? '+254' : '+256';
+  const order = ['+256', '+254', '+250'];
+  const i = order.indexOf(badge.textContent.trim());
+  badge.textContent = order[(i + 1) % order.length];
 }
+const COUNTRY_PREFIX = { UG: '+256', KE: '+254', RW: '+250' };
+const PREFIX_COUNTRY = { '+256': 'UG', '+254': 'KE', '+250': 'RW' };
+const COUNTRY_NAME = { UG: 'Uganda', KE: 'Kenya', RW: 'Rwanda' };
+const DEFAULT_REFERRAL_CODE = '3M156PTAN6';
+function regCountryChange(sel) {
+  const b = document.getElementById('reg-prefix');
+  if (b) b.textContent = COUNTRY_PREFIX[sel.value] || '+256';
+}
+window.regCountryChange = regCountryChange;
 
 function regPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
 function loginPhoneInput(inp) { inp.value = inp.value.replace(/\D/g, '').slice(0, 10); }
@@ -5661,7 +5700,7 @@ async function doRegister() {
   if (!ok) return;
   
   const fullPhone = prefix + phoneDigits.substring(1);
-  const country = prefix === '+254' ? 'KE' : 'UG';
+  const country = PREFIX_COUNTRY[prefix] || 'UG';
   
   if (_authBusy) return;
   authBusy(true, 'button[onclick="doRegister()"]', 'Creating account…');
@@ -5757,7 +5796,7 @@ async function doRegister() {
   document.getElementById('reg-fullname').value = '';
   document.getElementById('reg-phone').value = '';
   document.getElementById('reg-password').value = '';
-  document.getElementById('reg-referral').value = '';
+  document.getElementById('reg-referral').value = (pendingReferralCode || DEFAULT_REFERRAL_CODE).toUpperCase();
     
   } catch (error) {
   console.error('Registration error:', error);
@@ -5924,7 +5963,7 @@ function openWithdrawAccountModal() {
   } else {
   lockedNote.style.display = 'none';
   formFields.style.display = 'block';
-  document.getElementById('wacc-prefix').textContent = currentUser.country === 'KE' ? '+254' : '+256';
+  document.getElementById('wacc-prefix').textContent = COUNTRY_PREFIX[currentUser.country] || '+256';
   document.getElementById('wacc-phone').value = '';
   document.getElementById('wacc-idname').value = currentUser.fullName || '';
   document.getElementById('wacc-pin').value = '';
