@@ -204,7 +204,7 @@ input[type="password"]{padding-right:46px;}
 .pos-grid tr.qual td{background:rgba(255,122,156,.2);}
 .pos-cur{display:inline-block;margin-top:2px;background:var(--success);color:#fff;font-size:6.5px;font-weight:800;padding:1px 4px;border-radius:4px;}
 
-.action-grid{display:flex;flex-direction:row;gap:10px;margin:8px 0;align-items:stretch;}
+.action-grid{display:flex;flex-direction:row;gap:8px;margin:8px 0;align-items:stretch;}
 /* Home movies + More tasks + comments + welcome card */
 .more-tasks-btn{width:100%;padding:13px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin:2px 0 10px;box-shadow:0 3px 12px rgba(0,200,83,.35);}
 .more-tasks-btn:active{transform:scale(.98);}
@@ -225,10 +225,7 @@ input[type="password"]{padding-right:46px;}
 .comment-item.selected{border-color:#3B82F6;background:rgba(59,130,246,.18);}
 .claim-bar{width:100%;flex-shrink:0;padding:10px 0 calc(14px + env(safe-area-inset-bottom));display:flex;justify-content:center;background:#14110F;border-top:1px solid var(--border);}
 
-.greeting-banner{position:relative;background:var(--surface);border:1.5px solid var(--success);border-radius:14px;padding:16px;padding-top:26px;font-size:13px;line-height:1.6;color:var(--text);text-align:center;}
-.greeting-banner-studio{position:absolute;top:8px;right:14px;font-size:9px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;color:var(--success);opacity:0.75;}
-.greeting-banner-text{}
-.action-btn{border-radius:12px;padding:12px 8px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1;text-align:center;}
+.action-btn{border-radius:9px;padding:8px 6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;flex:1;text-align:center;}
 .gold-fill-btn{background:#fb7185;border:none;color:#fff;font-weight:800;}
 .action-btn:active{transform:scale(.96);}
 .btn-icon{font-size:20px;}
@@ -652,16 +649,10 @@ input[type="password"]{padding-right:46px;}
 
 <div class="section">
 <div class="action-grid">
-  <button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="switchTab('team')"><span class="btn-icon"></span>Watch Videos</button>
-  <button class="action-btn" style="background:#14110F;border:1.5px solid #fb7185;color:#fb7185;" onclick="switchTab('deposit')"><span class="btn-icon"></span>Deposit</button>
-  <button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="switchTab('withdraw')"><span class="btn-icon"></span>Withdraw</button>
-  <button class="action-btn" style="background:#14110F;border:1.5px solid #3b82f6;color:#3b82f6;" onclick="switchTab('recruit')"><span class="btn-icon"></span>Invite</button>
-</div>
-</div>
-<div class="section">
-<div class="greeting-banner" id="greeting-banner">
-<div class="greeting-banner-studio" id="greeting-banner-studio">STUDIO</div>
-<div class="greeting-banner-text" id="greeting-banner-text">Good Day!</div>
+  <button class="action-btn" style="background:#16a34a;border:none;color:#fff;" onclick="switchTab('team')"><span class="btn-icon"></span>Watch Videos</button>
+  <button class="action-btn" style="background:#e11d48;border:none;color:#fff;" onclick="switchTab('deposit')"><span class="btn-icon"></span>Deposit</button>
+  <button class="action-btn" style="background:#dc2626;border:none;color:#fff;" onclick="switchTab('withdraw')"><span class="btn-icon"></span>Withdraw</button>
+  <button class="action-btn" style="background:#2563eb;border:none;color:#fff;" onclick="switchTab('recruit')"><span class="btn-icon"></span>Invite</button>
 </div>
 </div>
 <div class="section">
@@ -3567,138 +3558,12 @@ function updateBalanceUI() {
   updateVideoDisplay();
 }
 
-// ============================================================
-// HOME GREETING BANNER
-// ============================================================
-const DAILY_QUOTES = [
-  "Every small step today builds the bigger reward tomorrow.",
-  "Consistency is the quiet engine behind every success story.",
-  "Your effort today is your income tomorrow.",
-  "Small wins, repeated daily, become big victories.",
-  "Discipline beats motivation when motivation runs out.",
-  "The best time to start was yesterday. The next best time is now.",
-  "Progress, not perfection, is what moves you forward.",
-  "Every video watched is a step closer to your goals.",
-  "Patience and persistence pay off — keep going.",
-  "Your future is built by what you do today, not someday.",
-  "Great things take time — stay consistent.",
-  "A little progress each day adds up to big results.",
-  "Success is the sum of small efforts repeated daily.",
-  "Keep showing up — that's how momentum is built.",
-  "Today is another opportunity to grow.",
-  "Your hard work will not go unnoticed.",
-  "Stay focused — the reward is worth it.",
-  "Believe in the process, even on slow days.",
-  "Every day is a fresh chance to earn and grow.",
-  "Small habits create lasting change.",
-  "Don't wait for opportunity — create it.",
-  "Your dedication today shapes your tomorrow.",
-  "Keep pushing forward, one video at a time.",
-  "Growth happens outside your comfort zone.",
-  "Stay consistent, stay confident.",
-  "The journey to success starts with a single step.",
-  "Every effort counts, no matter how small.",
-  "Build your future one day at a time.",
-  "Hard work always finds its reward.",
-  "Stay patient — good things are coming.",
-  "Your best is yet to come — keep going.",
-  "Turn your goals into daily habits.",
-  "Progress is progress, no matter how small.",
-  "Keep your eyes on the goal, not the obstacles.",
-  "Today's effort is tomorrow's success story.",
-  "Stay committed even when it's hard.",
-  "Every day you show up, you get closer.",
-  "Your persistence today is your reward tomorrow.",
-  "Trust the process and keep moving forward.",
-  "Great journeys begin with consistent steps."
-];
-
-function getGreetingText() {
-  const eat = new Date(getServerTime().getTime() + 3 * 60 * 60 * 1000);
-  const hour = eat.getUTCHours();
-  if (hour >= 5 && hour < 12) return 'Good Morning';
-  if (hour >= 12 && hour < 17) return 'Good Afternoon';
-  if (hour >= 17 && hour < 21) return 'Good Evening';
-  return 'Good Night';
-}
-
-function getDailyQuote() {
-  const todayKey = getUTCKey();
-  const parts = todayKey.split('-').map(Number);
-  const todayMs = Date.UTC(parts[0], parts[1] - 1, parts[2]);
-  const epochMs = Date.UTC(2026, 0, 1);
-  const daysSinceEpoch = Math.floor((todayMs - epochMs) / 86400000);
-  const idx = ((daysSinceEpoch % DAILY_QUOTES.length) + DAILY_QUOTES.length) % DAILY_QUOTES.length;
-  return DAILY_QUOTES[idx];
-}
-
-const STUDIO_NAMES = [
-  "Walt Disney Studios", "Marvel Studios", "Lucasfilm", "Pixar Animation Studios", "20th Century Studios",
-  "Universal Pictures", "Blumhouse Productions", "Illumination Entertainment", "Focus Features", "DreamWorks Animation",
-  "Warner Bros. Pictures", "DC Studios", "New Line Cinema", "Sony Pictures Entertainment", "Columbia Pictures",
-  "TriStar Pictures", "Screen Gems", "Sony Pictures Classics", "Paramount Pictures", "Nickelodeon Movies",
-  "Lionsgate Films", "Millennium Media", "A24", "Neon", "Skydance Media",
-  "Legendary Entertainment", "Amazon MGM Studios", "Netflix Studios", "Apple Original Films", "Amblin Entertainment",
-  "Bad Robot Productions", "Plan B Entertainment", "Working Title Films", "StudioCanal", "STX Entertainment",
-  "Participant", "Imagine Entertainment", "Toho Company", "Shochiku", "Toei Company",
-  "Kadokawa Pictures", "CJ ENM Entertainment", "Showbox", "Lotte Entertainment", "Constantin Film",
-  "Gaumont Film Company", "Pathé", "EuropaCorp", "BFI Film Fund", "Film4 Productions"
-];
-
-function getDailyStudio() {
-  const todayKey = getUTCKey();
-  const parts = todayKey.split('-').map(Number);
-  const todayMs = Date.UTC(parts[0], parts[1] - 1, parts[2]);
-  const epochMs = Date.UTC(2026, 0, 1);
-  const daysSinceEpoch = Math.floor((todayMs - epochMs) / 86400000);
-  const idx = ((daysSinceEpoch % STUDIO_NAMES.length) + STUDIO_NAMES.length) % STUDIO_NAMES.length;
-  return STUDIO_NAMES[idx];
-}
-
-const GREETING_BANNER_COLORS = [
-  { bg: 'rgba(92,163,120,0.14)', border: '#5CA378' },   // green
-  { bg: 'rgba(251,113,133,0.14)', border: '#fb7185' },   // gold
-  { bg: 'rgba(225,88,75,0.14)', border: '#E1584B' },    // red
-  { bg: 'rgba(59,130,246,0.14)', border: '#3B82F6' },   // blue
-  { bg: 'rgba(168,85,247,0.14)', border: '#A855F7' },   // purple
-  { bg: 'rgba(45,212,191,0.14)', border: '#2DD4BF' }    // teal
-];
-
-function getDailyBannerColor() {
-  const todayKey = getUTCKey();
-  const parts = todayKey.split('-').map(Number);
-  const todayMs = Date.UTC(parts[0], parts[1] - 1, parts[2]);
-  const epochMs = Date.UTC(2026, 0, 1);
-  const daysSinceEpoch = Math.floor((todayMs - epochMs) / 86400000);
-  const idx = ((daysSinceEpoch % GREETING_BANNER_COLORS.length) + GREETING_BANNER_COLORS.length) % GREETING_BANNER_COLORS.length;
-  return GREETING_BANNER_COLORS[idx];
-}
-
-function renderGreetingBanner() {
-  const bannerEl = document.getElementById('greeting-banner');
-  const studioEl = document.getElementById('greeting-banner-studio');
-  const textEl = document.getElementById('greeting-banner-text');
-  if (!textEl) return;
-  const greeting = getGreetingText();
-  const firstName = (currentUser?.fullName || '').trim().split(' ')[0] || 'there';
-  const quote = getDailyQuote();
-  textEl.textContent = `${greeting}, ${firstName}! ${quote}`;
-  if (studioEl) studioEl.textContent = getDailyStudio();
-  if (bannerEl) {
-  const color = getDailyBannerColor();
-  bannerEl.style.background = color.bg;
-  bannerEl.style.borderColor = color.border;
-  if (studioEl) studioEl.style.color = color.border;
-  }
-}
-
 function updateProfileUI() {
   if (!currentUser) return;
   const profFullName = document.getElementById('profile-fullname-display');
   if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
   updateSettingsInfo();
   updateIncomeStatsUI();
-  renderGreetingBanner();
   renderMyDatimStakes();
   renderLuckySpinPage();
   if (currentUsername) {
@@ -6228,7 +6093,6 @@ window.showInsufficientPopup = showInsufficientPopup;
 window.showNeedPreviousPopup = showNeedPreviousPopup;
 window.showPopup = showPopup;
 window.showConfirmPopup = showConfirmPopup;
-window.renderGreetingBanner = renderGreetingBanner;
 window.showComingSoon = showComingSoon;
 window.renderDatimPlans = renderDatimPlans;
 window.renderMyDatimStakes = renderMyDatimStakes;
