@@ -520,6 +520,7 @@ input[type="password"]{padding-right:46px;}
 .datim-account-tab{flex:1;background:transparent;border:none;border-radius:10px;padding:8px 6px;color:var(--muted);font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;cursor:pointer;transition:.2s;line-height:1.6;}
 .datim-account-tab span{font-family:'Inter',sans-serif;font-variant-numeric:tabular-nums;font-size:11px;}
 .datim-account-tab.selected{background:var(--success);color:#0c2415;}
+#luckyspin-wheel-wrap .luckyspin-pointer{border-left-width:10px !important;border-right-width:10px !important;border-top-width:18px !important;}
 .luckyspin-pointer{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:24px solid var(--accent);z-index:5;filter:drop-shadow(0 2px 3px rgba(0,0,0,0.4));}
 
 .tx-empty-state{text-align:center;padding:60px 20px;}
@@ -924,22 +925,22 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 </div>
 
-<div id="luckyspin-no-chances" style="display:none;">
+<div id="luckyspin-wheel-wrap">
+<div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:10px;">Chances available: <strong id="luckyspin-chances-count" style="color:var(--accent);">0</strong></div>
+<div style="position:relative;width:200px;height:200px;margin:0 auto 16px;">
+  <div class="luckyspin-pointer"></div>
+  <svg id="luckyspin-wheel-svg" viewBox="0 0 300 300" style="width:100%;height:100%;transform:rotate(0deg);"></svg>
+</div>
+  <button class="datim-lock-btn" style="width:100%;padding:11px;font-size:14px;border-radius:12px;" id="luckyspin-spin-btn" onclick="spinLuckyWheel()">SPIN</button>
+</div>
+
+<div id="luckyspin-no-chances" style="display:none;margin-top:6px;">
 <div class="tx-empty-state">
 <div class="tx-empty-icon"></div>
 <div class="tx-empty-title">No Spin Chances</div>
 <div class="tx-empty-text" id="luckyspin-referral-progress">Referral Progress: 0 direct referrals upgraded today.</div>
 </div>
   <button class="green-btn" style="width:100%;margin-top:14px;" id="luckyspin-contact-support-btn" onclick="openSupportForLuckySpin()">Contact Support</button>
-</div>
-
-<div id="luckyspin-wheel-wrap" style="display:none;">
-<div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px;">Chances available: <strong id="luckyspin-chances-count" style="color:var(--accent);">0</strong></div>
-<div style="position:relative;width:280px;height:280px;margin:0 auto 22px;">
-  <div class="luckyspin-pointer"></div>
-  <svg id="luckyspin-wheel-svg" viewBox="0 0 300 300" style="width:100%;height:100%;transform:rotate(0deg);"></svg>
-</div>
-  <button class="datim-lock-btn" style="width:100%;padding:14px;font-size:15px;border-radius:12px;" id="luckyspin-spin-btn" onclick="spinLuckyWheel()">SPIN</button>
 </div>
 
 <div style="margin-top:22px;">
@@ -4030,16 +4031,17 @@ function renderLuckySpinPage() {
   : `Referral Progress: ${todayCount} direct ${refWord} upgraded to a VM level today. Get referrals to upgrade to qualify for spin chances.`;
   }
     
-  if (chances > 0) {
-  noChancesEl.style.display = 'none';
   wheelWrapEl.style.display = 'block';
   const countEl = document.getElementById('luckyspin-chances-count');
   if (countEl) countEl.textContent = chances;
   renderLuckySpinWheel();
-  } else {
-  noChancesEl.style.display = 'block';
-  wheelWrapEl.style.display = 'none';
+  const spinBtn = document.getElementById('luckyspin-spin-btn');
+  if (spinBtn) {
+  spinBtn.disabled = chances <= 0;
+  spinBtn.style.opacity = chances > 0 ? '1' : '0.45';
+  spinBtn.style.cursor = chances > 0 ? 'pointer' : 'not-allowed';
   }
+  noChancesEl.style.display = chances > 0 ? 'none' : 'block';
 
   renderLuckySpinPrizesGrid();
 }
