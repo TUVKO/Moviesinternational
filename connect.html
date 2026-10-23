@@ -528,6 +528,11 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="page-title">Support Chat</div>
 <div class="page-sub">Reply to user messages</div>
 <div id="support-chat-list-view">
+<div class="table-wrap" style="padding:14px;margin-bottom:14px;">
+<div style="font-weight:700;font-size:13px;margin-bottom:8px;">Message a user</div>
+  <input type="text" class="f-input" id="sc-user-search" placeholder="Search any user by name or phone..." style="width:100%;" oninput="scUserSearch(this.value)" autocomplete="off">
+<div id="sc-search-results" style="margin-top:8px;"></div>
+</div>
 <div class="table-wrap">
 <div class="table-header">
 <div class="table-title">Conversations</div>
@@ -2065,6 +2070,7 @@ function renderUsersTable() {
   <td><span class="badge ${u.locked ? 'badge-locked' : 'badge-active'}">${u.locked ? 'Locked' : 'Active'}</span></td>
   <td style="display:flex;gap:6px;flex-wrap:wrap;">
   <button class="btn btn-edit" onclick="openEditModal('${sk}')">Edit</button>
+  <button class="btn btn-save" onclick="startChatWithUser('${sk}')">Message</button>
   <button class="btn ${u.locked ? 'btn-approve' : 'btn-reject'}" onclick="toggleLock('${sk}', ${!u.locked})">${u.locked ? 'Unlock' : 'Lock'}</button>
   <button class="btn btn-reject" onclick="confirmResetUserData('${sk}', '${(displayName || '').replace(/'/g, "\\'")}', '${(u.phone || '').replace(/'/g, "\\'")}')">Reset Data</button>
   <button class="btn btn-delete" onclick="deleteUser('${sk}')">Delete</button>
@@ -2594,6 +2600,47 @@ function clearActiveSupportChat() {
 }
 
 const emptyChatsRemoving = new Set();
+let pendingChatStub = null;
+
+function scUserSearch(val) {
+  const box = document.getElementById('sc-search-results');
+  if (!box) return;
+  const q = String(val || '').trim().toLowerCase();
+  if (q.length < 2) { box.innerHTML = ''; return; }
+  const matches = Object.entries(allUsers).filter(([k, u]) =>
+  (u.fullName && u.fullName.toLowerCase().includes(q)) ||
+  (u.username && u.username.toLowerCase().includes(q)) ||
+  (u.phone && String(u.phone).toLowerCase().includes(q)) ||
+  k.toLowerCase().includes(q)
+  ).slice(0, 8);
+  if (!matches.length) { box.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:6px 2px;">No users found</div>'; return; }
+  box.innerHTML = matches.map(([k, u]) =>
+  '<div class="sc-list-row" onclick="startChatWithUser(\'' + k.replace(/'/g, "\\'") + '\')">' +
+  '<div style="flex:1;min-width:0;"><div style="font-weight:700;font-size:13px;">' + escapeHtml(u.fullName || u.username || 'User') + '</div></div>' +
+  '<div style="font-size:11px;color:var(--muted);">' + escapeHtml(u.phone || k) + '</div>' +
+  '</div>'
+  ).join('');
+}
+
+function startChatWithUser(userKey) {
+  const u = allUsers[userKey];
+  if (!u) { toast('User not found', '#f87171'); return; }
+  const existing = allSupportChats[userKey];
+  const hasMsgs = existing && existing.messages && Object.keys(existing.messages).length;
+  pendingChatStub = hasMsgs ? null : {
+  key: userKey,
+  data: { userFullName: u.fullName || u.username || 'User', userPhone: u.phone || userKey, messages: {} }
+  };
+  showPage('pg-support-chat');
+  const si = document.getElementById('sc-user-search');
+  if (si) si.value = '';
+  const sr = document.getElementById('sc-search-results');
+  if (sr) sr.innerHTML = '';
+  openSupportChatThread(userKey);
+}
+window.scUserSearch = scUserSearch;
+window.startChatWithUser = startChatWithUser;
+
 function removeEmptySupportChats() {
   Object.entries(allSupportChats).forEach(([k, c]) => {
   const hasMsgs = c && c.messages && Object.keys(c.messages).length;
@@ -2648,12 +2695,13 @@ function openSupportChatThread(userKey) {
 
 function closeSupportChatThread() {
   activeSupportChatUser = null;
+  pendingChatStub = null;
   document.getElementById('support-chat-list-view').style.display = 'block';
   document.getElementById('support-chat-thread-view').style.display = 'none';
 }
 
 function renderSupportChatThread(userKey) {
-  const chat = allSupportChats[userKey];
+  const chat = allSupportChats[userKey] || (pendingChatStub && pendingChatStub.key === userKey ? pendingChatStub.data : null);
   if (!chat) { closeSupportChatThread(); return; }
   const nameEl = document.getElementById('sc-thread-name');
   const phoneEl = document.getElementById('sc-thread-phone');
@@ -2695,6 +2743,10 @@ async function sendAdminSupportReply() {
   [chatBase + '/unreadForAdmin']: false,
   [chatBase + '/messages/' + msgId]: adminMsg
   };
+  if (pendingChatStub && pendingChatStub.key === userKey) {
+  chatUpdates[chatBase + '/userFullName'] = pendingChatStub.data.userFullName;
+  chatUpdates[chatBase + '/userPhone'] = pendingChatStub.data.userPhone;
+  }
   if (imageData) chatUpdates['supportImages/' + userKey + '/' + msgId] = imageData;
   try {
   await db.ref().update(chatUpdates);
@@ -2708,6 +2760,7 @@ async function sendAdminSupportReply() {
   }
   input.value = '';
   clearAdminChatImage();
+  if (pendingChatStub && pendingChatStub.key === userKey) pendingChatStub = null;
   } catch (error) {
   console.error('Error sending admin reply:', error);
   toast('Failed to send reply', '#f87171');
