@@ -83,6 +83,7 @@ input[type="password"]{padding-right:46px;}
 .stat-card-val{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;}
 .stat-card-val.green{color:var(--accent)}.stat-card-val.emerald{color:var(--success)}.stat-card-val.gold{color:var(--gold)}.stat-card-val.red{color:var(--warn)}.stat-card-val.amber{color:var(--accent2)}.stat-card-val.purple{color:#9B59B6}.stat-card-val.blue{color:#3498DB}
 .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px;}
+.chat-bubble-user,.chat-bubble-admin{white-space:pre-wrap;word-break:break-word;}
 .chat-bubble-user{background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;color:var(--text);max-width:80%;align-self:flex-start;}
 .chat-bubble-admin{background:var(--accent);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:13px;color:#14110F;font-weight:600;max-width:80%;align-self:flex-end;text-align:right;}
 .sc-list-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;}
@@ -555,9 +556,9 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
   <button type="button" onclick="clearAdminChatImage()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;">✕</button>
 </div>
 <input type="file" id="sc-img-file" accept="image/*" style="display:none;" onchange="pickAdminChatImage(this)">
-<div style="display:flex;gap:8px;">
+<div style="display:flex;gap:8px;align-items:flex-end;">
   <button type="button" class="btn btn-edit" onclick="document.getElementById('sc-img-file').click()" style="font-size:16px;">📎</button>
-  <input type="text" id="sc-reply-input" placeholder="Type a reply..." class="f-input" style="flex:1;" onkeydown="if(event.key==='Enter')sendAdminSupportReply()">
+  <textarea id="sc-reply-input" rows="1" placeholder="Type a reply..." class="f-input" oninput="autoGrowChatBox(this)" style="flex:1;min-width:0;resize:none;overflow-y:auto;max-height:120px;line-height:1.4;font-family:inherit;"></textarea>
   <button class="btn btn-save" onclick="sendAdminSupportReply()">Send</button>
 </div>
 </div>
@@ -2724,6 +2725,13 @@ function renderSupportChatThread(userKey) {
   hydrateChatImages(msgsEl);
 }
 
+function autoGrowChatBox(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+window.autoGrowChatBox = autoGrowChatBox;
+
 async function sendAdminSupportReply() {
   const input = document.getElementById('sc-reply-input');
   if (!input || !activeSupportChatUser) return;
@@ -2759,6 +2767,7 @@ async function sendAdminSupportReply() {
   await db.ref().update(chatUpdates);
   }
   input.value = '';
+  autoGrowChatBox(input);
   clearAdminChatImage();
   if (pendingChatStub && pendingChatStub.key === userKey) pendingChatStub = null;
   } catch (error) {

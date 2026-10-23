@@ -177,6 +177,7 @@ input[type="password"]{padding-right:46px;}
 .profile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .profile-menu-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 8px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;}
 .profile-menu-btn:active{transform:scale(.97);}
+.chat-bubble-bot,.chat-bubble-user{white-space:pre-wrap;word-break:break-word;}
 .chat-bubble-bot{background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:13px;color:var(--text);margin-bottom:14px;max-width:85%;}
 .chat-bubble-user{background:var(--accent);border-radius:14px 14px 4px 14px;padding:12px 16px;font-size:13px;color:#14110F;font-weight:600;margin-bottom:14px;max-width:85%;margin-left:auto;text-align:right;}
 .support-options-wrap{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
@@ -1215,9 +1216,9 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
   <button type="button" onclick="clearSupportImage()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;border-radius:50%;border:none;background:#ef4444;color:#fff;font-weight:800;cursor:pointer;">✕</button>
 </div>
 <input type="file" id="support-img-file" accept="image/*" style="display:none;" onchange="pickSupportImage(this)">
-<div style="display:flex;gap:8px;margin-top:10px;">
+<div style="display:flex;gap:8px;margin-top:10px;align-items:flex-end;">
   <button type="button" onclick="document.getElementById('support-img-file').click()" style="width:42px;flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-size:18px;cursor:pointer;color:var(--text);">📎</button>
-  <input type="text" id="support-msg-input" placeholder="Type a message..." style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;" onkeydown="if(event.key==='Enter')sendSupportMessage()">
+  <textarea id="support-msg-input" rows="1" placeholder="Type a message..." oninput="autoGrowChatBox(this)" style="flex:1;min-width:0;resize:none;overflow-y:auto;max-height:120px;line-height:1.4;font-family:inherit;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;"></textarea>
   <button class="green-btn" style="width:auto;padding:10px 18px;margin:0;" onclick="sendSupportMessage()">Send</button>
 </div>
 </div>
@@ -2418,6 +2419,13 @@ function renderSupportThread(messages) {
   hydrateChatImages(thread);
 }
 
+function autoGrowChatBox(el) {
+  if (!el) return;
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+window.autoGrowChatBox = autoGrowChatBox;
+
 async function sendSupportMessage() {
   const input = document.getElementById('support-msg-input');
   if (!input) return;
@@ -2468,6 +2476,7 @@ async function sendSupportMessage() {
   }
   input.value = '';
   input.readOnly = false;
+  autoGrowChatBox(input);
   clearSupportImage();
   if (isPrizeClaim) {
   prizeClaimPending = false;
@@ -4319,6 +4328,7 @@ function openSupportForLuckySpin() {
   if (input) {
   input.value = msg;
   input.readOnly = true;
+  autoGrowChatBox(input);
   }
   }, 50);
 }
@@ -4338,6 +4348,7 @@ function openSupportForPrizeClaim(segment) {
   if (input) {
   input.value = msg;
   input.readOnly = true;
+  autoGrowChatBox(input);
   }
   }, 50);
 }
