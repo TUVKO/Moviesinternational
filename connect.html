@@ -808,6 +808,31 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 </div>
 
+  <!-- MarzSMS API (password reset codes) -->
+<div class="settings-section">
+<div class="settings-title">MarzSMS (Password Reset Codes)</div>
+<div class="settings-sub">Paste your MarzSMS <strong>API Key</strong> and <strong>Secret</strong> from sms.wearemarz.com. They are used by the server only to text reset codes.</div>
+<div class="settings-row">
+  <span class="settings-label">API Key</span>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="password" class="settings-input mono" id="sms-api-key-input" placeholder="sk_..." autocomplete="off">
+  <button class="btn btn-edit" onclick="toggleApiKeyVisibility('sms-api-key-input')" style="padding:6px 12px;">Show</button>
+</div>
+</div>
+<div class="settings-row">
+  <span class="settings-label">Secret</span>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="password" class="settings-input mono" id="sms-api-secret-input" placeholder="Secret (password)" autocomplete="off">
+  <button class="btn btn-edit" onclick="toggleApiKeyVisibility('sms-api-secret-input')" style="padding:6px 12px;">Show</button>
+</div>
+  <button class="btn btn-save" onclick="saveSmsConfig()">Save</button>
+</div>
+<div class="settings-row">
+  <span class="settings-label">Status</span>
+<div id="sms-status-badge" style="font-size:12px;color:var(--muted);">Checking...</div>
+</div>
+</div>
+
   <!-- Deposit & Withdrawal Settings -->
 <div class="settings-section">
 <div class="settings-title">Deposit & Withdrawal Settings</div>
@@ -2907,6 +2932,44 @@ async function saveMarzApiKey() {
   document.getElementById('marz-api-key-input').value = val;
   toast('MarzPay API key saved');
 }
+
+async function refreshSmsStatus() {
+  const badge = document.getElementById('sms-status-badge');
+  if (!badge) return;
+  try {
+  const snap = await db.ref('smsConfig/apiKey').get();
+  if (snap.exists() && String(snap.val()).length > 5) {
+  badge.textContent = 'API Key Set';
+  badge.style.color = 'var(--success)';
+  } else {
+  badge.textContent = 'Not Set';
+  badge.style.color = 'var(--muted)';
+  }
+  } catch (e) {
+  badge.textContent = 'Unknown';
+  }
+}
+
+async function saveSmsConfig() {
+  const keyEl = document.getElementById('sms-api-key-input');
+  const secEl = document.getElementById('sms-api-secret-input');
+  const apiKey = keyEl.value.trim();
+  const apiSecret = secEl.value.trim();
+  if (!apiKey || !apiSecret) { toast('Enter both the API Key and the Secret', '#f87171'); return; }
+  try {
+  await db.ref('smsConfig').set({ apiKey: apiKey, apiSecret: apiSecret, updatedAt: Date.now() });
+  keyEl.value = '';
+  secEl.value = '';
+  keyEl.type = 'password';
+  secEl.type = 'password';
+  toast('MarzSMS keys saved');
+  refreshSmsStatus();
+  } catch (e) {
+  toast('Could not save. Check your database rules.', '#f87171');
+  }
+}
+window.saveSmsConfig = saveSmsConfig;
+setTimeout(refreshSmsStatus, 1500);
 
 async function saveMinDeposit() {
   const v = parseInt(document.getElementById('min-deposit-input').value) || 10000;
