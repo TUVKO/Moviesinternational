@@ -362,6 +362,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="nav-item" onclick="showPage('pg-positions')"><span class="nav-icon">💼</span><span>Positions</span></div>
 <div class="nav-item" onclick="showPage('pg-announcements')"><span class="nav-icon">📢</span><span>Announcements</span></div>
 <div class="nav-item" onclick="showPage('pg-settings')"><span class="nav-icon">⚙️</span><span>Settings</span></div>
+<div class="nav-item" onclick="showPage('pg-rukapay')"><span class="nav-icon">📲</span><span>RukaPay</span></div>
 </div>
 <div class="sidebar-footer">
   <button class="logout-btn" onclick="adminLogout()">Logout</button>
@@ -525,6 +526,45 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 
   <!-- SUPPORT CHAT -->
+<div class="page" id="pg-rukapay">
+<div class="page-title">RukaPay</div>
+<div class="page-sub">Send money to mobile money and see RukaPay activity</div>
+<div class="table-wrap" style="padding:14px;margin-bottom:14px;">
+<div style="font-size:12px;color:var(--muted);">Escrow wallet (from the last payout)</div>
+<div style="font-size:22px;font-weight:800;margin:4px 0;" id="ruka-wallet">—</div>
+<div style="font-size:11px;color:var(--muted);" id="ruka-wallet-note">The exact balance is always in your RukaPay portal.</div>
+</div>
+<div class="table-wrap" style="padding:14px;margin-bottom:14px;">
+<div style="font-weight:700;font-size:13px;margin-bottom:10px;">Send to Mobile Money</div>
+<div class="settings-row">
+  <span class="settings-label">Phone</span>
+  <input type="tel" class="f-input" id="ruka-pay-phone" placeholder="07XXXXXXXX" maxlength="10" oninput="rukaPayReset()" style="flex:1;min-width:180px;">
+</div>
+<div class="settings-row">
+  <span class="settings-label">Amount (UGX)</span>
+  <input type="number" class="f-input" id="ruka-pay-amount" placeholder="e.g. 20000" style="flex:1;min-width:180px;">
+</div>
+<div class="settings-row">
+  <span class="settings-label">Admin PIN</span>
+  <input type="password" class="f-input" id="ruka-pin2-input" placeholder="PIN" autocomplete="off" style="flex:1;min-width:180px;">
+</div>
+<div id="ruka-pay-name" style="font-size:13px;font-weight:700;margin:6px 0 10px;min-height:18px;"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;">
+  <button class="btn btn-edit" onclick="rukaPayCheck()">Check number</button>
+  <button class="btn btn-save" id="ruka-pay-send-btn" onclick="rukaPaySend()" disabled>Send money</button>
+</div>
+<div style="font-size:11px;color:var(--muted);margin-top:8px;">The money and RukaPay's fee come out of your RukaPay escrow wallet. In Sandbox nothing real is sent.</div>
+</div>
+<div class="table-wrap" style="padding:14px;margin-bottom:14px;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><div style="font-weight:700;font-size:13px;">Payouts</div><button class="btn btn-edit" onclick="renderRukaPage()" style="padding:6px 12px;">Refresh</button></div>
+<div id="ruka-payouts-list" style="font-size:12px;"></div>
+</div>
+<div class="table-wrap" style="padding:14px;margin-bottom:14px;">
+<div style="font-weight:700;font-size:13px;margin-bottom:8px;">Deposits</div>
+<div id="ruka-deposits-list" style="font-size:12px;"></div>
+</div>
+</div>
+
 <div class="page" id="pg-support-chat">
 <div class="page-title">Support Chat</div>
 <div class="page-sub">Reply to user messages</div>
@@ -836,6 +876,53 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row">
   <span class="settings-label">Status</span>
 <div id="sms-status-badge" style="font-size:12px;color:var(--muted);">Checking...</div>
+</div>
+</div>
+
+  <!-- RukaPay -->
+<div class="settings-section">
+<div class="settings-title">RukaPay (3rd deposit method)</div>
+<div class="settings-sub">All changes here are sent to your RukaPay Worker and need your admin PIN. The API key is stored on the server, never in the app.</div>
+<div class="settings-row">
+  <span class="settings-label">Worker URL</span>
+  <input type="text" class="settings-input mono" id="ruka-worker-url" placeholder="https://wea-pay.yourname.workers.dev" oninput="rukaSaveWorkerUrl(this.value)" autocomplete="off" style="flex:1;min-width:200px;">
+</div>
+<div class="settings-row">
+  <span class="settings-label">Admin PIN</span>
+  <input type="password" class="settings-input mono" id="ruka-pin-input" placeholder="PIN (kept until you close this page)" autocomplete="off" style="flex:1;min-width:200px;">
+</div>
+<div class="settings-row">
+  <span class="settings-label">Users see RukaPay</span>
+<div style="display:flex;align-items:center;gap:10px;">
+<div id="ruka-open-status" style="font-weight:800;font-size:13px;">CLOSED</div>
+  <button class="btn btn-approve" onclick="rukaSetOpen(true)">Open</button>
+  <button class="btn btn-reject" onclick="rukaSetOpen(false)">Close</button>
+</div>
+</div>
+<div class="settings-row">
+  <span class="settings-label">Mode</span>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+<select class="settings-input" id="ruka-mode-select" style="width:auto;"><option value="sandbox">Sandbox (test, no real money)</option><option value="live">Live (real money)</option></select>
+</div>
+</div>
+<div class="settings-row">
+  <span class="settings-label">Test account</span>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="tel" class="settings-input mono" id="ruka-test-user" placeholder="07XXXXXXXX (only this user sees it in Sandbox)" maxlength="10" autocomplete="off">
+  <button class="btn btn-save" onclick="rukaSaveMode()">Save</button>
+</div>
+</div>
+<div class="settings-row">
+  <span class="settings-label">API Key</span>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="password" class="settings-input mono" id="ruka-api-key-input" placeholder="RukaPay API key" autocomplete="off">
+  <button class="btn btn-edit" onclick="toggleApiKeyVisibility('ruka-api-key-input')" style="padding:6px 12px;">Show</button>
+  <button class="btn btn-save" onclick="rukaSaveKey()">Save</button>
+</div>
+</div>
+<div class="settings-row">
+  <span class="settings-label">Status</span>
+<div id="ruka-status-badge" style="font-size:12px;color:var(--muted);">Not set</div>
 </div>
 </div>
 
@@ -2928,6 +3015,7 @@ async function autoExpireStaleWithdrawals() {
 // ============================================================
 function loadSettingsUI() {
   const s = allSettings;
+  try { renderRukaCard(); } catch (e) {}
   document.getElementById('min-deposit-input').value = s.minDeposit || 61000;
   document.getElementById('min-withdraw-input').value = s.minWithdraw || 10000;
   document.getElementById('with-charge-input').value = s.withdrawCharge || 10;
@@ -3032,6 +3120,161 @@ async function saveSmsConfig() {
 }
 window.saveSmsConfig = saveSmsConfig;
 setTimeout(refreshSmsStatus, 1500);
+
+// ============================================================
+// RUKAPAY
+// ============================================================
+let rukaPin = '';
+let rukaVerified = null; // { phone, name }
+
+function rukaWorkerUrl() {
+  return (localStorage.getItem('rukaWorkerUrl') || (allSettings && allSettings.rukaWorkerUrl) || '').trim().replace(/\/+$/, '');
+}
+function rukaSaveWorkerUrl(v) {
+  try { localStorage.setItem('rukaWorkerUrl', String(v || '').trim()); } catch (e) {}
+}
+function rukaGetPin() {
+  for (const id of ['ruka-pin-input', 'ruka-pin2-input']) {
+  const el = document.getElementById(id);
+  if (el && el.value.trim()) return el.value.trim();
+  }
+  return rukaPin;
+}
+async function rukaApi(path, payload) {
+  const base = rukaWorkerUrl();
+  if (!base) { toast('Enter the Worker URL first', '#f87171'); return null; }
+  const pin = rukaGetPin();
+  if (!pin) { toast('Enter the admin PIN', '#f87171'); return null; }
+  try {
+  const r = await fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, pin }) });
+  const d = await r.json();
+  if (d.ok) rukaPin = pin;
+  if (d.error === 'bad_pin') { rukaPin = ''; toast('Wrong PIN, or too many tries', '#f87171'); }
+  return d;
+  } catch (e) {
+  toast('Could not reach the Worker', '#f87171');
+  return null;
+  }
+}
+function renderRukaCard() {
+  const s = allSettings || {};
+  const urlEl = document.getElementById('ruka-worker-url');
+  if (urlEl && document.activeElement !== urlEl) urlEl.value = localStorage.getItem('rukaWorkerUrl') || s.rukaWorkerUrl || '';
+  const openEl = document.getElementById('ruka-open-status');
+  if (openEl) {
+  openEl.textContent = s.rukaOpen ? 'OPEN' : 'CLOSED';
+  openEl.style.color = s.rukaOpen ? 'var(--success)' : 'var(--warn)';
+  }
+  const modeEl = document.getElementById('ruka-mode-select');
+  if (modeEl && document.activeElement !== modeEl) modeEl.value = s.rukaMode === 'live' ? 'live' : 'sandbox';
+  const testEl = document.getElementById('ruka-test-user');
+  if (testEl && document.activeElement !== testEl) testEl.value = s.rukaTestUser ? '0' + String(s.rukaTestUser).replace(/^\+256/, '') : '';
+  const badge = document.getElementById('ruka-status-badge');
+  if (badge) {
+  badge.textContent = (s.rukaKeySet ? 'API key saved' : 'API key not set') + ' · ' + (s.rukaMode === 'live' ? 'LIVE' : 'Sandbox');
+  badge.style.color = s.rukaKeySet ? 'var(--success)' : 'var(--muted)';
+  }
+}
+async function rukaSaveKey() {
+  const el = document.getElementById('ruka-api-key-input');
+  const key = el.value.trim();
+  if (!key) { toast('Paste the RukaPay API key', '#f87171'); return; }
+  const d = await rukaApi('/ruka/config', { apiKey: key });
+  if (d && d.ok) { el.value = ''; el.type = 'password'; toast('API key saved'); }
+  else if (d && d.error !== 'bad_pin') toast('Could not save the key', '#f87171');
+}
+async function rukaSetOpen(open) {
+  const d = await rukaApi('/ruka/config', { open: !!open });
+  if (d && d.ok) toast(open ? 'RukaPay is OPEN for users' : 'RukaPay is CLOSED. Users no longer see it');
+  else if (d && d.error !== 'bad_pin') toast('Could not change it', '#f87171');
+}
+async function rukaSaveMode() {
+  const mode = document.getElementById('ruka-mode-select').value;
+  const test = document.getElementById('ruka-test-user').value.trim();
+  if (mode === 'live' && !confirm('Switch to LIVE? Real money will move.')) return;
+  if (test && !/^07\d{8}$/.test(test)) { toast('Test account must be 10 digits starting with 07', '#f87171'); return; }
+  const d = await rukaApi('/ruka/config', { mode, testUser: test });
+  if (d && d.ok) toast('Saved: ' + (d.mode === 'live' ? 'LIVE' : 'Sandbox'));
+  else if (d && d.error !== 'bad_pin') toast('Could not save', '#f87171');
+}
+
+// ----- payouts page -----
+function rukaPayReset() {
+  rukaVerified = null;
+  const n = document.getElementById('ruka-pay-name'); if (n) { n.textContent = ''; n.style.color = ''; }
+  const b = document.getElementById('ruka-pay-send-btn'); if (b) b.disabled = true;
+}
+async function rukaPayCheck() {
+  const phone = document.getElementById('ruka-pay-phone').value.trim();
+  if (!/^07\d{8}$/.test(phone)) { toast('Phone must be 10 digits starting with 07', '#f87171'); return; }
+  const d = await rukaApi('/ruka/payout', { action: 'validate', phone });
+  const n = document.getElementById('ruka-pay-name');
+  if (!d) return;
+  if (d.ok) {
+  rukaVerified = { phone, name: d.name || '' };
+  n.style.color = 'var(--success)';
+  n.textContent = (d.name || 'Name not available') + ' · ' + (d.provider || '');
+  document.getElementById('ruka-pay-send-btn').disabled = false;
+  } else if (d.error !== 'bad_pin') {
+  n.style.color = 'var(--warn)';
+  n.textContent = 'Number not valid';
+  }
+}
+async function rukaPaySend() {
+  if (!rukaVerified) { toast('Check the number first', '#f87171'); return; }
+  const amount = parseInt(document.getElementById('ruka-pay-amount').value) || 0;
+  if (amount < 100) { toast('Enter an amount of at least UGX 100', '#f87171'); return; }
+  if (!confirm('Send ' + fmt(amount) + ' to ' + (rukaVerified.name || rukaVerified.phone) + ' (' + rukaVerified.phone + ')?')) return;
+  const btn = document.getElementById('ruka-pay-send-btn');
+  btn.disabled = true;
+  const d = await rukaApi('/ruka/payout', { action: 'send', phone: rukaVerified.phone, amount, name: rukaVerified.name });
+  if (d && d.ok) {
+  toast(d.status === 'success' ? 'Sent ' + fmt(amount) : 'Payout is processing');
+  document.getElementById('ruka-pay-amount').value = '';
+  rukaPayReset();
+  renderRukaPage();
+  } else {
+  if (d && d.error !== 'bad_pin') toast('Payout failed' + (d.message ? ': ' + d.message : ''), '#f87171');
+  btn.disabled = false;
+  }
+}
+function rukaStatusColor(st) {
+  return st === 'success' || st === 'completed' ? 'var(--success)' : (st === 'failed' ? 'var(--warn)' : 'var(--muted)');
+}
+async function renderRukaPage() {
+  try {
+  const w = (await db.ref('rukaStatus/wallet').get()).val();
+  const we = document.getElementById('ruka-wallet');
+  const wn = document.getElementById('ruka-wallet-note');
+  if (w && typeof w.balance === 'number') {
+  we.textContent = fmt(w.balance);
+  wn.textContent = (w.mode === 'sandbox' ? 'Sandbox figure, not your real balance. ' : '') + 'Updated after the last payout.';
+  } else { we.textContent = '—'; }
+  const rows = (obj) => Object.values(obj || {}).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 25);
+  const po = (await db.ref('rukaPayouts').limitToLast(30).get()).val();
+  document.getElementById('ruka-payouts-list').innerHTML = rows(po).map(p =>
+  '<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);">' +
+  '<div><b>' + escapeHtml(p.name || p.phone) + '</b><div style="color:var(--muted);">' + escapeHtml(p.phone) + ' · ' + escapeHtml(p.date || '') + (p.mode === 'sandbox' ? ' · test' : '') + '</div></div>' +
+  '<div style="text-align:right;"><b>' + fmt(p.amount) + '</b><div style="color:' + rukaStatusColor(p.status) + ';">' + escapeHtml(p.status) + '</div></div></div>'
+  ).join('') || '<div style="color:var(--muted);">No payouts yet</div>';
+  const de = (await db.ref('rukaDeposits').limitToLast(30).get()).val();
+  document.getElementById('ruka-deposits-list').innerHTML = rows(de).map(p =>
+  '<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);">' +
+  '<div><b>' + escapeHtml(p.userKey) + '</b><div style="color:var(--muted);">' + escapeHtml(p.phone) + (p.mode === 'sandbox' ? ' · test' : '') + '</div></div>' +
+  '<div style="text-align:right;"><b>' + fmt(p.amount) + '</b><div style="color:' + rukaStatusColor(p.status) + ';">' + escapeHtml(p.status) + '</div></div></div>'
+  ).join('') || '<div style="color:var(--muted);">No deposits yet</div>';
+  } catch (e) {
+  document.getElementById('ruka-payouts-list').innerHTML = '<div style="color:var(--muted);">Could not load. Check your database rules.</div>';
+  }
+}
+window.rukaSaveWorkerUrl = rukaSaveWorkerUrl;
+window.rukaSaveKey = rukaSaveKey;
+window.rukaSetOpen = rukaSetOpen;
+window.rukaSaveMode = rukaSaveMode;
+window.rukaPayReset = rukaPayReset;
+window.rukaPayCheck = rukaPayCheck;
+window.rukaPaySend = rukaPaySend;
+window.renderRukaPage = renderRukaPage;
 
 async function saveMinDeposit() {
   const v = parseInt(document.getElementById('min-deposit-input').value) || 10000;
@@ -3712,7 +3955,7 @@ function showPage(id) {
   document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-positions': 11, 'pg-announcements': 12, 'pg-settings': 13 };
+  const map = { 'pg-dashboard': 0, 'pg-users': 1, 'pg-transactions': 2, 'pg-withdrawals': 3, 'pg-admin-withdrawal': 4, 'pg-manual-deposits': 5, 'pg-support-chat': 6, 'pg-videos': 7, 'pg-levels': 8, 'pg-datim': 9, 'pg-luckyspin': 10, 'pg-positions': 11, 'pg-announcements': 12, 'pg-settings': 13, 'pg-rukapay': 14 };
   if (map[id] !== undefined) document.querySelectorAll('.nav-item')[map[id]].classList.add('active');
   if (id === 'pg-dashboard') renderDashboard();
   if (id === 'pg-users') renderUsersTable();
@@ -3723,6 +3966,7 @@ function showPage(id) {
   if (id === 'pg-videos') renderAdminVideosTable();
   if (id === 'pg-levels') renderLevelsAdminTable();
   if (id === 'pg-datim') renderDatimPlansAdminTable();
+  if (id === 'pg-rukapay') renderRukaPage();
   if (id === 'pg-luckyspin') renderLuckySpinAdminPage();
   if (id === 'pg-positions') renderPositionsAdminTable();
   if (id === 'pg-announcements') { annBuildStyleGrid(); annUpdatePreview(); loadAnnouncementsAdmin(); }

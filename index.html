@@ -97,6 +97,7 @@ input[type="password"]{padding-right:46px;}
 /* Footer */
 .app-footer{text-align:center;font-size:11px;color:var(--muted);padding:18px 16px 8px;line-height:1.5;}
 .auth-page .app-footer{margin-top:auto;padding-top:28px;}
+#ruka-pay-btn:disabled{opacity:.45;cursor:not-allowed;}
 /* Send Payment page (TIXAN) */
 .tp-amt{background:linear-gradient(160deg,#fb7185,#e11d48);border-radius:14px 14px 0 0;padding:18px 18px 22px;color:#fff;}
 .tp-amt small{font-size:12px;opacity:.9;}
@@ -1343,6 +1344,10 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="deposit-method-name">Superior Recharge</div>
 <div class="deposit-method-sub">Alternative recharge method</div>
 </div>
+<div class="deposit-method-card" id="dep-method-ruka" style="display:none;" onclick="selectDepositMethod('ruka')">
+<div class="deposit-method-name">RukaPay</div>
+<div class="deposit-method-sub">Approve the payment on your phone</div>
+</div>
 <div class="deposit-method-card" onclick="selectDepositMethod('tixan')">
 <div class="deposit-method-name">TIXAN PAY</div>
 <div class="deposit-method-sub">Mobile money deposit</div>
@@ -1498,6 +1503,31 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
   <button class="green-btn" id="dep-submit-btn" onclick="doDeposit()">CONFIRM</button>
   <button class="link-back-btn" onclick="switchTab('deposit-amount')">Back</button>
+</div>
+</div>
+</div>
+
+  <!-- Deposit: RukaPay -->
+<div class="dash-section" id="sec-deposit-ruka">
+<div class="inner-header"><span style="font-size:22px"></span><div><div class="inner-title">RukaPay</div><div class="inner-sub">Approve the payment on your phone</div></div></div>
+<div class="section">
+<div class="action-card">
+<div id="ruka-form">
+<div class="deposit-note">Depositing <strong id="ruka-amount-display">UGX 0</strong> to your General Account. You will get a prompt on your phone to enter your mobile money PIN.</div>
+<div class="field-group">
+  <label class="field-label">Mobile Money Phone Number</label>
+  <input type="tel" inputmode="numeric" id="ruka-phone" class="f-input" placeholder="0750100200" maxlength="10" oninput="rukaPhoneInput(this)" style="width:100%;">
+<div class="field-hint">10 digits starting with 07 (MTN or Airtel)</div>
+<div class="field-error" id="ruka-phone-err">Enter 10 digits starting with 07</div>
+</div>
+  <button class="green-btn" id="ruka-pay-btn" onclick="startRukaDeposit()" disabled>Pay with RukaPay</button>
+  <button class="link-back-btn" onclick="switchTab('deposit-amount')">Back</button>
+</div>
+<div id="ruka-wait" style="display:none;text-align:center;padding:10px 0;">
+<div style="font-size:16px;font-weight:700;margin-bottom:10px;" id="ruka-wait-title">Check your phone</div>
+<div class="deposit-note" id="ruka-wait-text">Enter your mobile money PIN to approve the payment.</div>
+  <button class="link-back-btn" id="ruka-wait-btn" onclick="rukaWaitDone()" style="display:none;">Back to Home</button>
+</div>
 </div>
 </div>
 </div>
@@ -4901,6 +4931,7 @@ function renderHistory() {
 function startSettingsListener() {
   db.ref('settings').on('value', (snap) => {
   if (snap.exists()) settingsData = { ...settingsData, ...snap.val() };
+  try { updateRukaMethodVisibility(); } catch (e) {}
   updateSettingsUI();
   updateBalanceUI();
   renderReferralProgramTiers();
@@ -5014,9 +5045,133 @@ async function pollPaymentStatus(uuid, maxAttempts = 120, intervalMs = 5000) {
 let selectedDepositMethod = null;
 let selectedDepositAmount = 0;
 
+
+// ============================================================
+// RUKAPAY (collect from the user's phone; the Worker credits the balance)
+// ============================================================
+let rukaPollTimer = null;
+
+function rukaIsAvailable() {
+  const st = settingsData || {};
+  if (!st.rukaOpen || !st.rukaWorkerUrl) return false;
+  if (st.rukaMode === 'live') return true;
+  // sandbox: only the test account sees it
+  return !!st.rukaTestUser && !!currentUsername && safeKey(currentUsername) === st.rukaTestUser;
+}
+function updateRukaMethodVisibility() {
+  const el = document.getElementById('dep-method-ruka');
+  if (el) el.style.display = rukaIsAvailable() ? '' : 'none';
+}
+function rukaApiUrl(path) { return String(settingsData.rukaWorkerUrl || '').replace(/\/+$/, '') + path; }
+function rukaPhoneInput(inp) {
+  inp.value = inp.value.replace(/\D/g, '').slice(0, 10);
+  const b = document.getElementById('ruka-pay-btn');
+  if (b) b.disabled = !/^07\d{8}$/.test(inp.value);
+}
+function rukaShowForm() {
+  clearTimeout(rukaPollTimer);
+  document.getElementById('ruka-form').style.display = 'block';
+  document.getElementById('ruka-wait').style.display = 'none';
+}
+function rukaShowWait(title, text, showBack) {
+  document.getElementById('ruka-form').style.display = 'none';
+  document.getElementById('ruka-wait').style.display = 'block';
+  document.getElementById('ruka-wait-title').textContent = title;
+  document.getElementById('ruka-wait-text').textContent = text;
+  document.getElementById('ruka-wait-btn').style.display = showBack ? 'block' : 'none';
+}
+function rukaWaitDone() { rukaShowForm(); switchTab('home'); }
+
+async function startRukaDeposit() {
+  if (!rukaIsAvailable()) { showBanner('RukaPay is not available right now.'); switchTab('deposit'); return; }
+  const phone = document.getElementById('ruka-phone').value.trim();
+  clearErrors('ruka-phone-err');
+  if (!/^07\d{8}$/.test(phone)) { setErr('ruka-phone-err', true, 'Enter 10 digits starting with 07'); return; }
+  const btn = document.getElementById('ruka-pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Starting…';
+  let res;
+  try {
+  const r = await fetch(rukaApiUrl('/ruka/deposit'), {
+  method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ userKey: safeKey(currentUsername), amount: selectedDepositAmount, phone })
+  });
+  res = await r.json();
+  } catch (e) { res = { ok: false, error: 'network' }; }
+  btn.textContent = 'Pay with RukaPay';
+  rukaPhoneInput(document.getElementById('ruka-phone'));
+  if (!res.ok) {
+  const msgs = {
+  closed: 'RukaPay is not available right now.',
+  rate: 'Too many tries. Try again later.',
+  bad_phone: 'Enter 10 digits starting with 07',
+  bad_amount: 'Check the amount and try again.',
+  rejected: 'The payment could not be started. Try again.',
+  network: 'No connection. Try again.'
+  };
+  showBanner(msgs[res.error] || 'Something went wrong. Try again.');
+  if (res.error === 'closed') { updateRukaMethodVisibility(); switchTab('deposit'); }
+  return;
+  }
+  rukaShowWait('Check your phone', 'Enter your mobile money PIN to approve ' + fmt(selectedDepositAmount) + '. Keep this page open.', false);
+  rukaPoll(res.ref, res.status);
+}
+
+function rukaPoll(ref, firstStatus) {
+  let tries = 0;
+  const tick = async () => {
+  let r = null;
+  if (tries > 0 || !firstStatus || firstStatus === 'pending') {
+  try {
+  const resp = await fetch(rukaApiUrl('/ruka/status'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref }) });
+  r = await resp.json();
+  } catch (e) { r = null; }
+  } else {
+  r = { ok: true, status: firstStatus, amount: selectedDepositAmount };
+  }
+  tries++;
+  if (r && r.ok) {
+  if (r.status === 'completed') return rukaFinish('completed', r.amount);
+  if (r.status === 'failed') return rukaFinish('failed');
+  if (r.status === 'review') return rukaFinish('review');
+  }
+  if (tries >= 40) return rukaFinish('timeout');
+  rukaPollTimer = setTimeout(tick, 3000);
+  };
+  tick();
+}
+
+async function rukaFinish(result, amount) {
+  clearTimeout(rukaPollTimer);
+  if (result === 'completed') {
+  try {
+  currentUser = await db.ref('users/' + safeKey(currentUsername)).get().then(s => s.val());
+  updateBalanceUI();
+  renderStages();
+  } catch (e) {}
+  rukaShowForm();
+  switchTab('home');
+  showPopup('Deposit successful', fmt(amount || selectedDepositAmount) + ' was added to your General Account.', 'success');
+  } else if (result === 'failed') {
+  rukaShowWait('Payment not completed', 'The payment was declined or cancelled. No money was added.', true);
+  } else if (result === 'review') {
+  rukaShowWait('We are checking your payment', 'Contact support if your balance does not update soon.', true);
+  } else {
+  rukaShowWait('Still waiting', 'If you approved the payment, your balance will update shortly.', true);
+  }
+}
+window.startRukaDeposit = startRukaDeposit;
+window.rukaPhoneInput = rukaPhoneInput;
+window.rukaWaitDone = rukaWaitDone;
+
 function selectDepositMethod(method) {
+  if (method === 'ruka' && !rukaIsAvailable()) {
+  showBanner('RukaPay is not available right now.');
+  updateRukaMethodVisibility();
+  return;
+  }
   selectedDepositMethod = method;
-  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', tixan: 'TIXAN PAY' };
+  const names = { easypay: 'Easy Pay', superior: 'Superior Recharge', tixan: 'TIXAN PAY', ruka: 'RukaPay' };
   const titleEl = document.getElementById('dep-amount-title');
   if (titleEl) titleEl.textContent = names[method] || 'Select Amount';
   const amtInput = document.getElementById('dep-amount');
@@ -5123,6 +5278,16 @@ function confirmDepositAmount() {
   document.getElementById('tix-phone').value = '';
   clearErrors('tix-phone-err', 'tix-network-err');
   switchTab('deposit-tixan-phone');
+  } else if (selectedDepositMethod === 'ruka') {
+  if (!rukaIsAvailable()) { showBanner('RukaPay is not available right now.'); switchTab('deposit'); return; }
+  document.getElementById('ruka-amount-display').textContent = fmt(amount);
+  const ruInp = document.getElementById('ruka-phone');
+  const own = String((currentUser && currentUser.phone) || '').replace(/^\+256/, '');
+  ruInp.value = /^7\d{8}$/.test(own) ? '0' + own : '';
+  rukaPhoneInput(ruInp);
+  rukaShowForm();
+  clearErrors('ruka-phone-err');
+  switchTab('deposit-ruka');
   } else {
   const names = {};
   const csTitle = document.getElementById('dep-comingsoon-title');
@@ -6131,6 +6296,7 @@ const tabMap = {
   'deposit-superior-instructions': 'sec-deposit-superior-instructions',
   'deposit-tixan-phone': 'sec-deposit-tixan-phone',
   'deposit-tixan-instructions': 'sec-deposit-tixan-instructions',
+  'deposit-ruka': 'sec-deposit-ruka',
   'deposit-phone': 'sec-deposit-phone',
   'deposit-comingsoon': 'sec-deposit-comingsoon',
   withdraw: 'sec-withdraw',
@@ -6143,6 +6309,7 @@ const tabMap = {
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
 function switchTab(tab, fromPopState) {
+  if (tab === 'deposit') { try { updateRukaMethodVisibility(); } catch (e) {} }
   if (tab === 'withdraw' && settingsData.withdrawLocked) {
   return;
   }
