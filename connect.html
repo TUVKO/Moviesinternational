@@ -560,6 +560,16 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div id="ruka-payouts-list" style="font-size:12px;"></div>
 </div>
 <div class="table-wrap" style="padding:14px;margin-bottom:14px;">
+<div style="font-weight:700;font-size:13px;margin-bottom:4px;">RukaPay UAT test</div>
+<div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Runs RukaPay's 14 go-live tests against their TEST environment (no real money) and shows the real results. Needs the Worker URL, admin PIN and a saved Development API key.</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+  <button class="btn btn-save" id="ruka-uat-run" onclick="rukaRunUat()">Run all tests</button>
+  <button class="btn btn-edit" id="ruka-uat-copy" onclick="rukaCopyUat()" disabled>Copy results</button>
+</div>
+<div id="ruka-uat-progress" style="font-size:12px;color:var(--muted);margin-bottom:8px;"></div>
+<div id="ruka-uat-list" style="font-size:12px;"></div>
+</div>
+<div class="table-wrap" style="padding:14px;margin-bottom:14px;">
 <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Deposits</div>
 <div id="ruka-deposits-list" style="font-size:12px;"></div>
 </div>
@@ -3241,6 +3251,63 @@ async function rukaPaySend() {
 function rukaStatusColor(st) {
   return st === 'success' || st === 'completed' ? 'var(--success)' : (st === 'failed' ? 'var(--warn)' : 'var(--muted)');
 }
+// ----- UAT test runner -----
+let rukaUatResults = [];
+function renderUatList() {
+  const el = document.getElementById('ruka-uat-list');
+  if (!el) return;
+  const rows = rukaUatResults.slice().sort((a, b) => a.no - b.no);
+  el.innerHTML = rows.map(t =>
+  '<div style="padding:8px 0;border-bottom:1px solid var(--border);">' +
+  '<div style="display:flex;justify-content:space-between;gap:8px;"><div><b>' + t.no + '. ' + escapeHtml(t.name) + '</b> <span style="color:var(--muted);">(' + escapeHtml(t.network) + ')</span></div>' +
+  '<div style="font-weight:800;color:' + (t.result === 'PASS' ? 'var(--success)' : (t.result === 'FAIL' ? 'var(--warn)' : 'var(--muted)')) + ';">' + t.result + '</div></div>' +
+  '<div style="color:var(--muted);margin-top:3px;word-break:break-word;">' + escapeHtml(String(t.actual || '').slice(0, 300)) + '</div></div>'
+  ).join('');
+}
+async function rukaRunUat() {
+  const runBtn = document.getElementById('ruka-uat-run');
+  const prog = document.getElementById('ruka-uat-progress');
+  rukaUatResults = [];
+  renderUatList();
+  document.getElementById('ruka-uat-copy').disabled = true;
+  runBtn.disabled = true;
+  const runId = 'run_' + Date.now();
+  const groups = [[1, 2, 3, 4], [5], [6], [7], [8], [11], [12], [13, 14]];
+  let done = 0;
+  for (const g of groups) {
+  prog.textContent = 'Running tests ' + g.join(', ') + '... (' + (done + 1) + ' of ' + (groups.length + 1) + ')';
+  const d = await rukaApi('/ruka/uat', { tests: g, runId });
+  if (!d || !d.ok) {
+  prog.textContent = d && d.error === 'not_configured' ? 'Save your RukaPay API key first.' : 'Stopped. Check the Worker URL and PIN, then try again.';
+  runBtn.disabled = false;
+  return;
+  }
+  rukaUatResults = rukaUatResults.concat(d.results);
+  renderUatList();
+  done++;
+  }
+  rukaUatResults.push({ no: 9, name: 'Connectivity (VPN)', network: 'MTN & Airtel', expected: 'Connection is established and reachable', result: 'N/A', actual: 'N/A', evidence: [] });
+  prog.textContent = 'Logging results (test 10)...';
+  const d10 = await rukaApi('/ruka/uat', { tests: [10], runId, results: rukaUatResults.map(t => ({ no: t.no, result: t.result, actual: t.actual })) });
+  if (d10 && d10.ok) rukaUatResults = rukaUatResults.concat(d10.results);
+  renderUatList();
+  const fails = rukaUatResults.filter(t => t.result === 'FAIL').length;
+  prog.textContent = 'Finished. ' + rukaUatResults.filter(t => t.result === 'PASS').length + ' passed, ' + fails + ' failed. Tap Copy results and paste them to Claude.';
+  runBtn.disabled = false;
+  document.getElementById('ruka-uat-copy').disabled = false;
+}
+async function rukaCopyUat() {
+  const rows = rukaUatResults.slice().sort((a, b) => a.no - b.no);
+  const text = 'RUKAPAY UAT RESULTS ' + new Date().toISOString() + '\n' + JSON.stringify(rows.map(t => ({
+  no: t.no, name: t.name, network: t.network, expected: t.expected, result: t.result, actual: t.actual,
+  evidence: (t.evidence || []).map(e => ({ req: e.req, http: e.http, error: e.error || undefined, response: e.text }))
+  })), null, 1);
+  try { await navigator.clipboard.writeText(text); toast('Results copied. Paste them in the chat'); }
+  catch (e) { toast('Could not copy. Long-press the results to copy them', '#f87171'); }
+}
+window.rukaRunUat = rukaRunUat;
+window.rukaCopyUat = rukaCopyUat;
+
 async function renderRukaPage() {
   try {
   const w = (await db.ref('rukaStatus/wallet').get()).val();
