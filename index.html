@@ -178,6 +178,47 @@ input[type="password"]{padding-right:46px;}
 .profile-menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .profile-menu-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 8px;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;}
 .profile-menu-btn:active{transform:scale(.97);}
+
+/* Me page (glow style, line icons) */
+.mp-i{width:25px;height:25px;fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(251,113,133,.65));}
+.mp-hdr{display:flex;align-items:center;gap:12px;padding:16px 16px 12px;}
+.mp-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--accent),0 0 18px rgba(251,113,133,.55);}
+.mp-av .mp-i{stroke:#fff;filter:none;width:28px;height:28px;}
+.mp-who{flex:1;min-width:0;}
+.mp-nm{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mp-badges{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;}
+.mp-bd{font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.5);color:var(--accent);}
+.mp-gear{cursor:pointer;padding:4px;}
+.mp-gear .mp-i{width:24px;height:24px;}
+.mp-wallet{margin:0 16px;border-radius:18px;padding:14px 12px;background:linear-gradient(160deg,#2a1c20,#211D18);border:1px solid rgba(251,113,133,.55);box-shadow:0 0 22px rgba(251,113,133,.22);}
+.mp-wrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;}
+.mp-wl{font-size:11px;color:var(--muted);letter-spacing:.4px;}
+.mp-wv{font-size:18px;font-weight:800;margin-top:4px;color:var(--accent);text-shadow:0 0 12px rgba(251,113,133,.5);font-variant-numeric:tabular-nums;}
+.mp-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.mp-ab{background:transparent;border:1.5px solid currentColor;border-radius:999px;padding:9px 4px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 10px currentColor;}
+.mp-ab:active{transform:scale(.97);}
+.mp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
+.mp-sc{position:relative;overflow:hidden;border-radius:14px;padding:12px 12px 13px;min-height:70px;background:var(--surface);border:1px solid rgba(251,113,133,.28);box-shadow:inset 0 0 18px rgba(251,113,133,.06);}
+.mp-sc.wide{grid-column:1 / -1;}
+.mp-sl{font-size:11px;color:var(--muted);line-height:1.25;position:relative;z-index:1;}
+.mp-sv{font-size:16px;font-weight:800;margin-top:7px;font-variant-numeric:tabular-nums;position:relative;z-index:1;}
+.mp-wm{position:absolute;right:8px;bottom:-2px;opacity:.16;z-index:0;}
+.mp-wm .mp-i{width:46px;height:46px;stroke-width:1.2;filter:none;}
+.mp-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;padding:6px 16px 20px;}
+.mp-mi{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:11px;font-weight:600;position:relative;cursor:pointer;}
+.mp-mi:active{transform:scale(.96);}
+.mp-ic{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 0 14px rgba(251,113,133,.45);}
+.mp-dot{position:absolute;top:-1px;right:calc(50% - 30px);width:9px;height:9px;border-radius:50%;background:#f87171;border:2px solid var(--bg);}
+/* Community popup */
+.cm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:850;display:none;align-items:center;justify-content:center;padding:24px;}
+.cm-overlay.open{display:flex;}
+.cm-box{position:relative;width:100%;max-width:320px;background:var(--surface);border:1px solid rgba(251,113,133,.55);border-radius:20px;padding:26px 20px 20px;text-align:center;box-shadow:0 0 26px rgba(251,113,133,.25);}
+.cm-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border:none;border-radius:50%;background:#2a2622;color:#F6F1E7;font-size:14px;cursor:pointer;}
+.cm-ic{width:56px;height:56px;margin:0 auto 12px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--accent);box-shadow:0 0 14px rgba(251,113,133,.45);}
+.cm-ic .mp-i{width:28px;height:28px;}
+.cm-title{font-size:17px;font-weight:800;margin-bottom:6px;}
+.cm-text{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:16px;}
+.cm-join{width:100%;padding:13px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(0,200,83,.35);}
 .chat-bubble-bot,.chat-bubble-user{white-space:pre-wrap;word-break:break-word;}
 .chat-bubble-bot{background:var(--surface2);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:12px 16px;font-size:13px;color:var(--text);margin-bottom:14px;max-width:85%;}
 .chat-bubble-user{background:var(--accent);border-radius:14px 14px 4px 14px;padding:12px 16px;font-size:13px;color:#14110F;font-weight:600;margin-bottom:14px;max-width:85%;margin-left:auto;text-align:right;}
@@ -276,10 +317,6 @@ input[type="password"]{padding-right:46px;}
 .live-act-track{will-change:transform;}
 .la-line{height:22px;line-height:22px;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#00C853;}
 .la-line.la-red{color:#ff5a5a;}
-.welcome-card{display:none;align-items:center;gap:8px;margin:0 16px 10px;}
-.welcome-card.show{display:flex;}
-.welcome-btn{flex:1;padding:14px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 3px 12px rgba(0,200,83,.35);}
-.welcome-close{width:34px;height:34px;border:none;border-radius:50%;background:#2a2622;color:#F6F1E7;font-size:15px;cursor:pointer;flex-shrink:0;}
 .comments-title{font-size:11px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;align-self:flex-start;margin-top:4px;}
 .comments-list{flex:1;min-height:0;overflow-y:auto;width:100%;display:flex;flex-direction:column;gap:8px;padding:2px 0 10px;-webkit-overflow-scrolling:touch;}
 .comment-item{padding:12px 14px;border:1px solid var(--border);background:var(--surface);border-radius:12px;font-size:14px;color:var(--text);cursor:pointer;flex-shrink:0;}
@@ -739,10 +776,6 @@ input[type="password"]{padding-right:46px;}
 
   <!-- HOME / DASHBOARD -->
 <div class="dash-section active" id="sec-home">
-<div class="welcome-card" id="welcome-card">
-  <button type="button" class="welcome-btn" onclick="openCommunityGroup()">Join Free Community</button>
-  <button type="button" class="welcome-close" onclick="dismissWelcomeCard()">✕</button>
-</div>
 <div class="section" id="home-banner-wrap" style="display:none;">
 <div class="home-banner-box">
 <div id="home-banner-video"></div>
@@ -1052,48 +1085,44 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 
   <!-- Profile -->
 <div class="dash-section" id="sec-profile">
-<div class="inner-header"><span style="font-size:22px;cursor:pointer;" onclick="switchTab('settings')">⚙️</span><div><div class="inner-title" id="profile-fullname-display">User</div><div id="profile-position-badge" style="display:none;font-size:11px;font-weight:700;color:var(--accent);margin-top:2px;"></div></div></div>
-<div class="section" style="margin-bottom:0;">
-<div class="stats-grid" style="grid-template-columns:1fr 1fr;">
-<div class="stat-box">
-<div class="stat-label">GENERAL ACCOUNT</div>
-<div class="stat-value stake" id="profile-stat-stake">UGX 0</div>
+<div class="mp-hdr">
+<div class="mp-av"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div>
+<div class="mp-who"><div class="mp-nm" id="profile-fullname-display">User</div>
+<div class="mp-badges"><span class="mp-bd" id="profile-level-badge">Trainee</span><span class="mp-bd" id="profile-position-badge" style="display:none;"></span></div></div>
+<div class="mp-gear" onclick="switchTab('settings')"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></div>
 </div>
-<div class="stat-box">
-<div class="stat-label">RETAINED WALLET</div>
-<div class="stat-value mob" id="profile-stat-mob">UGX 0</div>
+<div class="mp-wallet">
+<div class="mp-wrow">
+<div><div class="mp-wl">GENERAL ACCOUNT</div><div class="mp-wv" id="profile-stat-stake">UGX 0</div></div>
+<div><div class="mp-wl">RETAINED WALLET</div><div class="mp-wv" id="profile-stat-mob">UGX 0</div></div>
 </div>
-</div>
-</div>
-<div class="section" style="margin-top:0;">
-<div class="action-grid">
-<button class="action-btn" style="background:#14110F;border:1.5px solid #22c55e;color:#22c55e;" onclick="switchTab('deposit')">Credit</button>
-<button class="action-btn" style="background:#14110F;border:1.5px solid #fb7185;color:#fb7185;" onclick="switchTab('recruit')">Recruit</button>
-<button class="action-btn" style="background:#14110F;border:1.5px solid #ef4444;color:#ef4444;" onclick="switchTab('withdraw')">Debit</button>
+<div class="mp-acts">
+<button class="mp-ab" style="color:#5CA378;" onclick="switchTab('deposit')">Credit</button>
+<button class="mp-ab" style="color:#fb7185;" onclick="switchTab('recruit')">Recruit</button>
+<button class="mp-ab" style="color:#ef4444;" onclick="switchTab('withdraw')">Debit</button>
 </div>
 </div>
-<div class="section" style="margin-top:8px;">
-<div class="plain-stat-row"><span class="plain-stat-label">Today's income</span><span class="plain-stat-value" id="stat-today-income">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">This month income</span><span class="plain-stat-value" id="stat-month-income">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Total earned</span><span class="plain-stat-value" id="stat-total-earned">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Affiliate Earnings</span><span class="plain-stat-value" id="stat-affiliate-earnings">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Total debited</span><span class="plain-stat-value" id="stat-total-debited">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Total credited</span><span class="plain-stat-value" id="stat-total-credited">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Slipped Commission</span><span class="plain-stat-value" id="stat-slipped-commission">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Sub-affiliate Revenue</span><span class="plain-stat-value" id="stat-subaffiliate-revenue">UGX 0</span></div>
-<div class="plain-stat-row"><span class="plain-stat-label">Today's subordinate revenue</span><span class="plain-stat-value" id="stat-subaffiliate-today">UGX 0</span></div>
+<div class="mp-grid">
+<div class="mp-sc"><div class="mp-sl">Today&#39;s income</div><div class="mp-sv" id="stat-today-income">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5c-.5-1-1.5-1.5-2.5-1.5-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-2-.5-2.5-1.5M12 6.5V8M12 16v1.5"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">This month income</div><div class="mp-sv" id="stat-month-income">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Total earned</div><div class="mp-sv" id="stat-total-earned">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4v1a3 3 0 0 0 3 3M16 6h4v1a3 3 0 0 1-3 3M12 13v4M8 21h8M10 17h4"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Affiliate Earnings</div><div class="mp-sv" id="stat-affiliate-earnings">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Total debited</div><div class="mp-sv" id="stat-total-debited">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Total credited</div><div class="mp-sv" id="stat-total-credited">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M17 7 7 17M16 17H7V8"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Slipped Commission</div><div class="mp-sv" id="stat-slipped-commission">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v5M12 18h.01"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Sub-affiliate Revenue</div><div class="mp-sv" id="stat-subaffiliate-revenue">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div></div>
+<div class="mp-sc wide"><div class="mp-sl">Today&#39;s subordinate revenue</div><div class="mp-sv" id="stat-subaffiliate-today">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M12 11.5 5 16.5M12 11.5l7 5"/></svg></div></div>
 </div>
-<div class="section" style="margin-top:8px;">
-<div class="profile-menu-grid">
-<button class="profile-menu-btn" onclick="switchTab('todaysjob')">Today's Job</button>
-<button class="profile-menu-btn" onclick="switchTab('myteam')">Team</button>
-<button class="profile-menu-btn" onclick="switchTab('missed-commission')">Missed Commission</button>
-<button class="profile-menu-btn" onclick="switchTab('about')">About</button>
-<button class="profile-menu-btn" onclick="openSupportChat()" style="position:relative;">Support<span id="support-unread-dot-btn" style="display:none;position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:#f87171;"></span></button>
-<button class="profile-menu-btn" onclick="switchTab('faq')">FAQ</button>
-<button class="profile-menu-btn" onclick="startAppDownload()">App Download</button>
-<button class="profile-menu-btn" onclick="doLogout()">Exit</button>
-</div>
+<div class="mp-menu">
+<div class="mp-mi" onclick="switchTab('todaysjob')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></div><div>Today&#39;s Job</div></div>
+<div class="mp-mi" onclick="switchTab('myteam')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.5 0 4.5 2 4.5 4.5"/></svg></div><div>Team</div></div>
+<div class="mp-mi" onclick="switchTab('missed-commission')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3v4l4 5-4 5v4M16 3v4l-4 5 4 5v4"/></svg></div><div>Missed Commission</div></div>
+<div class="mp-mi" onclick="switchTab('salary')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></div><div>Salary</div></div>
+<div class="mp-mi" onclick="switchTab('about')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></div><div>About</div></div>
+<div class="mp-mi" onclick="openSupportChat()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M20 20c0 1-2 2-5 2h-2"/></svg></div><span id="support-unread-dot-btn" class="mp-dot" style="display:none;"></span><div>Support</div></div>
+<div class="mp-mi" onclick="switchTab('faq')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg></div><div>FAQ</div></div>
+<div class="mp-mi" onclick="startAppDownload()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M12 8v6M9.5 11.5 12 14l2.5-2.5"/></svg></div><div>App Download</div></div>
+<div class="mp-mi" onclick="doLogout()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></div><div>Exit</div></div>
 </div>
 </div>
 
@@ -1176,7 +1205,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </ul>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">💼 Positions & Salary</div>
-<div style="margin-bottom:10px;">Once you purchase your first VM level, you become a Permanent Employee and unlock the Salary page. Grow your referral network and you can qualify for a Position — Team Leader, Assistant Manager, Manager, Senior Manager, Regional Director, Vice President, or Executive Director — each with its own referral requirement and fixed monthly salary. Positions are detected and activated automatically whenever you qualify, no need to claim anything. Once qualified, your salary is credited to your General Account on or after the 6th of every month, for as long as you keep meeting the requirement.</div>
+<div style="margin-bottom:10px;">Everyone can view the Salary page, including interns. Once you purchase your first VM level, you become a Permanent Employee and positions and monthly salary start for you. Grow your referral network and you can qualify for a Position — Team Leader, Assistant Manager, Manager, Senior Manager, Regional Director, Vice President, or Executive Director — each with its own referral requirement and fixed monthly salary. Positions are detected and activated automatically whenever you qualify, no need to claim anything. Once qualified, your salary is credited to your General Account on or after the 6th of every month, for as long as you keep meeting the requirement.</div>
 <div id="about-salary-list" style="margin-bottom:14px;"></div>
 
 <div style="font-weight:800;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">🏢 Company Address</div>
@@ -1574,6 +1603,16 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 
 <div class="app-footer">Copyright © 2026–2031 WEA. All rights reserved.</div>
+<div class="cm-overlay" id="community-popup" onclick="if(event.target===this)closeCommunityPopup()">
+<div class="cm-box">
+<button type="button" class="cm-x" onclick="closeCommunityPopup()" aria-label="Close">✕</button>
+<div class="cm-ic"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.5 0 4.5 2 4.5 4.5"/></svg></div>
+<div class="cm-title">Join our free community</div>
+<div class="cm-text">Get updates, tips and support from the WEA community.</div>
+<button type="button" class="cm-join" onclick="joinCommunityFromPopup()">Join Free Community</button>
+</div>
+</div>
+
   <nav class="bottom-nav">
 <div class="nav-item active" onclick="switchTab('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4l9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg></span><span class="nav-label">HOME</span></div>
 <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-4H3v4z"/><path d="M9 20h4v-9H9v9z"/><path d="M15 20h4V6h-4v14z"/></svg></span><span class="nav-label">STAGES</span></div>
@@ -2216,17 +2255,28 @@ function resetSupportChat() {
   if (supportChatUnsubscribe) { supportChatUnsubscribe(); supportChatUnsubscribe = null; }
 }
 
-let welcomeDismissed = false;
+let communityPopupShown = false;
 function updateWelcomeCard() {
-  const card = document.getElementById('welcome-card');
-  if (!card) return;
+  // shows the community popup once per page load and once per login
   const link = (settingsData.communityGroupLink || '').trim();
-  const show = !!link && !welcomeDismissed && !!currentUser;
-  card.classList.toggle('show', show);
+  if (!link || communityPopupShown || !currentUser) return;
+  communityPopupShown = true;
+  let tries = 0;
+  const tryOpen = () => {
+  if (!currentUser) return;
+  if (document.querySelector('.modal-overlay.open') && tries++ < 6) { setTimeout(tryOpen, 1500); return; }
+  const pop = document.getElementById('community-popup');
+  if (pop) pop.classList.add('open');
+  };
+  setTimeout(tryOpen, 1000);
 }
-function dismissWelcomeCard() {
-  welcomeDismissed = true;
-  updateWelcomeCard();
+function closeCommunityPopup() {
+  const pop = document.getElementById('community-popup');
+  if (pop) pop.classList.remove('open');
+}
+function joinCommunityFromPopup() {
+  openCommunityGroup();
+  closeCommunityPopup();
 }
 function openCommunityGroup() {
   const link = (settingsData.communityGroupLink || '').trim();
@@ -2823,10 +2873,7 @@ async function renderSalaryPage() {
   : 'None yet';
   }
 
-  if (!currentUser.currentLevel || currentUser.currentLevel === 'trainee') {
-  list.innerHTML = '<div class="tx-empty-state"><div class="tx-empty-icon"></div><div class="tx-empty-title">Purchase a Level First</div><div class="tx-empty-text">Positions and salaries unlock once you purchase your first VM level and start referring others.</div></div>';
-  return;
-  }
+  const isIntern = !currentUser.currentLevel || currentUser.currentLevel === 'trainee';
 
   list.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:13px;">Checking your referral network...</div>';
   const counts = await getReferralQualifyingCounts(currentUser);
@@ -2837,7 +2884,7 @@ async function renderSalaryPage() {
   const isHeld = currentUser.position === key;
   const meetsDirect = counts.direct >= (p.directRequired || 0);
   const meetsCombined = !p.combinedRequired || combined >= p.combinedRequired;
-  const qualifies = meetsDirect && meetsCombined;
+  const qualifies = !isIntern && meetsDirect && meetsCombined;
   const lv = 'L1' + (p.combinedLevels >= 2 ? '+L2' : '') + (p.combinedLevels >= 3 ? '+L3' : '');
 
   return `<tr class="${isHeld ? 'held' : (qualifies ? 'qual' : '')}">
@@ -2849,7 +2896,8 @@ async function renderSalaryPage() {
   </tr>`;
   }).join('');
 
-  list.innerHTML = `<div class="pos-box"><div class="pos-scroll"><table class="pos-grid"><thead><tr>
+  const internNote = isIntern ? '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--muted);line-height:1.45;">Buy your first level to start earning a position salary. Progress below counts your referrals who have bought a level.</div>' : '';
+  list.innerHTML = internNote + `<div class="pos-box"><div class="pos-scroll"><table class="pos-grid"><thead><tr>
   <th>Position</th><th>Direct</th><th>Combined</th><th>Progress</th><th>Salary / month</th>
   </tr></thead><tbody>${rowsHtml}</tbody></table></div></div>`;
 }
@@ -3778,6 +3826,8 @@ function updateProfileUI() {
   if (!currentUser) return;
   const profFullName = document.getElementById('profile-fullname-display');
   if (profFullName) profFullName.textContent = currentUser.fullName || 'User';
+  const profLvl = document.getElementById('profile-level-badge');
+  if (profLvl) { const ld = getLevelData(getUserLevel()); profLvl.textContent = (ld && ld.name) || 'Trainee'; }
   updateSettingsInfo();
   updateIncomeStatsUI();
   renderMyDatimStakes();
@@ -6113,7 +6163,7 @@ async function doLogin() {
   console.log('Login successful for:', fullPhone);
   currentUser = userData;
   currentUsername = fullPhone;
-  saveUserSession(fullPhone); welcomeDismissed = false;
+  saveUserSession(fullPhone); communityPopupShown = false;
     
   updateBalanceUI();
   updateProfileUI();
@@ -6236,7 +6286,7 @@ async function doRegister() {
     
   currentUser = newUser;
   currentUsername = fullPhone;
-  saveUserSession(fullPhone); welcomeDismissed = false;
+  saveUserSession(fullPhone); communityPopupShown = false;
     
   updateBalanceUI();
   updateProfileUI();
@@ -6260,7 +6310,7 @@ async function doRegister() {
 async function doLogout() {
   if (userListener && currentUsername) db.ref('users/' + safeKey(currentUsername)).off('value', userListener);
   clearUserSession();
-  welcomeDismissed = false;
+  communityPopupShown = false;
   currentUser = null;
   currentUsername = null;
   setTimeout(() => {

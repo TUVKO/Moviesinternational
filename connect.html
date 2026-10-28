@@ -895,21 +895,11 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-sub">All changes here are sent to your RukaPay Worker and need your admin PIN. The API key is stored on the server, never in the app.</div>
 <div class="settings-row">
   <span class="settings-label">Worker URL</span>
-<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;flex-wrap:wrap;">
-  <input type="text" class="settings-input mono" id="ruka-worker-url" placeholder="https://wea-pay.yourname.workers.dev" autocomplete="off" style="flex:1;min-width:160px;">
-  <button class="btn btn-save" id="ruka-url-save" onclick="rukaSaveUrl()">Save</button>
-  <button class="btn btn-edit" id="ruka-url-edit" onclick="rukaEdit('url')" style="display:none;">Edit</button>
-  <div id="ruka-url-state" style="flex-basis:100%;font-size:11px;color:var(--muted);"></div>
-</div>
+  <input type="text" class="settings-input mono" id="ruka-worker-url" placeholder="https://wea-pay.yourname.workers.dev" oninput="rukaSaveWorkerUrl(this.value)" autocomplete="off" style="flex:1;min-width:200px;">
 </div>
 <div class="settings-row">
   <span class="settings-label">Admin PIN</span>
-<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;flex-wrap:wrap;">
-  <input type="password" class="settings-input mono" id="ruka-pin-input" placeholder="Type the PIN, then tap Save" autocomplete="off" style="flex:1;min-width:160px;">
-  <button class="btn btn-save" id="ruka-pin-save" onclick="rukaSavePin()">Save</button>
-  <button class="btn btn-edit" id="ruka-pin-edit" onclick="rukaEdit('pin')" style="display:none;">Edit</button>
-  <div id="ruka-pin-state" style="flex-basis:100%;font-size:11px;color:var(--muted);"></div>
-</div>
+  <input type="password" class="settings-input mono" id="ruka-pin-input" placeholder="PIN (kept until you close this page)" autocomplete="off" style="flex:1;min-width:200px;">
 </div>
 <div class="settings-row">
   <span class="settings-label">Users see RukaPay</span>
@@ -921,30 +911,23 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 <div class="settings-row">
   <span class="settings-label">Mode</span>
-<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;flex-wrap:wrap;">
-  <select class="settings-input" id="ruka-mode-select" style="width:auto;flex:1;min-width:160px;"><option value="sandbox">Sandbox (test, no real money)</option><option value="live">Live (real money)</option></select>
-  <button class="btn btn-save" id="ruka-mode-save" onclick="rukaSaveMode()">Save</button>
-  <button class="btn btn-edit" id="ruka-mode-edit" onclick="rukaEdit('mode')" style="display:none;">Edit</button>
-  <div id="ruka-mode-state" style="flex-basis:100%;font-size:11px;color:var(--muted);"></div>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+<select class="settings-input" id="ruka-mode-select" style="width:auto;"><option value="sandbox">Sandbox (test, no real money)</option><option value="live">Live (real money)</option></select>
 </div>
 </div>
 <div class="settings-row">
   <span class="settings-label">Test account</span>
-<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;flex-wrap:wrap;">
-  <input type="tel" class="settings-input mono" id="ruka-test-user" placeholder="07XXXXXXXX (only this user sees it in Sandbox)" maxlength="10" autocomplete="off" style="flex:1;min-width:160px;">
-  <button class="btn btn-save" id="ruka-test-save" onclick="rukaSaveTest()">Save</button>
-  <button class="btn btn-edit" id="ruka-test-edit" onclick="rukaEdit('test')" style="display:none;">Edit</button>
-  <div id="ruka-test-state" style="flex-basis:100%;font-size:11px;color:var(--muted);"></div>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="tel" class="settings-input mono" id="ruka-test-user" placeholder="07XXXXXXXX (only this user sees it in Sandbox)" maxlength="10" autocomplete="off">
+  <button class="btn btn-save" onclick="rukaSaveMode()">Save</button>
 </div>
 </div>
 <div class="settings-row">
   <span class="settings-label">API Key</span>
-<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;flex-wrap:wrap;">
-  <input type="password" class="settings-input mono" id="ruka-api-key-input" placeholder="RukaPay API key" autocomplete="off" style="flex:1;min-width:160px;">
-  <button class="btn btn-edit" id="ruka-key-show" onclick="toggleApiKeyVisibility('ruka-api-key-input')" style="padding:6px 12px;">Show</button>
-  <button class="btn btn-save" id="ruka-key-save" onclick="rukaSaveKey()">Save</button>
-  <button class="btn btn-edit" id="ruka-key-edit" onclick="rukaEdit('key')" style="display:none;">Edit</button>
-  <div id="ruka-key-state" style="flex-basis:100%;font-size:11px;color:var(--muted);"></div>
+<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:200px;">
+  <input type="password" class="settings-input mono" id="ruka-api-key-input" placeholder="RukaPay API key" autocomplete="off">
+  <button class="btn btn-edit" onclick="toggleApiKeyVisibility('ruka-api-key-input')" style="padding:6px 12px;">Show</button>
+  <button class="btn btn-save" onclick="rukaSaveKey()">Save</button>
 </div>
 </div>
 <div class="settings-row">
@@ -3167,144 +3150,47 @@ function rukaGetPin() {
   }
   return rukaPin;
 }
-let rukaLastErr = '';
 async function rukaApi(path, payload) {
   const base = rukaWorkerUrl();
   if (!base) { toast('Enter the Worker URL first', '#f87171'); return null; }
   const pin = rukaGetPin();
   if (!pin) { toast('Enter the admin PIN', '#f87171'); return null; }
-  let r;
   try {
-  r = await fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, pin }) });
-  } catch (e) {
-  rukaLastErr = 'Could not reach the Worker. Check the Worker URL and your internet.';
-  toast('Could not reach the Worker', '#f87171');
-  return null;
-  }
-  let d;
-  try { d = await r.json(); } catch (e) {
-  rukaLastErr = 'Unexpected answer from the Worker (HTTP ' + r.status + '). Deploy ruka-worker.js again.';
-  toast('Could not reach the Worker', '#f87171');
-  return null;
-  }
-  rukaLastErr = '';
+  const r = await fetch(base + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...payload, pin }) });
+  const d = await r.json();
   if (d.ok) rukaPin = pin;
-  if (d.error === 'bad_pin') {
-  rukaPin = '';
-  rukaDone.pin = false; rukaEditing.pin = false;
-  for (const id of ['ruka-pin-input', 'ruka-pin2-input']) { const pe = document.getElementById(id); if (pe) pe.value = ''; }
-  rukaApplyLocks();
-  toast('Wrong PIN, or too many tries', '#f87171');
-  }
+  if (d.error === 'bad_pin') { rukaPin = ''; toast('Wrong PIN, or too many tries', '#f87171'); }
   return d;
-}
-function rukaWhy(d) {
-  if (!d) return rukaLastErr || 'No answer from the Worker.';
-  switch (d.error) {
-  case 'bad_pin': return 'Wrong PIN, or too many tries. Type the PIN again. 8 wrong tries lock you out for an hour.';
-  case 'not_configured': return 'Save your RukaPay API key first.';
-  case 'bad_request': return 'The Worker does not know this route. Paste ruka-worker.js into Cloudflare and Deploy again.';
-  case 'server_error': return 'The Worker hit an error (server_error). Open Cloudflare, wea-pay, Observability, Logs.';
-  default: return 'The Worker said: ' + String(d.error || 'unknown');
+  } catch (e) {
+  toast('Could not reach the Worker', '#f87171');
+  return null;
   }
-}
-
-// ----- save / edit state of the RukaPay settings fields -----
-const rukaEditing = {};  // field -> true while the admin is editing it
-const rukaDone = {};     // field -> true once saved in this session
-function rukaFieldSaved(f) {
-  const s = allSettings || {};
-  if (f === 'url') { let u = ''; try { u = localStorage.getItem('rukaWorkerUrl') || ''; } catch (e) {} return !!(rukaDone.url || u || s.rukaWorkerUrl); }
-  if (f === 'pin') return !!rukaDone.pin;
-  if (f === 'mode') return !!(rukaDone.mode || s.rukaMode);
-  if (f === 'test') return !!(rukaDone.test || s.rukaTestUser);
-  if (f === 'key') return !!(rukaDone.key || s.rukaKeySet);
-  return false;
-}
-function rukaApplyLocks() {
-  const ids = { url: 'ruka-worker-url', pin: 'ruka-pin-input', mode: 'ruka-mode-select', test: 'ruka-test-user', key: 'ruka-api-key-input' };
-  for (const f in ids) {
-  const inp = document.getElementById(ids[f]);
-  const sv = document.getElementById('ruka-' + f + '-save');
-  const ed = document.getElementById('ruka-' + f + '-edit');
-  const st = document.getElementById('ruka-' + f + '-state');
-  if (!inp || !sv || !ed) continue;
-  const saved = rukaFieldSaved(f);
-  const locked = saved && !rukaEditing[f];
-  if (inp.tagName === 'SELECT') inp.disabled = locked; else inp.readOnly = locked;
-  inp.style.opacity = locked ? '0.7' : '';
-  sv.style.display = locked ? 'none' : '';
-  ed.style.display = locked ? '' : 'none';
-  if (st) {
-  st.textContent = locked ? (f === 'pin' ? 'Saved. Kept until you close this page' : (f === 'key' ? 'Saved on the server. Tap Edit to replace it' : 'Saved')) : (saved ? 'Editing. Tap Save to keep the change' : 'Not saved yet');
-  st.style.color = locked ? 'var(--success)' : 'var(--muted)';
-  }
-  if (f === 'key') {
-  const show = document.getElementById('ruka-key-show');
-  if (show) show.style.display = locked ? 'none' : '';
-  inp.placeholder = locked ? 'Saved on the server (hidden)' : 'RukaPay API key';
-  }
-  }
-}
-function rukaEdit(f) {
-  rukaEditing[f] = true;
-  const ids = { url: 'ruka-worker-url', pin: 'ruka-pin-input', mode: 'ruka-mode-select', test: 'ruka-test-user', key: 'ruka-api-key-input' };
-  const inp = document.getElementById(ids[f]);
-  if (inp && (f === 'pin' || f === 'key')) inp.value = '';
-  if (f === 'pin') rukaPin = '';
-  rukaApplyLocks();
-  if (inp && inp.tagName !== 'SELECT') inp.focus();
-}
-function rukaSaveUrl() {
-  const el = document.getElementById('ruka-worker-url');
-  const v = el.value.trim().replace(/\/+$/, '');
-  if (!/^https:\/\/\S+\.\S+$/.test(v)) { toast('Enter the full Worker URL, starting with https://', '#f87171'); return; }
-  el.value = v;
-  rukaSaveWorkerUrl(v);
-  rukaDone.url = true; rukaEditing.url = false;
-  rukaApplyLocks();
-  toast('Worker URL saved');
-}
-function rukaSavePin() {
-  const el = document.getElementById('ruka-pin-input');
-  const v = el.value.trim();
-  if (!v) { toast('Type the admin PIN first', '#f87171'); return; }
-  rukaPin = v;
-  rukaDone.pin = true; rukaEditing.pin = false;
-  rukaApplyLocks();
-  toast('PIN saved until you close this page');
 }
 function renderRukaCard() {
   const s = allSettings || {};
   const urlEl = document.getElementById('ruka-worker-url');
-  if (urlEl && document.activeElement !== urlEl && !rukaEditing.url) urlEl.value = localStorage.getItem('rukaWorkerUrl') || s.rukaWorkerUrl || '';
+  if (urlEl && document.activeElement !== urlEl) urlEl.value = localStorage.getItem('rukaWorkerUrl') || s.rukaWorkerUrl || '';
   const openEl = document.getElementById('ruka-open-status');
   if (openEl) {
   openEl.textContent = s.rukaOpen ? 'OPEN' : 'CLOSED';
   openEl.style.color = s.rukaOpen ? 'var(--success)' : 'var(--warn)';
   }
   const modeEl = document.getElementById('ruka-mode-select');
-  if (modeEl && document.activeElement !== modeEl && !rukaEditing.mode) modeEl.value = s.rukaMode === 'live' ? 'live' : 'sandbox';
+  if (modeEl && document.activeElement !== modeEl) modeEl.value = s.rukaMode === 'live' ? 'live' : 'sandbox';
   const testEl = document.getElementById('ruka-test-user');
-  if (testEl && document.activeElement !== testEl && !rukaEditing.test) testEl.value = s.rukaTestUser ? '0' + String(s.rukaTestUser).replace(/^\+256/, '') : '';
+  if (testEl && document.activeElement !== testEl) testEl.value = s.rukaTestUser ? '0' + String(s.rukaTestUser).replace(/^\+256/, '') : '';
   const badge = document.getElementById('ruka-status-badge');
   if (badge) {
   badge.textContent = (s.rukaKeySet ? 'API key saved' : 'API key not set') + ' · ' + (s.rukaMode === 'live' ? 'LIVE' : 'Sandbox');
   badge.style.color = s.rukaKeySet ? 'var(--success)' : 'var(--muted)';
   }
-  rukaApplyLocks();
 }
 async function rukaSaveKey() {
   const el = document.getElementById('ruka-api-key-input');
   const key = el.value.trim();
   if (!key) { toast('Paste the RukaPay API key', '#f87171'); return; }
   const d = await rukaApi('/ruka/config', { apiKey: key });
-  if (d && d.ok) {
-  el.value = ''; el.type = 'password';
-  const sh = document.getElementById('ruka-key-show'); if (sh) sh.textContent = 'Show';
-  rukaDone.key = true; rukaEditing.key = false; rukaApplyLocks();
-  toast('API key saved');
-  }
+  if (d && d.ok) { el.value = ''; el.type = 'password'; toast('API key saved'); }
   else if (d && d.error !== 'bad_pin') toast('Could not save the key', '#f87171');
 }
 async function rukaSetOpen(open) {
@@ -3314,22 +3200,11 @@ async function rukaSetOpen(open) {
 }
 async function rukaSaveMode() {
   const mode = document.getElementById('ruka-mode-select').value;
-  if (mode === 'live' && !confirm('Switch to LIVE? Real money will move.')) return;
-  const d = await rukaApi('/ruka/config', { mode });
-  if (d && d.ok) {
-  rukaDone.mode = true; rukaEditing.mode = false; rukaApplyLocks();
-  toast('Saved: ' + (d.mode === 'live' ? 'LIVE' : 'Sandbox'));
-  }
-  else if (d && d.error !== 'bad_pin') toast('Could not save', '#f87171');
-}
-async function rukaSaveTest() {
   const test = document.getElementById('ruka-test-user').value.trim();
+  if (mode === 'live' && !confirm('Switch to LIVE? Real money will move.')) return;
   if (test && !/^07\d{8}$/.test(test)) { toast('Test account must be 10 digits starting with 07', '#f87171'); return; }
-  const d = await rukaApi('/ruka/config', { testUser: test });
-  if (d && d.ok) {
-  rukaDone.test = !!test; rukaEditing.test = false; rukaApplyLocks();
-  toast(test ? 'Test account saved' : 'Test account cleared');
-  }
+  const d = await rukaApi('/ruka/config', { mode, testUser: test });
+  if (d && d.ok) toast('Saved: ' + (d.mode === 'live' ? 'LIVE' : 'Sandbox'));
   else if (d && d.error !== 'bad_pin') toast('Could not save', '#f87171');
 }
 
@@ -3393,7 +3268,6 @@ async function rukaRunUat() {
   const runBtn = document.getElementById('ruka-uat-run');
   const prog = document.getElementById('ruka-uat-progress');
   rukaUatResults = [];
-  prog.style.color = '';
   renderUatList();
   document.getElementById('ruka-uat-copy').disabled = true;
   runBtn.disabled = true;
@@ -3404,8 +3278,7 @@ async function rukaRunUat() {
   prog.textContent = 'Running tests ' + g.join(', ') + '... (' + (done + 1) + ' of ' + (groups.length + 1) + ')';
   const d = await rukaApi('/ruka/uat', { tests: g, runId });
   if (!d || !d.ok) {
-  prog.textContent = 'Stopped at tests ' + g.join(', ') + '. ' + rukaWhy(d);
-  prog.style.color = 'var(--warn)';
+  prog.textContent = d && d.error === 'not_configured' ? 'Save your RukaPay API key first.' : 'Stopped. Check the Worker URL and PIN, then try again.';
   runBtn.disabled = false;
   return;
   }
@@ -3465,11 +3338,6 @@ window.rukaSaveWorkerUrl = rukaSaveWorkerUrl;
 window.rukaSaveKey = rukaSaveKey;
 window.rukaSetOpen = rukaSetOpen;
 window.rukaSaveMode = rukaSaveMode;
-window.rukaSaveTest = rukaSaveTest;
-window.rukaSaveUrl = rukaSaveUrl;
-window.rukaSavePin = rukaSavePin;
-window.rukaEdit = rukaEdit;
-window.rukaApplyLocks = rukaApplyLocks;
 window.rukaPayReset = rukaPayReset;
 window.rukaPayCheck = rukaPayCheck;
 window.rukaPaySend = rukaPaySend;
