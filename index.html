@@ -188,8 +188,8 @@ input[type="password"]{padding-right:46px;}
 .mp-nm{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .mp-badges{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;}
 .mp-bd{font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.5);color:var(--accent);}
-.mp-gear{cursor:pointer;padding:4px;}
-.mp-gear .mp-i{width:24px;height:24px;}
+.mp-gear{cursor:pointer;padding:8px;margin:-4px -4px -4px 0;}
+.mp-gear .mp-i{width:28px;height:28px;}
 .mp-wallet{margin:0 16px;border-radius:18px;padding:14px 12px;background:linear-gradient(160deg,#2a1c20,#211D18);border:1px solid rgba(251,113,133,.55);box-shadow:0 0 22px rgba(251,113,133,.22);}
 .mp-wrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;}
 .mp-wl{font-size:11px;color:var(--muted);letter-spacing:.4px;}
@@ -208,7 +208,8 @@ input[type="password"]{padding-right:46px;}
 .mp-mi{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:11px;font-weight:600;position:relative;cursor:pointer;}
 .mp-mi:active{transform:scale(.96);}
 .mp-ic{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 0 14px rgba(251,113,133,.45);}
-.mp-dot{position:absolute;top:-1px;right:calc(50% - 30px);width:9px;height:9px;border-radius:50%;background:#f87171;border:2px solid var(--bg);}
+.unread-badge{min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#f87171;color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:800;align-items:center;justify-content:center;border:1.5px solid var(--bg);line-height:1;box-sizing:border-box;z-index:3;}
+.mp-dot{position:absolute;top:-4px;right:calc(50% - 36px);}
 /* Community popup */
 .cm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:850;display:none;align-items:center;justify-content:center;padding:24px;}
 .cm-overlay.open{display:flex;}
@@ -310,8 +311,12 @@ input[type="password"]{padding-right:46px;}
 /* Home movies + More tasks + comments + welcome card */
 .more-tasks-btn{width:100%;padding:13px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin:2px 0 10px;box-shadow:0 3px 12px rgba(0,200,83,.35);}
 .more-tasks-btn:active{transform:scale(.98);}
-.home-movies{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.home-movies .video-card{margin:0;}
+.home-movies{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.home-movies .video-card{margin:0;border-radius:10px;}
+.home-movies .video-thumb-wrap{aspect-ratio:2/1;}
+.home-movies .video-title{padding:6px 8px 8px;font-size:11px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.home-movies .video-play-badge svg{width:26px;height:26px;}
+.home-movies .video-reward-badge{bottom:4px;right:4px;font-size:10px;padding:2px 6px;}
 .live-act-title{font-size:11px;font-weight:700;color:var(--muted);margin:2px 0 6px;}
 .live-act-win{height:154px;overflow:hidden;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 22%,#000 78%,transparent 100%);}
 .live-act-track{will-change:transform;}
@@ -393,7 +398,7 @@ input[type="password"]{padding-right:46px;}
 .nav-item:nth-child(5){--tc:#c084fc;--tg:linear-gradient(135deg,#c084fc,#7c3aed);}
 .nav-item.active .nav-icon{color:#fff;background:var(--tg);}
 .nav-item.active .nav-label{color:var(--tc);}
-#support-unread-dot-nav{top:0 !important;right:8px !important;}
+.dashboard-page .app-footer{position:static !important;bottom:auto !important;left:auto !important;right:auto !important;transform:none !important;width:auto !important;margin:18px 0 0 !important;}
 
 /* Footer */
 .app-footer{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);width:100%;max-width:500px;background:var(--surface2);border-top:1px solid var(--border);padding:12px 16px;z-index:199;}
@@ -811,11 +816,14 @@ input[type="password"]{padding-right:46px;}
 
 <div class="section">
 <div class="action-grid">
-  <button class="action-btn" style="background:#16a34a;border:none;color:#fff;" onclick="switchTab('team')"><span class="btn-icon"></span>Watch Videos</button>
   <button class="action-btn" style="background:#e11d48;border:none;color:#fff;" onclick="switchTab('deposit')"><span class="btn-icon"></span>Deposit</button>
   <button class="action-btn" style="background:#dc2626;border:none;color:#fff;" onclick="switchTab('withdraw')"><span class="btn-icon"></span>Withdraw</button>
   <button class="action-btn" style="background:#2563eb;border:none;color:#fff;" onclick="switchTab('recruit')"><span class="btn-icon"></span>Invite</button>
 </div>
+</div>
+<div class="section">
+  <button type="button" class="more-tasks-btn" onclick="switchTab('team')">More tasks &gt;</button>
+  <div class="home-movies" id="home-movies"></div>
 </div>
 <div class="section">
 <div class="action-grid">
@@ -823,10 +831,6 @@ input[type="password"]{padding-right:46px;}
   <button class="action-btn gold-fill-btn" onclick="switchTab('luckyspin')">Lucky Spin</button>
   <button class="action-btn gold-fill-btn" onclick="switchTab('salary')">Salary</button>
 </div>
-</div>
-<div class="section">
-  <button type="button" class="more-tasks-btn" onclick="switchTab('team')">More tasks &gt;</button>
-  <div class="home-movies" id="home-movies"></div>
 </div>
 <div class="section" id="live-activities-wrap">
   <div class="live-act-title">Live Activities</div>
@@ -1089,7 +1093,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="mp-av"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div>
 <div class="mp-who"><div class="mp-nm" id="profile-fullname-display">User</div>
 <div class="mp-badges"><span class="mp-bd" id="profile-level-badge">Trainee</span><span class="mp-bd" id="profile-position-badge" style="display:none;"></span></div></div>
-<div class="mp-gear" onclick="switchTab('settings')"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg></div>
+<div class="mp-gear" onclick="switchTab('settings')"><svg class="mp-i" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
 </div>
 <div class="mp-wallet">
 <div class="mp-wrow">
@@ -1119,7 +1123,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="mp-mi" onclick="switchTab('missed-commission')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M7 3h10M7 21h10M8 3v4l4 5-4 5v4M16 3v4l-4 5 4 5v4"/></svg></div><div>Missed Commission</div></div>
 <div class="mp-mi" onclick="switchTab('salary')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/></svg></div><div>Salary</div></div>
 <div class="mp-mi" onclick="switchTab('about')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></div><div>About</div></div>
-<div class="mp-mi" onclick="openSupportChat()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M20 20c0 1-2 2-5 2h-2"/></svg></div><span id="support-unread-dot-btn" class="mp-dot" style="display:none;"></span><div>Support</div></div>
+<div class="mp-mi" onclick="openSupportChat()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/><path d="M20 20c0 1-2 2-5 2h-2"/></svg></div><span id="support-unread-dot-btn" class="unread-badge mp-dot" style="display:none;"></span><div>Support</div></div>
 <div class="mp-mi" onclick="switchTab('faq')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7M12 17h.01"/></svg></div><div>FAQ</div></div>
 <div class="mp-mi" onclick="startAppDownload()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M12 8v6M9.5 11.5 12 14l2.5-2.5"/></svg></div><div>App Download</div></div>
 <div class="mp-mi" onclick="doLogout()"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></svg></div><div>Exit</div></div>
@@ -1618,7 +1622,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="nav-item" onclick="switchTab('errands')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h4v-4H3v4z"/><path d="M9 20h4v-9H9v9z"/><path d="M15 20h4V6h-4v14z"/></svg></span><span class="nav-label">STAGES</span></div>
 <div class="nav-item" onclick="switchTab('team')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z" fill="currentColor" stroke="none"/></svg></span><span class="nav-label">WATCH</span></div>
 <div class="nav-item" onclick="switchTab('plan')"><span class="nav-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/><path d="M16 12h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a2 2 0 0 1 0-4z"/></svg></span><span class="nav-label">WAGES</span></div>
-<div class="nav-item" onclick="switchTab('profile')" style="position:relative;"><span class="nav-icon" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg><span id="support-unread-dot-nav" style="display:none;position:absolute;top:-2px;right:-4px;width:8px;height:8px;border-radius:50%;background:#f87171;border:1.5px solid var(--bg);"></span></span><span class="nav-label">ME</span></div>
+<div class="nav-item" onclick="switchTab('profile')" style="position:relative;"><span class="nav-icon" style="position:relative;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/></svg><span id="support-unread-dot-nav" class="unread-badge" style="display:none;position:absolute;top:-6px;right:-12px;"></span></span><span class="nav-label">ME</span></div>
 </nav>
 
 <div class="modal-overlay" id="trainee-upgrade-modal" style="z-index:900;">
@@ -1653,6 +1657,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 
 <div class="floating-support-btn" id="floating-support-btn" onclick="openSupportChat()">
+<span id="support-unread-dot-float" class="unread-badge" style="display:none;position:absolute;top:-4px;right:-4px;"></span>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11a9 9 0 0 1 18 0v5a3 3 0 0 1-3 3h-1v-7h4"/><path d="M3 16v-5h4v7H6a3 3 0 0 1-3-3z"/><path d="M8 21c1.5 1 3 1 5 1"/></svg>
 </div>
 </div>
@@ -2191,8 +2196,14 @@ function startGlobalSupportChatListener(username) {
   renderSupportThread(chat.messages || {});
   updateSupportUnreadBadge(chat);
   };
-  ref.on('value', callback);
-  globalSupportChatUnsubscribe = () => ref.off('value', callback);
+  let cancelled = false;
+  globalSupportChatUnsubscribe = () => { cancelled = true; ref.off('value', callback); };
+  db.ref('users/' + userKey + '/supportSeenAt').once('value').then(function (ss) {
+  const v = ss.val();
+  if (typeof v === 'number') supportLastSeenTimestamp = v;
+  }).catch(function () {}).then(function () {
+  if (!cancelled) ref.on('value', callback);
+  });
 }
 
 function isSupportThreadVisible() {
@@ -2204,23 +2215,36 @@ function isSupportThreadVisible() {
 function markSupportAsSeen(ts) {
   supportLastSeenTimestamp = ts || Date.now();
   localStorage.setItem('pp_support_last_seen', String(supportLastSeenTimestamp));
+  // also keep the time on the user's record so the unread count is the same on every phone
+  try { if (currentUsername) db.ref('users/' + safeKey(currentUsername) + '/supportSeenAt').set(supportLastSeenTimestamp).catch(function () {}); } catch (e) {}
 }
 
+function setSupportBadgeCount(n) {
+  const txt = n > 9 ? '9+' : String(n);
+  ['support-unread-dot-nav', 'support-unread-dot-btn', 'support-unread-dot-float'].forEach(function (id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = n > 0 ? txt : '';
+  el.style.display = n > 0 ? 'flex' : 'none';
+  });
+}
 function setSupportBadgeVisible(show) {
-  const navDot = document.getElementById('support-unread-dot-nav');
-  const btnDot = document.getElementById('support-unread-dot-btn');
-  if (navDot) navDot.style.display = show ? 'block' : 'none';
-  if (btnDot) btnDot.style.display = show ? 'block' : 'none';
+  if (!show) setSupportBadgeCount(0);
 }
 
 function updateSupportUnreadBadge(chat) {
   if (isSupportThreadVisible()) {
   if (chat.lastMessageAt) markSupportAsSeen(chat.lastMessageAt);
-  setSupportBadgeVisible(false);
+  setSupportBadgeCount(0);
   return;
   }
-  const hasNew = chat.lastSender === 'admin' && (chat.lastMessageAt || 0) > supportLastSeenTimestamp;
-  setSupportBadgeVisible(hasNew);
+  const msgs = chat.messages || {};
+  let n = 0;
+  for (const k in msgs) {
+  const m = msgs[k];
+  if (m && m.sender === 'admin' && (m.timestamp || 0) > supportLastSeenTimestamp) n++;
+  }
+  setSupportBadgeCount(n);
 }
 
 function selectSupportTopic(topic) {
@@ -5811,7 +5835,7 @@ async function doWithdraw() {
   }
   
   if (!currentUser.withdrawAccountLocked || !currentUser.withdrawPhone) {
-  showBanner('Please set up your withdrawal account in Settings first.');
+  goSetWithdrawAccount();
   return;
   }
   
@@ -6363,6 +6387,10 @@ function switchTab(tab, fromPopState) {
   if (tab === 'withdraw' && settingsData.withdrawLocked) {
   return;
   }
+  if (tab === 'withdraw' && !fromPopState && currentUser && currentUser.currentLevel && currentUser.currentLevel !== 'trainee' && !(currentUser.withdrawAccountLocked && currentUser.withdrawPhone)) {
+  goSetWithdrawAccount();
+  return;
+  }
   if (tab === 'luckyspin' && settingsData.luckySpinLocked) {
   return;
   }
@@ -6478,7 +6506,15 @@ function openWithdrawAccountModal() {
   document.getElementById('withdraw-account-modal-overlay').classList.add('open');
 }
 
+let withdrawAfterAccount = false;
+function goSetWithdrawAccount() {
+  withdrawAfterAccount = true;
+  showBanner('Set your withdrawal account first.');
+  switchTab('settings');
+  openWithdrawAccountModal();
+}
 function closeWithdrawAccountModal() {
+  withdrawAfterAccount = false;
   document.getElementById('withdraw-account-modal-overlay').classList.remove('open');
 }
 
@@ -6519,7 +6555,9 @@ async function saveWithdrawAccount() {
   };
   await db.ref('users/' + safeKey(currentUsername)).update(updates);
   if (currentUser) currentUser = { ...currentUser, ...updates };
+  const goWithdraw = withdrawAfterAccount;
   closeWithdrawAccountModal();
+  if (goWithdraw) switchTab('withdraw');
   showPopup('Account Saved', 'Your withdrawal account has been saved. Contact support if you ever need to change it.', 'success');
   } catch (error) {
   console.error('Save withdrawal account error:', error);
