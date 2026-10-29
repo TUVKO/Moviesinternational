@@ -168,10 +168,18 @@ input[type="password"]{padding-right:46px;}
 .dash-section{display:none;}
 .dash-section.active{display:block;}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
-.hb-slider{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}
-.hb-track{display:flex;height:100%;will-change:transform;}
-.hb-slide{flex:0 0 100%;height:100%;}
+.hb-slider{position:relative;width:100%;aspect-ratio:21/9;border-radius:14px;overflow:hidden;background:#1d1915;}
+.hb-slide{position:absolute;inset:0;transform:translateX(100%);will-change:transform;}
+.hb-slide.cur{transform:translateX(0);}
 .hb-slide img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block;-webkit-user-drag:none;user-select:none;}
+.wm-card{position:relative;overflow:hidden;margin:2px 0 10px;border-radius:12px;padding:8px 11px 9px;font-size:10.5px;line-height:1.45;color:#14532d;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:1px solid #86efac;}
+.wm-txt{position:relative;z-index:2;}
+.wm-card b{font-weight:800;}
+.wm-rc{color:#15803d;font-weight:800;}
+.wm-st{position:absolute;z-index:1;width:var(--s);height:var(--s);background:var(--c);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);pointer-events:none;animation:wmtw var(--d) ease-in-out infinite;animation-delay:var(--dl);}
+.wm-watch{display:inline-block;background:#16a34a;color:#fff;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:800;cursor:pointer;}
+@keyframes wmtw{0%,100%{opacity:.12;transform:scale(.55)}50%{opacity:1;transform:scale(1.15)}}
+@media (prefers-reduced-motion: reduce){.wm-st{animation:none;opacity:.7;}}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
 .plain-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
 .plain-stat-row:last-child{border-bottom:none;}
@@ -784,9 +792,13 @@ input[type="password"]{padding-right:46px;}
   <!-- HOME / DASHBOARD -->
 <div class="dash-section active" id="sec-home">
 <div class="section" id="home-banner-wrap" style="display:none;">
-<div class="hb-slider">
-<div class="hb-track" id="home-banner-track"></div>
+<div class="hb-slider" id="home-banner-slider">
+<div class="hb-slide" id="hb-a"><img alt="" draggable="false"></div>
+<div class="hb-slide" id="hb-b"><img alt="" draggable="false"></div>
 </div>
+</div>
+<div class="section">
+<div class="wm-card"><i class="wm-st" style="--s:8px;--c:#ffffff;--d:3.4s;--dl:-3.2s;left:94%;top:83%"></i><i class="wm-st" style="--s:8px;--c:#f59e0b;--d:3.6s;--dl:-3.1s;left:31%;top:83%"></i><i class="wm-st" style="--s:4px;--c:#fbbf24;--d:1.9s;--dl:-1.9s;left:31%;top:48%"></i><i class="wm-st" style="--s:8px;--c:#f59e0b;--d:3.0s;--dl:-0.1s;left:27%;top:52%"></i><i class="wm-st" style="--s:6px;--c:#fbbf24;--d:3.8s;--dl:-3.1s;left:20%;top:9%"></i><i class="wm-st" style="--s:5px;--c:#22c55e;--d:1.9s;--dl:-0.0s;left:0%;top:26%"></i><i class="wm-st" style="--s:5px;--c:#fbbf24;--d:3.7s;--dl:-1.2s;left:25%;top:69%"></i><i class="wm-st" style="--s:5px;--c:#fbbf24;--d:3.9s;--dl:-2.8s;left:49%;top:38%"></i><i class="wm-st" style="--s:4px;--c:#ffffff;--d:2.6s;--dl:-3.7s;left:33%;top:8%"></i><i class="wm-st" style="--s:6px;--c:#ffffff;--d:3.6s;--dl:-2.3s;left:76%;top:86%"></i><i class="wm-st" style="--s:6px;--c:#f59e0b;--d:2.3s;--dl:-3.3s;left:61%;top:40%"></i><i class="wm-st" style="--s:5px;--c:#22c55e;--d:2.7s;--dl:-0.7s;left:32%;top:2%"></i><i class="wm-st" style="--s:6px;--c:#22c55e;--d:1.6s;--dl:-3.2s;left:46%;top:48%"></i><i class="wm-st" style="--s:8px;--c:#f59e0b;--d:2.7s;--dl:-2.8s;left:79%;top:25%"></i><i class="wm-st" style="--s:4px;--c:#fbbf24;--d:3.8s;--dl:-3.8s;left:44%;top:65%"></i><i class="wm-st" style="--s:6px;--c:#ffffff;--d:3.5s;--dl:-0.4s;left:95%;top:47%"></i><i class="wm-st" style="--s:6px;--c:#f59e0b;--d:2.6s;--dl:-3.9s;left:26%;top:43%"></i><i class="wm-st" style="--s:8px;--c:#ffffff;--d:3.8s;--dl:-1.4s;left:89%;top:69%"></i><div class="wm-txt"><b>How to watch?</b> Select <span class="wm-watch" role="button" tabindex="0" onclick="switchTab('team')">WATCH</span> tab, tap a video, watch it for 5 seconds, pick a comment, and tap the green <span class="wm-rc">RECEIVE</span> button. The money goes straight to your wallet instantly!</div></div>
 </div>
 <div class="section">
 <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;">
@@ -5016,66 +5028,106 @@ function startSettingsListener() {
   });
 }
 
-let hbTimer = null, hbIndex = 0, hbCount = 0, hbSig = '';
-function getHomeBannerImages() {
-  const v = settingsData.homeBannerImages;
-  if (!v) return [];
-  const arr = Array.isArray(v) ? v : Object.keys(v).sort(function (x, y) { return x - y; }).map(function (k) { return v[k]; });
-  return arr.filter(function (u) { return typeof u === 'string' && u.indexOf('data:image/') === 0; }).slice(0, 6);
+let hbTimer = null, hbIndex = 0, hbSig = '', hbItems = [], hbBusy = false;
+const hbCache = {};
+function getHomeBannerItems() {
+  const ids = settingsData.homeBannerIds;
+  if (ids) {
+  const arr = Array.isArray(ids) ? ids : Object.keys(ids).sort(function (x, y) { return x - y; }).map(function (k) { return ids[k]; });
+  return arr.filter(function (x) { return typeof x === 'string' && x; }).slice(0, 60).map(function (id) { return { id: id }; });
+  }
+  // older pictures that were saved inside settings
+  const old = settingsData.homeBannerImages;
+  if (old) {
+  const arr = Array.isArray(old) ? old : Object.keys(old).sort(function (x, y) { return x - y; }).map(function (k) { return old[k]; });
+  return arr.filter(function (u) { return typeof u === 'string' && u.indexOf('data:image/') === 0; }).slice(0, 60).map(function (u) { return { src: u }; });
+  }
+  return [];
+}
+function hbLoad(item) {
+  // resolves with a picture source, or '' if it cannot be loaded
+  if (item.src) return Promise.resolve(item.src);
+  if (hbCache[item.id] !== undefined) return Promise.resolve(hbCache[item.id]);
+  return db.ref('homeBannerPics/' + item.id).once('value').then(function (snap) {
+  const v = snap.val();
+  const d = v && typeof v.d === 'string' && v.d.indexOf('data:image/') === 0 ? v.d : '';
+  hbCache[item.id] = d;
+  return d;
+  }).catch(function () { return ''; });
 }
 function hbStop() {
   if (hbTimer) { clearInterval(hbTimer); hbTimer = null; }
 }
-function hbNext() {
-  const track = document.getElementById('home-banner-track');
-  if (!track || document.hidden) return;
-  hbIndex++;
-  track.style.transition = 'transform .6s ease';
-  track.style.transform = 'translateX(-' + (hbIndex * 100) + '%)';
-  if (hbIndex === hbCount) {
-  // the extra copy of the first picture is showing: jump back to the real first one with no animation
-  setTimeout(function () {
-  track.style.transition = 'none';
-  hbIndex = 0;
-  track.style.transform = 'translateX(0)';
-  }, 650);
+function hbShowFirst(sig) {
+  const a = document.getElementById('hb-a');
+  const b = document.getElementById('hb-b');
+  if (!a || !b || !hbItems.length) return;
+  hbLoad(hbItems[0]).then(function (src) {
+  if (sig !== hbSig) return;
+  if (!src) { document.getElementById('home-banner-wrap').style.display = 'none'; return; }
+  document.getElementById('home-banner-wrap').style.display = 'block';
+  a.querySelector('img').src = src;
+  a.style.transition = 'none'; b.style.transition = 'none';
+  a.style.transform = ''; b.style.transform = '';
+  a.className = 'hb-slide cur'; b.className = 'hb-slide';
+  if (hbItems.length > 1) {
+  hbLoad(hbItems[1 % hbItems.length]);
+  hbTimer = setInterval(hbNext, 5000);
   }
+  });
+}
+function hbNext() {
+  if (hbBusy || document.hidden || hbItems.length < 2) return;
+  const cur = document.querySelector('#home-banner-slider .hb-slide.cur');
+  const nxt = document.querySelector('#home-banner-slider .hb-slide:not(.cur)');
+  if (!cur || !nxt) return;
+  const sig = hbSig;
+  const nextIndex = (hbIndex + 1) % hbItems.length;
+  hbBusy = true;
+  hbLoad(hbItems[nextIndex]).then(function (src) {
+  if (sig !== hbSig || !src) { hbBusy = false; return; }
+  nxt.querySelector('img').src = src;
+  nxt.style.transition = 'none';
+  nxt.style.transform = 'translateX(100%)';
+  void nxt.offsetWidth;
+  cur.style.transition = 'transform .6s ease';
+  nxt.style.transition = 'transform .6s ease';
+  cur.style.transform = 'translateX(-100%)';
+  nxt.style.transform = 'translateX(0)';
+  setTimeout(function () {
+  cur.className = 'hb-slide';
+  nxt.className = 'hb-slide cur';
+  cur.style.transition = 'none';
+  cur.style.transform = 'translateX(100%)';
+  nxt.style.transform = '';
+  nxt.style.transition = 'none';
+  hbIndex = nextIndex;
+  hbBusy = false;
+  // get the picture after this one ready before its turn
+  hbLoad(hbItems[(hbIndex + 1) % hbItems.length]);
+  }, 650);
+  });
 }
 function renderHomeBanner() {
   const wrap = document.getElementById('home-banner-wrap');
-  const track = document.getElementById('home-banner-track');
-  if (!wrap || !track) return;
-  const imgs = getHomeBannerImages();
-  if (!imgs.length) {
+  if (!wrap) return;
+  const items = getHomeBannerItems();
+  if (!items.length) {
   hbStop();
   hbSig = '';
+  hbItems = [];
   wrap.style.display = 'none';
-  track.innerHTML = '';
   return;
   }
-  wrap.style.display = 'block';
-  // only rebuild when the pictures really changed, so the slider does not restart on every settings update
-  const sig = imgs.length + ':' + imgs.map(function (u) { return u.length + u.slice(-24); }).join('|');
+  // only rebuild when the list of pictures really changed, so the slider does not restart on every settings update
+  const sig = items.map(function (x) { return x.id || (x.src.length + x.src.slice(-16)); }).join('|');
   if (sig === hbSig) return;
   hbSig = sig;
   hbStop();
+  hbBusy = false;
   hbIndex = 0;
-  hbCount = imgs.length;
-  track.style.transition = 'none';
-  track.style.transform = 'translateX(0)';
-  track.innerHTML = '';
-  const list = imgs.length > 1 ? imgs.concat([imgs[0]]) : imgs;
-  list.forEach(function (u) {
-  const slide = document.createElement('div');
-  slide.className = 'hb-slide';
-  const im = document.createElement('img');
-  im.alt = '';
-  im.draggable = false;
-  im.src = u;
-  slide.appendChild(im);
-  track.appendChild(slide);
-  });
-  if (imgs.length > 1) hbTimer = setInterval(hbNext, 5000);
+  hbItems = items;
+  hbShowFirst(sig);
 }
 
 function renderReferralProgramTiers() {
