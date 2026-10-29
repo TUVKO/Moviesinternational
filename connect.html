@@ -951,7 +951,11 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="settings-row"><span class="settings-label">Support WhatsApp Link</span><input type="text" class="f-input" id="support-whatsapp-input" style="width:280px;" placeholder="https://wa.me/2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportWhatsapp()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Support Contact Number (for Save Contact)</span><input type="text" class="f-input" id="support-contact-number-input" style="width:280px;" placeholder="+2567XXXXXXXX"><button class="btn btn-save" onclick="saveSupportContactNumber()">Save</button></div>
 <div class="settings-row"><span class="settings-label">App Download Link</span><input type="text" class="f-input" id="app-download-input" style="width:280px;" placeholder="https://.../app.apk"><button class="btn btn-save" onclick="saveAppDownloadLink()">Save</button></div>
-<div class="settings-row"><span class="settings-label">Home Banner Video (YouTube link or ID — silent looping animation)</span><input type="text" class="f-input" id="home-banner-video-input" style="width:280px;" placeholder="https://www.youtube.com/watch?v=..."><button class="btn btn-save" onclick="saveHomeBannerVideo()">Save</button></div>
+<div class="settings-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+<span class="settings-label">Home Banner Pictures (up to 6, they slide every 5 seconds). Best size: wide, for example 1280 x 720.</span>
+<div id="home-banner-admin-list" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+<div><input type="file" id="home-banner-file" accept="image/*" style="display:none;" onchange="handleHomeBannerUpload(this)"><button class="btn btn-save" id="home-banner-add-btn" onclick="document.getElementById('home-banner-file').click()">Add picture</button></div>
+</div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 1 (direct referrer, capped by their own level)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level1-input" min="0" max="100" step="0.1" placeholder="10"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel1()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 2 (upline's referrer)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level2-input" min="0" max="100" step="0.1" placeholder="5"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel2()">Save</button></div>
 <div class="settings-row"><span class="settings-label">Referral Bonus — Level 3 (top upline)</span><div class="ugx-group"><input type="number" class="ugx-input" id="affiliate-level3-input" min="0" max="100" step="0.1" placeholder="1"><span class="ugx-label">%</span></div><button class="btn btn-save" onclick="saveAffiliateLevel3()">Save</button></div>
@@ -2104,7 +2108,7 @@ function renderDashboard() {
     onoff('Support WhatsApp', hasVal(st.supportWhatsappLink)) +
     onoff('Support number', hasVal(st.supportContactNumber)) +
     onoff('App download link', hasVal(st.appDownloadLink)) +
-    onoff('Home banner video', hasVal(st.homeBannerVideoId)) +
+    onoff('Home banner pictures', !!(st.homeBannerImages && Object.keys(st.homeBannerImages).length > 0)) +
     onoff('DATIM plans', Object.keys(allDatimPlans || {}).length > 0) +
     `<div class="pct-pill">Levels locked <span class="${lockedLevels ? 'off' : 'on'}">${lockedLevels ? lockedLevels : 'None'}</span></div>` +
     val('Min Deposit', fmt(st.minDeposit || 61000)) +
@@ -3045,8 +3049,7 @@ function loadSettingsUI() {
   if (supportContactInp) supportContactInp.value = s.supportContactNumber || '';
   const appDlInp = document.getElementById('app-download-input');
   if (appDlInp) appDlInp.value = s.appDownloadLink || '';
-  const bannerVidInp = document.getElementById('home-banner-video-input');
-  if (bannerVidInp) bannerVidInp.value = s.homeBannerVideoId || '';
+  try { renderHomeBannerAdmin(s.homeBannerImages); } catch (e) {}
   const affCommInp1 = document.getElementById('affiliate-level1-input');
   if (affCommInp1) affCommInp1.value = s.affiliateLevel1Percent != null ? s.affiliateLevel1Percent : 10;
   const affCommInp2 = document.getElementById('affiliate-level2-input');
@@ -3628,17 +3631,79 @@ async function saveAppDownloadLink() {
   toast('App download link saved');
 }
 
-async function saveHomeBannerVideo() {
-  const input = document.getElementById('home-banner-video-input').value.trim();
-  if (!input) {
-  await db.ref('settings/homeBannerVideoId').set('');
-  toast('Home banner video cleared');
-  return;
+let homeBannerAdminImages = [];
+function normalizeBannerImages(v) {
+  if (!v) return [];
+  const arr = Array.isArray(v) ? v : Object.keys(v).sort(function (x, y) { return x - y; }).map(function (k) { return v[k]; });
+  return arr.filter(function (u) { return typeof u === 'string' && u.indexOf('data:image/') === 0; }).slice(0, 6);
+}
+function renderHomeBannerAdmin(v) {
+  homeBannerAdminImages = normalizeBannerImages(v);
+  const list = document.getElementById('home-banner-admin-list');
+  if (!list) return;
+  list.innerHTML = '';
+  homeBannerAdminImages.forEach(function (u, i) {
+  const box = document.createElement('div');
+  box.style.cssText = 'position:relative;width:104px;height:58px;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#000;';
+  const im = document.createElement('img');
+  im.src = u;
+  im.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+  const x = document.createElement('button');
+  x.textContent = '\u2715';
+  x.style.cssText = 'position:absolute;top:3px;right:3px;width:22px;height:22px;border:none;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;font-size:11px;cursor:pointer;';
+  x.onclick = function () { deleteHomeBannerPic(i); };
+  const n = document.createElement('div');
+  n.textContent = String(i + 1);
+  n.style.cssText = 'position:absolute;left:4px;bottom:3px;background:rgba(0,0,0,.7);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:8px;';
+  box.appendChild(im); box.appendChild(x); box.appendChild(n);
+  list.appendChild(box);
+  });
+  const btn = document.getElementById('home-banner-add-btn');
+  if (btn) {
+  btn.textContent = 'Add picture (' + homeBannerAdminImages.length + '/6)';
+  btn.disabled = homeBannerAdminImages.length >= 6;
   }
-  const youtubeId = extractYouTubeId(input);
-  if (!youtubeId) { toast('Could not read a YouTube link from that', '#f87171'); return; }
-  await db.ref('settings/homeBannerVideoId').set(youtubeId);
-  toast('Home banner video saved');
+}
+function handleHomeBannerUpload(inputEl) {
+  const file = inputEl.files && inputEl.files[0];
+  inputEl.value = '';
+  if (!file) return;
+  if (homeBannerAdminImages.length >= 6) { toast('Maximum 6 pictures. Delete one first.', '#f87171'); return; }
+  const reader = new FileReader();
+  reader.onload = function (e) {
+  const img = new Image();
+  img.onload = function () {
+  const scale = Math.min(1, 900 / img.width);
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+  let dataUrl = '';
+  const qualities = [0.72, 0.6, 0.5];
+  for (let q = 0; q < qualities.length; q++) {
+  dataUrl = canvas.toDataURL('image/jpeg', qualities[q]);
+  if (dataUrl.length < 140000) break;
+  }
+  const next = homeBannerAdminImages.concat([dataUrl]);
+  db.ref('settings/homeBannerImages').set(next).then(function () {
+  renderHomeBannerAdmin(next);
+  toast('Picture added');
+  }).catch(function () { toast('Could not save the picture', '#f87171'); });
+  };
+  img.onerror = function () { toast('Could not read that picture', '#f87171'); };
+  img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+async function deleteHomeBannerPic(i) {
+  if (!confirm('Delete this picture?')) return;
+  const next = homeBannerAdminImages.filter(function (_, k) { return k !== i; });
+  try {
+  await db.ref('settings/homeBannerImages').set(next.length ? next : null);
+  renderHomeBannerAdmin(next);
+  toast('Picture deleted');
+  } catch (e) { toast('Could not delete', '#f87171'); }
 }
 
 async function saveAffiliateLevel1() {

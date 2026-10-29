@@ -168,8 +168,10 @@ input[type="password"]{padding-right:46px;}
 .dash-section{display:none;}
 .dash-section.active{display:block;}
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:0;}
-.home-banner-box{position:relative;width:100%;padding-top:40%;border-radius:14px;overflow:hidden;background:#000;}
-.home-banner-box iframe{position:absolute;top:50%;left:50%;width:150%;height:150%;transform:translate(-50%,-50%);border:none;pointer-events:none;}
+.hb-slider{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}
+.hb-track{display:flex;height:100%;will-change:transform;}
+.hb-slide{flex:0 0 100%;height:100%;}
+.hb-slide img{width:100%;height:100%;object-fit:cover;object-position:50% 25%;display:block;-webkit-user-drag:none;user-select:none;}
 .stat-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;}
 .plain-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
 .plain-stat-row:last-child{border-bottom:none;}
@@ -309,7 +311,7 @@ input[type="password"]{padding-right:46px;}
 
 .action-grid{display:flex;flex-direction:row;gap:8px;margin:8px 0;align-items:stretch;}
 /* Home movies + More tasks + comments + welcome card */
-.more-tasks-btn{width:100%;padding:13px;border:none;border-radius:12px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:800;cursor:pointer;margin:2px 0 10px;box-shadow:0 3px 12px rgba(0,200,83,.35);}
+.more-tasks-btn{display:block;width:30%;min-width:112px;padding:9px 6px;border:none;border-radius:10px;background:#00C853;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;cursor:pointer;margin:2px 0 6px auto;white-space:nowrap;box-shadow:0 3px 12px rgba(0,200,83,.35);}
 .more-tasks-btn:active{transform:scale(.98);}
 .home-movies{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .home-movies .video-card{margin:0;border-radius:10px;}
@@ -782,8 +784,8 @@ input[type="password"]{padding-right:46px;}
   <!-- HOME / DASHBOARD -->
 <div class="dash-section active" id="sec-home">
 <div class="section" id="home-banner-wrap" style="display:none;">
-<div class="home-banner-box">
-<div id="home-banner-video"></div>
+<div class="hb-slider">
+<div class="hb-track" id="home-banner-track"></div>
 </div>
 </div>
 <div class="section">
@@ -5009,30 +5011,71 @@ function startSettingsListener() {
   updateSettingsUI();
   updateBalanceUI();
   renderReferralProgramTiers();
-  renderHomeBannerVideo();
+  renderHomeBanner();
   updateWelcomeCard();
   });
 }
 
-function renderHomeBannerVideo() {
+let hbTimer = null, hbIndex = 0, hbCount = 0, hbSig = '';
+function getHomeBannerImages() {
+  const v = settingsData.homeBannerImages;
+  if (!v) return [];
+  const arr = Array.isArray(v) ? v : Object.keys(v).sort(function (x, y) { return x - y; }).map(function (k) { return v[k]; });
+  return arr.filter(function (u) { return typeof u === 'string' && u.indexOf('data:image/') === 0; }).slice(0, 6);
+}
+function hbStop() {
+  if (hbTimer) { clearInterval(hbTimer); hbTimer = null; }
+}
+function hbNext() {
+  const track = document.getElementById('home-banner-track');
+  if (!track || document.hidden) return;
+  hbIndex++;
+  track.style.transition = 'transform .6s ease';
+  track.style.transform = 'translateX(-' + (hbIndex * 100) + '%)';
+  if (hbIndex === hbCount) {
+  // the extra copy of the first picture is showing: jump back to the real first one with no animation
+  setTimeout(function () {
+  track.style.transition = 'none';
+  hbIndex = 0;
+  track.style.transform = 'translateX(0)';
+  }, 650);
+  }
+}
+function renderHomeBanner() {
   const wrap = document.getElementById('home-banner-wrap');
-  const container = document.getElementById('home-banner-video');
-  if (!wrap || !container) return;
-  
-  const videoId = settingsData.homeBannerVideoId;
-  if (!videoId) {
+  const track = document.getElementById('home-banner-track');
+  if (!wrap || !track) return;
+  const imgs = getHomeBannerImages();
+  if (!imgs.length) {
+  hbStop();
+  hbSig = '';
   wrap.style.display = 'none';
-  container.innerHTML = '';
+  track.innerHTML = '';
   return;
   }
-  
-  // Only rebuild if the video actually changed, to avoid restarting playback on every settings tick
-  if (container.dataset.currentId === videoId) return;
-  container.dataset.currentId = videoId;
-  
   wrap.style.display = 'block';
-  const src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&playsinline=1`;
-  container.innerHTML = `<iframe src="${src}" allow="autoplay; encrypted-media" allowfullscreen="false" title=""></iframe>`;
+  // only rebuild when the pictures really changed, so the slider does not restart on every settings update
+  const sig = imgs.length + ':' + imgs.map(function (u) { return u.length + u.slice(-24); }).join('|');
+  if (sig === hbSig) return;
+  hbSig = sig;
+  hbStop();
+  hbIndex = 0;
+  hbCount = imgs.length;
+  track.style.transition = 'none';
+  track.style.transform = 'translateX(0)';
+  track.innerHTML = '';
+  const list = imgs.length > 1 ? imgs.concat([imgs[0]]) : imgs;
+  list.forEach(function (u) {
+  const slide = document.createElement('div');
+  slide.className = 'hb-slide';
+  const im = document.createElement('img');
+  im.alt = '';
+  im.draggable = false;
+  im.src = u;
+  slide.appendChild(im);
+  track.appendChild(slide);
+  });
+  if (imgs.length > 1) hbTimer = setInterval(hbNext, 5000);
 }
 
 function renderReferralProgramTiers() {
