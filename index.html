@@ -978,6 +978,10 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 </div>
 </div>
 <div class="section">
+<div id="stages-notice" style="display:none;align-items:flex-start;gap:8px;background:rgba(34,197,94,.12);border:1px solid #22c55e;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:12px;line-height:1.5;color:var(--text);">
+<div style="flex:1;">Select the level you want to upgrade to. If you don't have enough balance in your General Account, please deposit using <b>TIXAN PAY</b> and come back to upgrade.</div>
+<button type="button" onclick="hideStagesNotice()" aria-label="Close" style="border:none;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;padding:0 2px;">&#10005;</button>
+</div>
   <!-- STAKE & Level Summary -->
 <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
 <div>
@@ -1417,6 +1421,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="field-wrap"><input type="number" id="dep-amount" placeholder="Min 61,000" min="61000" oninput="clearDepositPresetSelection()"></div>
 <div class="field-error" id="dep-amount-err">Please check the amount</div>
 </div>
+  <div id="dep-upgrade-note" style="display:none;background:rgba(34,197,94,.12);border:1px solid #22c55e;border-radius:10px;padding:9px 12px;margin:2px 0 12px;font-size:12px;font-weight:700;color:var(--text);text-align:center;">Deposit now and become a verified member of WEA.</div>
   <button class="green-btn" id="dep-amount-continue-btn" onclick="confirmDepositAmount()">CONTINUE</button>
   <button class="link-back-btn" onclick="switchTab('deposit')">Back</button>
 </div>
@@ -2312,9 +2317,33 @@ function closeCommunityPopup() {
   const pop = document.getElementById('community-popup');
   if (pop) pop.classList.remove('open');
 }
+function activeSectionId() {
+  const el = document.querySelector('.dash-section.active');
+  return el ? el.id : '';
+}
+let levelRedirectTimer = null;
 function joinCommunityFromPopup() {
-  openCommunityGroup();
   closeCommunityPopup();
+  const lv = currentUser && currentUser.currentLevel;
+  if (!lv || lv === 'trainee') {
+  // only VM members can join: show the message for 4 seconds, then open the Stages page
+  showBanner('Only VM members can join the community. Upgrade to a level to join.', 4000);
+  if (levelRedirectTimer) clearTimeout(levelRedirectTimer);
+  const from = activeSectionId();
+  levelRedirectTimer = setTimeout(function () {
+  levelRedirectTimer = null;
+  if (!currentUser || activeSectionId() !== from) return;
+  switchTab('errands');
+  const note = document.getElementById('stages-notice');
+  if (note) note.style.display = 'flex';
+  }, 4000);
+  return;
+  }
+  openCommunityGroup();
+}
+function hideStagesNotice() {
+  const note = document.getElementById('stages-notice');
+  if (note) note.style.display = 'none';
 }
 function openCommunityGroup() {
   const link = (settingsData.communityGroupLink || '').trim();
@@ -4014,8 +4043,18 @@ function showReservedPopup() {
   showPopup('Level Not Available', 'This level is currently reserved. Please check back later for availability.', 'info');
 }
 
+let depositFromUpgrade = false;
+let insufficientTimer = null;
 function showInsufficientPopup(needed) {
-  showBanner(`You need ${needed} to purchase this level. Please deposit to your General Account.`);
+  showBanner('You need ' + needed + ' to upgrade to this level. Please deposit to your General Account.', 4000);
+  if (insufficientTimer) clearTimeout(insufficientTimer);
+  const from = activeSectionId();
+  insufficientTimer = setTimeout(function () {
+  insufficientTimer = null;
+  if (!currentUser || activeSectionId() !== from) return;
+  depositFromUpgrade = true;
+  selectDepositMethod('tixan');
+  }, 4000);
 }
 
 function showNeedPreviousPopup(levelName) {
@@ -4771,13 +4810,13 @@ function showPopup(title, message, type) {
 }
 
 let bannerTimeout = null;
-function showBanner(message) {
+function showBanner(message, ms) {
   const popup = document.getElementById('popup-banner');
   if (!popup) return;
   if (bannerTimeout) clearTimeout(bannerTimeout);
   popup.textContent = message;
   popup.classList.add('show');
-  bannerTimeout = setTimeout(() => popup.classList.remove('show'), 2500);
+  bannerTimeout = setTimeout(() => popup.classList.remove('show'), ms || 2500);
 }
 
 function showComingSoon(featureName) {
@@ -5347,6 +5386,9 @@ function selectDepositMethod(method) {
   if (amtInput) amtInput.value = '';
   clearErrors('dep-amount-err');
   renderDepositPresets();
+  const upNote = document.getElementById('dep-upgrade-note');
+  if (upNote) upNote.style.display = depositFromUpgrade ? 'block' : 'none';
+  depositFromUpgrade = false;
   switchTab('deposit-amount');
 }
 
@@ -6478,6 +6520,7 @@ const tabMap = {
 const navOrder = ['home', 'errands', 'team', 'plan', 'profile'];
 
 function switchTab(tab, fromPopState) {
+  if (tab !== 'errands') hideStagesNotice();
   if (tab === 'deposit') { try { updateRukaMethodVisibility(); } catch (e) {} }
   if (tab === 'withdraw' && settingsData.withdrawLocked) {
   return;
