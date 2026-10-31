@@ -191,7 +191,7 @@ input[type="password"]{padding-right:46px;}
 
 /* Me page (glow style, line icons) */
 .mp-i{width:25px;height:25px;fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(167,139,250,.65));}
-.mp-hdr{display:flex;align-items:center;gap:12px;padding:16px 16px 12px;}
+.mp-hdr{display:flex;align-items:center;gap:12px;padding:10px 16px 8px;}
 .mp-av{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--accent),0 0 18px rgba(167,139,250,.55);}
 .mp-av .mp-i{stroke:#fff;filter:none;width:28px;height:28px;}
 .mp-who{flex:1;min-width:0;}
@@ -200,24 +200,25 @@ input[type="password"]{padding-right:46px;}
 .mp-bd{font-size:10px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.5);color:var(--accent);}
 .mp-gear{cursor:pointer;padding:8px;margin:-4px -4px -4px 0;}
 .mp-gear .mp-i{width:28px;height:28px;}
-.mp-wallet{margin:0 16px;border-radius:18px;padding:14px 12px;background:linear-gradient(160deg,#2e2136,#211D18);border:1px solid rgba(167,139,250,.55);box-shadow:0 0 22px rgba(167,139,250,.22);}
+.mp-wallet{margin:0 16px;border-radius:18px;padding:10px 12px;background:linear-gradient(160deg,#2e2136,#211D18);border:1px solid rgba(167,139,250,.55);box-shadow:0 0 22px rgba(167,139,250,.22);}
 .mp-wrow{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;}
 .mp-wl{font-size:11px;color:var(--muted);letter-spacing:.4px;}
 .mp-wv{font-size:18px;font-weight:800;margin-top:4px;color:var(--accent);text-shadow:0 0 12px rgba(167,139,250,.5);font-variant-numeric:tabular-nums;}
-.mp-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+.mp-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
 .mp-ab{background:transparent;border:1.5px solid currentColor;border-radius:999px;padding:9px 4px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 10px currentColor;}
 .mp-ab:active{transform:scale(.97);}
-.mp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
-.mp-sc{position:relative;overflow:hidden;border-radius:50%;padding:10px 22px;min-height:94px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 22%,#52b862 0%,#2f9142 52%,#1f6e30 100%);border:2px solid #1b5e20;box-shadow:0 5px 14px rgba(0,120,40,.4),inset 0 2px 6px rgba(255,255,255,.25);}
-.mp-sc::after{content:"";position:absolute;inset:5px;border-radius:50%;border:1.5px solid #e6c15a;pointer-events:none;z-index:2;}
-.mp-sl{font-size:10.5px;color:#eaffea;line-height:1.2;position:relative;z-index:1;font-weight:600;}
-.mp-sv{font-size:15px;font-weight:800;color:#fff;margin-top:4px;white-space:nowrap;letter-spacing:-.2px;font-variant-numeric:tabular-nums;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);}
+.mp-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 16px;}
+.mp-sc{position:relative;overflow:hidden;border-radius:50%;padding:6px 16px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 22%,#52b862 0%,#2f9142 52%,#1f6e30 100%);border:1.5px solid #1b5e20;box-shadow:0 3px 9px rgba(0,120,40,.4),inset 0 2px 4px rgba(255,255,255,.25);}
+.mp-sc::after{content:"";position:absolute;inset:3px;border-radius:50%;border:1px solid #e6c15a;pointer-events:none;z-index:2;}
+.mp-sl{font-size:9.5px;color:#eaffea;line-height:1.15;position:relative;z-index:1;font-weight:600;}
+.mp-sv{font-size:13px;font-weight:800;color:#fff;margin-top:2px;white-space:nowrap;letter-spacing:-.2px;font-variant-numeric:tabular-nums;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);}
 .mp-wm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:.12;z-index:0;}
-.mp-wm .mp-i{width:50px;height:50px;stroke:#fff;stroke-width:1.2;filter:none;}
-.mp-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;padding:6px 16px 20px;}
-.mp-mi{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:11px;font-weight:600;position:relative;cursor:pointer;}
+.mp-wm .mp-i{width:34px;height:34px;stroke:#fff;stroke-width:1.2;filter:none;}
+.mp-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 6px;padding:4px 16px 16px;}
+.mp-mi{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;font-size:10px;font-weight:600;position:relative;cursor:pointer;}
 .mp-mi:active{transform:scale(.96);}
-.mp-ic{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 0 14px rgba(167,139,250,.45);}
+.mp-ic .mp-i{width:22px;height:22px;}
+.mp-ic{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface);border:1.5px solid var(--accent);box-shadow:0 0 14px rgba(167,139,250,.45);}
 .unread-badge{min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#d97706;color:#fff;font-family:'Inter',sans-serif;font-size:10px;font-weight:800;align-items:center;justify-content:center;border:1.5px solid var(--bg);line-height:1;box-sizing:border-box;z-index:3;}
 .mp-dot{position:absolute;top:-4px;right:calc(50% - 36px);}
 /* Community popup */
@@ -258,6 +259,19 @@ input[type="password"]{padding-right:46px;}
 .stat-value.mob{color:var(--success);}
 .stat-value.videos{color:var(--accent3);}
 .stat-value.streak{color:var(--gold);}
+
+/* Home pills */
+.stat-box.acct-pill{position:relative;border-radius:999px;border:none;padding:5px 10px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#f7e08a 0%,#d4a82a 38%,#a8791a 70%,#e9c75a 100%);box-shadow:0 3px 8px rgba(0,0,0,.45),inset 0 1px 1px rgba(255,255,255,.6);}
+.stat-box.acct-pill::before{content:"";position:absolute;inset:4px;border-radius:999px;background:radial-gradient(ellipse at 50% 35%,#4a7a3a 0%,#2f5a28 60%,#244a20 100%);box-shadow:inset 0 0 0 1px rgba(90,60,10,.7),inset 0 2px 5px rgba(0,0,0,.45);}
+.acct-pill .stat-label,.acct-pill .stat-value{position:relative;z-index:1;white-space:nowrap;max-width:100%;}
+.acct-pill .stat-label{font-size:8.5px;text-transform:none;letter-spacing:.2px;color:#f3e2a0;margin-bottom:2px;font-weight:600;}
+.acct-pill .stat-value{font-size:12.5px;color:#fff !important;text-shadow:0 1px 2px rgba(0,0,0,.5);}
+.stat-box.vl-pill{position:relative;border-radius:999px;border:none;padding:5px 12px;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffe066,#f5c518);box-shadow:0 3px 8px rgba(0,0,0,.4);}
+.stat-box.vl-pill::before{content:"";position:absolute;inset:2px;border-radius:999px;background:linear-gradient(180deg,#5b8def 0%,#2f5fd0 45%,#1e3fa8 100%);box-shadow:inset 0 2px 3px rgba(255,255,255,.45),inset 0 -3px 5px rgba(0,0,20,.35);}
+.stat-box.vl-pill::after{content:"";position:absolute;inset:7px;border-radius:999px;background:radial-gradient(ellipse at 50% 30%,#ffe36a,#f7c61c 70%,#e8b10c);box-shadow:inset 0 2px 4px rgba(120,80,0,.35);}
+.vl-pill .stat-label,.vl-pill .stat-value{position:relative;z-index:2;white-space:nowrap;}
+.vl-pill .stat-label{font-size:8.5px;text-transform:none;letter-spacing:.2px;color:#27407f;margin-bottom:1px;font-weight:700;}
+.vl-pill .stat-value{font-size:13px !important;color:#1b2a5c !important;}
 
 /* Video grid (TIERS page) */
 .video-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -801,27 +815,27 @@ input[type="password"]{padding-right:46px;}
 <div class="wm-card"><i class="wm-st" style="--s:8px;--c:#ffffff;--d:3.4s;--dl:-3.2s;left:94%;top:83%"></i><i class="wm-st" style="--s:8px;--c:#f59e0b;--d:3.6s;--dl:-3.1s;left:31%;top:83%"></i><i class="wm-st" style="--s:4px;--c:#fbbf24;--d:1.9s;--dl:-1.9s;left:31%;top:48%"></i><i class="wm-st" style="--s:8px;--c:#f59e0b;--d:3.0s;--dl:-0.1s;left:27%;top:52%"></i><i class="wm-st" style="--s:6px;--c:#fbbf24;--d:3.8s;--dl:-3.1s;left:20%;top:9%"></i><i class="wm-st" style="--s:5px;--c:#22c55e;--d:1.9s;--dl:-0.0s;left:0%;top:26%"></i><i class="wm-st" style="--s:5px;--c:#fbbf24;--d:3.7s;--dl:-1.2s;left:25%;top:69%"></i><i class="wm-st" style="--s:5px;--c:#fbbf24;--d:3.9s;--dl:-2.8s;left:49%;top:38%"></i><i class="wm-st" style="--s:4px;--c:#ffffff;--d:2.6s;--dl:-3.7s;left:33%;top:8%"></i><i class="wm-st" style="--s:6px;--c:#ffffff;--d:3.6s;--dl:-2.3s;left:76%;top:86%"></i><i class="wm-st" style="--s:6px;--c:#f59e0b;--d:2.3s;--dl:-3.3s;left:61%;top:40%"></i><i class="wm-st" style="--s:5px;--c:#22c55e;--d:2.7s;--dl:-0.7s;left:32%;top:2%"></i><i class="wm-st" style="--s:6px;--c:#22c55e;--d:1.6s;--dl:-3.2s;left:46%;top:48%"></i><i class="wm-st" style="--s:8px;--c:#f59e0b;--d:2.7s;--dl:-2.8s;left:79%;top:25%"></i><i class="wm-st" style="--s:4px;--c:#fbbf24;--d:3.8s;--dl:-3.8s;left:44%;top:65%"></i><i class="wm-st" style="--s:6px;--c:#ffffff;--d:3.5s;--dl:-0.4s;left:95%;top:47%"></i><i class="wm-st" style="--s:6px;--c:#f59e0b;--d:2.6s;--dl:-3.9s;left:26%;top:43%"></i><i class="wm-st" style="--s:8px;--c:#ffffff;--d:3.8s;--dl:-1.4s;left:89%;top:69%"></i><div class="wm-txt"><b>How to watch?</b> Select <span class="wm-watch" role="button" tabindex="0" onclick="switchTab('team')">WATCH</span> tab, tap a video, watch it for 5 seconds, pick a comment, and tap the green <span class="wm-rc">RECEIVE</span> button. The money goes straight to your wallet instantly!</div></div>
 </div>
 <div class="section">
-<div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;">
-<div class="stat-box">
-<div class="stat-label">GENERAL ACCOUNT</div>
+<div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr;gap:6px;">
+<div class="stat-box acct-pill">
+<div class="stat-label">General Account</div>
 <div class="stat-value stake" id="stat-stake">UGX 0</div>
 </div>
-<div class="stat-box">
-<div class="stat-label">RETAINED WALLET</div>
+<div class="stat-box acct-pill">
+<div class="stat-label">Retained Wallet</div>
 <div class="stat-value mob" id="stat-mob">UGX 0</div>
 </div>
-<div class="stat-box" style="cursor:pointer;" onclick="switchTab('missed-commission')">
-<div class="stat-label">MSSD ACCOUNT</div>
+<div class="stat-box acct-pill" style="cursor:pointer;" onclick="switchTab('missed-commission')">
+<div class="stat-label">MSSD Account</div>
 <div class="stat-value" style="color:#f59e0b;" id="stat-mssd-account">UGX 0</div>
 </div>
 </div>
-<div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">
-<div class="stat-box">
-<div class="stat-label">TODAY'S VIDEOS</div>
+<div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-top:8px;gap:8px;">
+<div class="stat-box vl-pill">
+<div class="stat-label">Today's videos</div>
 <div class="stat-value videos" id="stat-today-videos">0/3</div>
 </div>
-<div class="stat-box">
-<div class="stat-label">LEVEL</div>
+<div class="stat-box vl-pill">
+<div class="stat-label">Level</div>
 <div class="stat-value" style="font-size:12px;font-weight:800;color:var(--accent);" id="stat-level">Trainee</div>
 </div>
 </div>
@@ -2097,6 +2111,26 @@ async function refreshTotalMembers() {
   if (el2) el2.textContent = String(total);
   } catch (e) {}
 }
+function fitAcctValues() {
+  document.querySelectorAll('.acct-pill .stat-value').forEach(function (el) {
+  el.style.fontSize = '';
+  let size = 12.5;
+  while (el.scrollWidth > el.clientWidth + 0.5 && size > 8.5) { size -= 0.5; el.style.fontSize = size + 'px'; }
+  });
+}
+(function () {
+  function start() {
+  if (!window.MutationObserver) return;
+  const mo = new MutationObserver(function () { fitAcctValues(); });
+  ['stat-stake', 'stat-mob', 'stat-mssd-account'].forEach(function (id) {
+  const el = document.getElementById(id);
+  if (el) mo.observe(el, { childList: true, characterData: true, subtree: true });
+  });
+  fitAcctValues();
+  window.addEventListener('resize', fitAcctValues);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+})();
 function updateIncomeStatsUI() {
   const todayEl = document.getElementById('stat-today-income');
   if (!todayEl) return;
