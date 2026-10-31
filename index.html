@@ -208,12 +208,12 @@ input[type="password"]{padding-right:46px;}
 .mp-ab{background:transparent;border:1.5px solid currentColor;border-radius:999px;padding:9px 4px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Inter',sans-serif;box-shadow:0 0 10px currentColor;}
 .mp-ab:active{transform:scale(.97);}
 .mp-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 16px;}
-.mp-sc{position:relative;overflow:hidden;border-radius:14px;padding:12px 12px 13px;min-height:70px;background:var(--surface);border:1px solid rgba(167,139,250,.28);box-shadow:inset 0 0 18px rgba(167,139,250,.06);}
-.mp-sc.wide{grid-column:1 / -1;}
-.mp-sl{font-size:11px;color:var(--muted);line-height:1.25;position:relative;z-index:1;}
-.mp-sv{font-size:16px;font-weight:800;margin-top:7px;font-variant-numeric:tabular-nums;position:relative;z-index:1;}
-.mp-wm{position:absolute;right:8px;bottom:-2px;opacity:.16;z-index:0;}
-.mp-wm .mp-i{width:46px;height:46px;stroke-width:1.2;filter:none;}
+.mp-sc{position:relative;overflow:hidden;border-radius:50%;padding:10px 22px;min-height:94px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at 50% 22%,#52b862 0%,#2f9142 52%,#1f6e30 100%);border:2px solid #1b5e20;box-shadow:0 5px 14px rgba(0,120,40,.4),inset 0 2px 6px rgba(255,255,255,.25);}
+.mp-sc::after{content:"";position:absolute;inset:5px;border-radius:50%;border:1.5px solid #e6c15a;pointer-events:none;z-index:2;}
+.mp-sl{font-size:10.5px;color:#eaffea;line-height:1.2;position:relative;z-index:1;font-weight:600;}
+.mp-sv{font-size:15px;font-weight:800;color:#fff;margin-top:4px;white-space:nowrap;letter-spacing:-.2px;font-variant-numeric:tabular-nums;position:relative;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,.35);}
+.mp-wm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:.12;z-index:0;}
+.mp-wm .mp-i{width:50px;height:50px;stroke:#fff;stroke-width:1.2;filter:none;}
 .mp-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 6px;padding:6px 16px 20px;}
 .mp-mi{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font-size:11px;font-weight:600;position:relative;cursor:pointer;}
 .mp-mi:active{transform:scale(.96);}
@@ -1133,7 +1133,8 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="mp-sc"><div class="mp-sl">Total credited</div><div class="mp-sv" id="stat-total-credited">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M17 7 7 17M16 17H7V8"/></svg></div></div>
 <div class="mp-sc"><div class="mp-sl">Slipped Commission</div><div class="mp-sv" id="stat-slipped-commission">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v5M12 18h.01"/></svg></div></div>
 <div class="mp-sc"><div class="mp-sl">Sub-affiliate Revenue</div><div class="mp-sv" id="stat-subaffiliate-revenue">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div></div>
-<div class="mp-sc wide"><div class="mp-sl">Today&#39;s subordinate revenue</div><div class="mp-sv" id="stat-subaffiliate-today">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M12 11.5 5 16.5M12 11.5l7 5"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Today&#39;s subordinate revenue</div><div class="mp-sv" id="stat-subaffiliate-today">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M12 11.5 5 16.5M12 11.5l7 5"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Total members</div><div class="mp-sv" id="stat-total-members">0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.5 0 4.5 2 4.5 4.5"/></svg></div></div>
 </div>
 <div class="mp-menu">
 <div class="mp-mi" onclick="switchTab('todaysjob')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></div><div>Today&#39;s Job</div></div>
@@ -2071,9 +2072,36 @@ function computeIncomeStats() {
   return result;
 }
 
+let teamCountCache = { n: null, at: 0, phone: '' };
+function asPhoneList(v) {
+  if (!v) return [];
+  return Array.isArray(v) ? v : Object.keys(v).map(function (k) { return v[k]; });
+}
+function shownMemberCount() {
+  if (teamCountCache.n !== null && teamCountCache.phone === (currentUsername || '')) return teamCountCache.n;
+  return asPhoneList(currentUser && currentUser.referrals).length;
+}
+async function refreshTotalMembers() {
+  const el = document.getElementById('stat-total-members');
+  if (!el || !currentUser) return;
+  el.textContent = String(shownMemberCount());
+  if (teamCountCache.n !== null && teamCountCache.phone === (currentUsername || '') && Date.now() - teamCountCache.at < 300000) return;
+  try {
+  const read = function (phone) { return db.ref('users/' + safeKey(phone) + '/referrals').get().then(function (sn) { return asPhoneList(sn.val()); }); };
+  const direct = asPhoneList(currentUser.referrals);
+  const l2 = (await Promise.all(direct.map(read))).reduce(function (a, b) { return a.concat(b); }, []);
+  const l3 = (await Promise.all(l2.map(read))).reduce(function (n, b) { return n + b.length; }, 0);
+  const total = direct.length + l2.length + l3;
+  teamCountCache = { n: total, at: Date.now(), phone: currentUsername || '' };
+  const el2 = document.getElementById('stat-total-members');
+  if (el2) el2.textContent = String(total);
+  } catch (e) {}
+}
 function updateIncomeStatsUI() {
   const todayEl = document.getElementById('stat-today-income');
   if (!todayEl) return;
+  const tmEl = document.getElementById('stat-total-members');
+  if (tmEl) tmEl.textContent = String(shownMemberCount());
   const s = computeIncomeStats();
   document.getElementById('stat-today-income').textContent = fmt(s.today);
   document.getElementById('stat-month-income').textContent = fmt(s.month);
@@ -6558,7 +6586,7 @@ function switchTab(tab, fromPopState) {
   }
   }
   if (tab === 'salary') { renderSalaryPage(); refreshPositionStatus(); }
-  if (tab === 'profile') refreshPositionStatus();
+  if (tab === 'profile') { refreshPositionStatus(); refreshTotalMembers(); }
   
   const floatBtn = document.getElementById('floating-support-btn');
   if (floatBtn) floatBtn.style.display = (tab === 'support') ? 'none' : 'flex';
