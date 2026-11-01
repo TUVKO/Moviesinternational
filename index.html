@@ -496,6 +496,9 @@ input[type="password"]{padding-right:46px;}
 .ann-scroll{width:100%;height:100%;overflow-y:auto;padding:16px;box-sizing:border-box;}
 .ann-card{border-radius:16px;padding:20px 16px;margin-bottom:16px;color:#fff;font-size:14px;line-height:1.6;box-shadow:0 4px 14px rgba(0,0,0,.35);}
 .ann-card:last-child{margin-bottom:0;}
+.ann-pic{margin-bottom:16px;}
+.ann-pic:last-child{margin-bottom:0;}
+.ann-pic img{width:100%;height:auto;display:block;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.35);-webkit-user-drag:none;}
 
 
 /* Announcement styles (20) */
@@ -2470,6 +2473,9 @@ function handleSaveContactYes() {
 const ANN_STYLE_NAMES = ["Emerald Gold Ribbon", "Royal Green Banner", "Desert Gold Paper", "Coins on Green-Black", "Royal Blue", "Purple Velvet", "Crimson Gold", "Midnight Black Gold", "Ocean Teal", "Sunset Orange", "Rose Pink", "Silver Steel", "Neon Cyber", "Ivory Classic", "Bronze Copper", "Lime Fresh", "Navy Sky", "Wine Burgundy", "Aurora Gradient", "Forest Gold"];
 function annEsc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function renderAnnCard(a) {
+  if (a && a.kind === 'image' && typeof a.img === 'string' && a.img.indexOf('data:image/') === 0) {
+  return '<div class="ann-pic"><img src="' + a.img + '" alt="" draggable="false"></div>';
+  }
   if (!a.styleId) return '<div class="ann-card" style="background:' + (a.bgColor || '#0e2a1f') + ';">' + (a.html || '') + '</div>';
   return '<div class="annx annst-' + Number(a.styleId) + '">'
   + (a.brand ? '<div class="annx-brand">' + annEsc(a.brand) + '</div>' : '')
@@ -2483,7 +2489,11 @@ async function showAnnouncementsPopup() {
   try {
   const snap = await db.ref('announcements').get();
   const data = snap.val() || {};
-  const ids = Object.keys(data).sort((a, b) => (data[a].createdAt || 0) - (data[b].createdAt || 0));
+  let offset = 0;
+  try { offset = Number((await db.ref('.info/serverTimeOffset').get()).val()) || 0; } catch (e) {}
+  const now = Date.now() + offset;
+  // announcements with an expiry date and time stop showing once that time has passed
+  const ids = Object.keys(data).filter(id => !(data[id] && data[id].expiresAt && data[id].expiresAt <= now)).sort((a, b) => (data[a].createdAt || 0) - (data[b].createdAt || 0));
   if (!ids.length) return;
 
   const scrollEl = document.getElementById('announcement-scroll');

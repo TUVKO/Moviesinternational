@@ -836,6 +836,20 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 </div>
 
 <div class="table-wrap" style="padding:16px;">
+<div style="font-weight:800;margin-bottom:6px;">New Picture Announcement</div>
+<div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5;">Choose a picture (a tall poster works best). It is shrunk automatically and shown to users in the announcement popup on login and refresh. It counts toward the 3 active announcements.</div>
+<input type="file" id="ann-pic-file" accept="image/*" style="display:none;" onchange="annPicChosen(this)">
+<button class="btn btn-edit" onclick="document.getElementById('ann-pic-file').click()">Choose picture</button>
+<div id="ann-pic-preview" style="margin-top:12px;"></div>
+<div style="margin-top:12px;">
+<label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px;">Expires on (date and time)</label>
+<input type="datetime-local" id="ann-pic-expiry" class="settings-input" style="width:100%;">
+<div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4;">After this date and time the picture stops showing to users. It is set to 5 days from now when you choose a picture. Clear it for no expiry.</div>
+</div>
+<div class="ann-bg-row"><button class="btn btn-save" id="ann-pic-post-btn" onclick="postPictureAnnouncement()" style="margin-left:auto;display:none;">Post Picture Announcement</button></div>
+</div>
+
+<div class="table-wrap" style="padding:16px;">
 <div style="font-weight:800;margin-bottom:12px;">Active Announcements (<span id="ann-count">0</span>/3)</div>
 <div id="ann-admin-list">Loading...</div>
 </div>
@@ -3587,17 +3601,111 @@ function renderAnnouncementsAdmin(data) {
   const listEl = document.getElementById('ann-admin-list');
   const countEl = document.getElementById('ann-count');
   try {
+  // remove announcements whose expiry time has passed
+  Object.keys(data).forEach(function (k) {
+  if (data[k] && data[k].expiresAt && data[k].expiresAt <= Date.now()) {
+  db.ref('announcements/' + k).remove().catch(function () {});
+  delete data[k];
+  }
+  });
   const ids = Object.keys(data).sort((a, b) => (data[a].createdAt || 0) - (data[b].createdAt || 0));
   countEl.textContent = ids.length;
   if (!ids.length) { listEl.innerHTML = '<div style="color:var(--muted);font-size:13px;">No active announcements.</div>'; return; }
   listEl.innerHTML = ids.map(id => {
   const a = data[id];
-  const inner = a.styleId ? ('<div style="margin-bottom:10px;">' + renderAnnCard(a) + '</div>') : ('<div class="ann-list-preview" style="background:' + (a.bgColor || '#0e2a1f') + ';">' + (a.html || '') + '</div>');
+  const inner = (a.kind === 'image' && a.img) ? ('<img src="' + a.img + '" alt="" style="max-width:150px;width:100%;border-radius:10px;display:block;margin-bottom:8px;"><div style="font-size:12px;color:var(--muted);margin-bottom:10px;">' + (a.expiresAt ? 'Expires: ' + new Date(a.expiresAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'No expiry') + '</div>') : a.styleId ? ('<div style="margin-bottom:10px;">' + renderAnnCard(a) + '</div>') : ('<div class="ann-list-preview" style="background:' + (a.bgColor || '#0e2a1f') + ';">' + (a.html || '') + '</div>');
   return '<div class="ann-list-card">' + inner + '<button class="btn btn-danger" onclick="deleteAnnouncement(\'' + id + '\')">Delete</button></div>';
   }).join('');
   } catch (e) {
   listEl.innerHTML = '<div style="color:#f87171;">Failed to load announcements.</div>';
   }
+}
+
+let annPicData = '';
+function annLocalInputValue(ms) {
+  const d = new Date(ms);
+  const pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+}
+function annPicChosen(inputEl) {
+  const file = inputEl.files && inputEl.files[0];
+  inputEl.value = '';
+  annPicData = '';
+  const prev = document.getElementById('ann-pic-preview');
+  const btn = document.getElementById('ann-pic-post-btn');
+  if (btn) btn.style.display = 'none';
+  if (prev) prev.innerHTML = '';
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onerror = function () { toast('Could not read that picture', '#f87171'); };
+  reader.onload = function (e) {
+  const img = new Image();
+  img.onerror = function () { toast('Could not read that picture', '#f87171'); };
+  img.onload = function () {
+  const widths = [750, 640, 540];
+  let dataUrl = '';
+  for (let w = 0; w < widths.length; w++) {
+  const scale = Math.min(1, widths[w] / img.width);
+  const cw = Math.round(img.width * scale), ch = Math.round(img.height * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = cw; canvas.height = ch;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#0e2a1f';
+  ctx.fillRect(0, 0, cw, ch);
+  ctx.drawImage(img, 0, 0, cw, ch);
+  const qualities = [0.8, 0.68, 0.55];
+  for (let q = 0; q < qualities.length; q++) {
+  dataUrl = canvas.toDataURL('image/jpeg', qualities[q]);
+  if (dataUrl.length < 260000) break;
+  }
+  if (dataUrl.length < 260000) break;
+  }
+  if (dataUrl.length >= 400000) { toast('That picture is too big. Try a smaller one.', '#f87171'); return; }
+  annPicData = dataUrl;
+  const exp = document.getElementById('ann-pic-expiry');
+  if (exp && !exp.value) exp.value = annLocalInputValue(Date.now() + 5 * 24 * 60 * 60 * 1000);
+  if (prev) {
+  const im = document.createElement('img');
+  im.src = dataUrl;
+  im.alt = '';
+  im.style.cssText = 'max-width:220px;width:100%;border-radius:12px;display:block;';
+  prev.appendChild(im);
+  const sz = document.createElement('div');
+  sz.style.cssText = 'font-size:11px;color:var(--muted);margin-top:6px;';
+  sz.textContent = 'Size after shrinking: about ' + Math.round(dataUrl.length * 0.75 / 1024) + ' KB';
+  prev.appendChild(sz);
+  }
+  if (btn) btn.style.display = '';
+  };
+  img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+async function postPictureAnnouncement() {
+  if (!annPicData) { toast('Choose a picture first', '#f87171'); return; }
+  try {
+  const expEl = document.getElementById('ann-pic-expiry');
+  let expiresAt = 0;
+  if (expEl && expEl.value) {
+  expiresAt = new Date(expEl.value).getTime();
+  if (isNaN(expiresAt) || expiresAt <= Date.now()) { toast('Choose an expiry date and time in the future', '#f87171'); return; }
+  }
+  const snap = await db.ref('announcements').get();
+  const data = snap.val() || {};
+  const active = Object.keys(data).filter(function (k) { return !(data[k] && data[k].expiresAt && data[k].expiresAt <= Date.now()); });
+  if (active.length >= 3) { toast('Max 3 announcements active. Delete one first.', '#f87171'); return; }
+  const rec = { kind: 'image', img: annPicData, createdAt: Date.now() };
+  if (expiresAt) rec.expiresAt = expiresAt;
+  await db.ref('announcements').push(rec);
+  if (expEl) expEl.value = '';
+  annPicData = '';
+  const prev = document.getElementById('ann-pic-preview');
+  if (prev) prev.innerHTML = '';
+  const btn = document.getElementById('ann-pic-post-btn');
+  if (btn) btn.style.display = 'none';
+  toast('Picture announcement posted');
+  loadAnnouncementsAdmin();
+  } catch (e) { toast('Could not post the picture', '#f87171'); }
 }
 
 async function postAnnouncement() {
