@@ -847,7 +847,7 @@ input[type="password"]{padding-right:46px;}
 
 <div class="section">
 <div class="action-grid">
-  <button class="action-btn" style="background:#7c3aed;border:none;color:#fff;" onclick="switchTab('deposit')"><span class="btn-icon"></span>Deposit</button>
+  <button class="action-btn" style="background:#7c3aed;border:none;color:#fff;" onclick="switchTab('deposit')"><span class="btn-icon"></span>Recharge</button>
   <button class="action-btn" style="background:#d97706;border:none;color:#fff;" onclick="switchTab('withdraw')"><span class="btn-icon"></span>Withdraw</button>
   <button class="action-btn" style="background:#2563eb;border:none;color:#fff;" onclick="switchTab('recruit')"><span class="btn-icon"></span>Invite</button>
 </div>
@@ -1151,7 +1151,7 @@ Your bonus on each purchase is based on whichever is <strong>smaller</strong>: w
 <div class="mp-sc"><div class="mp-sl">Slipped Commission</div><div class="mp-sv" id="stat-slipped-commission">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M12 3 2 20h20zM12 10v5M12 18h.01"/></svg></div></div>
 <div class="mp-sc"><div class="mp-sl">Sub-affiliate Revenue</div><div class="mp-sv" id="stat-subaffiliate-revenue">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></svg></div></div>
 <div class="mp-sc"><div class="mp-sl">Today&#39;s subordinate revenue</div><div class="mp-sv" id="stat-subaffiliate-today">UGX 0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M12 11.5 5 16.5M12 11.5l7 5"/></svg></div></div>
-<div class="mp-sc"><div class="mp-sl">Total members</div><div class="mp-sv" id="stat-total-members">0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.5 0 4.5 2 4.5 4.5"/></svg></div></div>
+<div class="mp-sc"><div class="mp-sl">Total referrals</div><div class="mp-sv" id="stat-total-members">0</div><div class="mp-wm"><svg class="mp-i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.5 0 4.5 2 4.5 4.5"/></svg></div></div>
 </div>
 <div class="mp-menu">
 <div class="mp-mi" onclick="switchTab('todaysjob')"><div class="mp-ic"><svg class="mp-i" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/></svg></div><div>Today&#39;s Job</div></div>
@@ -2204,6 +2204,49 @@ function renderTodaysJob() {
   }).join('');
 }
 
+let teamViewState = { tab: 'all', members: [], bonus: { 1: 0, 2: 0, 3: 0 } };
+function teamBonusByLevel() {
+  const out = { 1: 0, 2: 0, 3: 0 };
+  const txs = (currentUser && currentUser.transactions) ? Object.values(currentUser.transactions) : [];
+  txs.forEach(function (tx) {
+  if (!tx || (tx.type !== 'Affiliate Earning' && tx.type !== 'Sub-affiliate Revenue')) return;
+  const amt = tx.amount || 0;
+  if (amt <= 0) return;
+  const m = /Tier\s*([123])/.exec(String(tx.note || ''));
+  if (m) out[m[1]] += amt;
+  });
+  return out;
+}
+function setTeamTab(t) { teamViewState.tab = t; paintTeam(); }
+function paintTeam() {
+  const wrap = document.getElementById('team-list');
+  if (!wrap) return;
+  const st = teamViewState;
+  const tabs = [['all', 'ALL', 0], ['1', 'Level A', 1], ['2', 'Level B', 2], ['3', 'Level C', 3]];
+  const countOf = function (lv) { return st.members.filter(function (m) { return m._level === lv; }).length; };
+  const bonusOf = function (lv) { return lv === 0 ? st.bonus[1] + st.bonus[2] + st.bonus[3] : st.bonus[lv]; };
+  const pills = tabs.map(function (t) {
+  const n = t[2] === 0 ? st.members.length : countOf(t[2]);
+  return '<button class="tx-pill' + (st.tab === t[0] ? ' active' : '') + '" onclick="setTeamTab(\'' + t[0] + '\')">' + t[1] + ' (' + n + ')</button>';
+  }).join('');
+  const cur = tabs.filter(function (t) { return t[0] === st.tab; })[0] || tabs[0];
+  const lv = cur[2];
+  const list = lv === 0 ? st.members : st.members.filter(function (m) { return m._level === lv; });
+  const totalMembers = list.length;
+  const totalBonus = bonusOf(lv);
+  const levelMark = { 1: '¹', 2: '²', 3: '³' };
+  const rows = list.length ? list.map(function (m) {
+  const levelName = levelsData[m.currentLevel || 'trainee']?.name || 'Trainee';
+  const dotColor = m.locked ? 'var(--warn)' : 'var(--success)';
+  const mark = levelMark[m._level] || '';
+  return `<div class="team-member-row"><span class="team-status-dot" style="background:${dotColor};"></span><span class="team-member-name">${escapeHtml(m.fullName || 'User')}<sup style="font-size:9px;color:var(--accent);margin-left:1px;">${mark}</sup></span><span class="team-member-level">${escapeHtml(levelName)}</span></div>`;
+  }).join('') : '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">No members in this level yet.</div>';
+  wrap.innerHTML = '<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;">' + pills + '</div>'
+  + '<div style="display:flex;gap:10px;margin:4px 0 8px;">'
+  + '<div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--muted);font-weight:600;">Total members</div><div style="font-size:18px;font-weight:800;color:var(--text);margin-top:4px;">' + totalMembers + '</div></div>'
+  + '<div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--muted);font-weight:600;">Total bonus</div><div style="font-size:18px;font-weight:800;color:var(--success);margin-top:4px;">' + fmt(totalBonus) + '</div></div>'
+  + '</div>' + rows;
+}
 async function renderTeamList() {
   const wrap = document.getElementById('team-list');
   if (!wrap) return;
@@ -2245,14 +2288,10 @@ async function renderTeamList() {
   return (a.createdAt || 0) - (b.createdAt || 0);
   });
   
-  const levelMark = { 1: '¹', 2: '²', 3: '³' };
-    
-  wrap.innerHTML = validMembers.map(m => {
-  const levelName = levelsData[m.currentLevel || 'trainee']?.name || 'Trainee';
-  const dotColor = m.locked ? 'var(--warn)' : 'var(--success)';
-  const mark = levelMark[m._level] || '';
-  return `<div class="team-member-row"><span class="team-status-dot" style="background:${dotColor};"></span><span class="team-member-name">${escapeHtml(m.fullName || 'User')}<sup style="font-size:9px;color:var(--accent);margin-left:1px;">${mark}</sup></span><span class="team-member-level">${escapeHtml(levelName)}</span></div>`;
-  }).join('');
+  teamViewState.members = validMembers;
+  teamViewState.bonus = teamBonusByLevel();
+  if (!['all', '1', '2', '3'].includes(teamViewState.tab)) teamViewState.tab = 'all';
+  paintTeam();
   } catch (error) {
   console.error('Error loading team:', error);
   wrap.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--muted);font-size:13px;">Could not load team list.</div>';
