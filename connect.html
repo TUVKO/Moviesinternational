@@ -783,6 +783,7 @@ tbody td{padding:13px 16px;font-size:13px;vertical-align:middle;}
 <div class="page" id="pg-positions">
 <div class="page-title">Positions</div>
 <div class="page-sub">Employee positions earned through referral network growth — salaries auto-pay to General Account on/after the 6th of each month</div>
+<div id="positions-warning"></div>
 <div class="table-wrap">
 <div class="table-header"><div class="table-title">Position Tiers</div></div>
   <table>
@@ -1439,13 +1440,13 @@ function startDatimPlansListener() {
 
 let allPositions = {};
 const DEFAULT_POSITIONS_ADMIN = {
-  team_leader: { name: 'Team Leader', order: 1, directRequired: 10, combinedLevels: 1, combinedRequired: 0, salary: 50000 },
-  assistant_manager: { name: 'Assistant Manager', order: 2, directRequired: 25, combinedLevels: 1, combinedRequired: 0, salary: 120000 },
-  manager: { name: 'Manager', order: 3, directRequired: 20, combinedLevels: 2, combinedRequired: 50, salary: 300000 },
+  team_leader: { name: 'Team Leader', order: 1, directRequired: 10, combinedLevels: 1, combinedRequired: 0, salary: 70000 },
+  assistant_manager: { name: 'Assistant Manager', order: 2, directRequired: 25, combinedLevels: 1, combinedRequired: 0, salary: 140000 },
+  manager: { name: 'Manager', order: 3, directRequired: 20, combinedLevels: 2, combinedRequired: 50, salary: 380000 },
   senior_manager: { name: 'Senior Manager', order: 4, directRequired: 20, combinedLevels: 2, combinedRequired: 100, salary: 1200000 },
-  regional_director: { name: 'Regional Director', order: 5, directRequired: 60, combinedLevels: 3, combinedRequired: 500, salary: 3000000 },
+  regional_director: { name: 'Regional Director', order: 5, directRequired: 60, combinedLevels: 3, combinedRequired: 500, salary: 4100000 },
   vice_president: { name: 'Vice President', order: 6, directRequired: 100, combinedLevels: 3, combinedRequired: 1200, salary: 7000000 },
-  executive_director: { name: 'Executive Director', order: 7, directRequired: 150, combinedLevels: 3, combinedRequired: 2500, salary: 15000000 }
+  executive_director: { name: 'Executive Director', order: 7, directRequired: 150, combinedLevels: 3, combinedRequired: 2500, salary: 38000000 }
 };
 
 function startPositionsListener() {
@@ -1460,12 +1461,44 @@ function startPositionsListener() {
   });
 }
 
+function checkPositionSalaries(keys) {
+  const box = document.getElementById('positions-warning');
+  if (!box) return;
+  const fmt = function (n) { return Number(n || 0).toLocaleString('en-US'); };
+  const esc = function (t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  let html = '';
+  for (let i = 1; i < keys.length; i++) {
+  const lower = allPositions[keys[i - 1]], higher = allPositions[keys[i]];
+  const ls = Number(lower.salary || 0), hs = Number(higher.salary || 0);
+  if (hs > ls) continue;
+  // a higher position should never earn less. Look for a likely extra zero on the lower one.
+  const before = i >= 2 ? Number(allPositions[keys[i - 2]].salary || 0) : 0;
+  const tenth = Math.round(ls / 10);
+  let fixBtn = '';
+  if (tenth > before && tenth < hs) {
+  fixBtn = '<div style="margin-top:8px;"><button class="btn btn-save" onclick="fixPositionSalary(\'' + keys[i - 1] + '\',' + tenth + ')">Set ' + esc(lower.name) + ' to UGX ' + fmt(tenth) + '</button></div>';
+  }
+  html += '<div style="margin-bottom:8px;">' + esc(higher.name) + ' (UGX ' + fmt(hs) + ') earns less than ' + esc(lower.name) + ' (UGX ' + fmt(ls) + '). A higher position should earn more.' + (fixBtn ? ' It looks like ' + esc(lower.name) + ' has an extra zero.' : '') + fixBtn + '</div>';
+  }
+  box.innerHTML = html ? '<div style="background:rgba(245,158,11,.12);border:1px solid #f59e0b;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.5;"><div style="font-weight:800;margin-bottom:6px;">Salary check: the order looks wrong</div>' + html + '<div style="font-size:12px;color:var(--muted);">Salaries are paid automatically each month, so fix this before the next payment date.</div></div>' : '';
+}
+async function fixPositionSalary(key, amount) {
+  const p = allPositions[key];
+  if (!p) return;
+  if (!confirm('Set ' + p.name + ' monthly salary to UGX ' + Number(amount).toLocaleString('en-US') + '?')) return;
+  try {
+  await db.ref('positions/' + key + '/salary').set(amount);
+  toast(p.name + ' salary set to UGX ' + Number(amount).toLocaleString('en-US'));
+  } catch (e) { toast('Could not update the salary', '#f87171'); }
+}
+
 function renderPositionsAdminTable() {
   const tbody = document.getElementById('positions-table-body');
   if (!tbody) return;
   const keys = Object.keys(allPositions).sort((a, b) => (allPositions[a].order || 0) - (allPositions[b].order || 0));
   if (!keys.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No positions configured</td></tr>'; return; }
 
+  checkPositionSalaries(keys);
   tbody.innerHTML = keys.map(key => {
   const p = allPositions[key];
   return `<tr>
